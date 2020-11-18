@@ -4,7 +4,15 @@ This project has the code for the project using 10X Genomics Visium for generati
 
 # Internal
 
-* JHPCE location: `/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC`
+* JHPCE location: `/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC`. Remember to use `umask u=rwx,g=rwx,o=" on your `~/.bashrc` file as listed on [JHPCE config files](https://lcolladotor.github.io/bioc_team_ds/config-files.html#jhpce-files).
 * Slack channel: `libd_dlpfc_spatial`
+
+## Files in git repository
+
+- `scripts/`: Shell scripts to run Space Ranger; other Shell scripts
+- `analysis/`: RMarkdown and/or R scripts for analyses
+
+_Note: the idea is to use the same structure as in the [`locus-c`](https://github.com/lmweber/locus-c) project._
+
 
 
