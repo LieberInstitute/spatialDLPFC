@@ -1,0 +1,319 @@
+library(here)
+library(tidyverse)
+library(ggplot2)
+library(SingleCellExperiment)
+library(Matrix)
+library(rjson)
+
+sample_names <- c("DLPFC_Br2743_ant_manual_alignment", "DLPFC_Br2743_mid_manual_alignment","DLPFC_Br2743_post_manual_alignment","DLPFC_Br3942_ant_manual_alignment","DLPFC_Br3942_mid_manual_alignment","DLPFC_Br3942_post_manual_alignment","DLPFC_Br6423_ant_manual_alignment","DLPFC_Br6423_mid_manual_alignment","DLPFC_Br6423_post_manual_alignment","DLPFC_Br8492_ant_manual_alignment","DLPFC_Br8492_mid_manual_alignment","DLPFC_Br8492_post_manual_alignment")
+sce_list <- vector("list", length = length(sample_names))
+names(sce_list) <- sample_names
+
+for (i in seq_along(sample_names)) {
+  
+  # ---------
+  # load data
+  # ---------
+  
+  # select sample
+  sample_name <- sample_names[i]
+  
+  # path to Space Ranger output files
+  if (Sys.info()["sysname"] == "Linux") {
+    # files on JHPCE cluster
+    dir_outputs <- "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/outputs/NextSeq"
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    # copy of files on Mac laptop
+    dir_outputs <- "~/DLPFC"
+  }
+  
+  # note: using "filtered" barcodes list containing only spots over tissue
+  dir_matrix <- file.path(dir_outputs, sample_name, "outs", "filtered_feature_bc_matrix")
+  
+  # barcodes
+  file_barcodes <- file.path(dir_matrix, "barcodes.tsv.gz")
+  df_barcodes <- read.csv(file_barcodes, sep = "\t", header = FALSE, 
+                          col.names = c("barcode_id"))
+  # features
+  file_features <- file.path(dir_matrix, "features.tsv.gz")
+  df_features <- read.csv(file_features, sep = "\t", header = FALSE, 
+                          col.names = c("gene_id", "gene_name", "feature_type"))
+  # counts
+  file_counts <- file.path(dir_matrix, "matrix.mtx.gz")
+  counts <- readMM(file = file_counts)
+  
+  # spatial coordinates
+  dir_spatial <- file.path(dir_outputs, sample_name, "outs", "spatial")
+  file_tisspos <- file.path(dir_spatial, "tissue_positions_list.csv")
+  df_tisspos <- read.csv(file_tisspos, header = FALSE, 
+                         col.names=c("barcode_id", "in_tissue", "array_row", "array_col", 
+                                     "pxl_col_in_fullres", "pxl_row_in_fullres"))
+  
+  # check dimensions
+  dim(df_barcodes)
+  dim(df_features)
+  dim(counts)
+  # note df_tisspos contains all spots (not filtered) - need to match later
+  dim(df_tisspos)
+  
+  # image paths
+  imageFilePath <- file.path(dir_spatial, c("tissue_hires_image.png", "tissue_lores_image.png"))
+  
+  # spatial scale factors
+  file_scale <- file.path(dir_spatial, "scalefactors_json.json")
+  scalefactors <- fromJSON(file = file_scale)
+  
+  
+  # ---------------------------
+  # create SingleCellExperiment
+  # ---------------------------
+  
+  # note: check and/or re-order rows to make sure barcode IDs match in df_barcodes and df_tisspos
+  dim(df_barcodes)
+  dim(df_tisspos)
+  ord <- match(df_barcodes$barcode_id, df_tisspos$barcode_id)
+  df_tisspos_ord <- df_tisspos[ord, ]
+  dim(df_tisspos_ord)
+  stopifnot(nrow(df_barcodes) == nrow(df_tisspos_ord))
+  stopifnot(all(df_barcodes$barcode_id == df_tisspos_ord$barcode_id))
+  
+  head(df_barcodes)
+  head(df_tisspos_ord)
+  
+  col_data <- cbind(df_barcodes, df_tisspos_ord[, -1])
+  head(col_data)
+  
+  sce <- SingleCellExperiment(
+    rowData = df_features, 
+    colData = col_data, 
+    assays = c(counts = counts), 
+    metadata = list(scalefactors = scalefactors)
+  )
+  
+  sce
+  
+  # store object
+  sce_list[[i]] <- sce
+}
+
+sce_list
+
+# $DLPFC_Br2743_ant_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 4065
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br2743_mid_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 4246
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br2743_post_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 3869
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br3942_ant_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 3911
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br3942_mid_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 3928
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br3942_post_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 4400
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br6423_ant_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 3906
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br6423_mid_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 3984
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br6423_post_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 3851
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br8492_ant_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 4793
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br8492_mid_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 4435
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+#   
+#   $DLPFC_Br8492_post_manual_alignment
+# class: SingleCellExperiment
+# dim: 36601 4618
+# metadata(1): scalefactors
+# assays(1): counts
+# rownames: NULL
+# rowData names(3): gene_id gene_name feature_type
+# colnames: NULL
+# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
+# pxl_row_in_fullres
+# reducedDimNames(0):
+#   altExpNames(0):
+
+save(sce_list, file = "~/DLPFC/sce_list.rda")
+
+load(file = "~/DLPFC/sce_list.rda")
+
+library(scater)
+
+for (i in seq_along(sample_names)) {
+  
+  # select sample
+  sce <- sce_list[[i]]
+  
+  # identify mitochondrial genes
+  is_mito <- grepl("(^MT-)|(^mt-)", rowData(sce)$gene_name)
+  table(is_mito)
+  rowData(sce)$gene_name[is_mito]
+  
+  # calculate QC metrics using scater package
+  sce <- addPerCellQC(sce, subsets = list(mito = is_mito))
+  
+  colData(sce)
+  
+  # store
+  sce_list[[i]] <- sce
+}
+
+human_markers <- c("SNAP25", "MBP","PCP4", "RELN","AQP4")
+
+colors <- c("navy", "dodgerblue2")
+
+pdf('DLPFC/marker_genes.pdf', useDingbats = FALSE)
+for (i in seq_along(sample_names)) {
+  
+  # select sample
+  sce <- sce_list[[i]]
+  
+  for (j in seq_along(human_markers)) {
+    
+    # identify marker gene
+    ix_marker <- which(toupper(rowData(sce)$gene_name) == toupper(human_markers[j]))
+    stopifnot(length(ix_marker) == 1)
+    colData(sce)$counts_marker <- counts(sce)[ix_marker, ]
+    
+    
+    # plot UMI counts for marker gene
+    
+    p <- ggplot(as.data.frame(colData(sce)), 
+                aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = counts_marker)) + 
+      geom_point(size = 1.0) + 
+      coord_fixed() + 
+      scale_y_reverse() + 
+      scale_color_gradient(low = "gray95", high = colors[1]) + 
+      ggtitle(paste0("UMI counts: ", human_markers[j], ": ", sample_names[i])) + 
+      labs(color = "counts") + 
+      theme_bw() + 
+      theme(panel.grid = element_blank(), 
+            axis.title = element_blank(), 
+            axis.text = element_blank(), 
+            axis.ticks = element_blank())
+    
+    print(p)
+  }
+}
+dev.off()
