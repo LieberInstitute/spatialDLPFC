@@ -42,13 +42,18 @@ for (i in seq_along(sample_names)) {
   file_counts <- file.path(dir_matrix, "matrix.mtx.gz")
   counts <- readMM(file = file_counts)
   
+  
+  # spatial scale factors
+  file_scale <- file.path(dir_spatial, "scalefactors_json.json")
+  scalefactors <- fromJSON(file = file_scale)
+  
   # spatial coordinates
   dir_spatial <- file.path(dir_outputs, sample_name, "outs", "spatial")
   file_tisspos <- file.path(dir_spatial, "tissue_positions_list.csv")
   df_tisspos <- read.csv(file_tisspos, header = FALSE, 
                          col.names=c("barcode_id", "in_tissue", "array_row", "array_col", 
                                      "pxl_col_in_fullres", "pxl_row_in_fullres"))
-  
+  df_tisspos
   # check dimensions
   dim(df_barcodes)
   dim(df_features)
@@ -59,9 +64,6 @@ for (i in seq_along(sample_names)) {
   # image paths
   imageFilePath <- file.path(dir_spatial, c("tissue_hires_image.png", "tissue_lores_image.png"))
   
-  # spatial scale factors
-  file_scale <- file.path(dir_spatial, "scalefactors_json.json")
-  scalefactors <- fromJSON(file = file_scale)
   
   
   # ---------------------------
@@ -279,7 +281,7 @@ for (i in seq_along(sample_names)) {
   sce_list[[i]] <- sce
 }
 
-human_markers <- c("SNAP25", "MBP","PCP4", "RELN","AQP4")
+human_markers <- c("SNAP25", "MBP","PCP4", "RELN","AQP4","CUX2","CCK","HPCAL1")
 
 colors <- c("navy", "dodgerblue2")
 
@@ -306,6 +308,46 @@ for (i in seq_along(sample_names)) {
       scale_y_reverse() + 
       scale_color_gradient(low = "gray95", high = colors[1]) + 
       ggtitle(paste0("UMI counts: ", human_markers[j], ": ", sample_names[i])) + 
+      labs(color = "counts") + 
+      theme_bw() + 
+      theme(panel.grid = element_blank(), 
+            axis.title = element_blank(), 
+            axis.text = element_blank(), 
+            axis.ticks = element_blank())
+    
+    print(p)
+  }
+}
+dev.off()
+
+
+# human_markers <- c("SNAP25", "MBP","PCP4", "RELN","AQP4","CUX2","CCK","HPCAL1")
+# 
+# colors <- c("navy", "dodgerblue2")
+pdf('DLPFC/marker_genes_by_gene.pdf', useDingbats = FALSE)
+for (i in seq_along(human_markers)) {
+  
+  # select sample
+  
+  
+  for (j in seq_along(sample_names)) {
+    sce <- sce_list[[j]]
+    
+    # identify marker gene
+    ix_marker <- which(toupper(rowData(sce)$gene_name) == toupper(human_markers[i]))
+    stopifnot(length(ix_marker) == 1)
+    colData(sce)$counts_marker <- counts(sce)[ix_marker, ]
+    
+    
+    # plot UMI counts for marker gene
+    
+    p <- ggplot(as.data.frame(colData(sce)), 
+                aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = counts_marker)) + 
+      geom_point(size = 1.0) + 
+      coord_fixed() + 
+      scale_y_reverse() + 
+      scale_color_gradient(low = "gray95", high = colors[1]) + 
+      ggtitle(paste0("UMI counts: ", human_markers[i], ": ", sample_names[j])) + 
       labs(color = "counts") + 
       theme_bw() + 
       theme(panel.grid = element_blank(), 
