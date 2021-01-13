@@ -16,8 +16,8 @@ for (i in seq_along(sample_names)) {
   # ---------
   
   # select sample
-  #sample_name <- sample_names[i]
-  sample_name <- sample_names[1]
+  sample_name <- sample_names[i]
+  #sample_name <- sample_names[1]
   
   # path to Space Ranger output files
   if (Sys.info()["sysname"] == "Linux") {
@@ -56,6 +56,7 @@ for (i in seq_along(sample_names)) {
   df_tisspos$imagerow <-df_tisspos$imagerow * scalefactors$tissue_lowres_scalef    # scale tissue coordinates for lowres image
   df_tisspos$imagecol <- df_tisspos$imagecol * scalefactors$tissue_lowres_scalef
  
+  
    # check dimensions
   dim(df_barcodes)
   dim(df_features)
@@ -75,12 +76,12 @@ for (i in seq_along(sample_names)) {
   # note: check and/or re-order rows to make sure barcode IDs match in df_barcodes and df_tisspos
   dim(df_barcodes)
   dim(df_tisspos)
-  ord <- match(df_barcodes$barcode_id, df_tisspos$barcode_id)
+  ord <- match(df_barcodes$barcode_id, df_tisspos$barcode)
   df_tisspos_ord <- df_tisspos[ord, ]
   dim(df_tisspos_ord)
   stopifnot(nrow(df_barcodes) == nrow(df_tisspos_ord))
-  stopifnot(all(df_barcodes$barcode_id == df_tisspos_ord$barcode_id))
-  
+  stopifnot(all(df_barcodes$barcode_id == df_tisspos_ord$barcode))
+
   head(df_barcodes)
   head(df_tisspos_ord)
   
