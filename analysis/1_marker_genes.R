@@ -65,8 +65,19 @@ for (i in seq_along(sample_names)) {
   dim(df_tisspos)
   
   # image paths
-  imageFilePath <- file.path(dir_spatial, c("tissue_hires_image.png", "tissue_lores_image.png"))
-  
+  # library(readbitmap)
+  # image_path <- file.path(dir_spatial,"tissue_lowres_image.png")
+  # image_cl<- read.bitmap(image_path)
+  # dims = dim(image_cl)
+  # dims = as.data.frame(t(dims))
+  # colnames(dims) = c("height", "width", "channel")
+  # 
+  # library(grid)
+  # grobs<-rasterGrob(image_cl, width=unit(1,"npc"), height=unit(1,"npc"))
+  # images_tibble <- tibble(sample=sample_names[i], grob=grobs)
+  # images_tibble$height = dims$height
+  # images_tibble$width = dims$width
+  # images_tibble
   
   
   # ---------------------------
@@ -100,6 +111,38 @@ for (i in seq_along(sample_names)) {
   # store object
   sce_list[[i]] <- sce
 }
+
+library(readbitmap)
+library(grid)
+image_paths <- paste0(dir_outputs,"/",sample_names, "/outs/spatial/tissue_lowres_image.png")
+images_cl <- lapply(image_paths, read.bitmap) 
+dims = t(sapply(images_cl, dim))
+colnames(dims) = c("height", "width", "channel")
+dims = as.data.frame(dims)
+
+
+## ------------------------------------------------------------------------
+grobs <- lapply(images_cl, rasterGrob, width=unit(1,"npc"), height=unit(1,"npc"))
+images_tibble <- tibble(sample=sample_names, grob=grobs)
+images_tibble$height = dims$height
+images_tibble$width = dims$width
+images_tibble
+
+# sample                             grob       height width
+# <chr>                              <list>      <int> <int>
+#   1 DLPFC_Br2743_ant_manual_alignment  <rastrgrb>    600   504
+# 2 DLPFC_Br2743_mid_manual_alignment  <rastrgrb>    600   517
+# 3 DLPFC_Br2743_post_manual_alignment <rastrgrb>    600   452
+# 4 DLPFC_Br3942_ant_manual_alignment  <rastrgrb>    600   504
+# 5 DLPFC_Br3942_mid_manual_alignment  <rastrgrb>    600   517
+# 6 DLPFC_Br3942_post_manual_alignment <rastrgrb>    600   452
+# 7 DLPFC_Br6423_ant_manual_alignment  <rastrgrb>    600   504
+# 8 DLPFC_Br6423_mid_manual_alignment  <rastrgrb>    600   517
+# 9 DLPFC_Br6423_post_manual_alignment <rastrgrb>    600   405
+# 10 DLPFC_Br8492_ant_manual_alignment  <rastrgrb>    600   504
+# 11 DLPFC_Br8492_mid_manual_alignment  <rastrgrb>    600   517
+# 12 DLPFC_Br8492_post_manual_alignment <rastrgrb>    600   561
+
 
 sce_list
 
