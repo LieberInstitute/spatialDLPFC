@@ -16,7 +16,8 @@ for (i in seq_along(sample_names)) {
   # ---------
   
   # select sample
-  sample_name <- sample_names[i]
+  #sample_name <- sample_names[i]
+  sample_name <- sample_names[1]
   
   # path to Space Ranger output files
   if (Sys.info()["sysname"] == "Linux") {
@@ -44,17 +45,18 @@ for (i in seq_along(sample_names)) {
   
   
   # spatial scale factors
+  dir_spatial <- file.path(dir_outputs, sample_name, "outs", "spatial")
   file_scale <- file.path(dir_spatial, "scalefactors_json.json")
   scalefactors <- fromJSON(file = file_scale)
   
   # spatial coordinates
-  dir_spatial <- file.path(dir_outputs, sample_name, "outs", "spatial")
   file_tisspos <- file.path(dir_spatial, "tissue_positions_list.csv")
   df_tisspos <- read.csv(file_tisspos, header = FALSE, 
-                         col.names=c("barcode_id", "in_tissue", "array_row", "array_col", 
-                                     "pxl_col_in_fullres", "pxl_row_in_fullres"))
-  df_tisspos
-  # check dimensions
+                         col.names=c("barcode","tissue","row","col","imagerow","imagecol"))
+  df_tisspos$imagerow <-df_tisspos$imagerow * scalefactors$tissue_lowres_scalef    # scale tissue coordinates for lowres image
+  df_tisspos$imagecol <- df_tisspos$imagecol * scalefactors$tissue_lowres_scalef
+ 
+   # check dimensions
   dim(df_barcodes)
   dim(df_features)
   dim(counts)
