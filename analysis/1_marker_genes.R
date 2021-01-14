@@ -4,6 +4,7 @@ library(ggplot2)
 library(SingleCellExperiment)
 library(Matrix)
 library(rjson)
+library(Seurat)
 
 sample_names <- c("DLPFC_Br2743_ant_manual_alignment", "DLPFC_Br2743_mid_manual_alignment","DLPFC_Br2743_post_manual_alignment","DLPFC_Br3942_ant_manual_alignment","DLPFC_Br3942_mid_manual_alignment","DLPFC_Br3942_post_manual_alignment","DLPFC_Br6423_ant_manual_alignment","DLPFC_Br6423_mid_manual_alignment","DLPFC_Br6423_post_manual_alignment","DLPFC_Br8492_ant_manual_alignment","DLPFC_Br8492_mid_manual_alignment","DLPFC_Br8492_post_manual_alignment")
 sce_list <- vector("list", length = length(sample_names))
@@ -29,19 +30,20 @@ for (i in seq_along(sample_names)) {
   }
   
   # note: using "filtered" barcodes list containing only spots over tissue
-  dir_matrix <- file.path(dir_outputs, sample_name, "outs", "filtered_feature_bc_matrix")
+  dir_matrix <- file.path(dir_outputs, sample_name, "outs")
   
   # barcodes
-  file_barcodes <- file.path(dir_matrix, "barcodes.tsv.gz")
+  file_barcodes <- file.path(dir_matrix, "filtered_feature_bc_matrix/barcodes.tsv.gz")
   df_barcodes <- read.csv(file_barcodes, sep = "\t", header = FALSE, 
                           col.names = c("barcode_id"))
   # features
-  file_features <- file.path(dir_matrix, "features.tsv.gz")
+  file_features <- file.path(dir_matrix, "filtered_feature_bc_matrix/features.tsv.gz")
   df_features <- read.csv(file_features, sep = "\t", header = FALSE, 
                           col.names = c("gene_id", "gene_name", "feature_type"))
   # counts
-  file_counts <- file.path(dir_matrix, "matrix.mtx.gz")
-  counts <- readMM(file = file_counts)
+  file_counts <- file.path(dir_matrix, "filtered_feature_bc_matrix.h5")
+  #counts <- readMM(file = file_counts)
+  counts <- Read10X_h5(file_counts)
   
   
   # spatial scale factors
