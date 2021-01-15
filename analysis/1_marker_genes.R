@@ -76,6 +76,8 @@ for (i in seq_along(sample_names)) {
   sce$sum_umi <- colSums(counts)
   sce$sum_gene = colSums(counts > 0)
  
+  #adding colData
+  sce$sample_name <- sample_names[i]
   
    # check dimensions
   dim(df_barcodes)
@@ -132,6 +134,7 @@ for (i in seq_along(sample_names)) {
   sce_list[[i]] <- sce
 }
 
+
 library(readbitmap)
 library(grid)
 image_paths <- paste0(dir_outputs,"/",sample_names, "/outs/spatial/tissue_lowres_image.png")
@@ -163,166 +166,13 @@ images_tibble
 # 11 DLPFC_Br8492_mid_manual_alignment  <rastrgrb>    600   517
 # 12 DLPFC_Br8492_post_manual_alignment <rastrgrb>    600   561
 
+##combine to one SCE object 
+sce <- do.call(cbind, sce_list)
 
-sce_list
+##add image data to meta data
+metadata(sce)$image <- images_tibble
 
-# $DLPFC_Br2743_ant_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 4065
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br2743_mid_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 4246
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br2743_post_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 3869
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br3942_ant_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 3911
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br3942_mid_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 3928
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br3942_post_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 4400
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br6423_ant_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 3906
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br6423_mid_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 3984
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br6423_post_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 3851
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br8492_ant_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 4793
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br8492_mid_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 4435
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-#   
-#   $DLPFC_Br8492_post_manual_alignment
-# class: SingleCellExperiment
-# dim: 36601 4618
-# metadata(1): scalefactors
-# assays(1): counts
-# rownames: NULL
-# rowData names(3): gene_id gene_name feature_type
-# colnames: NULL
-# colData names(6): barcode_id in_tissue ... pxl_col_in_fullres
-# pxl_row_in_fullres
-# reducedDimNames(0):
-#   altExpNames(0):
-
-save(sce_list, file = "~/DLPFC/sce_list.rda")
+save(sce, file = "~/DLPFC/sce_combined.rda")
 
 load(file = "~/DLPFC/sce_list.rda")
 
