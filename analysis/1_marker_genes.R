@@ -5,10 +5,18 @@ library(SingleCellExperiment)
 library(Matrix)
 library(rjson)
 library(Seurat)
+library(IsoformSwitchAnalyzeR)
+library(rtracklayer)
 
 sample_names <- c("DLPFC_Br2743_ant_manual_alignment", "DLPFC_Br2743_mid_manual_alignment","DLPFC_Br2743_post_manual_alignment","DLPFC_Br3942_ant_manual_alignment","DLPFC_Br3942_mid_manual_alignment","DLPFC_Br3942_post_manual_alignment","DLPFC_Br6423_ant_manual_alignment","DLPFC_Br6423_mid_manual_alignment","DLPFC_Br6423_post_manual_alignment","DLPFC_Br8492_ant_manual_alignment","DLPFC_Br8492_mid_manual_alignment","DLPFC_Br8492_post_manual_alignment")
 sce_list <- vector("list", length = length(sample_names))
 names(sce_list) <- sample_names
+
+## get GTF, this seems like what they used
+# gtf = import("/dcl01/ajaffe/data/lab/singleCell/refdata-cellranger-GRCh38-3.0.0/genes/genes.gtf")
+# gtf = gtf[gtf$type	== "gene"]
+# names(gtf) = gtf$gene_id
+
 
 for (i in seq_along(sample_names)) {
   
@@ -40,6 +48,12 @@ for (i in seq_along(sample_names)) {
   file_features <- file.path(dir_matrix, "filtered_feature_bc_matrix/features.tsv.gz")
   df_features <- read.csv(file_features, sep = "\t", header = FALSE, 
                           col.names = c("gene_id", "gene_name", "feature_type"))
+  # add more gene information from gtf file 
+  # gtf = gtf[df_features$EnsemblID]
+  # seqlevels(gtf)[1:25] = paste0("chr", seqlevels(gtf)[1:25])
+  # mcols(gtf) = mcols(gtf)[,c(5:9)]
+  # 
+  
   # counts
   file_counts <- file.path(dir_matrix, "filtered_feature_bc_matrix.h5")
   #counts <- readMM(file = file_counts)
@@ -57,6 +71,10 @@ for (i in seq_along(sample_names)) {
                          col.names=c("barcode","tissue","row","col","imagerow","imagecol"))
   df_tisspos$imagerow <-df_tisspos$imagerow * scalefactors$tissue_lowres_scalef    # scale tissue coordinates for lowres image
   df_tisspos$imagecol <- df_tisspos$imagecol * scalefactors$tissue_lowres_scalef
+  
+  #sum UMIs
+  sce$sum_umi <- colSums(counts)
+  sce$sum_gene = colSums(counts > 0)
  
   
    # check dimensions
