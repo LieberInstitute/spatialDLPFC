@@ -5,17 +5,21 @@ library(SingleCellExperiment)
 library(Matrix)
 library(rjson)
 library(Seurat)
-library(IsoformSwitchAnalyzeR)
 library(rtracklayer)
+library(scran)
+library(scater)
+library(readbitmap)
+library(grid)
+
 
 sample_names <- c("DLPFC_Br2743_ant_manual_alignment", "DLPFC_Br2743_mid_manual_alignment","DLPFC_Br2743_post_manual_alignment","DLPFC_Br3942_ant_manual_alignment","DLPFC_Br3942_mid_manual_alignment","DLPFC_Br3942_post_manual_alignment","DLPFC_Br6423_ant_manual_alignment","DLPFC_Br6423_mid_manual_alignment","DLPFC_Br6423_post_manual_alignment","DLPFC_Br8492_ant_manual_alignment","DLPFC_Br8492_mid_manual_alignment","DLPFC_Br8492_post_manual_alignment")
 sce_list <- vector("list", length = length(sample_names))
 names(sce_list) <- sample_names
 
-## get GTF, this seems like what they used
-# gtf = import("/dcl01/ajaffe/data/lab/singleCell/refdata-cellranger-GRCh38-3.0.0/genes/genes.gtf")
-# gtf = gtf[gtf$type	== "gene"]
-# names(gtf) = gtf$gene_id
+# get GTF, this seems like what they used
+gtf = rtracklayer::import("/dcl01/ajaffe/data/lab/singleCell/refdata-cellranger-GRCh38-3.0.0/genes/genes.gtf")
+gtf = gtf[gtf$type	== "gene"]
+names(gtf) = gtf$gene_id
 
 
 for (i in seq_along(sample_names)) {
@@ -26,7 +30,7 @@ for (i in seq_along(sample_names)) {
   
   # select sample
   sample_name <- sample_names[i]
-  #sample_name <- sample_names[1]
+  #sample_name <- sample_names[3]
   
   # path to Space Ranger output files
   if (Sys.info()["sysname"] == "Linux") {
@@ -48,11 +52,15 @@ for (i in seq_along(sample_names)) {
   file_features <- file.path(dir_matrix, "filtered_feature_bc_matrix/features.tsv.gz")
   df_features <- read.csv(file_features, sep = "\t", header = FALSE, 
                           col.names = c("gene_id", "gene_name", "feature_type"))
-  # add more gene information from gtf file 
-  # gtf = gtf[df_features$EnsemblID]
-  # seqlevels(gtf)[1:25] = paste0("chr", seqlevels(gtf)[1:25])
-  # mcols(gtf) = mcols(gtf)[,c(5:9)]
-  # 
+  
+  # > dim(df_features)
+  # [1] 36601     3
+  # # add more gene information from gtf file 
+  
+  x <- intersect(gtf$gene_id,df_features$gene_id)
+  gtf = gtf[x]
+  seqlevels(gtf)[seq_len(25)] = paste0("chr", seqlevels(gtf)[seq_len(25)])
+
   
   # counts
   file_counts <- file.path(dir_matrix, "filtered_feature_bc_matrix.h5")
@@ -72,12 +80,7 @@ for (i in seq_along(sample_names)) {
   df_tisspos$imagerow <-df_tisspos$imagerow * scalefactors$tissue_lowres_scalef    # scale tissue coordinates for lowres image
   df_tisspos$imagecol <- df_tisspos$imagecol * scalefactors$tissue_lowres_scalef
   
-  #sum UMIs
-  sce$sum_umi <- colSums(counts)
-  sce$sum_gene = colSums(counts > 0)
- 
-  #adding colData
-  sce$sample_name <- sample_names[i]
+
   
    # check dimensions
   dim(df_barcodes)
@@ -107,17 +110,12 @@ for (i in seq_along(sample_names)) {
   # ---------------------------
   
   # note: check and/or re-order rows to make sure barcode IDs match in df_barcodes and df_tisspos
-  dim(df_barcodes)
-  dim(df_tisspos)
   ord <- match(df_barcodes$barcode_id, df_tisspos$barcode)
   df_tisspos_ord <- df_tisspos[ord, ]
   dim(df_tisspos_ord)
   stopifnot(nrow(df_barcodes) == nrow(df_tisspos_ord))
   stopifnot(all(df_barcodes$barcode_id == df_tisspos_ord$barcode))
 
-  head(df_barcodes)
-  head(df_tisspos_ord)
-  
   col_data <- cbind(df_barcodes, df_tisspos_ord[, -1])
   head(col_data)
   
@@ -130,13 +128,25 @@ for (i in seq_along(sample_names)) {
   
   sce
   
+  #sum UMIs
+  sce$sum_umi <- colSums(counts)
+  sce$sum_gene = colSums(counts > 0)
+  
+  #adding colData
+  sce$sample_name <- sample_names[i]
+  #sce$sample_name <- sample_names[3]
+  
   # store object
   sce_list[[i]] <- sce
+  #sce_list[[3]] <- sce
+  
+  rm(sce)
 }
 
+sce_list
+save(sce_list, file = "~/DLPFC/sce_list.rda")
+load(file = "~/DLPFC/sce_list.rda")
 
-library(readbitmap)
-library(grid)
 image_paths <- paste0(dir_outputs,"/",sample_names, "/outs/spatial/tissue_lowres_image.png")
 images_cl <- lapply(image_paths, read.bitmap) 
 dims = t(sapply(images_cl, dim))
@@ -172,11 +182,21 @@ sce <- do.call(cbind, sce_list)
 ##add image data to meta data
 metadata(sce)$image <- images_tibble
 
+#save
 save(sce, file = "~/DLPFC/sce_combined.rda")
+load(file = "~/DLPFC/sce_combined.rda")
 
-load(file = "~/DLPFC/sce_list.rda")
 
-library(scater)
+#quality control (scran) start here 1/25/21
+qcstats <- perCellQCMetrics(sce)
+qcfilter <- quickPerCellQC(qcstats)
+colSums(as.matrix(qcfilter))
+
+sce$scran_discard <- factor(qcfilter$discard, levels = c("TRUE", "FALSE"))
+sce$scran_low_lib_size <- factor(qcfilter$low_lib_size, levels = c("TRUE", "FALSE"))
+sce$low_n_features <- factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
+
+
 
 for (i in seq_along(sample_names)) {
   
@@ -197,11 +217,12 @@ for (i in seq_along(sample_names)) {
   sce_list[[i]] <- sce
 }
 
-human_markers <- c("SNAP25", "MBP","PCP4", "RELN","AQP4","CUX2","CCK","HPCAL1")
+human_markers <- c("SNAP25", "MBP","PCP4", "RELN","AQP4","CUX2","CCK","HPCAL1", "NR4A2","RORB")
 
 colors <- c("navy", "dodgerblue2")
 
 pdf('DLPFC/marker_genes.pdf', useDingbats = FALSE)
+
 for (i in seq_along(sample_names)) {
   
   # select sample
