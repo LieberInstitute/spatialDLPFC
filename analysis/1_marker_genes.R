@@ -114,8 +114,9 @@ for (i in seq_along(sample_names)) {
   sce
 
   #sum UMIs
-  sce$sum_umi <- colSums(counts)
+  sce$sum_umi <- colSums(counts) ##discard spots with 0 UMIS here
   sce$sum_gene = colSums(counts > 0)
+  
 
   #adding colData
   sce$sample_name <- sample_names[i]
@@ -169,52 +170,51 @@ sce <- do.call(cbind, sce_list)
 ##add image data to meta data
 metadata(sce)$image <- images_tibble
 
+#remove spots w/ zero UMIs
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_combined.rda")
+remove <- which(colData(sce)$sum_umi == 0)
+sce <- sce[,-remove]
+
+pdf('/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/hist_sum_umi.pdf', useDingbats = FALSE)
+hist((colData(sce)$sum_umi),breaks = 200)
+dev.off()
+
 #quality control (scran) start here 1/25/21
 qcstats <- perCellQCMetrics(sce)
 qcfilter <- quickPerCellQC(qcstats)
 colSums(as.matrix(qcfilter))
 
-sce$scran_discard <- factor(qcfilter$discard, levels = c("TRUE", "FALSE"))
+sce$scran_discard <- factor(qcfilter$discard, levels = c("TRUE", "FALSE")) #make boxplot of the sum_umis for the  scran_discard=TRUE spots
 sce$scran_low_lib_size <- factor(qcfilter$low_lib_size, levels = c("TRUE", "FALSE"))
 sce$low_n_features <- factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
 
 summary(sce$scran_discard)
 # TRUE FALSE
-# 3062 46944
+# 3055 46944
 
-sce_filtered <- sce[,which(sce$scran_discard == "FALSE")]
-
-summary(sce_filtered$scran_discard)
-# TRUE FALSE
-# 0 46944
 dim(assay(sce))
-# [1] 36601 50006
-dim(assay(sce_filtered))
-# [1] 36601 46944
+# [1] 36601 49999
 
-
-# add reduced dimensions to sce
+# add reduced dimensions to sce, takes ~8min
 set.seed(20191112)
 Sys.time()
 clusters <- quickCluster(
-  sce_filtered,
+  sce,
   BPPARAM = MulticoreParam(4),
-  block = sce_filtered$sample_name,
+  block = sce$sample_name,
   block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
 save(clusters, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_020221.rda")
 load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_020221.rda")
 
-sce_filtered <-
-  computeSumFactors(sce_filtered, clusters = clusters, BPPARAM = MulticoreParam(4))
+Sys.time()
+sce <-
+  computeSumFactors(sce, clusters = clusters, BPPARAM = MulticoreParam(4))
 Sys.time()
 
-save(sce_filtered, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined.rda")
+save(sce, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined.rda")
 load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined.rda")
-
-
-sce <- sce_filtered
 
 summary(sizeFactors(sce))
 
@@ -285,6 +285,13 @@ set.seed(20191206)
 sce <- runTSNE(sce, dimred = 'PCA', name = 'TSNE_perplexity80', perplexity = 80)
 Sys.time()
 
+Sys.time()
+set.seed(20191206)
+sce <- runUMAP(sce, dimred = 'PCA', name = 'UMAP_neighbors15')
+Sys.time()
+
+#stopped here and saved object on 2/3/21
+
 #issue 7
 ix_mito <- grep("^MT-", rowData(sce)$gene_name)
 sce$expr_chrM <- colSums(assays(sce)$counts[ix_mito,])
@@ -310,6 +317,35 @@ cells <- do.call(rbind, lapply(dir('Histology'), function(sampleid) {
 
 #save
 save(sce, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined_reduced_dim.rda")
+
+
+
+#### plot log UMIs for scran_discard==TRUE
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_combined.rda")
+remove <- which(colData(sce)$scran_discard == TRUE)
+sce_discard <- sce[,remove]
+
+x = which(colData(sce_discard)$sample_name == "DLPFC_Br2743_ant_manual_alignment")
+sce_discard_x <- sce[,x]
+
+pdf('/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/scran_discard.pdf', useDingbats = FALSE)
+sce_image_grid_gene(
+    sce_discard_x,
+    geneid = 'sum_umi',
+    spatial = TRUE,
+    return_plots = TRUE
+  )
+dev.off()
+
+sce$discard <- qcfilter$discard
+
+plots_discard <-
+  sce_image_clus(sce, "DLPFC_Br2743_ant_manual_alignment", 'discard', colors = c('light blue', 'red'))
+pdf('/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/scran_discard.pdf',
+    height = 24,
+    width = 36)
+plot_grid(plotlist = plots_discard)
+dev.off()
 
 
 for (i in seq_along(sample_names)) {
