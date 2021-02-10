@@ -1,7 +1,7 @@
 #$ -cwd
 #$ -o example_orig_nick_out/example_orig_nick_out.log
 #$ -e example_orig_nick_out/example_orig_nick_out.log
-#$ -l gpu,mf=32G,h_vmem=32G
+#$ -l gpu,mf=64G,h_vmem=64G
 
 #  This is also intended to be the directory from which this script is
 #  submitted
