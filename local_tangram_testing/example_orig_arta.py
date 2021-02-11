@@ -1,7 +1,6 @@
 #  This script is intended to be run from the working directory:
 #    tangram_testing/Tangram/example
 
-
 import os, sys
 import numpy as np
 import pandas as pd
@@ -40,8 +39,8 @@ ad_sc, ad_sp = tg.pp_adatas(ad_sc, ad_sp, genes=markers)
 
 assert ad_sc.var.index.equals(ad_sp.var.index)
 
-ad_sc.write_h5ad('ad_sc_readytomap.h5ad')
-ad_sp.write_h5ad('ad_sp_readytomap.h5ad')
+ad_sc.write_h5ad(os.path.join(out_dir, 'ad_sc_readytomap.h5ad'))
+ad_sp.write_h5ad(os.path.join(out_dir, 'ad_sp_readytomap.h5ad'))
 
 #  Mapping step using GPU
 ad_map = tg.map_cells_to_space(
@@ -50,7 +49,16 @@ ad_map = tg.map_cells_to_space(
     device='cuda: 0' # device='cpu'
 )
 
-ad_map.write_h5ad('ad_map.h5ad')
+ad_map.write_h5ad(os.path.join(out_dir, 'ad_map.h5ad'))
+
+#  Reload original data (not normalized)
+path = os.path.join('data', 'slideseq_MOp_1217.h5ad')
+ad_sp = sc.read_h5ad(path)
+
+path = os.path.join('data','mop_sn_tutorial.h5ad')
+ad_sc = sc.read_h5ad(path)
+
+# ad_map = sc.read_h5ad(os.path.join(out_dir,'ad_map.h5ad'))
 
 tg.plot_cell_annotation(ad_map, annotation='subclass_label', nrows=5, ncols=4)
 tg.plot_training_scores(ad_map, bins=50, alpha=.5)
@@ -72,7 +80,9 @@ tg.plot_genes(genes, adata_measured=ad_sp, adata_predicted=ad_ge)
 
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
 
-sns.scatterplot(data=df_all_genes, x='score', y='sparsity_2', hue='is_training', alpha=.5);
+sns_plot = sns.scatterplot(data=df_all_genes, x='score', y='sparsity_2', hue='is_training', alpha=.5)
+fig = sns_plot.get_figure()
+fig.savefig(os.path.join(out_dir, 'sparsity.pdf'))
 
 genes = ['Snap25', 'Atp1b1', 'Atp1a3', 'Ctgf', 'Nefh', 'Aak1', 'Fa2h', ]
 df_all_genes.loc[genes]
