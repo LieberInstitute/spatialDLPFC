@@ -170,6 +170,7 @@ sce <- do.call(cbind, sce_list)
 ##add image data to meta data
 metadata(sce)$image <- images_tibble
 
+
 #remove spots w/ zero UMIs
 load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_combined.rda")
 remove <- which(colData(sce)$sum_umi == 0)
@@ -195,23 +196,63 @@ summary(sce$scran_discard)
 dim(assay(sce))
 # [1] 36601 49999
 
-# add reduced dimensions to sce, takes ~8min
+# add reduced dimensions to sce, takes ~8min, eliminate spots with less than 10 UMIs before clusterings
+sce_nonzero<-sce[,sce$sum_umi>0]
 set.seed(20191112)
 Sys.time()
-clusters <- quickCluster(
-  sce,
+clusters_nonzero <- quickCluster(
+  sce_nonzero,
   BPPARAM = MulticoreParam(4),
-  block = sce$sample_name,
+  block = sce_nonzero$sample_name,
   block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
-save(clusters, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_020221.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_020221.rda")
+save(clusters_nonzero, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_nonzero.rda")
+save(sce_nonzero, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_nonzero.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_nonzero.rda")
+
+sce_more_than_10_umis<-sce[,sce$sum_umi>10]
+set.seed(20191112)
+Sys.time()
+clusters_more_than_10_umis <- quickCluster(
+  sce_more_than_10_umis,
+  BPPARAM = MulticoreParam(4),
+  block = sce_more_than_10_umis$sample_name,
+  block.BPPARAM = MulticoreParam(4)
+)
+Sys.time()
+save(clusters_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_10_umis.rda")
+save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_10_umis.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_sce_more_than_10_umis.rda")
+
+sce_more_than_100_umis<-sce[,sce$sum_umi>100]
+set.seed(20191112)
+Sys.time()
+clusters_more_than_100_umis <- quickCluster(
+  sce_more_than_100_umis,
+  BPPARAM = MulticoreParam(4),
+  block = sce_more_than_100_umis$sample_name,
+  block.BPPARAM = MulticoreParam(4)
+)
+Sys.time()
+save(clusters_more_than_100_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_100_umis.rda")
+save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_100_umis.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_sce_more_than_100_umis.rda")
 
 Sys.time()
-sce <-
-  computeSumFactors(sce, clusters = clusters, BPPARAM = MulticoreParam(4))
+sce_more_than_10_umis <-
+  computeSumFactors(sce_more_than_10_umis, clusters = clusters_more_than_10_umis, BPPARAM = MulticoreParam(4))
 Sys.time()
+
+Sys.time()
+sce_more_than_100_umis <-
+  computeSumFactors(sce_more_than_100_umis, clusters = clusters_more_than_100_umis, BPPARAM = MulticoreParam(4))
+Sys.time()
+
+sce_nonzero<-sce[,sce$sum_umi>0]
+options(error = recover)
+sce_test <-
+  computeSumFactors(sce_nonzero[,sce_nonzero$sum_umi>10], clusters = clusters[sce_nonzero$sum_umi>10], BPPARAM = MulticoreParam(4))
 
 save(sce, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined.rda")
 load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined.rda")
@@ -322,18 +363,23 @@ save(sce, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/
 
 #### plot log UMIs for scran_discard==TRUE
 load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_combined.rda")
-remove <- which(colData(sce)$scran_discard == TRUE)
-sce_discard <- sce[,remove]
+#remove <- which(colData(sce)$scran_discard == TRUE)
+#sce_discard <- sce[,remove]
 
-x = which(colData(sce_discard)$sample_name == "DLPFC_Br2743_ant_manual_alignment")
-sce_discard_x <- sce[,x]
+x = which(colData(sce)$sample_name == "DLPFC_Br2743_ant_manual_alignment")
+sce_x <- sce[,x]
+remove <- which(colData(sce_x)$scran_discard == "FALSE")
+sce_x$sum_umi[remove]<-NA
+sce_x$height <- 600
+sce_x$width <- 504
 
-pdf('/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/scran_discard.pdf', useDingbats = FALSE)
+pdf('/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/scran_discard.pdf', useDingbats = FALSE) #make pdf larger
 sce_image_grid_gene(
-    sce_discard_x,
+    sce_x,
     geneid = 'sum_umi',
     spatial = TRUE,
-    return_plots = TRUE
+    return_plots = TRUE,
+    minCount = -1
   )
 dev.off()
 
