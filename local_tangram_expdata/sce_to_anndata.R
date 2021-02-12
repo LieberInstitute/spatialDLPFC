@@ -2,14 +2,34 @@ library('basilisk')
 library('scRNAseq')
 library('SingleCellExperiment')
 library('zellkonverter')
+library('data.table')
+library('entropy')
 
+setwd("/home/arta/Documents/GitHub/spython/local_tangram_expdata")
 #  Path to write the python AnnData object
 # out_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
-out_path = 'out/visium_dlpfc.h5ad'
+dir.create("out/", showWarnings = FALSE)
+visium_out = 'out/visium_dlpfc.h5ad'
+sc_out = 'out/sce_dlpfc.h5ad.'
 
 #  An example SingleCellExperiment object
-# load("/dcl01/lieber/ajaffe/Matt/MNT_thesis/snRNAseq/10x_pilot_FINAL/rdas/forAmazonS3/SCE_DLPFC_tran-etal.rda")
+load("data/SCE_DLPFC_tran-etal.rda")
 load('data/sce_combined.rda')
+
+rna.sce <- sce.dlpfc
+spatial.seq <- sce
+
+rowData(rna.sce)$rowSums <- rowSums(as.data.table(rowData(rna.sce))[, 3:20])
+
+# rowData(rna.sce[rowSums(as.data.table(rowData(rna.sce))[, 3:20]) == 0,])
+
+# What the hell is this dataset
+# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < 3))
+# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < 1))
+# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < .5))
+# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < .1))
+
+rm(sce, sce.dlpfc)
 
 ###############################################################################
 #  The main code we'll use in general to convert SCE R objects to AnnData
@@ -31,25 +51,5 @@ write_anndata = function(sce, out_path) {
     }, env = zellkonverter:::anndata_env, sce = sce, filename = out_path))
 }
 
-write_anndata(sce, out_path)
-
-###############################################################################
-#  Example from zellkonverter docs
-###############################################################################
-
-library(basilisk)
-library(scRNAseq)
-seger <- SegerstolpePancreasData()
-
-# These functions are designed to be run inside
-# a specified Python environment
-roundtrip <- basiliskRun(fun = function(sce) {
-    # Convert SCE to AnnData:
-    adata <- SCE2AnnData(sce)
-    
-    # Maybe do some work in Python on'adata':
-    # BLAH BLAH BLAH
-    
-    # Convert back to an SCE:
-    AnnData2SCE(adata)
-}, env = zellkonverter:::anndata_env, sce = seger)
+write_anndata(spatial.seq, visium_out)
+write_anndata(rna.sce, sc_out)
