@@ -45,7 +45,16 @@ sample_info <- data.frame(
     regions = rep(
         c("anterior", "middle", "posterior"),
         4
-    )
+    ),
+    sex = rep(
+        c("M", "M", "M", "F"),
+        each = 3
+    ),
+    age = rep(
+        c(61.54, 47.53, 51.73, 53.40),
+        each = 3
+    ),
+    diagnosis = "Control"
 )
 sample_info$sample_path <- file.path(
     here::here("outputs", "NextSeq"),
@@ -73,9 +82,9 @@ spe <- read10xVisium(
     load = TRUE
 )
 Sys.time()
-## About 4.5 minutes
-# [1] "2021-02-12 18:57:04 EST"
-# [1] "2021-02-12 19:01:27 EST"
+## About 3-9 minutes (depending on JHPCE load)
+# [1] "2021-02-15 14:00:47 EST"
+# [1] "2021-02-15 14:08:45 EST"
 
 
 ## Add some information used by spatialLIBD
@@ -84,8 +93,13 @@ spe$sum_umi <- colSums(counts(spe))
 spe$sum_gene <- colSums(counts(spe) > 0)
 
 ## Add the experimental information
+### Equivalent to:
+## colData(spe)$subject <- ...
 spe$subject <- sample_info$subjects[match(spe$sample_id, sample_info$sample_id)]
 spe$region <- sample_info$regions[match(spe$sample_id, sample_info$sample_id)]
+spe$sex <- sample_info$sex[match(spe$sample_id, sample_info$sample_id)]
+spe$age <- sample_info$age[match(spe$sample_id, sample_info$sample_id)]
+spe$diagnosis <- sample_info$diagnosis[match(spe$sample_id, sample_info$sample_id)]
 
 
 ## Read in the gene information from the annotation GTF file
@@ -131,18 +145,26 @@ spe$cell_count <- NA
 ## Simplify sample_ids for plotting
 spe$sample_id <- gsub("DLPFC_|_manual_alignment", "", spe$sample_id)
 
+## Remove genes with no data
+no_expr <- which(rowSums(counts(spe)) == 0)
+length(no_expr)
+# [1] 9588
+length(no_expr) / nrow(spe) * 100
+# [1] 26.19601
+spe <- spe[-no_expr, ]
+
 ## Create two versions: one with and one without filtering by tissue spot
 spe_raw <- spe
 spe <- spe_raw[, which(inTissue(spe_raw))]
 pryr::object_size(spe_raw)
-# 971 MB
+# 970 MB
 pryr::object_size(spe)
-# 940 MB
+# 939 MB
 
 dim(spe_raw)
-# [1] 36601 59904
+# [1] 27013 59904
 dim(spe)
-# [1] 36601 50006
+# [1] 27013 50006
 
 ## Save the raw version now
 dir.create(here::here("rdata"), showWarnings = FALSE)
@@ -194,6 +216,9 @@ vis_grid_gene(
 )
 
 
+summary(spe$sum_umi)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    0    1319    2169    2462    3264   15870
 vis_grid_gene(
     spe = spe,
     geneid = "sum_umi",
@@ -201,10 +226,42 @@ vis_grid_gene(
     assayname = "counts"
 )
 
+summary(spe$sum_gene)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    0     927    1399    1470    1938    5529
 vis_grid_gene(
     spe = spe,
+    geneid = "sum_gene",
+    pdf = here::here("plots", "in_tissue_sum_gene.pdf"),
+    assayname = "counts"
+)
+
+summary(spe$expr_chrM_ratio)
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
+# 0.00000 0.06035 0.08099 0.09029 0.10935 1.00000       7
+vis_grid_gene(
+    spe = spe,
+    geneid = "expr_chrM_ratio",
+    pdf = here::here("plots", "in_tissue_expr_chrM_ratio.pdf"),
+    assayname = "counts"
+)
+
+vis_grid_gene(
+    spe = spe_raw,
     geneid = "sum_umi",
-    pdf = here::here("plots", "in_tissue_sum_umi.pdf"),
+    pdf = here::here("plots", "all_sum_umi.pdf"),
+    assayname = "counts"
+)
+vis_grid_gene(
+    spe = spe_raw,
+    geneid = "sum_gene",
+    pdf = here::here("plots", "all_sum_gene.pdf"),
+    assayname = "counts"
+)
+vis_grid_gene(
+    spe = spe_raw,
+    geneid = "expr_chrM_ratio",
+    pdf = here::here("plots", "all_expr_chrM_ratio.pdf"),
     assayname = "counts"
 )
 
