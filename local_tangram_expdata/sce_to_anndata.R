@@ -11,7 +11,7 @@ setwd("/home/arta/Documents/GitHub/spython/local_tangram_expdata")
 # out_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
 dir.create("out/", showWarnings = FALSE)
 visium_out = 'out/visium_dlpfc.h5ad'
-sc_out = 'out/sce_dlpfc.h5ad.'
+sc_out = 'out/sce_dlpfc.h5ad'
 
 #  An example SingleCellExperiment object
 load("data/SCE_DLPFC_tran-etal.rda")
@@ -45,7 +45,7 @@ rm(sce, sce.dlpfc)
 
 # data.table(n = 1:length(markers), markers)
 
-write.csv(as.data.table(markers), file = "data/markers.csv")
+write.csv(as.data.table(markers), file = "out/markers.csv")
 
 ###############################################################################
 #  The main code we'll use in general to convert SCE R objects to AnnData
