@@ -223,7 +223,9 @@ clusters_more_than_10_umis <- quickCluster(
 Sys.time()
 save(clusters_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_10_umis.rda")
 save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_10_umis.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_sce_more_than_10_umis.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_10_umis.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_10_umis.rda")
+
 
 sce_more_than_100_umis<-sce[,sce$sum_umi>100]
 set.seed(20191112)
@@ -237,7 +239,7 @@ clusters_more_than_100_umis <- quickCluster(
 Sys.time()
 save(clusters_more_than_100_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_100_umis.rda")
 save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_100_umis.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_sce_more_than_100_umis.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_100_umis.rda")
 
 Sys.time()
 sce_more_than_10_umis <-
@@ -373,9 +375,17 @@ sce_x$sum_umi[remove]<-NA
 sce_x$height <- 600
 sce_x$width <- 504
 
+colData(sce)$height <- NA
+colData(sce)$width <- NA
+for (i in seq_along(sample_names)){
+  x = which(colData(sce)$sample_name == sample_names[i])
+  colData(sce)$height[x] <- metadata(sce)$image$height[which(metadata(sce)$image$sample == sample_names[i])]
+  colData(sce)$width[x] <- metadata(sce)$image$width[which(metadata(sce)$image$sample == sample_names[i])]
+}
+
 pdf('/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/scran_discard.pdf', useDingbats = FALSE) #make pdf larger
 sce_image_grid_gene(
-    sce_x,
+    sce,
     geneid = 'sum_umi',
     spatial = TRUE,
     return_plots = TRUE,
