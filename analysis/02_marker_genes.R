@@ -1,258 +1,25 @@
 ## Automatically style the code in this script:
-# styler::style_file("1_marker_genes.R", transformers = biocthis::bioc_style())
+# styler::style_file("02_marker_genes.R", transformers = biocthis::bioc_style())
 
+## utils
 library("here")
-library("tidyverse")
-library("ggplot2")
-library("SingleCellExperiment")
-library("Matrix")
-library("rjson")
-library("Seurat")
+library("sessioninfo")
+
+## reading the data
+library("SpatialExperiment")
 library("rtracklayer")
-library("scran")
-library("scater")
-library("readbitmap")
-library("grid")
-library("BiocParallel")
-library("tibble")
+
+## vis
 library("spatialLIBD")
 
+## analysis
+library("scran")
+library("scater")
+library("BiocParallel")
 
-sample_names <-
-    c(
-        "DLPFC_Br2743_ant_manual_alignment",
-        "DLPFC_Br2743_mid_manual_alignment",
-        "DLPFC_Br2743_post_manual_alignment",
-        "DLPFC_Br3942_ant_manual_alignment",
-        "DLPFC_Br3942_mid_manual_alignment",
-        "DLPFC_Br3942_post_manual_alignment",
-        "DLPFC_Br6423_ant_manual_alignment",
-        "DLPFC_Br6423_mid_manual_alignment",
-        "DLPFC_Br6423_post_manual_alignment",
-        "DLPFC_Br8492_ant_manual_alignment",
-        "DLPFC_Br8492_mid_manual_alignment",
-        "DLPFC_Br8492_post_manual_alignment"
-    )
-subjects <-
-    c(
-        "Br2743",
-        "Br2743",
-        "Br2743",
-        "Br3942",
-        "Br3942",
-        "Br3942",
-        "Br6423",
-        "Br6423",
-        "Br6423",
-        "Br8492",
-        "Br8492",
-        "Br8492"
-    )
-regions <-
-    c(
-        "anterior",
-        "middle",
-        "posterior",
-        "anterior",
-        "middle",
-        "posterior",
-        "anterior",
-        "middle",
-        "posterior",
-        "anterior",
-        "middle",
-        "posterior"
-    )
-sce_list <- vector("list", length = length(sample_names))
-names(sce_list) <- sample_names
-
-# get GTF, this seems like what they used
-gtf <-
-    rtracklayer::import(
-        "/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A/genes/genes.gtf"
-    )
-gtf <- gtf[gtf$type == "gene"]
-names(gtf) <- gtf$gene_id
-
-for (i in seq_along(sample_names)) {
-    # ---------
-    # load data
-    # ---------
-
-    # select sample
-    sample_name <- sample_names[i]
-    # sample_name <- sample_names[3]
-
-    # path to Space Ranger output files
-    if (Sys.info()["sysname"] == "Linux") {
-        # files on JHPCE cluster
-        dir_outputs <-
-            "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/outputs/NextSeq"
-    } else if (Sys.info()["sysname"] == "Darwin") {
-        # copy of files on Mac laptop
-        dir_outputs <- "~/DLPFC"
-    }
-
-    # note: using "filtered" barcodes list containing only spots over tissue
-    dir_matrix <- file.path(dir_outputs, sample_name, "outs")
-
-    # barcodes
-    file_barcodes <-
-        file.path(
-            dir_matrix,
-            "filtered_feature_bc_matrix/barcodes.tsv.gz"
-        )
-    df_barcodes <- read.csv(
-        file_barcodes,
-        sep = "\t",
-        header = FALSE,
-        col.names = c("barcode_id")
-    )
-    # features
-    file_features <-
-        file.path(
-            dir_matrix,
-            "filtered_feature_bc_matrix/features.tsv.gz"
-        )
-    df_features <- read.csv(
-        file_features,
-        sep = "\t",
-        header = FALSE,
-        col.names = c("gene_id", "gene_name", "feature_type")
-    )
-
-    # # add more gene information from gtf file
-    x <- intersect(gtf$gene_id, df_features$gene_id)
-    gtf <- gtf[x]
-    seqlevels(gtf)[seq_len(25)] <-
-        paste0("chr", seqlevels(gtf)[seq_len(25)])
-
-
-    # counts
-    file_counts <-
-        file.path(dir_matrix, "filtered_feature_bc_matrix.h5")
-    counts <- Read10X_h5(file_counts)
-
-
-    # spatial scale factors
-    dir_spatial <-
-        file.path(dir_outputs, sample_name, "outs", "spatial")
-    file_scale <- file.path(dir_spatial, "scalefactors_json.json")
-    scalefactors <- fromJSON(file = file_scale)
-
-    # spatial coordinates
-    file_tisspos <-
-        file.path(dir_spatial, "tissue_positions_list.csv")
-    df_tisspos <- read.csv(
-        file_tisspos,
-        header = FALSE,
-        col.names = c("barcode", "tissue", "row", "col", "imagerow", "imagecol")
-    )
-    df_tisspos$imagerow <-
-        df_tisspos$imagerow * scalefactors$tissue_lowres_scalef # scale tissue coordinates for lowres image
-    df_tisspos$imagecol <-
-        df_tisspos$imagecol * scalefactors$tissue_lowres_scalef
-
-
-
-    # check dimensions
-    dim(df_barcodes)
-    dim(df_features)
-    dim(counts)
-    # note df_tisspos contains all spots (not filtered) - need to match later
-    dim(df_tisspos)
-
-
-    # ---------------------------
-    # create SingleCellExperiment
-    # ---------------------------
-
-    # note: check and/or re-order rows to make sure barcode IDs match in df_barcodes and df_tisspos
-    ord <- match(df_barcodes$barcode_id, df_tisspos$barcode)
-    df_tisspos_ord <- df_tisspos[ord, ]
-    dim(df_tisspos_ord)
-    stopifnot(nrow(df_barcodes) == nrow(df_tisspos_ord))
-    stopifnot(all(df_barcodes$barcode_id == df_tisspos_ord$barcode))
-
-    col_data <- cbind(df_barcodes, df_tisspos_ord[, -1])
-    head(col_data)
-
-    sce <- SingleCellExperiment(
-        rowData = df_features,
-        colData = col_data,
-        assays = c(counts = counts),
-        metadata = list(scalefactors = scalefactors)
-    )
-
-    sce
-
-    # sum UMIs
-    sce$sum_umi <- colSums(counts) ## discard spots with 0 UMIS here
-    sce$sum_gene <- colSums(counts > 0)
-
-
-    # adding colData
-    sce$sample_name <- sample_names[i]
-    # sce$sample_name <- sample_names[3]
-    sce$subject <- subjects[i]
-    sce$region <- regions[i]
-
-    # store object
-    sce_list[[i]] <- sce
-    # sce_list[[3]] <- sce
-
-    rm(sce)
-}
-
-sce_list
-save(sce_list, file = "~/DLPFC/sce_list.rda")
-# load(file = "~/DLPFC/sce_list.rda")
-
-image_paths <-
-    paste0(
-        dir_outputs,
-        "/",
-        sample_names,
-        "/outs/spatial/tissue_lowres_image.png"
-    )
-images_cl <- lapply(image_paths, read.bitmap)
-dims <- t(sapply(images_cl, dim))
-colnames(dims) <- c("height", "width", "channel")
-dims <- as.data.frame(dims)
-
-
-## ------------------------------------------------------------------------
-grobs <-
-    lapply(images_cl,
-        rasterGrob,
-        width = unit(1, "npc"),
-        height = unit(1, "npc")
-    )
-images_tibble <- tibble(sample = sample_names, grob = grobs)
-images_tibble$height <- dims$height
-images_tibble$width <- dims$width
-images_tibble
-
-# sample                             grob       height width
-# <chr>                              <list>      <int> <int>
-#   1 DLPFC_Br2743_ant_manual_alignment  <rastrgrb>    600   504
-# 2 DLPFC_Br2743_mid_manual_alignment  <rastrgrb>    600   517
-# 3 DLPFC_Br2743_post_manual_alignment <rastrgrb>    600   452
-# 4 DLPFC_Br3942_ant_manual_alignment  <rastrgrb>    600   504
-# 5 DLPFC_Br3942_mid_manual_alignment  <rastrgrb>    600   517
-# 6 DLPFC_Br3942_post_manual_alignment <rastrgrb>    600   452
-# 7 DLPFC_Br6423_ant_manual_alignment  <rastrgrb>    600   504
-# 8 DLPFC_Br6423_mid_manual_alignment  <rastrgrb>    600   517
-# 9 DLPFC_Br6423_post_manual_alignment <rastrgrb>    600   405
-# 10 DLPFC_Br8492_ant_manual_alignment  <rastrgrb>    600   504
-# 11 DLPFC_Br8492_mid_manual_alignment  <rastrgrb>    600   517
-# 12 DLPFC_Br8492_post_manual_alignment <rastrgrb>    600   561
-
-## combine to one SCE object
-sce <- do.call(cbind, sce_list)
-
-## add image data to meta data
-metadata(sce)$image <- images_tibble
+## are they needed?
+# library("tidyverse")
+# library("ggplot2")
 
 
 # remove spots w/ zero UMIs
@@ -454,30 +221,10 @@ Sys.time()
 
 # stopped here and saved object on 2/3/21
 
-# issue 7
-ix_mito <- grep("^MT-", rowData(sce)$gene_name)
-sce$expr_chrM <- colSums(assays(sce)$counts[ix_mito, ])
-sce$expr_chrM_ratio <- sce$expr_chrM / sce$sum_umi
 
-## To simplify other code later
-rowData(sce)$gene_search <-
-    paste0(rowData(sce)$gene_name, "; ", rowData(sce)$gene_id)
-
-sce$key <- paste0(sce$sample_name, "_", colnames(sce))
-
-rownames(sce) <- rowData(sce)$gene_id
 
 spatialLIBD::check_sce(sce)
 
-# issue 11
-## Read in the number of cells per spot
-cells <-
-    do.call(rbind, lapply(dir("Histology"), function(sampleid) {
-        x <-
-            read.csv(file.path("Histology", sampleid, "tissue_spot_counts.csv"))
-        x$key <- paste0(sampleid, "_", x$barcode)
-        return(x[, c("key", "count")])
-    }))
 
 # save
 save(sce, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined_reduced_dim.rda")
