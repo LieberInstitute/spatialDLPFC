@@ -4,6 +4,7 @@ library('SingleCellExperiment')
 library('zellkonverter')
 library('data.table')
 library('entropy')
+library('tidyverse')
 
 setwd("/home/arta/Documents/GitHub/spython/local_tangram_expdata")
 #  Path to write the python AnnData object
@@ -21,15 +22,30 @@ spatial.seq <- sce
 
 rowData(rna.sce)$rowSums <- rowSums(as.data.table(rowData(rna.sce))[, 3:20])
 
-# rowData(rna.sce[rowSums(as.data.table(rowData(rna.sce))[, 3:20]) == 0,])
+# entropy(as.numeric(as.data.frame(rowData(rna.sce)[,3:19])))
 
-# What the hell is this dataset
+markers_entropy <- as.data.table(rowData(rna.sce)) %>% 
+    mutate(entropy = as.numeric(pmap(as.data.frame(rowData(rna.sce)[,3:19]), lift_vd(entropy)))) %>% 
+    drop_na() %>% 
+    arrange(desc(entropy)) %>% 
+    filter(entropy != 0) %>% 
+    select(Symbol, entropy) %>% 
+    slice_head(., prop = .10)
+
+markers <- intersect(rowData(spatial.seq)$gene_name, as.character(markers_entropy$Symbol)) 
+    
+# rowData(rna.sce[rowSums(as.data.table(rowData(rna.sce))[, 3:20]) != 0,])
+
 # > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < 3))
 # > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < 1))
 # > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < .5))
 # > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < .1))
 
 rm(sce, sce.dlpfc)
+
+# data.table(n = 1:length(markers), markers)
+
+write.csv(as.data.table(markers), file = "data/markers.csv")
 
 ###############################################################################
 #  The main code we'll use in general to convert SCE R objects to AnnData
