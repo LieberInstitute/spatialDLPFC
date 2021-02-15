@@ -80,6 +80,7 @@ clusters_more_than_10_umis <- quickCluster(
 Sys.time()
 save(clusters_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_10_umis.rda")
 save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_10_umis.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_10_umis.rda")
 load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_sce_more_than_10_umis.rda")
 
 sce_more_than_100_umis <- sce[, sce$sum_umi > 100]
@@ -94,7 +95,7 @@ clusters_more_than_100_umis <- quickCluster(
 Sys.time()
 save(clusters_more_than_100_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_100_umis.rda")
 save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_100_umis.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_sce_more_than_100_umis.rda")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_100_umis.rda")
 
 Sys.time()
 sce_more_than_10_umis <-
@@ -257,7 +258,7 @@ pdf(
     useDingbats = FALSE
 ) # make pdf larger
 sce_image_grid_gene(
-    sce_x,
+    sce,
     geneid = "sum_umi",
     spatial = TRUE,
     return_plots = TRUE,
