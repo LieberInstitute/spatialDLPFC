@@ -7,269 +7,17 @@ library("sessioninfo")
 
 ## reading the data
 library("SpatialExperiment")
-library("rtracklayer")
 
 ## vis
 library("spatialLIBD")
 
-## analysis
-library("scran")
-library("scater")
-library("BiocParallel")
 
-## are they needed?
-# library("tidyverse")
-# library("ggplot2")
+## Load SPE data
+
+## Filter down to spots in tissue
 
 
-# add reduced dimensions to sce, takes ~8min, eliminate spots with less than 10 UMIs before clusterings
-sce_nonzero <- sce[, sce$sum_umi > 0]
-set.seed(20191112)
-Sys.time()
-clusters_nonzero <- quickCluster(
-    sce_nonzero,
-    BPPARAM = MulticoreParam(4),
-    block = sce_nonzero$sample_name,
-    block.BPPARAM = MulticoreParam(4)
-)
-Sys.time()
-save(clusters_nonzero, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_nonzero.rda")
-save(sce_nonzero, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_nonzero.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_nonzero.rda")
-
-sce_more_than_10_umis <- sce[, sce$sum_umi > 10]
-set.seed(20191112)
-Sys.time()
-clusters_more_than_10_umis <- quickCluster(
-    sce_more_than_10_umis,
-    BPPARAM = MulticoreParam(4),
-    block = sce_more_than_10_umis$sample_name,
-    block.BPPARAM = MulticoreParam(4)
-)
-Sys.time()
-save(clusters_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_10_umis.rda")
-save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_10_umis.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_10_umis.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_sce_more_than_10_umis.rda")
-
-sce_more_than_100_umis <- sce[, sce$sum_umi > 100]
-set.seed(20191112)
-Sys.time()
-clusters_more_than_100_umis <- quickCluster(
-    sce_more_than_100_umis,
-    BPPARAM = MulticoreParam(4),
-    block = sce_more_than_100_umis$sample_name,
-    block.BPPARAM = MulticoreParam(4)
-)
-Sys.time()
-save(clusters_more_than_100_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/clusters_more_than_100_umis.rda")
-save(sce_more_than_10_umis, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_100_umis.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_more_than_100_umis.rda")
-
-Sys.time()
-sce_more_than_10_umis <-
-    computeSumFactors(sce_more_than_10_umis,
-        clusters = clusters_more_than_10_umis,
-        BPPARAM = MulticoreParam(4)
-    )
-Sys.time()
-
-Sys.time()
-sce_more_than_100_umis <-
-    computeSumFactors(sce_more_than_100_umis,
-        clusters = clusters_more_than_100_umis,
-        BPPARAM = MulticoreParam(4)
-    )
-Sys.time()
-
-sce_nonzero <- sce[, sce$sum_umi > 0]
-options(error = recover)
-sce_test <-
-    computeSumFactors(sce_nonzero[, sce_nonzero$sum_umi > 10], clusters = clusters[sce_nonzero$sum_umi > 10], BPPARAM = MulticoreParam(4))
-
-save(sce, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined.rda")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined.rda")
-
-summary(sizeFactors(sce))
-
-sce <- logNormCounts(sce)
-
-## From
-## http://bioconductor.org/packages/release/bioc/vignettes/scran/inst/doc/scran.html#4_variance_modelling
-dec <- modelGeneVar(sce,
-    block = sce$sample_name,
-    BPPARAM = MulticoreParam(4)
-)
-Sys.time()
-
-pdf(
-    "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/modelGeneVar.pdf",
-    useDingbats = FALSE
-)
-mapply(function(block, blockname) {
-    plot(
-        block$mean,
-        block$total,
-        xlab = "Mean log-expression",
-        ylab = "Variance",
-        main = blockname
-    )
-    curve(metadata(block)$trend(x),
-        col = "blue",
-        add = TRUE
-    )
-}, dec$per.block, names(dec$per.block))
-dev.off()
-
-top.hvgs <- getTopHVGs(dec, prop = 0.1)
-length(top.hvgs)
-# 2017
-
-top.hvgs.fdr5 <- getTopHVGs(dec, fdr.threshold = 0.05)
-length(top.hvgs.fdr5)
-# 16831
-
-top.hvgs.fdr1 <- getTopHVGs(dec, fdr.threshold = 0.01)
-length(top.hvgs.fdr1)
-# 15855
-
-set.seed(20191112)
-Sys.time()
-sce <- runPCA(sce, subset_row = top.hvgs)
-Sys.time()
-
-reducedDimNames(sce)
-
-summary(apply(reducedDim(sce, "PCA"), 2, sd))
-
-summary(colMeans(reducedDim(sce, "PCA")))
-
-Sys.time()
-set.seed(20191206)
-sce <-
-    runTSNE(sce,
-        dimred = "PCA",
-        name = "TSNE_perplexity50",
-        perplexity = 50
-    )
-Sys.time()
-
-Sys.time()
-set.seed(20191206)
-sce <-
-    runTSNE(sce,
-        dimred = "PCA",
-        name = "TSNE_perplexity5",
-        perplexity = 5
-    )
-Sys.time()
-
-Sys.time()
-set.seed(20191206)
-sce <-
-    runTSNE(sce,
-        dimred = "PCA",
-        name = "TSNE_perplexity20",
-        perplexity = 20
-    )
-Sys.time()
-
-Sys.time()
-set.seed(20191206)
-sce <-
-    runTSNE(sce,
-        dimred = "PCA",
-        name = "TSNE_perplexity80",
-        perplexity = 80
-    )
-Sys.time()
-
-Sys.time()
-set.seed(20191206)
-sce <- runUMAP(sce, dimred = "PCA", name = "UMAP_neighbors15")
-Sys.time()
-
-# stopped here and saved object on 2/3/21
-
-
-
-spatialLIBD::check_sce(sce)
-
-
-# save
-save(sce, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_filtered_combined_reduced_dim.rda")
-
-
-
-#### plot log UMIs for scran_discard==TRUE
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_combined.rda")
-# remove <- which(colData(sce)$scran_discard == TRUE)
-# sce_discard <- sce[,remove]
-
-x <-
-    which(colData(sce)$sample_name == "DLPFC_Br2743_ant_manual_alignment")
-sce_x <- sce[, x]
-remove <- which(colData(sce_x)$scran_discard == "FALSE")
-sce_x$sum_umi[remove] <- NA
-sce_x$height <- 600
-sce_x$width <- 504
-
-colData(sce)$height <- NA
-colData(sce)$width <- NA
-for (i in seq_along(sample_names)){
-  x = which(colData(sce)$sample_name == sample_names[i])
-  colData(sce)$height[x] <- metadata(sce)$image$height[which(metadata(sce)$image$sample == sample_names[i])]
-  colData(sce)$width[x] <- metadata(sce)$image$width[which(metadata(sce)$image$sample == sample_names[i])]
-}
-
-pdf(
-    "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/scran_discard.pdf",
-    useDingbats = FALSE
-) # make pdf larger
-sce_image_grid_gene(
-    sce,
-    geneid = "sum_umi",
-    spatial = TRUE,
-    return_plots = TRUE,
-    minCount = -1
-)
-dev.off()
-
-sce$discard <- qcfilter$discard
-
-plots_discard <-
-    sce_image_clus(sce,
-        "DLPFC_Br2743_ant_manual_alignment",
-        "discard",
-        colors = c("light blue", "red")
-    )
-pdf(
-    "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/scran_discard.pdf",
-    height = 24,
-    width = 36
-)
-plot_grid(plotlist = plots_discard)
-dev.off()
-
-
-for (i in seq_along(sample_names)) {
-    # select sample
-    sce <- sce_list[[i]]
-
-    # identify mitochondrial genes
-    is_mito <- grepl("(^MT-)|(^mt-)", rowData(sce)$gene_name)
-    table(is_mito)
-    rowData(sce)$gene_name[is_mito]
-
-    # calculate QC metrics using scater package
-    sce <- addPerCellQC(sce, subsets = list(mito = is_mito))
-
-    colData(sce)
-
-    # store
-    sce_list[[i]] <- sce
-}
-
+## Find marker genes
 human_markers <-
     c(
         "SNAP25",
@@ -286,6 +34,8 @@ human_markers <-
 
 colors <- c("navy", "dodgerblue2")
 
+
+## Plot marker genes
 pdf("DLPFC/marker_genes.pdf", useDingbats = FALSE)
 
 for (i in seq_along(sample_names)) {
@@ -376,3 +126,11 @@ for (i in seq_along(human_markers)) {
     }
 }
 dev.off()
+
+
+## Reproducibility information
+print('Reproducibility information:')
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()

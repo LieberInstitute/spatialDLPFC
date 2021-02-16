@@ -325,6 +325,137 @@ vis_grid_clus(
 )
 
 
+## Find quick clusters
+set.seed(20191112)
+Sys.time()
+spe$scran_quick_cluster <- quickCluster(
+    spe,
+    BPPARAM = MulticoreParam(4),
+    block = spe$sample_id,
+    block.BPPARAM = MulticoreParam(4)
+)
+Sys.time()
+
+
+Sys.time()
+## Might be needed:
+# options(error = recover)
+spe <-
+    computeSumFactors(spe,
+        clusters = spe$scran_quick_cluster,
+        BPPARAM = MulticoreParam(4)
+    )
+Sys.time()
+
+summary(sizeFactors(spe))
+
+spe <- logNormCounts(spe)
+
+## From
+## http://bioconductor.org/packages/release/bioc/vignettes/scran/inst/doc/scran.html#4_variance_modelling
+Sys.time()
+dec <- modelGeneVar(spe,
+    block = spe$sample_id,
+    BPPARAM = MulticoreParam(4)
+)
+Sys.time()
+
+pdf(
+    here("plots", "modelGeneVar.pdf"),
+    useDingbats = FALSE
+)
+mapply(function(block, blockname) {
+    plot(
+        block$mean,
+        block$total,
+        xlab = "Mean log-expression",
+        ylab = "Variance",
+        main = blockname
+    )
+    curve(metadata(block)$trend(x),
+        col = "blue",
+        add = TRUE
+    )
+}, dec$per.block, names(dec$per.block))
+dev.off()
+
+
+
+top.hvgs <- getTopHVGs(dec, prop = 0.1)
+length(top.hvgs)
+
+
+top.hvgs.fdr5 <- getTopHVGs(dec, fdr.threshold = 0.05)
+length(top.hvgs.fdr5)
+
+
+top.hvgs.fdr1 <- getTopHVGs(dec, fdr.threshold = 0.01)
+length(top.hvgs.fdr1)
+
+
+set.seed(20191112)
+Sys.time()
+spe <- runPCA(spe, subset_row = top.hvgs)
+Sys.time()
+
+reducedDimNames(spe)
+
+summary(apply(reducedDim(spe, "PCA"), 2, sd))
+
+summary(colMeans(reducedDim(spe, "PCA")))
+
+Sys.time()
+set.seed(20191206)
+spe <-
+    runTSNE(spe,
+        dimred = "PCA",
+        name = "TSNE_perplexity50",
+        perplexity = 50
+    )
+Sys.time()
+
+Sys.time()
+set.seed(20191206)
+spe <-
+    runTSNE(spe,
+        dimred = "PCA",
+        name = "TSNE_perplexity5",
+        perplexity = 5
+    )
+Sys.time()
+
+Sys.time()
+set.seed(20191206)
+spe <-
+    runTSNE(spe,
+        dimred = "PCA",
+        name = "TSNE_perplexity20",
+        perplexity = 20
+    )
+Sys.time()
+
+Sys.time()
+set.seed(20191206)
+spe <-
+    runTSNE(spe,
+        dimred = "PCA",
+        name = "TSNE_perplexity80",
+        perplexity = 80
+    )
+Sys.time()
+
+Sys.time()
+set.seed(20191206)
+spe <- runUMAP(spe, dimred = "PCA", name = "UMAP_neighbors15")
+Sys.time()
+
+## Not yet implemented in spatialLIBD
+# spatialLIBD::check_spe(spe)
+
+
+# save
+save(pce, file = here("rdata", "spe.rda"))
+
 ## Reproducibility information
 print('Reproducibility information:')
 Sys.time()
