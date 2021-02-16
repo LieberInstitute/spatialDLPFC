@@ -267,6 +267,64 @@ vis_grid_gene(
 
 
 
+## Quality control (scran)
+
+## Remove spots without counts first
+spe <- spe[, -which(colSums(counts(spe)) == 0)]
+ncol(spe)
+# [1] 49999
+
+qcstats <- perCellQCMetrics(spe, subsets = list(
+    Mito = which(seqnames(spe) == "chrM")
+))
+qcfilter <- quickPerCellQC(qcstats, sub.fields="subsets_Mito_percent")
+colSums(as.matrix(qcfilter))
+# low_lib_size            low_n_features high_subsets_Mito_percent                   discard
+#         2774                      3055                      1763                      4389
+
+## Prior to dropping spots with 0 counts and checking for high chrM,
+## this was the output:
+# low_lib_size low_n_features        discard
+#         2781           3062           3062
+
+spe$scran_discard <-
+    factor(qcfilter$discard, levels = c("TRUE", "FALSE"))
+spe$scran_low_lib_size <-
+    factor(qcfilter$low_lib_size, levels = c("TRUE", "FALSE"))
+spe$scran_low_n_features <-
+    factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
+spe$scran_high_subsets_Mito_percent <-
+    factor(qcfilter$high_subsets_Mito_percent, levels = c("TRUE", "FALSE"))
+
+for(i in colnames(qcfilter)) {
+    vis_grid_clus(
+        spe = spe,
+        clustervar = paste0("scran_", i),
+        pdf = here::here("plots", paste0("scran_", i, ".pdf")),
+        sort_clust = FALSE,
+        colors = c("FALSE" = "grey90", "TRUE" = "orange")
+    )
+}
+
+## Check cluster 89 from before
+load(file = here("analysis", "clusters_nonzero.rda"), verbose = TRUE)
+table(clusters == "89")
+# FALSE  TRUE
+# 49727   272
+stopifnot(length(clusters) == ncol(spe))
+spe$quick_cluster_89 <- factor(clusters == "89", levels = c("TRUE", "FALSE"))
+colSums(as.matrix(qcfilter[clusters == "89", ]))
+# low_lib_size            low_n_features high_subsets_Mito_percent                   discard
+#            2                         3                         0                         3
+vis_grid_clus(
+    spe = spe,
+    clustervar = "quick_cluster_89",
+    pdf = here::here("plots", paste0("scuttle_", "quick_cluster_89", ".pdf")),
+    sort_clust = FALSE,
+    colors = c("FALSE" = "grey90", "TRUE" = "orange")
+)
+
+
 ## Reproducibility information
 print('Reproducibility information:')
 Sys.time()

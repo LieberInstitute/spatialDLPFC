@@ -22,37 +22,6 @@ library("BiocParallel")
 # library("ggplot2")
 
 
-# remove spots w/ zero UMIs
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/sce_combined.rda")
-remove <- which(colData(sce)$sum_umi == 0)
-sce <- sce[, -remove]
-
-pdf(
-    "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/analysis/hist_sum_umi.pdf",
-    useDingbats = FALSE
-)
-hist((colData(sce)$sum_umi), breaks = 200)
-dev.off()
-
-# quality control (scran) start here 1/25/21
-qcstats <- perCellQCMetrics(sce)
-qcfilter <- quickPerCellQC(qcstats)
-colSums(as.matrix(qcfilter))
-
-sce$scran_discard <-
-    factor(qcfilter$discard, levels = c("TRUE", "FALSE")) # make boxplot of the sum_umis for the  scran_discard=TRUE spots
-sce$scran_low_lib_size <-
-    factor(qcfilter$low_lib_size, levels = c("TRUE", "FALSE"))
-sce$low_n_features <-
-    factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
-
-summary(sce$scran_discard)
-# TRUE FALSE
-# 3055 46944
-
-dim(assay(sce))
-# [1] 36601 49999
-
 # add reduced dimensions to sce, takes ~8min, eliminate spots with less than 10 UMIs before clusterings
 sce_nonzero <- sce[, sce$sum_umi > 0]
 set.seed(20191112)
