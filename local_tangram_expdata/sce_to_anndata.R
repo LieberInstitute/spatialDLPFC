@@ -30,7 +30,7 @@ markers_entropy <- as.data.table(rowData(rna.sce)) %>%
     arrange(desc(entropy)) %>% 
     filter(entropy != 0) %>% 
     select(Symbol, entropy) %>% 
-    slice_head(., prop = .10)
+    slice_head(., prop = .05)
 
 markers <- intersect(rowData(spatial.seq)$gene_name, as.character(markers_entropy$Symbol)) 
     
