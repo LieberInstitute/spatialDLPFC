@@ -15,8 +15,8 @@ out_dir = 'out/'
 path = os.path.join('out', 'visium_dlpfc.h5ad')
 ad_sp = sc.read_h5ad(path)
 
-xs = ad_sp.obs.imagerow.values
-ys = ad_sp.obs.imagecol.values
+xs = ad_sp.obs.row.values # is imagerow correct?
+ys = ad_sp.obs.col.values # is imagecol correct?
 
 #  Manually save voxel coords plot
 f = plt.figure()
@@ -52,15 +52,15 @@ ad_map = tg.map_cells_to_space(
 ad_map.write_h5ad(os.path.join(out_dir, 'ad_map.h5ad'))
 
 #  Reload original data (not normalized)
-path = os.path.join('data', 'slideseq_MOp_1217.h5ad')
+path = os.path.join('out', 'visium_dlpfc.h5ad')
 ad_sp = sc.read_h5ad(path)
 
-path = os.path.join('data','mop_sn_tutorial.h5ad')
+path = os.path.join('out','sce_dlpfc.h5ad')
 ad_sc = sc.read_h5ad(path)
 
 # ad_map = sc.read_h5ad(os.path.join(out_dir,'ad_map.h5ad'))
 
-tg.plot_cell_annotation(ad_map, annotation='subclass_label', nrows=5, ncols=4)
+tg.plot_cell_annotation(ad_map, annotation='cell_type', nrows=5, ncols=4)
 tg.plot_training_scores(ad_map, bins=50, alpha=.5)
 
 ad_map.uns['train_genes_df']
