@@ -1,5 +1,8 @@
 ## Automatically style the code in this script:
-# styler::style_file("01_build_SPE.R", transformers = biocthis::bioc_style())
+styler::style_file(
+    here::here("analysis", "01_build_SPE.R"),
+    transformers = biocthis::bioc_style()
+)
 
 ## This script requires R 4.1
 # module load conda_R/devel
@@ -307,7 +310,7 @@ for(i in colnames(qcfilter)) {
 }
 
 ## Check cluster 89 from before
-load(file = here("analysis", "clusters_nonzero.rda"), verbose = TRUE)
+load(file = here::here("analysis", "clusters_nonzero.rda"), verbose = TRUE)
 table(clusters == "89")
 # FALSE  TRUE
 # 49727   272
@@ -361,7 +364,7 @@ dec <- modelGeneVar(spe,
 Sys.time()
 
 pdf(
-    here("plots", "modelGeneVar.pdf"),
+    here::here("plots", "scran_modelGeneVar.pdf"),
     useDingbats = FALSE
 )
 mapply(function(block, blockname) {
@@ -454,7 +457,7 @@ Sys.time()
 
 
 # save
-save(pce, file = here("rdata", "spe.rda"))
+save(pce, file = here::here("rdata", "spe", "spe.rda"))
 
 ## Reproducibility information
 print('Reproducibility information:')
