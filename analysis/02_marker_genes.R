@@ -18,7 +18,7 @@ library("SpatialExperiment")
 library("spatialLIBD")
 
 
-## Load SPE raw data
+## Load SPE data
 load(here::here("rdata", "spe", "spe.Rdata"), verbose = TRUE)
 
 ## Find marker genes
