@@ -10,3 +10,4 @@ for (sample_name in sample_names){
 
 # save
 save(df_metrics_all, file = here::here("rdata", "spe", "sample_metrics.Rdata"))
+write.csv(df_metrics_all, file = here::here("rdata", "spe", "sample_metrics.csv"))
