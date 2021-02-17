@@ -4,6 +4,9 @@ styler::style_file(
     transformers = biocthis::bioc_style()
 )
 
+## This script requires R 4.1
+# module load conda_R/devel
+
 ## utils
 library("here")
 library("sessioninfo")
