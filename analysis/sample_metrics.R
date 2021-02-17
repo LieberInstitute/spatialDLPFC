@@ -1,3 +1,7 @@
+library("ggplot2")
+library("sessioninfo")
+
+
 sample_names <- c("DLPFC_Br2743_ant_manual_alignment", "DLPFC_Br2743_mid_manual_alignment","DLPFC_Br2743_post_manual_alignment","DLPFC_Br3942_ant_manual_alignment","DLPFC_Br3942_mid_manual_alignment","DLPFC_Br3942_post_manual_alignment","DLPFC_Br6423_ant_manual_alignment","DLPFC_Br6423_mid_manual_alignment","DLPFC_Br6423_post_manual_alignment","DLPFC_Br8492_ant_manual_alignment","DLPFC_Br8492_mid_manual_alignment","DLPFC_Br8492_post_manual_alignment")
 dir_outputs <- here::here("outputs", "NextSeq")
 
@@ -58,3 +62,31 @@ for(i in c(
 }
 summary(pilot_metrics)
 save(pilot_metrics, file = here::here("rdata", "spe", "pilot_metrics.Rdata"))
+
+
+shared_cols <- intersect(colnames(sample_metrics), colnames(pilot_metrics))
+shared_cols
+#  [1] "Number.of.Reads"                                "Mean.Reads.per.Spot"
+#  [3] "Median.Genes.per.Spot"                          "Median.UMI.Counts.per.Spot"
+#  [5] "Valid.Barcodes"                                 "Sequencing.Saturation"
+#  [7] "Q30.Bases.in.Barcode"                           "Q30.Bases.in.RNA.Read"
+#  [9] "Q30.Bases.in.UMI"                               "Reads.Mapped.to.Genome"
+# [11] "Reads.Mapped.Confidently.to.Genome"             "Reads.Mapped.Confidently.to.Intergenic.Regions"
+# [13] "Reads.Mapped.Confidently.to.Intronic.Regions"   "Reads.Mapped.Confidently.to.Exonic.Regions"
+# [15] "Reads.Mapped.Confidently.to.Transcriptome"      "Reads.Mapped.Antisense.to.Gene"
+# [17] "Total.Genes.Detected"
+shared_metrics <- rbind(
+    sample_metrics[, shared_cols],
+    pilot_metrics[, shared_cols]
+)
+shared_metrics$study <- rep(c("current", "pilot"), each = 12)
+
+
+pdf(here::here("plots", "spaceranger_metrics_by_number_of_reads.pdf"), useDingbats = FALSE, width = 10)
+ggplot(shared_metrics, aes(x = Mean.Reads.per.Spot, y = Number.of.Reads / 1e6)) + geom_point() + geom_smooth(method = "lm") + theme_bw(base_size = 20) + facet_grid(~study)
+
+ggplot(shared_metrics, aes(x = Median.Genes.per.Spot, y = Number.of.Reads / 1e6, color = study)) + geom_point() + geom_smooth(method = "lm") + theme_bw(base_size = 20)
+ggplot(shared_metrics, aes(x = Total.Genes.Detected, y = Number.of.Reads / 1e6, color = study)) + geom_point() + geom_smooth(method = "lm") + theme_bw(base_size = 20)
+ggplot(shared_metrics, aes(x = Median.UMI.Counts.per.Spot, y = Number.of.Reads / 1e6, color = study)) + geom_point() + geom_smooth(method = "lm") + theme_bw(base_size = 20)
+
+dev.off()
