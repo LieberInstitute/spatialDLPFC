@@ -18,14 +18,7 @@ library("SpatialExperiment")
 library("spatialLIBD")
 
 ## Load SPE raw data
-load(here::here("rdata", "spe", "spe_raw.Rdata"), verbose = TRUE)
-
-## Filter down to spots in tissue
-spe <- spe_raw[, which(inTissue(spe_raw))]
-
-## Remove spots without counts
-spe <- spe[, -which(colSums(counts(spe)) == 0)]
-
+load(here::here("rdata", "spe", "spe.Rdata"), verbose = TRUE)
 
 ## Check cluster 89 from before
 load(file = here::here("analysis", "clusters_nonzero.rda"), verbose = TRUE)

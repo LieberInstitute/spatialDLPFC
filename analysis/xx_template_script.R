@@ -21,7 +21,7 @@ library("spatialLIBD")
 ## Load SPE raw data
 load(here::here("rdata", "spe", "spe_raw.Rdata"), verbose = TRUE)
 
-## Or load the filtered SPE data
+## Or load the filtered SPE data (whichever is most appropriate)
 load(here::here("rdata", "spe", "spe.Rdata"), verbose = TRUE)
 
 

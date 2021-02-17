@@ -156,27 +156,34 @@ length(no_expr) / nrow(spe) * 100
 # [1] 26.19601
 spe <- spe[-no_expr, ]
 
+## For visualizing this later with spatialLIBD
+spe_raw$overlaps_tissue <- factor(ifelse(inTissue(spe_raw), "in", "out"))
+
 ## Create two versions: one with and one without filtering by tissue spot
 spe_raw <- spe
-spe <- spe_raw[, which(inTissue(spe_raw))]
 pryr::object_size(spe_raw)
 # 970 MB
-pryr::object_size(spe)
-# 939 MB
-
 dim(spe_raw)
 # [1] 27013 59904
-dim(spe)
-# [1] 27013 50006
 
 ## Save the raw version now
 dir.create(here::here("rdata"), showWarnings = FALSE)
 dir.create(here::here("rdata", "spe"), showWarnings = FALSE)
 save(spe_raw, file = here::here("rdata", "spe", "spe_raw.Rdata"))
 
+## Work with SPE
+spe <- spe_raw[, which(inTissue(spe_raw))]
+
+## Remove spots without counts
+spe <- spe[, -which(colSums(counts(spe)) == 0)]
+
+dim(spe)
+# [1] 27013 49999
+
+pryr::object_size(spe)
+# 939 MB
 
 ## Inspect in vs outside of tissue
-spe_raw$overlaps_tissue <- factor(ifelse(inTissue(spe_raw), "in", "out"))
 vis_grid_clus(
     spe = spe_raw,
     clustervar = "overlaps_tissue",
@@ -271,12 +278,6 @@ vis_grid_gene(
 
 
 ## Quality control (scran)
-
-## Remove spots without counts first
-spe <- spe[, -which(colSums(counts(spe)) == 0)]
-ncol(spe)
-# [1] 49999
-
 qcstats <- perCellQCMetrics(spe, subsets = list(
     Mito = which(seqnames(spe) == "chrM")
 ))
@@ -319,6 +320,11 @@ spe$scran_quick_cluster <- quickCluster(
     block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
+# [1] "2021-02-17 10:23:01 EST"
+# [1] "2021-02-17 10:25:47 EST"
+
+## Temporarely save this object (eventually it'll be done at the end only)
+save(spe, file = here::here("rdata", "spe", "spe.rda"))
 
 
 Sys.time()
@@ -330,6 +336,7 @@ spe <-
         BPPARAM = MulticoreParam(4)
     )
 Sys.time()
+# [1] "2021-02-17 10:28:34 EST"
 
 summary(sizeFactors(spe))
 
@@ -438,7 +445,7 @@ Sys.time()
 
 
 # save
-save(pce, file = here::here("rdata", "spe", "spe.rda"))
+save(spe, file = here::here("rdata", "spe", "spe.rda"))
 
 ## Reproducibility information
 print('Reproducibility information:')

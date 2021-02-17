@@ -19,10 +19,7 @@ library("spatialLIBD")
 
 
 ## Load SPE raw data
-load(here::here("rdata", "spe", "spe_raw.Rdata"), verbose = TRUE)
-
-## Filter down to spots in tissue
-spe <- spe_raw[, which(inTissue(spe_raw))]
+load(here::here("rdata", "spe", "spe.Rdata"), verbose = TRUE)
 
 ## Find marker genes
 human_markers <-
