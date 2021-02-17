@@ -24,6 +24,8 @@ library("scran")
 library("scater")
 library("BiocParallel")
 
+## Related to https://github.com/LTLA/scuttle/issues/7#issuecomment-778710244
+stopifnot(packageVersion("scuttle") >= "1.1.15")
 
 ## Define some info for the samples
 sample_info <- data.frame(
@@ -323,10 +325,6 @@ Sys.time()
 # [1] "2021-02-17 10:23:01 EST"
 # [1] "2021-02-17 10:25:47 EST"
 
-## Temporarely save this object (eventually it'll be done at the end only)
-save(spe, file = here::here("rdata", "spe", "spe.rda"))
-
-
 Sys.time()
 ## Might be needed:
 # options(error = recover)
@@ -337,19 +335,43 @@ spe <-
     )
 Sys.time()
 # [1] "2021-02-17 10:28:34 EST"
+# [1] "2021-02-17 10:35:13 EST"
+## Related to https://github.com/LTLA/scuttle/issues/7
+# In .rescale_clusters(clust.profile, ref.col = ref.clust, min.mean = min.mean) :
+#   inter-cluster rescaling factor for cluster 64 is not strictly positive,
+# reverting to the ratio of average library sizes
+
+table(spe$scran_quick_cluster)
+ #   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+ # 763  466  634  848  841  513  856  462  468  776  998  148  254  284  308  198
+ #  17   18   19   20   21   22   23   24   25   26   27   28   29   30   31   32
+ # 245  962  674  435  359  268  271  142  760  606  544  150  123  462  514  576
+ #  33   34   35   36   37   38   39   40   41   42   43   44   45   46   47   48
+ # 176  290  161  183  697  662  579  199  190  235  197  424  111  186  432  259
+ #  49   50   51   52   53   54   55   56   57   58   59   60   61   62   63   64
+ # 684  818  271  884  586  178  102  161  920  893  380  877  675  537  104  542
+ #  65   66   67   68   69   70   71   72   73   74   75   76   77   78   79   80
+ # 935  461  327  207  229  366  166  110 1193  860 1219  579  679 1309 1476 1329
+ #  81   82   83   84   85   86   87   88   89   90   91   92   93   94   95
+ # 650  644  393  992  159  542  514  269  272  896  787  821 1141  213  760
 
 summary(sizeFactors(spe))
+#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
+# 0.000008 0.510786 0.862512 1.000000 1.330087 6.854382
 
 spe <- logNormCounts(spe)
+pryr::object_size(spe)
+
+## Temporarely save this object (eventually it'll be done at the end only)
+save(spe, file = here::here("rdata", "spe", "spe.rda"))
+# 1.53 GB
 
 ## From
 ## http://bioconductor.org/packages/release/bioc/vignettes/scran/inst/doc/scran.html#4_variance_modelling
-Sys.time()
 dec <- modelGeneVar(spe,
     block = spe$sample_id,
     BPPARAM = MulticoreParam(4)
 )
-Sys.time()
 
 pdf(
     here::here("plots", "scran_modelGeneVar.pdf"),
@@ -370,30 +392,46 @@ mapply(function(block, blockname) {
 }, dec$per.block, names(dec$per.block))
 dev.off()
 
-
-
 top.hvgs <- getTopHVGs(dec, prop = 0.1)
 length(top.hvgs)
-
+# [1] 1769
 
 top.hvgs.fdr5 <- getTopHVGs(dec, fdr.threshold = 0.05)
 length(top.hvgs.fdr5)
-
+# [1] 15343
 
 top.hvgs.fdr1 <- getTopHVGs(dec, fdr.threshold = 0.01)
 length(top.hvgs.fdr1)
+# [1] 14484
 
+save(top.hvgs,
+    top.hvgs.fdr5,
+    top.hvgs.fdr1,
+    file = here::here("rdata", "spe", "top.hvgs.rda"))
 
 set.seed(20191112)
 Sys.time()
 spe <- runPCA(spe, subset_row = top.hvgs)
 Sys.time()
+# [1] "2021-02-17 10:41:57 EST"
+# [1] "2021-02-17 10:43:06 EST"
 
 reducedDimNames(spe)
 
 summary(apply(reducedDim(spe, "PCA"), 2, sd))
-
+ #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+ # 0.8947  0.9127  0.9308  1.1226  0.9826  3.7028
 summary(colMeans(reducedDim(spe, "PCA")))
+#       Min.    1st Qu.     Median       Mean    3rd Qu.       Max.
+# -2.466e-14 -3.442e-15  2.650e-15  2.456e-15  9.457e-15  2.697e-14
+
+## From https://github.com/davismcc/scater/blob/master/R/runTSNE.R#L85
+## I see that the default perplexity will be 50
+# > mat <- scater:::.get_mat_from_sce(spe, exprs_values = 'logcounts', dimred = 'PCA', n_dimred = NULL)
+# > dim(mat)
+# [1] 49999    50
+# > min(50, floor(nrow(mat) / 5))
+# [1] 50
 
 Sys.time()
 set.seed(20191206)
@@ -404,6 +442,7 @@ spe <-
         perplexity = 50
     )
 Sys.time()
+# [1] "2021-02-17 10:45:30 EST"
 
 Sys.time()
 set.seed(20191206)
