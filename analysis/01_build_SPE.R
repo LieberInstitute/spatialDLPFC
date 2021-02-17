@@ -404,7 +404,7 @@ length(top.hvgs.fdr1)
 save(top.hvgs,
     top.hvgs.fdr5,
     top.hvgs.fdr1,
-    file = here::here("rdata", "spe", "top.hvgs.rda"))
+    file = here::here("rdata", "spe", "top.hvgs.Rdata"))
 
 set.seed(20191112)
 Sys.time()
@@ -490,7 +490,7 @@ Sys.time()
 
 
 # save
-save(spe, file = here::here("rdata", "spe", "spe.rda"))
+save(spe, file = here::here("rdata", "spe", "spe.Rdata"))
 
 ## Reproducibility information
 print('Reproducibility information:')
