@@ -213,6 +213,7 @@ vis_grid_clus(
 )
 
 ## I'll tell Aaron about this
+## Done at https://github.com/LTLA/scuttle/issues/8
 .limit_cluster_size.fix <- function(clusters, max.size)
 {
     if (is.null(max.size)) {
