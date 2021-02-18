@@ -113,13 +113,32 @@ shared_cols
 # [13] "Reads.Mapped.Confidently.to.Intronic.Regions"   "Reads.Mapped.Confidently.to.Exonic.Regions"
 # [15] "Reads.Mapped.Confidently.to.Transcriptome"      "Reads.Mapped.Antisense.to.Gene"
 # [17] "Total.Genes.Detected"
+
+
+## Document missing variables from each table
+colnames(pilot_metrics)[!colnames(pilot_metrics) %in% shared_cols]
+# [1] "Estimated.Number.of.Spots"   "Q30.Bases.in.Sample.Index"   "Fraction.Reads.in.Spots"     "Mean.Cells.Per.Spot"
+# [5] "Proportion.0.Cells.Per.Spot" "Proportion.1.Cell.Per.Spot"  "Brain.Number"                "Position"
+# [9] "Replicate"                   "Age.Death"                   "Sex"                         "Primary.Diagnosis"
+colnames(sample_metrics)[!colnames(sample_metrics) %in% shared_cols]
+# [1] "Sample.ID"                            "Number.of.Spots.Under.Tissue"         "Mean.Reads.Under.Tissue.per.Spot"
+# [4] "Fraction.of.Spots.Under.Tissue"       "Valid.UMIs"                           "Fraction.Reads.in.Spots.Under.Tissue"
+
+## Combine the shared metrics
 tmp <- sample_metrics[, shared_cols]
-regular_cols <- which(colnames(tmp) %in% c("Number.of.Reads", "Mean.Reads.per.Spot", "Median.Genes.per.Spot", "Median.UMI.Counts.per.Spot", "Total.Genes.Detected"))
+regular_cols <-
+    which(
+        colnames(tmp) %in% c(
+            "Number.of.Reads",
+            "Mean.Reads.per.Spot",
+            "Median.Genes.per.Spot",
+            "Median.UMI.Counts.per.Spot",
+            "Total.Genes.Detected"
+        )
+    )
 tmp[, -regular_cols] <- tmp[, -regular_cols] * 100
-shared_metrics <- rbind(
-    round(tmp, 1),
-    pilot_metrics[, shared_cols]
-)
+shared_metrics <- rbind(round(tmp, 1),
+    pilot_metrics[, shared_cols])
 shared_metrics$study <- rep(c("current", "pilot"), each = 12)
 
 save(shared_metrics,
