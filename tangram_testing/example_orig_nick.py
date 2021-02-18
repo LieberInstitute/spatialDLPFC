@@ -80,6 +80,22 @@ tg.plot_genes(genes, adata_measured=ad_sp, adata_predicted=ad_ge)
 
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
 
+#  Compute average cosine similarity for test genes
+np.mean(df_all_genes.score[np.logical_not(df_all_genes.is_training)])
+# 0.1616565621617533
+
+#  Compute average cosine similarity for training genes
+np.mean(df_all_genes.score[df_all_genes.is_training])
+# 0.7694395580684324
+
+def score_by_sparsity(df, sparsity):
+    perc_genes = round(100 * np.mean(df.sparsity_2 < sparsity), 2)
+    print(perc_genes, '% of genes are less than ', round(100 * sparsity, 2), '% sparse.', sep='')
+    
+    return np.mean(df.score[np.logical_and(np.logical_not(df.is_training),
+                                           df.sparsity_2 < sparsity)])
+
+
 sns_plot = sns.scatterplot(data=df_all_genes, x='score', y='sparsity_2', hue='is_training', alpha=.5)
 fig = sns_plot.get_figure()
 fig.savefig(os.path.join(out_dir, 'sparsity.pdf'))
