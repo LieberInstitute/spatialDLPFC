@@ -95,7 +95,12 @@ save(pilot_metrics,
     file = here::here("rdata", "spe", "pilot_metrics.Rdata")
 )
 
+write.csv(pilot_metrics,
+    file = here::here("rdata", "spe", "pilot_metrics.csv")
+)
 
+
+rownames(sample_metrics) <- gsub("DLPFC_|_manual_alignment", "", sample_metrics$Sample.ID)
 shared_cols <-
     intersect(colnames(sample_metrics), colnames(pilot_metrics))
 shared_cols
@@ -114,6 +119,12 @@ shared_metrics <- rbind(
 )
 shared_metrics$study <- rep(c("current", "pilot"), each = 12)
 
+save(shared_metrics,
+    file = here::here("rdata", "spe", "shared_metrics.Rdata")
+)
+write.csv(shared_metrics,
+    file = here::here("rdata", "spe", "shared_metrics.csv")
+)
 
 pdf(
     here::here("plots", "spaceranger_metrics_by_number_of_reads.pdf"),
