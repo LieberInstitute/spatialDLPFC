@@ -1,5 +1,5 @@
 ## Automatically style the code in this script:
-styler::style_file(here::here("analysis", "sample_metrics.R"),
+styler::style_file(here::here("analysis", "04_sample_metrics.R"),
     transformers = biocthis::bioc_style()
 )
 
