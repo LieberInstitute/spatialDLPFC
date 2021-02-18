@@ -113,8 +113,11 @@ shared_cols
 # [13] "Reads.Mapped.Confidently.to.Intronic.Regions"   "Reads.Mapped.Confidently.to.Exonic.Regions"
 # [15] "Reads.Mapped.Confidently.to.Transcriptome"      "Reads.Mapped.Antisense.to.Gene"
 # [17] "Total.Genes.Detected"
+tmp <- sample_metrics[, shared_cols]
+regular_cols <- which(colnames(tmp) %in% c("Number.of.Reads", "Mean.Reads.per.Spot", "Median.Genes.per.Spot", "Median.UMI.Counts.per.Spot", "Total.Genes.Detected"))
+tmp[, -regular_cols] <- tmp[, -regular_cols] * 100
 shared_metrics <- rbind(
-    sample_metrics[, shared_cols],
+    round(tmp, 1),
     pilot_metrics[, shared_cols]
 )
 shared_metrics$study <- rep(c("current", "pilot"), each = 12)
