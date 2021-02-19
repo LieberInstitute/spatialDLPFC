@@ -88,8 +88,13 @@ ad_map.write_h5ad(os.path.join(out_dir, 'ad_map.h5ad'))
 ad_sp = sc.read_h5ad(sp_path)
 ad_sc = sc.read_h5ad(sc_path)
 
-tg.plot_cell_annotation(ad_map, annotation='cell_type', nrows=5, ncols=4)
+tg.plot_cell_annotation(ad_map, annotation='cell_type', x='row', y='col', nrows=5, ncols=4)
+f = plt.gcf()
+f.savefig(os.path.join(out_dir, 'cell_annotation.png'), bbox_inches='tight')
+
 tg.plot_training_scores(ad_map, bins=50, alpha=.5)
+f = plt.gcf()
+f.savefig(os.path.join(out_dir, 'train_scores.pdf'), bbox_inches='tight')
 
 ad_map.uns['train_genes_df']
 
