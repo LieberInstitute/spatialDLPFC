@@ -3,6 +3,7 @@
 #  Download and unzip data required for the newer tutorial:
 #  https://github.com/broadinstitute/Tangram/blob/master/example/1_tutorial_tangram.ipynb
 mkdir data/
+mkdir logs/
 
 echo "Downloading scRNAseq and spatial data..."
 sftp aseyedia@jhpce-transfer01.jhsph.edu << EOF
