@@ -6,7 +6,15 @@ library('data.table')
 library('entropy')
 library('tidyverse')
 
-setwd("/home/arta/Documents/GitHub/spython/local_tangram_expdata")
+args = commandArgs(trailingOnly=TRUE)
+
+if (length(args) == 0) {
+    print("Running on local PC")
+    setwd("/home/arta/Documents/GitHub/spython/local_tangram_expdata")
+} else if (args[1] == "JHPCE"){
+    print("Running on JHPCE")
+    setwd("/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/local_tangram_expdata")
+}
 #  Path to write the python AnnData object
 # out_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
 dir.create("out/", showWarnings = FALSE)
