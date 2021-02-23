@@ -33,7 +33,7 @@ markers_entropy <- as.data.table(rowData(rna.sce)) %>%
     slice_head(., prop = .05)
 
 markers <- intersect(rowData(spatial.seq)$gene_name, as.character(markers_entropy$Symbol)) 
-    
+
 # rowData(rna.sce[rowSums(as.data.table(rowData(rna.sce))[, 3:20]) != 0,])
 
 # > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < 3))
@@ -67,5 +67,5 @@ write_anndata = function(sce, out_path) {
     }, env = zellkonverter:::anndata_env, sce = sce, filename = out_path))
 }
 
-write_anndata(spatial.seq, visium_out)
 write_anndata(rna.sce, sc_out)
+write_anndata(spatial.seq, visium_out)
