@@ -14,8 +14,7 @@ out_dir = 'out/'
 sc_path = 'out/sce_dlpfc.h5ad'
 sp_path = 'out/visium_dlpfc.h5ad'
 
-os.chdir('/home/arta/Documents/GitHub/spython/local_tangram_expdata')
-
+# os.chdir('/home/arta/Documents/GitHub/spython/local_tangram_expdata')
 
 #  Given a numpy array "arr" and integer "N", return a list of the indices of
 #  the top N largest values in arr
