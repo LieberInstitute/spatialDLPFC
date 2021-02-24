@@ -98,7 +98,7 @@ ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge.h5ad'))
 
 (ad_ge.var.is_training == False).sum()
 
-del ad_map, ad_sc, f, sp_genes, temp, xs, ys
+del ad_map, ad_sc, f, xs, ys
 
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
 
