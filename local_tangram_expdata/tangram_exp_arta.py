@@ -107,3 +107,8 @@ print(np.mean(df_all_genes.score[np.logical_not(df_all_genes.is_training)]), fil
 
 print("Compute average cosine similarity for training genes", file=sys.stdout)
 print(np.mean(df_all_genes.score[df_all_genes.is_training]), file=sys.stdout)
+
+# Compute average cosine similarity for test genes
+# 0.16735670191217814
+# Compute average cosine similarity for training genes
+# 0.9084766352055024
