@@ -15,20 +15,6 @@ sp_path = 'out/visium_dlpfc.h5ad'
 
 # os.chdir('/home/arta/Documents/GitHub/spython/local_tangram_expdata')
 
-# #  Given a numpy array "arr" and integer "N", return a list of the indices of
-# #  the top N largest values in arr
-# def topN(arr, N):
-#     arr_copy = arr.copy()
-#     min_val = np.min(arr)
-#
-#     inds = []
-#     for i in range(N):
-#         temp = int(np.argmax(arr_copy))
-#         inds.append(temp)
-#         arr_copy[temp] = min_val - 1
-#
-#     return inds
-
 ad_sp = sc.read_h5ad(sp_path)
 
 xs = ad_sp.obs.row.values
@@ -47,7 +33,7 @@ sc.pp.normalize_total(ad_sc)
 
 ad_sc.obs.cell_type.value_counts()
 
-df_genes = pd.read_csv('out/markers.csv', index_col=0)
+df_genes = pd.read_csv('data/marker_stats.csv', index_col=0)
 markers = np.reshape(df_genes.values, (-1, ))
 markers = list(markers)
 
@@ -87,14 +73,6 @@ ad_map.uns['train_genes_df']
 
 ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
 ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge.h5ad'))
-
-#genes = ['Cdh12', 'Satb2', 'Dscaml1']
-#ad_map.uns['train_genes_df'].loc[genes]
-#tg.plot_genes(genes, adata_measured=ad_sp, adata_predicted=ad_ge)
-
-#mask = ad_map.uns['train_genes_df'].train_score.isna()
-#genes = ad_map.uns['train_genes_df'][mask].index.values
-#tg.plot_genes(genes, adata_measured=ad_sp, adata_predicted=ad_ge)
 
 (ad_ge.var.is_training == False).sum()
 
