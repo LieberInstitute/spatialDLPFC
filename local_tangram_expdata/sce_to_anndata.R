@@ -5,8 +5,12 @@ library('zellkonverter')
 library('data.table')
 library('entropy')
 library('tidyverse')
+library("DeconvoBuddies")
+library("here")
 
 args = commandArgs(trailingOnly=TRUE)
+
+# args[1] = "JHPCE"
 
 if (length(args) == 0) {
     print("Running on local PC")
@@ -28,32 +32,40 @@ load('data/sce_combined.rda')
 rna.sce <- sce.dlpfc
 spatial.seq <- sce
 
-rowData(rna.sce)$rowSums <- rowSums(as.data.table(rowData(rna.sce))[, 3:20])
+# overlaps <- rowData(spatial.seq)[rowData(spatial.seq)$gene_name %in% rowData(rna.sce)$Symbol,]
+overlaps <- rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name,]
 
-# entropy(as.numeric(as.data.frame(rowData(rna.sce)[,3:19])))
+mean_ratio <- map("cell_type", ~get_mean_ratio2(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
+markers_1vAll <- map("cell_type", ~findMarkers_1vAll(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
 
-markers_entropy <- as.data.table(rowData(rna.sce)) %>% 
-    mutate(entropy = as.numeric(pmap(as.data.frame(rowData(rna.sce)[,3:19]), lift_vd(entropy)))) %>% 
-    drop_na() %>% 
-    arrange(desc(entropy)) %>% 
-    filter(entropy != 0) %>% 
-    select(Symbol, entropy) %>% 
-    slice_head(., prop = .05)
+marker_stats <- map2(mean_ratio, markers_1vAll, 
+                     ~left_join(.x, .y, by = c("gene", "cellType.target", "Symbol")))
+map(marker_stats, dim)
+# > map(marker_stats, dim)
+# [[1]]
+# [1] 75972    16
 
-markers <- intersect(rowData(spatial.seq)$gene_name, as.character(markers_entropy$Symbol)) 
+save(marker_stats, file =  "data/marker_stats.Rdata")
+# load(here("data", "marker_stats.Rdata"), verbose = TRUE)
 
-# rowData(rna.sce[rowSums(as.data.table(rowData(rna.sce))[, 3:20]) != 0,])
+dir.create("analysis/")
 
-# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < 3))
-# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < 1))
-# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < .5))
-# > hist(subset(rowData(rna.sce)$rowSums, rowData(rna.sce)$rowSums < .1))
+pdf("analysis/marker_stats.pdf")
+#### Plot ####
+ratio_plot <- map(marker_stats,
+                  ~.x %>%
+                      ggplot(aes(ratio, std.logFC)) +
+                      geom_point(size = 0.5) +
+                      facet_wrap(~cellType.target, scales = "free_x") +
+                      labs(x = "mean(target logcount)/mean(highest non-target logcount)") +
+                      theme_bw()+
+                      NULL)
+
+ratio_plot
+
+dev.off()
 
 rm(sce, sce.dlpfc)
-
-# data.table(n = 1:length(markers), markers)
-
-write.csv(as.data.table(markers), file = "out/markers.csv")
 
 ###############################################################################
 #  The main code we'll use in general to convert SCE R objects to AnnData
