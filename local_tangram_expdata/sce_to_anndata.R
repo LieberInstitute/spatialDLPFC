@@ -45,27 +45,7 @@ marker_stats <- map2(mean_ratio, markers_1vAll,
 # > dim(marker_stats)
 # [1] 75972    16
 
-# > marker_stats %>% count(cellType.target)
-# cellType.target    n
-# 1:           Astro  982
-# 2:     Excit.ambig 6012
-# 3:      Excit.L2:3 4953
-# 4:      Excit.L3:4 7133
-# 5:      Excit.L4:5 6296
-# 6:        Excit.L5 5764
-# 7:      Excit.L5:6 5865
-# 8:  Excit.L6.broad 6899
-# 9:         Inhib.1 4833
-# 10:         Inhib.2 4743
-# 11:         Inhib.3 4775
-# 12:         Inhib.4 5729
-# 13:         Inhib.5 3044
-# 14:         Inhib.6 4842
-# 15:           Micro  859
-# 16:           Oligo 1196
-# 17:             OPC 2047
-
-tangram_markers <- marker_stats %>% group_by("cellType") %>% slice_head(prop = 0.01) %>% ungroup()
+tangram_markers <- marker_stats %>% group_by("cellType") %>% slice_head(prop = 0.01) %>% ungroup() %>% select("Symbol")
 tangram_markers
 
 write.csv(tangram_markers, file =  "data/marker_stats.csv")
