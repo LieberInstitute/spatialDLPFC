@@ -35,17 +35,25 @@ spatial.seq <- sce
 # overlaps <- rowData(spatial.seq)[rowData(spatial.seq)$gene_name %in% rowData(rna.sce)$Symbol,]
 overlaps <- rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name,]
 
+# # Getting row sums
+rowData(overlaps)$rowSums <- rowSums(as.data.table(rowData(overlaps))[, 3:20])
+# 
+# # taking only highly-expressed genes
+rowData(overlaps) <- rowData(overlaps)[order(rowData(overlaps)$rowSums, decreasing = TRUE),]
+# 
+# # setting threshold to 5
+overlaps <- overlaps[rowData(overlaps)$rowSums > 5,]
+
 mean_ratio <- map("cell_type", ~get_mean_ratio2(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
 markers_1vAll <- map("cell_type", ~findMarkers_1vAll(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
 
 marker_stats <- map2(mean_ratio, markers_1vAll, 
-                     ~left_join(.x, .y, by = c("gene", "cellType.target", "Symbol"))) %>% 
-    as.data.table()
+                     ~left_join(.x, .y, by = c("gene", "cellType.target", "Symbol"))) 
 
-# > dim(marker_stats)
-# [1] 75972    16
+# > dim(marker_stats %>% as.data.table())
+# [1] 20239    16
 
-tangram_markers <- marker_stats %>% group_by("cellType") %>% slice_head(prop = 0.01) %>% ungroup() %>% select("Symbol")
+tangram_markers <- marker_stats %>% as.data.table() %>% group_by("cellType") %>% slice_head(prop = 0.05) %>% ungroup() %>% select("Symbol")
 tangram_markers
 
 write.csv(tangram_markers, file =  "data/marker_stats.csv")
