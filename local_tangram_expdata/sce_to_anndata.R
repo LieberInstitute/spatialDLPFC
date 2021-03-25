@@ -7,6 +7,7 @@ library('entropy')
 library('tidyverse')
 library("DeconvoBuddies")
 library("here")
+library("jaffelab")
 
 args = commandArgs(trailingOnly=TRUE)
 
@@ -32,17 +33,25 @@ load('data/sce_combined.rda')
 rna.sce <- sce.dlpfc
 spatial.seq <- sce
 
-# overlaps <- rowData(spatial.seq)[rowData(spatial.seq)$gene_name %in% rowData(rna.sce)$Symbol,]
-overlaps <- rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name,]
+# Getting overlaps between spatial and scRNAseq data
+overlaps <- rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name, ]
 
-# # Getting row sums
-rowData(overlaps)$rowSums <- rowSums(as.data.table(rowData(overlaps))[, 3:20])
-# 
-# # taking only highly-expressed genes
-rowData(overlaps) <- rowData(overlaps)[order(rowData(overlaps)$rowSums, decreasing = TRUE),]
-# 
-# # setting threshold to 5
-overlaps <- overlaps[rowData(overlaps)$rowSums > 5,]
+# prepairing for expression_cutoff
+seed <- 20210324
+olaps_rpkm <- as.matrix(rowData(overlaps)[, 3:20])
+
+# generating cutoff value
+cutoff <- max(expression_cutoff(olaps_rpkm, seed = seed))
+
+# generating rowMeans
+## based on https://github.com/LieberInstitute/goesHyde_mdd_rnaseq/blob/3ee0ba2a77f2d3a111dba3e81c28594cdd4aa46f/exprs_cutoff/get_expression_cutoffs.R
+rowData(overlaps)$rowMeans <- rowMeans(olaps_rpkm)
+
+# subset to only rows with means greater than cutoff
+overlaps <- overlaps[rowData(overlaps)$rowMeans > cutoff,]
+
+# sort table in descending rowMeans order (for fun)
+rowData(overlaps) <- rowData(overlaps)[order(rowData(overlaps)$rowMeans, decreasing = TRUE), ]
 
 mean_ratio <- map("cell_type", ~get_mean_ratio2(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
 markers_1vAll <- map("cell_type", ~findMarkers_1vAll(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
@@ -50,10 +59,7 @@ markers_1vAll <- map("cell_type", ~findMarkers_1vAll(overlaps, cellType_col = .x
 marker_stats <- map2(mean_ratio, markers_1vAll, 
                      ~left_join(.x, .y, by = c("gene", "cellType.target", "Symbol"))) 
 
-# > dim(marker_stats %>% as.data.table())
-# [1] 20239    16
-
-tangram_markers <- marker_stats %>% as.data.table() %>% group_by("cellType") %>% slice_head(prop = 0.05) %>% ungroup() %>% select("Symbol")
+tangram_markers <- marker_stats %>% as.data.table() %>% group_by("cellType") %>% slice_head(prop = 0.01) %>% ungroup() %>% select("Symbol")
 tangram_markers
 
 write.csv(tangram_markers, file =  "data/marker_stats.csv")
