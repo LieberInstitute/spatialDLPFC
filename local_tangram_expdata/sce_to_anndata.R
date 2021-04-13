@@ -3,7 +3,6 @@ library('scRNAseq')
 library('SingleCellExperiment')
 library('zellkonverter')
 library('data.table')
-library('entropy')
 library('tidyverse')
 library("DeconvoBuddies")
 library("here")
@@ -33,25 +32,21 @@ load('data/sce_combined.rda')
 rna.sce <- sce.dlpfc
 spatial.seq <- sce
 
-# Getting overlaps between spatial and scRNAseq data
-overlaps <- rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name, ]
-
 # prepairing for expression_cutoff
 seed <- 20210324
-olaps_rpkm <- as.matrix(rowData(overlaps)[, 3:20])
 
-# generating cutoff value
-cutoff <- max(expression_cutoff(olaps_rpkm, seed = seed))
+# Find expression cutoff for each dataset and filter out genes below that
+# cutoff
+counts_rna = as.matrix(assays(rna.sce)$counts)
+cutoff_rna <- max(expression_cutoff(counts_rna, seed = seed))
+rna.sce = rna.sce[rowMeans(counts_rna) > cutoff_rna,]
 
-# generating rowMeans
-## based on https://github.com/LieberInstitute/goesHyde_mdd_rnaseq/blob/3ee0ba2a77f2d3a111dba3e81c28594cdd4aa46f/exprs_cutoff/get_expression_cutoffs.R
-rowData(overlaps)$rowMeans <- rowMeans(olaps_rpkm)
+counts_spat = as.matrix(assays(spatial.seq)$counts)
+cutoff_spat <- max(expression_cutoff(counts_spat, seed = seed))
+spatial.seq = spatial.seq[rowMeans(counts_spat) > cutoff_spat,]
 
-# subset to only rows with means greater than cutoff
-overlaps <- overlaps[rowData(overlaps)$rowMeans > cutoff,]
-
-# sort table in descending rowMeans order (for fun)
-rowData(overlaps) <- rowData(overlaps)[order(rowData(overlaps)$rowMeans, decreasing = TRUE), ]
+# Getting overlaps between spatial and scRNAseq data
+overlaps <- rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name, ]
 
 mean_ratio <- map("cell_type", ~get_mean_ratio2(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
 markers_1vAll <- map("cell_type", ~findMarkers_1vAll(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
