@@ -1,7 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=30G,h_vmem=30G,h_fsize=100G
-#$ -pe local 5
+#$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
 #$ -N "sce-to-anndata"
 #$ -j y
 #$ -o logs/sce-2-anndata.log
