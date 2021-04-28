@@ -1,0 +1,91 @@
+import os, sys
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import scanpy as sc
+import torch
+import tangram as tg
+import seaborn as sns
+import scipy as sp
+import getopt
+
+#  This python script will be invoked by an array of shell scripts, where each
+#  index corresponds to a sample named by Kristen. She named 4 spatial samples,
+#  each of which we could map the set of 12 snRNA-seq against. We would compare
+#  the mapped results against known/ strongly expected distributions of gene
+#  expression based on manually-determined layer segmentations, for a handful
+#  of well-known marker genes.
+
+sample_names = ['DLPFC_Br2743_ant_manual_alignment',
+                'DLPFC_Br2743_mid_manual_alignment',
+                'DLPFC_Br3942_mid_manual_alignment',
+                'DLPFC_Br3942_post_manual_alignment']
+sc_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
+sp_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/visium_dlpfc.h5ad'
+marker_path = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/markers.txt'
+out_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/four_sample_demo_out'
+
+#  Recieve the '-i' argument, an integer in [1, 4] corresponding to the index in
+#  the sample_names list
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "i:", ["index="])
+except getopt.GetoptError:
+    print('test.py -i <sample index in 1-4>')
+    sys.exit(2)
+
+for opt, arg in opts:
+    assert opt in ('-i', '--index='), opt
+    sample_index = int(arg)
+
+#  Determine this particular sample name
+sample_name = sample_names[sample_index - 1]
+
+#  Load AnnDatas and list of marker genes
+ad_sp = sc.read_h5ad(sp_path)
+ad_sc = sc.read_h5ad(sc_path)
+
+with open(marker_path, 'r') as f:
+    markers = f.read().splitlines()
+    
+#  Subset and otherwise prepare objects for mapping
+sc.pp.normalize_total(ad_sc)
+
+ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_names[0], :].copy()
+
+ad_sc, ad_sp = tg.pp_adatas(ad_sc, ad_sp, genes=markers)
+assert ad_sc.var.index.equals(ad_sp.var.index)
+
+#  Mapping step using GPU
+ad_map = tg.map_cells_to_space(
+    adata_cells=ad_sc,
+    adata_space=ad_sp,
+    device='cuda: 0'
+)
+
+ad_map.write_h5ad(os.path.join(out_dir, 'ad_map_' + sample_name + '.h5ad'))
+
+#  Reload the original objects and subset the spatial object by sample
+ad_sp = sc.read_h5ad(sp_path)
+ad_sc = sc.read_h5ad(sc_path)
+ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_names[0], :].copy()
+
+#  Generate plots
+tg.plot_cell_annotation(ad_map, annotation='cell_type', x='imagerow', y='imagecol', nrows=5, ncols=4)
+f = plt.gcf()
+f.savefig(os.path.join(out_dir, 'cell_annotation_' + sample_name + '.png'), bbox_inches='tight')
+
+tg.plot_training_scores(ad_map, bins=50, alpha=.5)
+f = plt.gcf()
+f.savefig(os.path.join(out_dir, 'train_scores' + sample_name + '.pdf'), bbox_inches='tight')
+
+#  Project all cells based on trained mapping, and save the result
+ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
+ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge' + sample_name + '.h5ad'))
+
+#  Compute average cosine similarity for test genes
+test_score = np.mean(df_all_genes.score[np.logical_not(df_all_genes.is_training)])
+print('Average test score:', round(float(test_score), 4))
+
+#  Compute average cosine similarity for training genes
+train_score = np.mean(df_all_genes.score[df_all_genes.is_training])
+print('Average training score:', round(float(train_score), 4))
