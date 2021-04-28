@@ -24,6 +24,8 @@ sc_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
 sp_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/visium_dlpfc.h5ad'
 marker_path = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/markers.txt'
 out_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/four_sample_demo_out'
+test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 
+              'NR4A2', 'RELN']
 
 #  Recieve the '-i' argument, an integer in [1, 4] corresponding to the index in
 #  the sample_names list
@@ -82,7 +84,14 @@ f.savefig(os.path.join(out_dir, 'train_scores' + sample_name + '.pdf'), bbox_inc
 ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
 ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge' + sample_name + '.h5ad'))
 
+#  Plot expected vs. actual expression maps for particular test genes of
+#  interest
+tg.plot_genes(test_genes, adata_measured=ad_sp, adata_predicted=ad_ge)
+f = plt.gcf()
+f.savefig(os.path.join(out_dir, 'mapped_test_genes_' + sample_name + '.pdf'), bbox_inches='tight')
+
 #  Compute average cosine similarity for test genes
+df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
 test_score = np.mean(df_all_genes.score[np.logical_not(df_all_genes.is_training)])
 print('Average test score:', round(float(test_score), 4))
 
