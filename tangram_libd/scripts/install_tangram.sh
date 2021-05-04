@@ -1,6 +1,6 @@
-cd /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/
+#!/bin/bash
 
-git clone git@github.com:broadinstitute/Tangram.git
+git submodule add https://github.com/broadinstitute/Tangram tangram_libd/Tangram
 
 #  Since conda environments are user-specific, each user planning to run
 #  tangram should run these commands. This produces a "conda environment", a
