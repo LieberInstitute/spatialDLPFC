@@ -52,7 +52,7 @@ with open(marker_path, 'r') as f:
 #  Subset and otherwise prepare objects for mapping
 sc.pp.normalize_total(ad_sc)
 
-ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_names[0], :].copy()
+ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_name, :].copy()
 
 ad_sc, ad_sp = tg.pp_adatas(ad_sc, ad_sp, genes=markers)
 assert ad_sc.var.index.equals(ad_sp.var.index)
@@ -69,7 +69,7 @@ ad_map.write_h5ad(os.path.join(out_dir, 'ad_map_' + sample_name + '.h5ad'))
 #  Reload the original objects and subset the spatial object by sample
 ad_sp = sc.read_h5ad(sp_path)
 ad_sc = sc.read_h5ad(sc_path)
-ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_names[0], :].copy()
+ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_name, :].copy()
 
 #  Generate plots
 tg.plot_cell_annotation(ad_map, annotation='cell_type', x='imagerow', y='imagecol', nrows=5, ncols=4)
@@ -86,14 +86,18 @@ ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge' + sample_name + '.h5ad'))
 
 #  Plot expected vs. actual expression maps for particular test genes of
 #  interest
-tg.plot_genes(test_genes, adata_measured=ad_sp, adata_predicted=ad_ge)
+tg.plot_genes(test_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='imagerow', y='imagecol')
 f = plt.gcf()
 f.savefig(os.path.join(out_dir, 'mapped_test_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
 #  Compute average cosine similarity for test genes
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
 test_score = np.mean(df_all_genes.score[np.logical_not(df_all_genes.is_training)])
-print('Average test score:', round(float(test_score), 4))
+print('Average test score (all genes):', round(float(test_score), 4))
+
+test_scores = df_all_genes.score[df_all_genes.index.isin(test_genes)]
+print('Test scores for our select genes:\n', test_scores, sep='')
+print('Average:', round(float(np.mean(test_scores)), 4))
 
 #  Compute average cosine similarity for training genes
 train_score = np.mean(df_all_genes.score[df_all_genes.is_training])
