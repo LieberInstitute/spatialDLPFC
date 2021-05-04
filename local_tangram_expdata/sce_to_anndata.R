@@ -8,26 +8,14 @@ library("DeconvoBuddies")
 library("here")
 library("jaffelab")
 
-args = commandArgs(trailingOnly=TRUE)
-
-# args[1] = "JHPCE"
-
-if (length(args) == 0) {
-    print("Running on local PC")
-    setwd("/home/arta/Documents/GitHub/spython/local_tangram_expdata")
-} else if (args[1] == "JHPCE"){
-    print("Running on JHPCE")
-    setwd("/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/local_tangram_expdata")
-}
 #  Path to write the python AnnData object
-# out_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
-dir.create("out/", showWarnings = FALSE)
-visium_out = 'out/visium_dlpfc.h5ad'
-sc_out = 'out/sce_dlpfc.h5ad'
+dir.create(file.path(here::here(), "tangram_libd/out/"), showWarnings = FALSE)
+visium_out = file.path(here::here(), "tangram_libd/out/visium_dlpfc.h5ad")
+sc_out = file.path(here::here(), "tangram_libd/out/sce_dlpfc.h5ad")
 
 #  An example SingleCellExperiment object
-load("data/SCE_DLPFC_tran-etal.rda")
-load('data/sce_combined.rda')
+load(file.path(here::here(), "tangram_libd/data/SCE_DLPFC_tran-etal.rda"))
+load(file.path(here::here(), "tangram_libd/data/sce_combined.rda"))
 
 rna.sce <- sce.dlpfc
 spatial.seq <- sce
@@ -57,14 +45,13 @@ marker_stats <- map2(mean_ratio, markers_1vAll,
 tangram_markers <- marker_stats %>% as.data.table() %>% group_by("cellType") %>% slice_head(prop = 0.01) %>% ungroup() %>% select("Symbol")
 tangram_markers
 
-write.csv(tangram_markers, file =  "data/marker_stats.csv")
+write.csv(tangram_markers, 
+          file = file.path(here::here(), "tangram_libd/data/marker_stats.csv"),
+          quote = FALSE,
+          row.names = FALSE,
+          col.names = FALSE)
 
-# save(marker_stats, file =  "data/marker_stats.Rdata")
-# load(here("data", "marker_stats.Rdata"), verbose = TRUE)
-
-dir.create("analysis/")
-
-pdf("analysis/marker_stats.pdf")
+pdf(file.path(here::here(), "tangram_libd/out/marker_stats.pdf"))
 #### Plot ####
 ratio_plot <- map(marker_stats,
                   ~.x %>%
