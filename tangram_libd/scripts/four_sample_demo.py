@@ -16,8 +16,8 @@ import getopt
 #  expression based on manually-determined layer segmentations, for a handful
 #  of well-known marker genes.
 
-sample_names_file = open("brain_samples.txt", "r")
-sample_names = sample_names_file.readlines()
+# sample_names_file = open("brain_samples.txt", "r")
+# sample_names = sample_names_file.readlines()
 
 # sample_names = ['DLPFC_Br2743_ant_manual_alignment',
 #                 'DLPFC_Br2743_mid_manual_alignment',
