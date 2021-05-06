@@ -16,15 +16,19 @@ import getopt
 #  expression based on manually-determined layer segmentations, for a handful
 #  of well-known marker genes.
 
-sample_names = ['DLPFC_Br2743_ant_manual_alignment',
-                'DLPFC_Br2743_mid_manual_alignment',
-                'DLPFC_Br3942_mid_manual_alignment',
-                'DLPFC_Br3942_post_manual_alignment']
+sample_names_file = open("brain_samples.txt", "r")
+sample_names = sample_names_file.readlines()
+
+# sample_names = ['DLPFC_Br2743_ant_manual_alignment',
+#                 'DLPFC_Br2743_mid_manual_alignment',
+#                 'DLPFC_Br3942_mid_manual_alignment',
+#                 'DLPFC_Br3942_post_manual_alignment']
+
 sc_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
 sp_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/visium_dlpfc.h5ad'
 marker_path = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/markers.txt'
 out_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/four_sample_demo_out'
-test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 
+test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT',
               'NR4A2', 'RELN']
 
 #  Recieve the '-i' argument, an integer in [1, 4] corresponding to the index in
@@ -48,7 +52,7 @@ ad_sc = sc.read_h5ad(sc_path)
 
 with open(marker_path, 'r') as f:
     markers = f.read().splitlines()
-    
+
 #  Subset and otherwise prepare objects for mapping
 sc.pp.normalize_total(ad_sc)
 

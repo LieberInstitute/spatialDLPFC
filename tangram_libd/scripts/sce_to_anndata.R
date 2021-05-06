@@ -12,10 +12,16 @@ library("jaffelab")
 dir.create(file.path(here::here(), "tangram_libd/out/"), showWarnings = FALSE)
 visium_out = file.path(here::here(), "tangram_libd/out/visium_dlpfc.h5ad")
 sc_out = file.path(here::here(), "tangram_libd/out/sce_dlpfc.h5ad")
-
+s
 #  An example SingleCellExperiment object
 load(file.path(here::here(), "tangram_libd/data/SCE_DLPFC_tran-etal.rda"))
 load(file.path(here::here(), "tangram_libd/data/sce_combined.rda"))
+
+# read in brain sample names
+brain_samples <- readLines("../data/brain_samples.txt")
+
+# filtering to only brain samples of interest in the spatial data
+sce <- sce[, sce$sample_name %in% brain_samples]
 
 rna.sce <- sce.dlpfc
 spatial.seq <- sce
@@ -27,40 +33,64 @@ seed <- 20210324
 # cutoff
 counts_rna = as.matrix(assays(rna.sce)$counts)
 cutoff_rna <- max(expression_cutoff(counts_rna, seed = seed))
-rna.sce = rna.sce[rowMeans(counts_rna) > cutoff_rna,]
+rna.sce = rna.sce[rowMeans(counts_rna) > cutoff_rna, ]
 
 counts_spat = as.matrix(assays(spatial.seq)$counts)
 cutoff_spat <- max(expression_cutoff(counts_spat, seed = seed))
-spatial.seq = spatial.seq[rowMeans(counts_spat) > cutoff_spat,]
+spatial.seq = spatial.seq[rowMeans(counts_spat) > cutoff_spat, ]
 
 # Getting overlaps between spatial and scRNAseq data
-overlaps <- rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name, ]
+overlaps <-
+    rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name,]
 
-mean_ratio <- map("cell_type", ~get_mean_ratio2(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
-markers_1vAll <- map("cell_type", ~findMarkers_1vAll(overlaps, cellType_col = .x, assay_name = "counts", add_symbol = TRUE))
+mean_ratio <-
+    map(
+        "cell_type",
+        ~ get_mean_ratio2(
+            overlaps,
+            cellType_col = .x,
+            assay_name = "counts",
+            add_symbol = TRUE
+        )
+    )
+markers_1vAll <-
+    map(
+        "cell_type",
+        ~ findMarkers_1vAll(
+            overlaps,
+            cellType_col = .x,
+            assay_name = "counts",
+            add_symbol = TRUE
+        )
+    )
 
-marker_stats <- map2(mean_ratio, markers_1vAll, 
-                     ~left_join(.x, .y, by = c("gene", "cellType.target", "Symbol"))) 
+marker_stats <- map2(mean_ratio, markers_1vAll,
+                     ~ left_join(.x, .y, by = c("gene", "cellType.target", "Symbol")))
 
-tangram_markers <- marker_stats %>% as.data.table() %>% group_by("cellType") %>% slice_head(n = 1000) %>% ungroup() %>% select("Symbol")
+tangram_markers <-
+    marker_stats %>% as.data.table() %>% group_by("cellType") %>% slice_head(n = 1000) %>% ungroup() %>% select("Symbol")
 tangram_markers
 
-write.csv(tangram_markers, 
-          file = file.path(here::here(), "tangram_libd/data/marker_stats.csv"),
-          quote = FALSE,
-          row.names = FALSE,
-          col.names = FALSE)
+write.csv(
+    tangram_markers,
+    file = file.path(here::here(), "tangram_libd/data/marker_stats.csv"),
+    quote = FALSE,
+    row.names = FALSE,
+    col.names = FALSE
+)
 
 pdf(file.path(here::here(), "tangram_libd/out/marker_stats.pdf"))
 #### Plot ####
-ratio_plot <- map(marker_stats,
-                  ~.x %>%
-                      ggplot(aes(ratio, std.logFC)) +
-                      geom_point(size = 0.5) +
-                      facet_wrap(~cellType.target, scales = "free_x") +
-                      labs(x = "mean(target logcount)/mean(highest non-target logcount)") +
-                      theme_bw()+
-                      NULL)
+ratio_plot <- map(
+    marker_stats,
+    ~ .x %>%
+        ggplot(aes(ratio, std.logFC)) +
+        geom_point(size = 0.5) +
+        facet_wrap( ~ cellType.target, scales = "free_x") +
+        labs(x = "mean(target logcount)/mean(highest non-target logcount)") +
+        theme_bw() +
+        NULL
+)
 
 ratio_plot
 
@@ -74,18 +104,25 @@ rm(sce, sce.dlpfc)
 ###############################################################################
 
 write_anndata = function(sce, out_path) {
-    invisible(basiliskRun(fun = function(sce, filename) {
-        library('zellkonverter')
-        library('reticulate')
-        
-        # Convert SCE to AnnData:
-        adata <- SCE2AnnData(sce)
-        
-        #  Write AnnData object to disk
-        adata$write(filename=filename)
-        
-        return()
-    }, env = zellkonverter:::anndata_env, sce = sce, filename = out_path))
+    invisible(
+        basiliskRun(
+            fun = function(sce, filename) {
+                library('zellkonverter')
+                library('reticulate')
+                
+                # Convert SCE to AnnData:
+                adata <- SCE2AnnData(sce)
+                
+                #  Write AnnData object to disk
+                adata$write(filename = filename)
+                
+                return()
+            },
+            env = zellkonverter:::anndata_env,
+            sce = sce,
+            filename = out_path
+        )
+    )
 }
 
 write_anndata(rna.sce, sc_out)
@@ -93,17 +130,17 @@ write_anndata(spatial.seq, visium_out)
 
 # sessioninfo::session_info()
 # ─ Session info ───────────────────────────────────────────────────────────────
-# setting  value                                 
+# setting  value
 # version  R version 4.0.4 RC (2021-02-08 r79975)
-# os       CentOS Linux 7 (Core)                 
-# system   x86_64, linux-gnu                     
-# ui       X11                                   
-# language (EN)                                  
-# collate  en_US.UTF-8                           
-# ctype    en_US.UTF-8                           
-# tz       US/Eastern                            
-# date     2021-05-06                            
-# 
+# os       CentOS Linux 7 (Core)
+# system   x86_64, linux-gnu
+# ui       X11
+# language (EN)
+# collate  en_US.UTF-8
+# ctype    en_US.UTF-8
+# tz       US/Eastern
+# date     2021-05-06
+#
 # ─ Packages ───────────────────────────────────────────────────────────────────
 # package                * version  date       lib
 # AnnotationDbi            1.52.0   2020-10-27 [2]
@@ -250,152 +287,152 @@ write_anndata(spatial.seq, visium_out)
 # yaml                     2.2.1    2020-02-01 [2]
 # zellkonverter          * 1.0.2    2021-01-28 [1]
 # zlibbioc                 1.36.0   2020-10-27 [2]
-# source                                   
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# Github (lahuuki/DeconvoBuddies@73e9e66)  
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
+# source
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.4)
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# Bioconductor
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# Github (lahuuki/DeconvoBuddies@73e9e66)
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# Bioconductor
+# CRAN (R 4.0.4)
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.3)
 # Github (LieberInstitute/jaffelab@42637ff)
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.2)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.2)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.4)                           
-# CRAN (R 4.0.3)                           
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# CRAN (R 4.0.3)                           
-# Bioconductor                             
-# Bioconductor                             
-# 
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.2)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# Bioconductor
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# Bioconductor
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.4)
+# Bioconductor
+# CRAN (R 4.0.4)
+# Bioconductor
+# CRAN (R 4.0.3)
+# Bioconductor
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# Bioconductor
+# Bioconductor
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# Bioconductor
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.2)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.4)
+# CRAN (R 4.0.3)
+# CRAN (R 4.0.3)
+# Bioconductor
+# CRAN (R 4.0.3)
+# Bioconductor
+# Bioconductor
+#
 # [1] /users/aseyedia/R/4.0.x
 # [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.0.x/R/4.0.x/lib64/R/site-library
 # [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.0.x/R/4.0.x/lib64/R/library
