@@ -49,7 +49,13 @@ ad_sp = sc.read_h5ad(sp_path)
 ad_sc = sc.read_h5ad(sc_path)
 
 with open(marker_path, 'r') as f:
-    markers = f.read().splitlines()
+    markers = f.read().splitlines()[1:]
+
+#  Ensure no test genes are used in the training set    
+for gene in test_genes:
+    if gene in markers:
+        print('Removing test gene', gene, 'from the training set.')
+        markers.remove(gene)
 
 #  Subset and otherwise prepare objects for mapping
 sc.pp.normalize_total(ad_sc)
