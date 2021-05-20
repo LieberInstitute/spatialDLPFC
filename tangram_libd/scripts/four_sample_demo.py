@@ -8,6 +8,7 @@ import tangram as tg
 import seaborn as sns
 import scipy as sp
 import getopt
+import pyhere
 
 #  This python script will be invoked by an array of shell scripts, where each
 #  index corresponds to a sample named by Kristen. She named 4 spatial samples,
@@ -16,20 +17,17 @@ import getopt
 #  expression based on manually-determined layer segmentations, for a handful
 #  of well-known marker genes.
 
-# sample_names_file = open("brain_samples.txt", "r")
-# sample_names = sample_names_file.readlines()
-
-# sample_names = ['DLPFC_Br2743_ant_manual_alignment',
-#                 'DLPFC_Br2743_mid_manual_alignment',
-#                 'DLPFC_Br3942_mid_manual_alignment',
-#                 'DLPFC_Br3942_post_manual_alignment']
-
-sc_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/sce_dlpfc.h5ad'
-sp_path = '/dcl01/lieber/ajaffe/Nick/spatial/tangram/visium_dlpfc.h5ad'
-marker_path = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/markers.txt'
-out_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_testing/four_sample_demo_out'
+sc_path = pyhere.here('tangram_libd', 'out', 'sce_dlpfc.h5ad')
+sp_path = pyhere.here('tangram_libd', 'out', 'visium_dlpfc.h5ad')
+marker_path = pyhere.here('tangram_libd', 'data', 'marker_stats.csv')
+out_dir = pyhere.here('tangram_libd', 'out', 'four_sample_demo_out')
 test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT',
               'NR4A2', 'RELN']
+sample_path = pyhere.here('tangram_libd', 'data', 'brain_samples.txt')
+
+#  Grab the full list of sample names we will subset from
+with open(sample_path, 'r') as f:
+    sample_names = f.read().splitlines()
 
 #  Recieve the '-i' argument, an integer in [1, 4] corresponding to the index in
 #  the sample_names list
