@@ -12,7 +12,7 @@ library("jaffelab")
 dir.create(file.path(here::here(), "tangram_libd/out/"), showWarnings = FALSE)
 visium_out = file.path(here::here(), "tangram_libd/out/visium_dlpfc.h5ad")
 sc_out = file.path(here::here(), "tangram_libd/out/sce_dlpfc.h5ad")
-s
+
 #  An example SingleCellExperiment object
 load(file.path(here::here(), "tangram_libd/data/SCE_DLPFC_tran-etal.rda"))
 load(file.path(here::here(), "tangram_libd/data/sce_combined.rda"))
