@@ -18,7 +18,7 @@ load(file.path(here::here(), "tangram_libd/data/SCE_DLPFC_tran-etal.rda"))
 load(file.path(here::here(), "tangram_libd/data/sce_combined.rda"))
 
 # read in brain sample names
-brain_samples <- readLines("../data/brain_samples.txt")
+brain_samples = readLines(file.path(here::here(), "tangram_libd/data/brain_samples.txt"))
 
 # filtering to only brain samples of interest in the spatial data
 sce <- sce[, sce$sample_name %in% brain_samples]
