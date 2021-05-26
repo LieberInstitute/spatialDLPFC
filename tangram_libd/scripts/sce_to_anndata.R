@@ -43,6 +43,42 @@ spatial.seq = spatial.seq[rowMeans(counts_spat) > cutoff_spat, ]
 overlaps <-
     rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name,]
 
+# sce:  SingleCellExperiment object with 'cell_type' as a column in its colData
+# n:    number of marker genes to determine
+# combine: (logical) merge all inhibitory and all excitatory cell types
+#       together?
+#
+# prints number of unique marker genes found and the median mean-ratio of
+# those unique marker genes
+explore_markers = function(sce, n, combine=TRUE) {
+    sce_copy = sce
+    if (combine) {
+        #  Merge together all inhibitory and all excitatory "cell types"
+        colData(sce_copy)$cell_type = as.character(colData(sce_copy)$cell_type)
+        colData(sce_copy)$cell_type[substr(colData(sce_copy)$cell_type, 1, 5) == 'Excit'] = 'Excit'
+        colData(sce_copy)$cell_type[substr(colData(sce_copy)$cell_type, 1, 5) == 'Inhib'] = 'Inhib'
+        colData(sce_copy)$cell_type = as.factor(colData(sce_copy)$cell_type)
+    }
+    
+    mean_ratio <-
+        map(
+            "cell_type",
+            ~ get_mean_ratio2(
+                sce_copy,
+                cellType_col = .x,
+                assay_name = "counts",
+                add_symbol = TRUE
+            )
+        )
+    
+    markers = mean_ratio[[1]] %>% group_by("cellType") %>% slice_head(n = n) %>% ungroup()
+    n_uniq = length(unique(markers$Symbol))
+    print(paste0('Unique markers: ', n_uniq, ' of ', n, ' (', round(100 * n_uniq / n, 1), '%).'))
+    
+    markers = markers[match(unique(markers$Symbol), markers$Symbol),]
+    print(paste0('Median ratio: ', median(markers$ratio)))
+}
+
 mean_ratio <-
     map(
         "cell_type",
