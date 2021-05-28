@@ -12,6 +12,7 @@ library("jaffelab")
 dir.create(file.path(here::here(), "tangram_libd/out/"), showWarnings = FALSE)
 visium_out = file.path(here::here(), "tangram_libd/out/visium_dlpfc.h5ad")
 sc_out = file.path(here::here(), "tangram_libd/out/sce_dlpfc.h5ad")
+expr_plot_out = file.path(here::here(), "tangram_libd/out/expression_cutoffs.pdf")
 
 #  An example SingleCellExperiment object
 load(file.path(here::here(), "tangram_libd/data/SCE_DLPFC_tran-etal.rda"))
@@ -31,6 +32,7 @@ seed <- 20210324
 
 # Find expression cutoff for each dataset and filter out genes below that
 # cutoff
+pdf(expr_plot_out)
 counts_rna = as.matrix(assays(rna.sce)$counts)
 cutoff_rna <- max(expression_cutoff(counts_rna, seed = seed))
 rna.sce = rna.sce[rowMeans(counts_rna) > cutoff_rna, ]
@@ -38,6 +40,7 @@ rna.sce = rna.sce[rowMeans(counts_rna) > cutoff_rna, ]
 counts_spat = as.matrix(assays(spatial.seq)$counts)
 cutoff_spat <- max(expression_cutoff(counts_spat, seed = seed))
 spatial.seq = spatial.seq[rowMeans(counts_spat) > cutoff_spat, ]
+dev.off()
 
 # Getting overlaps between spatial and scRNAseq data
 overlaps <-
