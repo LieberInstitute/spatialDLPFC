@@ -19,7 +19,7 @@ import pyhere
 
 sc_path = pyhere.here('tangram_libd', 'out', 'sce_dlpfc.h5ad')
 sp_path = pyhere.here('tangram_libd', 'out', 'visium_dlpfc.h5ad')
-marker_path = pyhere.here('tangram_libd', 'data', 'marker_stats.csv')
+marker_path = pyhere.here('tangram_libd', 'data', 'markers.txt')
 out_dir = pyhere.here('tangram_libd', 'out', 'four_sample_demo_out')
 test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT',
               'NR4A2', 'RELN']
@@ -49,7 +49,7 @@ ad_sp = sc.read_h5ad(sp_path)
 ad_sc = sc.read_h5ad(sc_path)
 
 with open(marker_path, 'r') as f:
-    markers = f.read().splitlines()[1:]
+    markers = f.read().splitlines()
 
 #  Ensure no test genes are used in the training set    
 for gene in test_genes:
