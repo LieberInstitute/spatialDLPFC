@@ -44,13 +44,13 @@ overlaps <-
     rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name,]
 
 # sce:  SingleCellExperiment object with 'cell_type' as a column in its colData
-# n:    number of marker genes to determine
+# n:    number of marker genes to determine (approximately)
 # combine: (logical) merge all inhibitory and all excitatory cell types
 #       together?
 #
 # prints number of unique marker genes found and the median mean-ratio of
-# those unique marker genes
-explore_markers = function(sce, n, combine=TRUE) {
+# those unique marker genes; returns the unique markers
+get_markers = function(sce, n, combine=TRUE) {
     sce_copy = sce
     if (combine) {
         #  Merge together all inhibitory and all excitatory "cell types"
@@ -60,23 +60,30 @@ explore_markers = function(sce, n, combine=TRUE) {
         colData(sce_copy)$cell_type = as.factor(colData(sce_copy)$cell_type)
     }
     
-    mean_ratio <-
-        map(
-            "cell_type",
-            ~ get_mean_ratio2(
-                sce_copy,
-                cellType_col = .x,
-                assay_name = "counts",
-                add_symbol = TRUE
-            )
+    mean_ratio = 
+        get_mean_ratio2(
+            sce_copy,
+            cellType_col = "cell_type",
+            assay_name = "counts",
+            add_symbol = TRUE
         )
     
-    markers = mean_ratio[[1]] %>% group_by("cellType") %>% slice_head(n = n) %>% ungroup()
+    #  We are taking the top x markers per cell type, and totalling as close to
+    #  n as possible (rounding down if n isn't divisible by x)
+    n_per_group = n %/% nlevels(mean_ratio$cellType.target)
+    n_actual = n_per_group * nlevels(mean_ratio$cellType.target)
+    
+    markers = mean_ratio %>% 
+        group_by(cellType.target) %>% 
+        filter(rank_ratio <= n_per_group) %>% 
+        ungroup()
     n_uniq = length(unique(markers$Symbol))
-    print(paste0('Unique markers: ', n_uniq, ' of ', n, ' (', round(100 * n_uniq / n, 1), '%).'))
+    print(paste0('Unique markers: ', n_uniq, ' of ', n_actual, ' (', round(100 * n_uniq / n_actual, 1), '%).'))
     
     markers = markers[match(unique(markers$Symbol), markers$Symbol),]
     print(paste0('Median ratio: ', median(markers$ratio)))
+    
+    return(unique(markers$Symbol))
 }
 
 mean_ratio <-
@@ -103,16 +110,12 @@ markers_1vAll <-
 marker_stats <- map2(mean_ratio, markers_1vAll,
                      ~ left_join(.x, .y, by = c("gene", "cellType.target", "Symbol")))
 
-tangram_markers <-
-    marker_stats %>% as.data.table() %>% group_by("cellType") %>% slice_head(n = 1000) %>% ungroup() %>% select("Symbol")
+tangram_markers <- get_markers(overlaps, 200)
 tangram_markers
 
-write.csv(
+writeLines(
     tangram_markers,
-    file = file.path(here::here(), "tangram_libd/data/marker_stats.csv"),
-    quote = FALSE,
-    row.names = FALSE,
-    col.names = FALSE
+    con = file.path(here::here(), "tangram_libd/data/markers.txt")
 )
 
 pdf(file.path(here::here(), "tangram_libd/out/marker_stats.pdf"))
