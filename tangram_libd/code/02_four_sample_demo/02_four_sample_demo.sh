@@ -1,6 +1,6 @@
 #$ -cwd
-#$ -o four_sample_demo_out/$TASK_ID.log
-#$ -e four_sample_demo_out/$TASK_ID.log
+#$ -o four_sample_demo_out2/$TASK_ID.log
+#$ -e four_sample_demo_out2/$TASK_ID.log
 #$ -l gpu,mf=64G,h_vmem=64G
 #$ -t 1-4
 #$ -tc 1
