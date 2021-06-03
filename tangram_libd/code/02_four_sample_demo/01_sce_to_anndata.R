@@ -9,17 +9,19 @@ library("here")
 library("jaffelab")
 
 #  Path to write the python AnnData object
-dir.create(file.path(here::here(), "tangram_libd/out/"), showWarnings = FALSE)
-visium_out = file.path(here::here(), "tangram_libd/out/visium_dlpfc.h5ad")
-sc_out = file.path(here::here(), "tangram_libd/out/sce_dlpfc.h5ad")
-expr_plot_out = file.path(here::here(), "tangram_libd/out/expression_cutoffs.pdf")
+dir.create(file.path(here::here(), "tangram_libd/processed-data/02_four_sample_demo"), showWarnings = FALSE)
+visium_out = file.path(here::here(), "tangram_libd/processed-data/02_four_sample_demo/visium_dlpfc.h5ad")
+sc_out = file.path(here::here(), "tangram_libd/processed-data/02_four_sample_demo/sce_dlpfc.h5ad")
+expr_plot_out = file.path(here::here(), "tangram_libd/plots/02_four_sample_demo/expression_cutoffs.pdf")
 
 #  An example SingleCellExperiment object
-load(file.path(here::here(), "tangram_libd/data/SCE_DLPFC_tran-etal.rda"))
-load(file.path(here::here(), "tangram_libd/data/sce_combined.rda"))
+load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/SCE_DLPFC_tran-etal.rda"))
+load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/sce_combined.rda"))
+# load(file.path(here::here(), "tangram_libd/raw-data/00_get_data_local/SCE_DLPFC_tran-etal.rda"))
+# load(file.path(here::here(), "tangram_libd/raw-data/00_get_data_local/sce_combined.rda"))
 
 # read in brain sample names
-brain_samples = readLines(file.path(here::here(), "tangram_libd/data/brain_samples.txt"))
+brain_samples = readLines(file.path(here::here(), "tangram_libd/processed-data/02_four_sample_demo/brain_samples.txt"))
 
 # filtering to only brain samples of interest in the spatial data
 sce <- sce[, sce$sample_name %in% brain_samples]
@@ -118,10 +120,10 @@ tangram_markers
 
 writeLines(
     tangram_markers,
-    con = file.path(here::here(), "tangram_libd/data/markers.txt")
+    con = file.path(here::here(), "tangram_libd/processed-data/02_four_sample_demo/markers.txt")
 )
 
-pdf(file.path(here::here(), "tangram_libd/out/marker_stats.pdf"))
+pdf(file.path(here::here(), "tangram_libd/plots/02_four_sample_demo/marker_stats.pdf"))
 #### Plot ####
 ratio_plot <- map(
     marker_stats,
