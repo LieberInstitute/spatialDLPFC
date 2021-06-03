@@ -17,13 +17,14 @@ import pyhere
 #  expression based on manually-determined layer segmentations, for a handful
 #  of well-known marker genes.
 
-sc_path = pyhere.here('tangram_libd', 'out', 'sce_dlpfc.h5ad')
-sp_path = pyhere.here('tangram_libd', 'out', 'visium_dlpfc.h5ad')
-marker_path = pyhere.here('tangram_libd', 'data', 'markers.txt')
-out_dir = pyhere.here('tangram_libd', 'out', 'four_sample_demo_out')
+os.mkdir(pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'four_sample_demo_out'))
+sc_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'sce_dlpfc.h5ad')
+sp_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'visium_dlpfc.h5ad')
+marker_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'markers.txt')
+out_dir = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'four_sample_demo_out')
 test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT',
               'NR4A2', 'RELN']
-sample_path = pyhere.here('tangram_libd', 'data', 'brain_samples.txt')
+sample_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'brain_samples.txt')
 
 #  Grab the full list of sample names we will subset from
 with open(sample_path, 'r') as f:
@@ -41,6 +42,7 @@ for opt, arg in opts:
     assert opt in ('-i', '--index='), opt
     sample_index = int(arg)
 
+# sample_index = 1
 #  Determine this particular sample name
 sample_name = sample_names[sample_index - 1]
 
