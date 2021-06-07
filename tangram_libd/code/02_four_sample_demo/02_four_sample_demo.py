@@ -9,6 +9,7 @@ import seaborn as sns
 import scipy as sp
 import getopt
 import pyhere
+from pathlib import Path
 
 #  This python script will be invoked by an array of shell scripts, where each
 #  index corresponds to a sample named by Kristen. She named 4 spatial samples,
@@ -17,13 +18,12 @@ import pyhere
 #  expression based on manually-determined layer segmentations, for a handful
 #  of well-known marker genes.
 
-os.mkdir(pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'four_sample_demo_out'))
+Path(pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'four_sample_demo_out')).mkdir(parents=True, exist_ok=True)
 sc_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'sce_dlpfc.h5ad')
 sp_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'visium_dlpfc.h5ad')
 marker_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'markers.txt')
 out_dir = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'four_sample_demo_out')
-test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT',
-              'NR4A2', 'RELN']
+test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN']
 sample_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'brain_samples.txt')
 
 #  Grab the full list of sample names we will subset from
@@ -42,7 +42,7 @@ for opt, arg in opts:
     assert opt in ('-i', '--index='), opt
     sample_index = int(arg)
 
-# sample_index = 1
+# sample_index = 4
 #  Determine this particular sample name
 sample_name = sample_names[sample_index - 1]
 
