@@ -1,9 +1,29 @@
+#!/bin/bash
 #$ -cwd
-#$ -o four_sample_demo_out2/$TASK_ID.log
-#$ -e four_sample_demo_out2/$TASK_ID.log
+#$ -N "four_sample_demo"
+#$ -j y
+#$ -o /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_libd/processed-data/02_four_sample_demo/four_sample_demo_$TASK_ID.log
+#$ -e /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_libd/processed-data/02_four_sample_demo/four_sample_demo_$TASK_ID.log
 #$ -l gpu,mf=64G,h_vmem=64G
 #$ -t 1-4
 #$ -tc 1
 
+echo "**** Job starts ****"
+date
+echo "**** JHPCE info ****"
+echo "User: ${USER}"
+echo "Job id: ${JOB_ID}"
+echo "Job name: ${JOB_NAME}"
+echo "Hostname: ${HOSTNAME}"
+echo "Task id: ${SGE_TASK_ID}"
+
 conda activate tangram
-python four_sample_demo.py -i $SGE_TASK_ID
+
+conda env list
+
+module list
+
+python code/02_four_sample_demo/four_sample_demo.py -i $SGE_TASK_ID
+
+echo "**** Job ends ****"
+date
