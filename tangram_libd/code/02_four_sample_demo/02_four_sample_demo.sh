@@ -23,7 +23,7 @@ conda env list
 
 module list
 
-python code/02_four_sample_demo/four_sample_demo.py -i $SGE_TASK_ID
+python code/02_four_sample_demo/02_four_sample_demo.py -i $SGE_TASK_ID
 
 echo "**** Job ends ****"
 date
