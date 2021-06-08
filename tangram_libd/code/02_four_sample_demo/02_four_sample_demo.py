@@ -22,7 +22,8 @@ Path(pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'four_
 sc_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'sce_dlpfc.h5ad')
 sp_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'visium_dlpfc.h5ad')
 marker_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'markers.txt')
-out_dir = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'four_sample_demo_out')
+out_dir = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', '02_four_sample_demo_out')
+plot_dir = pyhere.here('tangram_libd', 'plots', '02_four_sample_demo')
 test_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN']
 sample_path = pyhere.here('tangram_libd', 'processed-data', '02_four_sample_demo', 'brain_samples.txt')
 
@@ -84,21 +85,21 @@ ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_name, :].copy()
 #  Generate plots
 tg.plot_cell_annotation(ad_map, annotation='cell_type', x='imagerow', y='imagecol', nrows=5, ncols=4)
 f = plt.gcf()
-f.savefig(os.path.join(out_dir, 'cell_annotation_' + sample_name + '.png'), bbox_inches='tight')
+f.savefig(os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'), bbox_inches='tight')
 
 tg.plot_training_scores(ad_map, bins=50, alpha=.5)
 f = plt.gcf()
-f.savefig(os.path.join(out_dir, 'train_scores' + sample_name + '.pdf'), bbox_inches='tight')
+f.savefig(os.path.join(plot_dir, 'train_scores' + sample_name + '.pdf'), bbox_inches='tight')
 
 #  Project all cells based on trained mapping, and save the result
 ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
-ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge' + sample_name + '.h5ad'))
+ad_ge.write_h5ad(os.path.join(plot_dir, 'ad_ge' + sample_name + '.h5ad'))
 
 #  Plot expected vs. actual expression maps for particular test genes of
 #  interest
 tg.plot_genes(test_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='imagerow', y='imagecol')
 f = plt.gcf()
-f.savefig(os.path.join(out_dir, 'mapped_test_genes_' + sample_name + '.pdf'), bbox_inches='tight')
+f.savefig(os.path.join(plot_dir, 'mapped_test_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
 #  Compute average cosine similarity for test genes
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
