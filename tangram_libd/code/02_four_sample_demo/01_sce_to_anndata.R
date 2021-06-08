@@ -17,14 +17,42 @@ expr_plot_out = file.path(here::here(), "tangram_libd/plots/02_four_sample_demo/
 #  An example SingleCellExperiment object
 load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/SCE_DLPFC_tran-etal.rda"))
 load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/sce_combined.rda"))
-# load(file.path(here::here(), "tangram_libd/raw-data/00_get_data_local/SCE_DLPFC_tran-etal.rda"))
-# load(file.path(here::here(), "tangram_libd/raw-data/00_get_data_local/sce_combined.rda"))
 
 # read in brain sample names
 brain_samples = readLines(file.path(here::here(), "tangram_libd/processed-data/02_four_sample_demo/brain_samples.txt"))
 
 # filtering to only brain samples of interest in the spatial data
 sce <- sce[, sce$sample_name %in% brain_samples]
+
+###############################################################################
+#  The main code we'll use in general to convert SCE R objects to AnnData
+#  python objects, as a preprocessing step to running tangram on our own data
+###############################################################################
+
+write_anndata = function(sce, out_path) {
+    invisible(
+        basiliskRun(
+            fun = function(sce, filename) {
+                library('zellkonverter')
+                library('reticulate')
+                
+                # Convert SCE to AnnData:
+                adata <- SCE2AnnData(sce)
+                
+                #  Write AnnData object to disk
+                adata$write(filename = filename)
+                
+                return()
+            },
+            env = zellkonverter:::anndata_env,
+            sce = sce,
+            filename = out_path
+        )
+    )
+}
+
+write_anndata(sce.dlpfc, sc_out)
+write_anndata(sce, visium_out)
 
 rna.sce <- sce.dlpfc
 spatial.seq <- sce
@@ -140,37 +168,7 @@ ratio_plot
 
 dev.off()
 
-rm(sce, sce.dlpfc)
-
-###############################################################################
-#  The main code we'll use in general to convert SCE R objects to AnnData
-#  python objects, as a preprocessing step to running tangram on our own data
-###############################################################################
-
-write_anndata = function(sce, out_path) {
-    invisible(
-        basiliskRun(
-            fun = function(sce, filename) {
-                library('zellkonverter')
-                library('reticulate')
-                
-                # Convert SCE to AnnData:
-                adata <- SCE2AnnData(sce)
-                
-                #  Write AnnData object to disk
-                adata$write(filename = filename)
-                
-                return()
-            },
-            env = zellkonverter:::anndata_env,
-            sce = sce,
-            filename = out_path
-        )
-    )
-}
-
-write_anndata(rna.sce, sc_out)
-write_anndata(spatial.seq, visium_out)
+# rm(rna.sce, spatial.seq) # remove modified RSEs
 
 # sessioninfo::session_info()
 # ─ Session info ───────────────────────────────────────────────────────────────
