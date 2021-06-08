@@ -3,8 +3,8 @@
 #$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
 #$ -N "sce-to-anndata"
 #$ -j y
-#$ -o ../out/logs/sce-2-anndata.log
-#$ -e ../out/logs/sce-2-anndata.log
+#$ -o processed-data/02_four_sample_demo/sce-2-anndata.log
+#$ -e processed-data/02_four_sample_demo/sce-2-anndata.log
 
 echo "**** Job starts ****"
 date
