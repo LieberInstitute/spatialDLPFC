@@ -3,8 +3,8 @@
 #$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
 #$ -N "sce-to-anndata"
 #$ -j y
-#$ -o ../../processed-data/03_nn_run/sce-2-anndata.log
-#$ -e ../../processed-data/03_nn_run/sce-2-anndata.log
+#$ -o ../../processed-data/03_nn_run/logs/sce-2-anndata.log
+#$ -e ../../processed-data/03_nn_run/logs/sce-2-anndata.log
 
 echo "**** Job starts ****"
 date
@@ -21,7 +21,7 @@ module load conda_R/4.0.x
 ## List current modules
 module list
 
-Rscript code/03_nn_run/01_sce_to_anndata.R
+Rscript 01_sce_to_anndata.R
 
 echo "**** Job ends ****"
 date
