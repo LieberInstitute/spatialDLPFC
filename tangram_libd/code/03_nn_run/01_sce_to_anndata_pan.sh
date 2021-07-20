@@ -1,10 +1,10 @@
 #!/bin/bash
 #$ -cwd
 #$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
-#$ -N "sce-to-anndata"
+#$ -N "sce-to-anndata-pan"
 #$ -j y
-#$ -o ../../processed-data/03_nn_run/logs/sce-2-anndata.log
-#$ -e ../../processed-data/03_nn_run/logs/sce-2-anndata.log
+#$ -o ../../processed-data/03_nn_run/logs/sce-2-anndata-pan.log
+#$ -e ../../processed-data/03_nn_run/logs/sce-2-anndata-pan.log
 
 echo "**** Job starts ****"
 date
@@ -21,7 +21,7 @@ module load conda_R/4.0.x
 ## List current modules
 module list
 
-Rscript 01_sce_to_anndata.R
+Rscript 01_sce_to_anndata_pan.R
 
 echo "**** Job ends ****"
 date
