@@ -1,17 +1,20 @@
-library('basilisk')
-library('scRNAseq')
-library('SingleCellExperiment')
-library('zellkonverter')
-library('data.table')
-library('tidyverse')
-library("DeconvoBuddies")
+suppressPackageStartupMessages(library('basilisk'))
+suppressPackageStartupMessages(library('scRNAseq'))
+suppressPackageStartupMessages(library('SingleCellExperiment'))
+suppressPackageStartupMessages(library('zellkonverter'))
+suppressPackageStartupMessages(library('data.table'))
+suppressPackageStartupMessages(library('tidyverse'))
+suppressPackageStartupMessages(library("DeconvoBuddies"))
+suppressPackageStartupMessages(library("jaffelab"))
+suppressPackageStartupMessages(library('sessioninfo'))
 library("here")
-library("jaffelab")
 
 #  Path to write the python AnnData object
 dir.create(file.path(here::here(), "tangram_libd/processed-data/03_nn_run"), showWarnings = FALSE)
 visium_out = file.path(here::here(), "tangram_libd/processed-data/03_nn_run/visium_dlpfc.h5ad")
 sc_out = file.path(here::here(), "tangram_libd/processed-data/03_nn_run/sce_pan.h5ad")
+
+print('Loading objects...')
 
 #  snRNAseq and spatial objects, respectively
 load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/sce_pan.Rdata"))
@@ -49,6 +52,7 @@ write_anndata = function(sce, out_path) {
     )
 }
 
+print('Writing AnnDatas...')
 write_anndata(sce_pan, sc_out)
 write_anndata(sce, visium_out)
 gc()
@@ -57,6 +61,7 @@ gc()
 #  Find marker genes, starting with Louise's marker stats
 ###############################################################################
 
+print('Determining and writing markers...')
 marker_stats_filter <- marker_stats %>%
     filter(gene %in% rownames(sce)) %>%
     arrange(rank_ratio) %>%
@@ -69,3 +74,18 @@ writeLines(
     marker_genes,
     con = file.path(here::here(), "tangram_libd/processed-data/03_nn_run/pan_markers.txt")
 )
+
+###############################################################################
+#  Write the sample names to a file for use in the python script
+###############################################################################
+
+print('Writing sample names for use in python...')
+ids = as.character(unique(colData(sce)$sample_name))
+writeLines(
+    ids,
+    con = here("tangram_libd", "processed-data", "03_nn_run", "brain_samples.txt")
+)
+
+print('Done.')
+
+session_info()
