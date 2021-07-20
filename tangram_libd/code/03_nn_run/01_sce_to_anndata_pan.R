@@ -20,6 +20,8 @@ load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/Human_DLP
 #  Load Louise's marker stats for pan-brain
 load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/marker_stats_pan.Rdata"))
 
+gc()
+
 ###############################################################################
 #  Convert SCE R objects to AnnData python objects, as a preprocessing step to
 #  running tangram
@@ -49,6 +51,7 @@ write_anndata = function(sce, out_path) {
 
 write_anndata(sce_pan, sc_out)
 write_anndata(sce, visium_out)
+gc()
 
 ###############################################################################
 #  Find marker genes, starting with Louise's marker stats
@@ -63,6 +66,6 @@ marker_stats_filter <- marker_stats %>%
 marker_genes <- marker_stats_filter$Symbol
 
 writeLines(
-    tangram_markers,
+    marker_genes,
     con = file.path(here::here(), "tangram_libd/processed-data/03_nn_run/pan_markers.txt")
 )

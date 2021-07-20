@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
+#$ -l bluejay,mem_free=70G,h_vmem=70G,h_fsize=100G
 #$ -N "sce-to-anndata-pan"
 #$ -j y
 #$ -o ../../processed-data/03_nn_run/logs/sce-2-anndata-pan.log
