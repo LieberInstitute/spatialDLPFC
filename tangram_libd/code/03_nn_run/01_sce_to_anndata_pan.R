@@ -10,18 +10,18 @@ suppressPackageStartupMessages(library('sessioninfo'))
 library("here")
 
 #  Path to write the python AnnData object
-dir.create(file.path(here::here(), "tangram_libd/processed-data/03_nn_run"), showWarnings = FALSE)
-visium_out = file.path(here::here(), "tangram_libd/processed-data/03_nn_run/visium_dlpfc.h5ad")
-sc_out = file.path(here::here(), "tangram_libd/processed-data/03_nn_run/sce_pan.h5ad")
+dir.create(here("tangram_libd", "processed-data", "03_nn_run"), showWarnings = FALSE))
+visium_out = here("tangram_libd", "processed-data", "03_nn_run", "visium_dlpfc.h5ad")
+sc_out = here("tangram_libd", "processed-data", "03_nn_run", "sce_pan.h5ad")
 
 print('Loading objects...')
 
 #  snRNAseq and spatial objects, respectively
-load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/sce_pan.Rdata"))
-load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/Human_DLPFC_Visium_processedData_sce_scran_spatialLIBD.Rdata"))
+load(here("tangram_libd", "raw-data", "01_prepare_tangram", "sce_pan.Rdata"))
+load(here("tangram_libd", "raw-data", "01_prepare_tangram", "Human_DLPFC_Visium_processedData_sce_scran_spatialLIBD.Rdata"))
 
 #  Load Louise's marker stats for pan-brain
-load(file.path(here::here(), "tangram_libd/raw-data/01_prepare_tangram/marker_stats_pan.Rdata"))
+load(here("tangram_libd", "raw-data", "01_prepare_tangram", "marker_stats_pan.Rdata"))
 
 gc()
 
@@ -72,7 +72,7 @@ marker_genes <- marker_stats_filter$Symbol
 
 writeLines(
     marker_genes,
-    con = file.path(here::here(), "tangram_libd/processed-data/03_nn_run/pan_markers.txt")
+    con = here("tangram_libd", "processed-data", "03_nn_run", "pan_markers.txt")
 )
 
 ###############################################################################
