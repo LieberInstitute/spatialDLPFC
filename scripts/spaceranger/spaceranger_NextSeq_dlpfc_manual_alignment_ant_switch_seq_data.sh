@@ -45,29 +45,29 @@ cd outputs/NextSeq
 # --localcores=8 \
 # --localmem=64
 
-spaceranger count \
---id=DLPFC_3942_ant_manual_alignment \
---transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
---fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/3_DLPFC_Br6423_ant \
---image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7690_rush_anterior_2.tif \
---slide=V19B23-075 \
---area=B1 \
---loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-075-B1_2_Br3942_ant_manual_alignment.json \
---jobmode=local \
---localcores=8 \
---localmem=64
-
 # spaceranger count \
-# --id=DLPFC_Br6423_ant_manual_alignment \
+# --id=DLPFC_3942_ant_manual_alignment \
 # --transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
-# --fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/1_DLPFC_Br2743_ant \
-# --image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7690_rush_anterior_3.tif \
+# --fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/3_DLPFC_Br6423_ant \
+# --image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7690_rush_anterior_2.tif \
 # --slide=V19B23-075 \
-# --area=C1 \
-# --loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-075-C1_3_Br6423_ant_manual_alignment.json \
+# --area=B1 \
+# --loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-075-B1_2_Br3942_ant_manual_alignment.json \
 # --jobmode=local \
 # --localcores=8 \
 # --localmem=64
+
+spaceranger count \
+--id=DLPFC_Br6423_ant_manual_alignment_extra_reads \
+--transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
+--fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/1_DLPFC_Br2743_ant,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br2743_ant_L002_ds.fc72ee6430d840508be719765f7405d5,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br2743_ant_L001_ds.8f7de7ab26264e01b7511eca6ce97a81 \
+--image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_3.tif \
+--slide=V19B23-075 \
+--area=C1 \
+--loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-075-C1_3_Br6423_ant_manual_alignment.json \
+--jobmode=local \
+--localcores=8 \
+--localmem=64
 
 # spaceranger count \
 # --id=DLPFC_Br8492_ant_manual_alignment \

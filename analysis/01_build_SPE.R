@@ -93,7 +93,7 @@ Sys.time()
 
 
 ## Add some information used by spatialLIBD
-spe$key <- paste0(spe$Barcode, '_', spe$sample_id)
+spe$key <- paste0(spe$Barcode, "_", spe$sample_id)
 spe$sum_umi <- colSums(counts(spe))
 spe$sum_gene <- colSums(counts(spe) > 0)
 
@@ -283,7 +283,7 @@ vis_grid_gene(
 qcstats <- perCellQCMetrics(spe, subsets = list(
     Mito = which(seqnames(spe) == "chrM")
 ))
-qcfilter <- quickPerCellQC(qcstats, sub.fields="subsets_Mito_percent")
+qcfilter <- quickPerCellQC(qcstats, sub.fields = "subsets_Mito_percent")
 colSums(as.matrix(qcfilter))
 # low_lib_size            low_n_features high_subsets_Mito_percent                   discard
 #         2774                      3055                      1763                      4389
@@ -302,7 +302,7 @@ spe$scran_low_n_features <-
 spe$scran_high_subsets_Mito_percent <-
     factor(qcfilter$high_subsets_Mito_percent, levels = c("TRUE", "FALSE"))
 
-for(i in colnames(qcfilter)) {
+for (i in colnames(qcfilter)) {
     vis_grid_clus(
         spe = spe,
         clustervar = paste0("scran_", i),
@@ -342,18 +342,18 @@ Sys.time()
 # reverting to the ratio of average library sizes
 
 table(spe$scran_quick_cluster)
- #   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
- # 763  466  634  848  841  513  856  462  468  776  998  148  254  284  308  198
- #  17   18   19   20   21   22   23   24   25   26   27   28   29   30   31   32
- # 245  962  674  435  359  268  271  142  760  606  544  150  123  462  514  576
- #  33   34   35   36   37   38   39   40   41   42   43   44   45   46   47   48
- # 176  290  161  183  697  662  579  199  190  235  197  424  111  186  432  259
- #  49   50   51   52   53   54   55   56   57   58   59   60   61   62   63   64
- # 684  818  271  884  586  178  102  161  920  893  380  877  675  537  104  542
- #  65   66   67   68   69   70   71   72   73   74   75   76   77   78   79   80
- # 935  461  327  207  229  366  166  110 1193  860 1219  579  679 1309 1476 1329
- #  81   82   83   84   85   86   87   88   89   90   91   92   93   94   95
- # 650  644  393  992  159  542  514  269  272  896  787  821 1141  213  760
+#   1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+# 763  466  634  848  841  513  856  462  468  776  998  148  254  284  308  198
+#  17   18   19   20   21   22   23   24   25   26   27   28   29   30   31   32
+# 245  962  674  435  359  268  271  142  760  606  544  150  123  462  514  576
+#  33   34   35   36   37   38   39   40   41   42   43   44   45   46   47   48
+# 176  290  161  183  697  662  579  199  190  235  197  424  111  186  432  259
+#  49   50   51   52   53   54   55   56   57   58   59   60   61   62   63   64
+# 684  818  271  884  586  178  102  161  920  893  380  877  675  537  104  542
+#  65   66   67   68   69   70   71   72   73   74   75   76   77   78   79   80
+# 935  461  327  207  229  366  166  110 1193  860 1219  579  679 1309 1476 1329
+#  81   82   83   84   85   86   87   88   89   90   91   92   93   94   95
+# 650  644  393  992  159  542  514  269  272  896  787  821 1141  213  760
 
 summary(sizeFactors(spe))
 #     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.
@@ -404,7 +404,8 @@ length(top.hvgs.fdr1)
 save(top.hvgs,
     top.hvgs.fdr5,
     top.hvgs.fdr1,
-    file = here::here("rdata", "spe", "top.hvgs.Rdata"))
+    file = here::here("rdata", "spe", "top.hvgs.Rdata")
+)
 
 set.seed(20191112)
 Sys.time()
@@ -416,8 +417,8 @@ Sys.time()
 reducedDimNames(spe)
 
 summary(apply(reducedDim(spe, "PCA"), 2, sd))
- #   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
- # 0.8947  0.9127  0.9308  1.1226  0.9826  3.7028
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 0.8947  0.9127  0.9308  1.1226  0.9826  3.7028
 summary(colMeans(reducedDim(spe, "PCA")))
 #       Min.    1st Qu.     Median       Mean    3rd Qu.       Max.
 # -2.466e-14 -3.442e-15  2.650e-15  2.456e-15  9.457e-15  2.697e-14
@@ -493,7 +494,7 @@ Sys.time()
 save(spe, file = here::here("rdata", "spe", "spe.Rdata"))
 
 ## Reproducibility information
-print('Reproducibility information:')
+print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
@@ -680,3 +681,47 @@ session_info()
 # [1] /users/lcollado/R/devel
 # [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/site-library
 # [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
+
+# load(here::here("rdata", "spe", "spe.Rdata"), verbose = TRUE)
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe.Rdata")
+
+Sys.time()
+g_k50 <- buildSNNGraph(spe, k = 50, use.dimred = "PCA")
+Sys.time()
+## About 12 minutes
+# [1] "2019-11-13 15:20:32 EST"
+# [1] "2019-11-13 15:31:50 EST"
+
+Sys.time()
+g_walk_k50 <- igraph::cluster_walktrap(g_k50)
+Sys.time()
+
+## About 1 hour? Nope, closer to a day
+# [1] "2019-11-13 15:31:50 EST"
+# [1] "2019-11-14 12:05:23 EST"
+
+clust_k50 <- sort_clusters(g_walk_k50$membership)
+save(g_k50, g_walk_k50, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/g_k50.Rdata")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/g_k50.Rdata")
+
+### For the SNN graph with K = 50, find which nested subset best matches
+## the clusters from 10x Genomics labeled by Kristen Maynard and Keri Martinowich
+clust_k5_list <- lapply(4:28, function(n) {
+    message(paste(Sys.time(), "n =", n))
+    sort_clusters(igraph::cut_at(g_walk_k50, n = n))
+})
+names(clust_k5_list) <- paste0("k", 4:28)
+save(clust_k5_list, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/clust_k5_list.Rdata")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/clust_k5_list.Rdata")
+
+## Add clusters to spe colData
+
+for (i in seq_along(col.names)) {
+    colData(spe) <- cbind(colData(spe), clust_k5_list[i])
+}
+
+col.names <- paste0("SNN_k50_k", 4:28)
+colnames(colData(spe))[21:45] <- col.names
+
+save(spe, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe_SNN_clusters.Rdata")
+load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe_SNN_clusters.Rdata")
