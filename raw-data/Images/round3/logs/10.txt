@@ -1,0 +1,202 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.0.x
+**** Job starts ****
+Thu Jul 15 12:10:17 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6554201
+Job name: VNS.sh
+Hostname: compute-060.cm.cluster
+Task id: 10
+****
+Sample id: /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_B1.tif
+****
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+{Error using imread>get_full_filename (line 566)
+File "" does not exist.
+
+Error in imread (line 375)
+    fullname = get_full_filename(filename);
+
+Error in VNS (line 6)
+Img1 = imread(fname); %import image
+} 
+**** Job ends ****
+Thu Jul 15 12:10:35 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.0.x
+**** Job starts ****
+Thu Jul 15 12:47:53 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6554215
+Job name: VNS.sh
+Hostname: compute-067.cm.cluster
+Task id: 10
+****
+Sample id: /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_B1.tif
+****
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+Elapsed time is 227.313050 seconds.
+Performing smoothening and contrast adjustment
+Elapsed time is 358.066658 seconds.
+Performing rgb to Lab color space conversion
+Elapsed time is 385.403619 seconds.
+Applying Kmeans
+Elapsed time is 10530.757250 seconds.
+saving outputs
+Starting parallel pool (parpool) using the 'local' profile ...
+[Warning: The system time zone setting, 'US/Eastern', does not specify a single
+time zone unambiguously. It will be treated as 'America/New_York'. See the <a
+href="matlab:doc('datetime.TimeZone')">datetime.TimeZone property</a> for
+details about specifying time zones.] 
+[> In verifyTimeZone (line 34)
+  In datetime (line 543)
+  In parallel.internal.cluster.FileSerializer>iLoadDate (line 342)
+  In parallel.internal.cluster.FileSerializer/getFields (line 100)
+  In parallel.internal.cluster.CJSSupport/getProperties (line 260)
+  In parallel.internal.cluster.CJSSupport/getJobProperties (line 491)
+  In parallel.internal.cluster.CJSJobMixin/hGetProperty (line 108)
+  In parallel.internal.cluster.CJSJobMethods.setJobTerminalStateFromCluster (line 179)
+  In parallel.internal.cluster.CJSJobMixin/hSetTerminalStateFromCluster (line 160)
+  In parallel.cluster.CJSCluster/hGetJobState (line 411)
+  In parallel.internal.cluster.CJSJobMixin/hGetStateEnum (line 144)
+  In parallel.Job/get.StateEnum (line 238)
+  In parallel.Job/get.State (line 230)
+  In parallel.internal.customattr.CustomGetSet>iVectorisedGetHelper (line 128)
+  In parallel.internal.customattr.CustomGetSet>@(a,b,c)iVectorisedGetHelper(obj,a,b,c) (line 102)
+  In parallel.internal.customattr.CustomGetSet/doVectorisedGet (line 103)
+  In parallel.internal.customattr.CustomGetSet/hVectorisedGet (line 76)
+  In parallel.internal.customattr.GetSetImpl>iAccessProperties (line 322)
+  In parallel.internal.customattr.GetSetImpl>iGetAllPropertiesVec (line 264)
+  In parallel.internal.customattr.GetSetImpl.getImpl (line 133)
+  In parallel.internal.customattr.CustomGetSet>iHetFunGetFunction (line 154)
+  In parallel.internal.customattr.CustomGetSet>@(o)iHetFunGetFunction(o,props) (line 139)
+  In parallel.internal.cluster.hetfun (line 46)
+  In parallel.internal.customattr.CustomGetSet>iHetFunGetProperty (line 139)
+  In parallel.internal.customattr.CustomGetSet/get (line 38)
+  In parallel.internal.pool.InteractiveClient/pRemoveOldJobs (line 476)
+  In parallel.internal.pool.InteractiveClient/start (line 317)
+  In parallel.Pool>iStartClient (line 796)
+  In parallel.Pool.hBuildPool (line 585)
+  In parallel.internal.pool.doParpool (line 18)
+  In parpool (line 98)
+  In parallel.internal.pool.PoolArrayManager.getOrAutoCreateWithCleanup (line 60)
+  In pctTryCreatePoolIfNecessary (line 23)
+  In parallel_function
+  In VNS (line 30)] 
+Connected to the parallel pool (number of workers: 1).
+Elapsed time is 2873.395385 seconds.
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.
+**** Job ends ****
+Thu Jul 15 16:48:50 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.0.x
+**** Job starts ****
+Mon Jul 26 13:50:53 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6637052
+Job name: refineVNS.sh
+Hostname: compute-114.cm.cluster
+Task id: 10
+****
+Sample id: 4
+****
+awk: cmd. line:1: (FILENAME=- FNR=13) fatal: attempt to access field -1
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+loading data
+{Error using load
+Unable to read file '_mask.mat'. No such file or directory.
+
+Error in refineVNS (line 6)
+load(mask_name)
+} 
+**** Job ends ****
+Mon Jul 26 13:51:03 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.0.x
+**** Job starts ****
+Mon Jul 26 16:05:53 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6637785
+Job name: refineVNS.sh
+Hostname: compute-060.cm.cluster
+Task id: 10
+****
+Sample id: 4
+****
+awk: cmd. line:1: (FILENAME=- FNR=13) fatal: attempt to access field -1
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+loading data
+Elapsed time is 226.024709 seconds.
+refining segmentations
+Elapsed time is 1095.243316 seconds.
+saving final segmentations
+Elapsed time is 86.287274 seconds.
+**** Job ends ****
+Mon Jul 26 16:29:49 EDT 2021

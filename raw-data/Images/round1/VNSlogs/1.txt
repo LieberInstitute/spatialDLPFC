@@ -1,0 +1,127 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/3.6.x
+**** Job starts ****
+Mon Mar 15 11:33:06 EDT 2021
+**** JHPCE info ****
+User: mtippani
+Job id: 4615027
+Job name: VNS.sh
+Hostname: compute-113.cm.cluster
+Task id: 1
+****
+Sample id: 
+****
+
+5
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+{Error using imread>get_full_filename (line 566)
+File "" does not exist.
+
+Error in imread (line 375)
+    fullname = get_full_filename(filename);
+
+Error in VNS (line 3)
+Img1 = imread(fname);
+} 
+**** Job ends ****
+Mon Mar 15 11:33:35 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/3.6.x
+**** Job starts ****
+Mon Mar 15 13:44:18 EDT 2021
+**** JHPCE info ****
+User: mtippani
+Job id: 4615139
+Job name: VNS.sh
+Hostname: compute-052.cm.cluster
+Task id: 1
+****
+Sample id: /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif
+****
+/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif
+5
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+{Error using imsegkmeans
+The value of 'k' is invalid. Expected input number 2, k, to be one of these
+types:
+
+double, single, uint8, uint16, uint32, uint64, int8, int16, int32, int64
+
+Error in images.internal.algkmeans>ParseInputs (line 96)
+p.parse(varargin{:});
+
+Error in images.internal.algkmeans (line 13)
+[Inp,k,NormalizeInput, NumAttempts, MaxIterations, Threshold] =
+ParseInputs(filename,Inp,k,args{:});
+
+Error in imsegkmeans (line 138)
+[L, Centers] = images.internal.algkmeans(I,k,'imsegkmeans', varargin{:});
+
+Error in VNS (line 11)
+ab = lab_he(:,:,2:3);
+} 
+**** Job ends ****
+Mon Mar 15 13:55:39 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/3.6.x
+**** Job starts ****
+Mon Mar 15 14:12:30 EDT 2021
+**** JHPCE info ****
+User: mtippani
+Job id: 4615163
+Job name: VNS.sh
+Hostname: compute-058.cm.cluster
+Task id: 1
+****
+Sample id: /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif
+****
+/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+adjusting contrast in image
+converting rgb to L*a*b space
+running Kmeans

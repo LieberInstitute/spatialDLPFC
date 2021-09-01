@@ -1,0 +1,34 @@
+@include "rna/spatial_rna_counter_cs.mro"
+
+call SPATIAL_RNA_COUNTER_CS(
+    sample_id                 = "DLPFC_3942_post_manual_alignment",
+    sample_def                = [
+        {
+            "fastq_mode": "ILMN_BCL2FASTQ",
+            "gem_group": null,
+            "lanes": null,
+            "library_type": "Gene Expression",
+            "read_path": "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/6_DLPFC_Br3942_mid",
+            "sample_indices": ["any"],
+            "sample_names": ["6"],
+            "subsample_rate": null,
+            "target_set": null,
+            "target_set_name": null,
+        },
+    ],
+    sample_desc               = "",
+    slide_serial_capture_area = "V19B23-073-B1",
+    loupe_alignment_file      = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-073-B1_10_Br3942_post_manual_alignment.json",
+    gpr_file                  = null,
+    reference_path            = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A",
+    no_bam                    = false,
+    no_secondary_analysis     = false,
+    rps_limit                 = null,
+    r1_length                 = null,
+    r2_length                 = null,
+    trim_polya_min_score      = 20,
+    trim_tso_min_score        = 20,
+    tissue_image_paths        = ["/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush_posterior_2.tif"],
+    dark_images               = 0,
+    reorientation_mode        = null,
+)
