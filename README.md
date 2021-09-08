@@ -15,7 +15,7 @@ Testing ground (sandbox) for `libd_jhu_spatial_python`.
 
 # JHPCE
 
-Location: `/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython`
+Location: `/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython`  
 New Location: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spython/`
 
 * Use the `lieber_jaffe` user group.
