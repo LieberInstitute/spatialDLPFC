@@ -1,6 +1,7 @@
 # start screen before qrsh ex. screen -S nameIwant
 #spatialDLPFC $ qrsh -l bluejay,mem_free=150G,h_vmem=150G
 #~ $ cd /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+# R
 
 
 ## Automatically style the code in this script:
