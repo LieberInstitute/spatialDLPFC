@@ -722,7 +722,7 @@ Sys.time()
 ## About 12 minutes
 # [1] "2019-11-13 15:20:32 EST"
 # [1] "2019-11-13 15:31:50 EST"
-save(g_k50, file=here::here("rdata","spe","g_k50_090921.Rdata"))
+save(g_k50, file=here::here("processed-data", "rdata","spe","g_k50_090921.Rdata"))
 
 Sys.time()
 g_walk_k50 <- igraph::cluster_walktrap(g_k50)
