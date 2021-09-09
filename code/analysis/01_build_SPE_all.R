@@ -1,5 +1,7 @@
-#~ $ cd /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC
-# spatialDLPFC $ qrsh -l mem_free=20G,h_vmem=40G
+# start screen before qrsh ex. screen -S nameIwant
+#spatialDLPFC $ qrsh -l bluejay,mem_free=150G,h_vmem=150G
+#~ $ cd /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+
 
 ## Automatically style the code in this script:
 styler::style_file(
@@ -51,18 +53,18 @@ sample_info <- data.frame(
     "Round2/DLPFC_Br6432_ant_manual_alignment",
     "Round2/DLPFC_Br6432_mid_manual_alignment",
     "Round2/DLPFC_Br6432_post_manual_alignment",
-    "Round2/DLPFC_Br6471_ant_manual_alignment_all",
-    "Round2/DLPFC_Br6471_mid_manual_alignment_all",
-    "Round2/DLPFC_Br6471_post_manual_alignment_all",
-    "Round2/DLPFC_Br6522_ant_manual_alignment_all",
-    "Round2/DLPFC_Br6522_mid_manual_alignment_all",
-    "Round2/DLPFC_Br6522_post_manual_alignment_all",
-    "Round2/DLPFC_Br8325_ant_manual_alignment_all",
-    "Round2/DLPFC_Br8325_mid_manual_alignment_all",
-    "Round2/DLPFC_Br8325_post_manual_alignment_all",
-    "Round2/DLPFC_Br8667_ant_manual_alignment_all",
-    "Round2/DLPFC_Br8667_mid_manual_alignment_all",
-    "Round2/DLPFC_Br8667_post_manual_alignment_all"
+    "Round3/DLPFC_Br6471_ant_manual_alignment_all",
+    "Round3/DLPFC_Br6471_mid_manual_alignment_all",
+    "Round3/DLPFC_Br6471_post_manual_alignment_all",
+    "Round3/DLPFC_Br6522_ant_manual_alignment_all",
+    "Round3/DLPFC_Br6522_mid_manual_alignment_all",
+    "Round3/DLPFC_Br6522_post_manual_alignment_all",
+    "Round3/DLPFC_Br8325_ant_manual_alignment_all",
+    "Round3/DLPFC_Br8325_mid_manual_alignment_all",
+    "Round3/DLPFC_Br8325_post_manual_alignment_all",
+    "Round3/DLPFC_Br8667_ant_manual_alignment_all",
+    "Round3/DLPFC_Br8667_mid_manual_alignment_all",
+    "Round3/DLPFC_Br8667_post_manual_alignment_all"
   ),
   subjects = rep(
     c("Br2743", "Br3942", "Br6423", "Br8492", "Br2720","Br6432","Br6471","Br6522","Br8325","Br8667"),
@@ -83,7 +85,7 @@ sample_info <- data.frame(
   diagnosis = "Control"
 )
 sample_info$sample_path <- file.path(
-  here::here("outputs", "NextSeq"),
+  here::here("processed-data", "NextSeq"),
   sample_info$sample_id,
   "outs"
 )
@@ -109,11 +111,12 @@ spe <- read10xVisium(
 )
 Sys.time()
 ## About 3-9 minutes (depending on JHPCE load)
-# [1] "2021-02-15 14:00:47 EST"
-# [1] "2021-02-15 14:08:45 EST"
+# [1] "2021-09-08 09:04:34 EDT"
+# [1] "2021-09-08 09:08:37 EDT"
 
 #clean up sample_id
 spe$sample_id <- gsub("Round2/", "", spe$sample_id)
+spe$sample_id <- gsub("Round3/", "", spe$sample_id)
 spe$sample_id <- gsub("_all", "", spe$sample_id)
 spe$sample_id <- gsub("_extra_reads", "", spe$sample_id)
 
@@ -159,6 +162,7 @@ spe$expr_chrM_ratio <- spe$expr_chrM / spe$sum_umi
 
 ## Add number of cells per spot
 spe$cell_count <- NA
+
 ## Currently we don't have that information
 
 # issue 11
@@ -183,7 +187,9 @@ length(no_expr)
 length(no_expr) / nrow(spe) * 100
 # [1] 20.83823
 
+#remove genes that are not expressed in any spots
 spe <- spe[-no_expr, ]
+
 ## Create two versions: one with and one without filtering by tissue spot
 spe_raw <- spe
 pryr::object_size(spe_raw)
@@ -194,22 +200,26 @@ dim(spe_raw)
 ## Save the raw version now
 dir.create(here::here("rdata"), showWarnings = FALSE)
 dir.create(here::here("rdata", "spe"), showWarnings = FALSE)
-save(spe_raw, file = here::here("rdata", "spe", "spe_raw_072821.Rdata"))
+save(spe_raw, file = here::here("processed-data", "rdata", "spe", "spe_raw_090821.Rdata"))
 
 ## Work with SPE
 spe <- spe_raw[, which(spatialData(spe_raw)$in_tissue=="TRUE")]
 dim(spe)
+#[1]  28974 118010
 
 ## Remove spots without counts
 spe <- spe[, -which(colSums(counts(spe)) == 0)]
-save(spe, file = here::here("rdata", "spe", "spe_072821.Rdata"))
+
 dim(spe)
 # [1] 28974 118003
 
-load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/rdata/spe/spe_072821.Rdata")
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
+
+#load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_090821.Rdata")
+#load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_raw_090221.Rdata")
 
 pryr::object_size(spe)
-# 2,275,794,512 B
+# 2,276,730,184 B
 
 ## Inspect in vs outside of tissue
 vis_grid_clus(
@@ -339,8 +349,8 @@ for(i in colnames(qcfilter)) {
   )
 }
 
-save(spe, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/rdata/spe/spe_072821.Rdata")
-load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/rdata/spe/spe_072821.Rdata")
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
+#load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/rdata/spe/spe_090821.Rdata")
 ## Find quick clusters
 set.seed(20191112)
 Sys.time()
@@ -351,8 +361,8 @@ spe$scran_quick_cluster <- quickCluster(
   block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
-# [1] "2021-02-17 10:23:01 EST"
-# [1] "2021-02-17 10:25:47 EST"
+# [1] "2021-09-08 09:52:20 EDT"
+# [1] "2021-09-08 09:56:31 EDT"
 
 Sys.time()
 ## Might be needed:
@@ -363,8 +373,8 @@ spe <-
                     BPPARAM = MulticoreParam(4)
   )
 Sys.time()
-# [1] "2021-02-17 10:28:34 EST"
-# [1] "2021-02-17 10:35:13 EST"
+# [1] "2021-09-08 09:57:55 EDT"
+# [1] "2021-09-02 13:15:54 EDT"
 ## Related to https://github.com/LTLA/scuttle/issues/7
 # In .rescale_clusters(clust.profile, ref.col = ref.clust, min.mean = min.mean) :
 #   inter-cluster rescaling factor for cluster 64 is not strictly positive,
@@ -379,7 +389,7 @@ summary(sizeFactors(spe))
 
 spe <- logNormCounts(spe)
 pryr::object_size(spe)
-# 3,722,865,928 B
+# 3,723,808,272 B
 
 ## From
 ## http://bioconductor.org/packages/release/bioc/vignettes/scran/inst/doc/scran.html#4_variance_modelling
@@ -409,29 +419,32 @@ dev.off()
 
 top.hvgs <- getTopHVGs(dec, prop = 0.1)
 length(top.hvgs)
-# [1] 1769
+# [1] 2039
 
 top.hvgs.fdr5 <- getTopHVGs(dec, fdr.threshold = 0.05)
 length(top.hvgs.fdr5)
-# [1] 15343
+# [1] 18525
 
 top.hvgs.fdr1 <- getTopHVGs(dec, fdr.threshold = 0.01)
 length(top.hvgs.fdr1)
-# [1] 14484
+# [1] 17900
 
 save(top.hvgs,
      top.hvgs.fdr5,
      top.hvgs.fdr1,
-     file = here::here("rdata", "spe", "top.hvgs_all.Rdata"))
+     file = here::here("processed-data", "rdata", "spe", "top.hvgs_all.Rdata"))
 
 set.seed(20191112)
 Sys.time()
 spe <- runPCA(spe, subset_row = top.hvgs)
 Sys.time()
-# [1] "2021-09-01 11:18:04 EDT"
-# [1] "2021-09-01 11:21:27 EDT"
+# [1] "2021-09-08 10:13:29 EDT"
+# [1] "2021-09-08 10:16:11 EDT"
+
+#deafult is 50 PCs, check on OSTA for the number of PCs I should use. Make github issue for this. 
 
 reducedDimNames(spe)
+# [1] "PCA"
 
 summary(apply(reducedDim(spe, "PCA"), 2, sd))
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
@@ -448,6 +461,7 @@ summary(colMeans(reducedDim(spe, "PCA")))
 # > min(50, floor(nrow(mat) / 5))
 # [1] 50
 
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
 Sys.time()
 set.seed(20191206)
 spe <-
@@ -469,8 +483,8 @@ spe <-
           perplexity = 5
   )
 Sys.time()
-# [1] "2021-02-17 11:03:46 EST"
-# [1] "2021-02-17 11:15:12 EST"
+# [1] "2021-09-08 11:14:41 EDT"
+# [1] "2021-09-08 12:03:04 EDT"
 
 Sys.time()
 set.seed(20191206)
@@ -481,8 +495,8 @@ spe <-
           perplexity = 20
   )
 Sys.time()
-# [1] "2021-02-17 11:17:23 EST"
-# [1] "2021-02-17 11:31:32 EST"
+# [1] "2021-09-08 12:17:38 EDT"
+# [1] "2021-09-08 13:09:17 EDT"
 
 Sys.time()
 set.seed(20191206)
@@ -493,22 +507,22 @@ spe <-
           perplexity = 80
   )
 Sys.time()
-# [1] "2021-02-17 12:25:31 EST"
+# [1] "2021-09-08 13:17:46 EDT"
 # [1] "2021-02-17 12:58:33 EST"
 
 Sys.time()
 set.seed(20191206)
 spe <- runUMAP(spe, dimred = "PCA", name = "UMAP_neighbors15")
 Sys.time()
-# [1] "2021-02-17 13:02:36 EST"
-# [1] "2021-02-17 13:04:50 EST"
+# [1] "2021-09-08 17:36:28 EDT"
+# [1] "2021-09-08 17:42:38 EDT"
 
 ## Not yet implemented in spatialLIBD
 # spatialLIBD::check_spe(spe)
 
 
 # save
-save(spe, file = here::here("rdata", "spe", "spe.Rdata"))
+save(spe, file = here::here("rdata", "spe", "spe_090821.Rdata"))
 
 ## Reproducibility information
 print('Reproducibility information:')
@@ -700,7 +714,7 @@ session_info()
 # [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
 
 #load(here::here("rdata", "spe", "spe.Rdata"), verbose = TRUE)
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe.Rdata")
+#load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe.Rdata")
 
 Sys.time()
 g_k50 <- buildSNNGraph(spe, k = 50, use.dimred = 'PCA')
@@ -708,10 +722,13 @@ Sys.time()
 ## About 12 minutes
 # [1] "2019-11-13 15:20:32 EST"
 # [1] "2019-11-13 15:31:50 EST"
+save(g_k50, file=here::here("rdata","spe","g_k50_090921.Rdata"))
 
 Sys.time()
 g_walk_k50 <- igraph::cluster_walktrap(g_k50)
 Sys.time()
+
+#see screenshot from 9/9
 
 ## About 1 hour? Nope, closer to a day
 # [1] "2019-11-13 15:31:50 EST"
