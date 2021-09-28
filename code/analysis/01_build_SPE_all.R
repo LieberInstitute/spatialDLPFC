@@ -94,13 +94,8 @@ sample_info$sample_path <- file.path(
 )
 stopifnot(all(file.exists(sample_info$sample_path)))
 
-## Re-shuffle to match default spatialLIBD grids
-sample_info <- sample_info[rep(c(1, 4, 7, 10, 13, 16, 19, 22, 25, 28), 3) + rep(0:2, each = 10), ]
-
-## For testing the code with a subset of the data
-# if(FALSE) {
-#     sample_info <- sample_info[1:2, ]
-# }
+#clean up sample_id
+sample_info$sample_id <- gsub("_all|_extra_reads|DLPFC_|_manual_alignment", "", basename(sample_info$sample_id))
 
 ## Build SPE object
 Sys.time()
@@ -114,16 +109,8 @@ spe <- read10xVisium(
 )
 Sys.time()
 ## About 3-9 minutes (depending on JHPCE load)
-# [1] "2021-09-08 09:04:34 EDT"
-# [1] "2021-09-08 09:08:37 EDT"
-
-##at this point the sample info is messed up
-
-#clean up sample_id
-spe$sample_id <- gsub("Round2/", "", spe$sample_id)
-spe$sample_id <- gsub("Round3/", "", spe$sample_id)
-spe$sample_id <- gsub("_all", "", spe$sample_id)
-spe$sample_id <- gsub("_extra_reads", "", spe$sample_id)
+# [1] "2021-09-28 14:38:13 EDT"
+# [1] "2021-09-28 14:42:47 EDT"
 
 ## Add some information used by spatialLIBD
 spe$key <- paste0(spe$Barcode, '_', spe$sample_id)
@@ -181,8 +168,6 @@ spe$cell_count <- NA
 #     }))
 
 
-## Simplify sample_ids for plotting
-spe$sample_id <- gsub("DLPFC_|_manual_alignment", "", spe$sample_id)
 
 
 ## Remove genes with no data
