@@ -69,11 +69,32 @@ for (i in seq_along(sample_ids)){
 
 
 
-cluster_colNames <- c(paste0("SNN_k50_k", seq_len(28)))
-cluster_colNames <-cluster_colNames[4:28]
+# cluster_colNames <- c(paste0("SNN_k50_k", seq_len(28)))
+# cluster_colNames <-cluster_colNames[4:28]
+
+cluster_colNames <-colnames(colData(spe))[19:43]
+sample_ids <- unique(colData(spe)$sample_id)
+
+pdf(file = here::here("plots", "vis_grid_clus_spe_pc8_k20.pdf"))
+for (i in seq_along(sample_ids)){
+    for(j in seq_along(cluster_colNames)){
+        my_plot <- vis_clus(
+            spe = spe,
+            clustervar = cluster_colNames[j],
+            sampleid = sample_ids[i],
+            colors =  mycolors,
+            ... = paste0(" ",cluster_colNames[j])
+        )
+        print(my_plot)
+    }
+    
+}
+dev.off()
+
+
 
 #plot all samples (12) for all clustervars (25)
-pdf(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/plots/vis_grid_clus_spe.pdf")
+pdf(file = here::here("plots", "vis_grid_clus_spe_pc8_k20.pdf"))
 for(i in seq_along(cluster_colNames)){
     for(j in seq_along(sample_ids)){
             if (enough_ram()) {
@@ -111,22 +132,6 @@ for(i in seq_along(cluster_colNames)){
 
 dev.off()
 
-pdf(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/plots/vis_clus_spe.pdf")
-for (i in seq_along(sample_ids)){
-    for(j in seq_along(cluster_colNames)){
-        my_plot <- vis_clus(
-            spe = spe,
-            clustervar = cluster_colNames[j],
-            sampleid = sample_ids[i],
-            colors =  mycolors,
-            ... = paste0(" ",cluster_colNames[j])
-        )
-        print(my_plot)
-    }
-    
-}
-
-dev.off()
 
 ## Reproducibility information
 print("Reproducibility information:")

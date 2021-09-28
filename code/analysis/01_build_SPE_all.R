@@ -1,4 +1,5 @@
 # start screen before qrsh ex. screen -S nameIwant
+# check cluster resources  qpic -q bluejay
 #spatialDLPFC $ qrsh -l bluejay,mem_free=150G,h_vmem=150G
 #~ $ cd /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 # R
@@ -29,6 +30,7 @@ library("spatialLIBD")
 library("scran") ## requires uwot for UMAP
 library("scater")
 library("BiocParallel")
+library("PCAtools")
 
 ## Related to https://github.com/LTLA/scuttle/issues/7#issuecomment-778710244
 stopifnot(packageVersion("scuttle") >= "1.1.15")
@@ -114,6 +116,8 @@ Sys.time()
 ## About 3-9 minutes (depending on JHPCE load)
 # [1] "2021-09-08 09:04:34 EDT"
 # [1] "2021-09-08 09:08:37 EDT"
+
+##at this point the sample info is messed up
 
 #clean up sample_id
 spe$sample_id <- gsub("Round2/", "", spe$sample_id)
@@ -351,7 +355,7 @@ for(i in colnames(qcfilter)) {
 }
 
 save(spe, file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
-#load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/rdata/spe/spe_090821.Rdata")
+
 ## Find quick clusters
 set.seed(20191112)
 Sys.time()
@@ -435,18 +439,42 @@ save(top.hvgs,
      top.hvgs.fdr1,
      file = here::here("processed-data", "rdata", "spe", "top.hvgs_all.Rdata"))
 
+
 set.seed(20191112)
 Sys.time()
-spe <- runPCA(spe, subset_row = top.hvgs)
+spe <- runPCA(spe, subset_row = top.hvgs, ncomponents = 50)
 Sys.time()
-# [1] "2021-09-08 10:13:29 EDT"
-# [1] "2021-09-08 10:16:11 EDT"
-
-#deafult is 50 PCs, check on OSTA for the number of PCs I should use. Make github issue for this. 
+# [1] "2021-09-21"
+# [1] "2021-09-21"
+load(file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
+load(file = here::here("processed-data", "rdata", "spe", "top.hvgs_all.Rdata"))
 
 reducedDimNames(spe)
 # [1] "PCA"
+dim(reducedDim(spe, "PCA"))
 
+#deafult is 50 PCs, check on OSTA for the number of PCs I should use. Make github issue for this. 
+
+#make elbow plot to determine PCs to use
+percent.var <- attr(reducedDim(spe,"PCA"), "percentVar")
+chosen.elbow <- PCAtools::findElbowPoint(percent.var)
+chosen.elbow
+
+pdf(
+  here::here("plots", "pca_elbow.pdf"),
+  useDingbats = FALSE
+)
+plot(percent.var, xlab="PC", ylab="Variance explained (%)")
+abline(v=chosen.elbow, col="red")
+dev.off()
+
+#I chose 8 as the elbow
+
+# use getClusteredPCs as another way to determine the correct number of PCs to use
+get.PCs <- getClusteredPCs(reducedDim(spe))
+save(get.PCs, file = here::here("processed-data", "rdata", "spe", "get_PCs_092121.Rdata"))
+
+#####redo later
 summary(apply(reducedDim(spe, "PCA"), 2, sd))
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 # 0.9129  0.9292  0.9476  1.1828  1.0557  4.1074
@@ -462,7 +490,7 @@ summary(colMeans(reducedDim(spe, "PCA")))
 # > min(50, floor(nrow(mat) / 5))
 # [1] 50
 
-save(spe, file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_092121.Rdata"))
 Sys.time()
 set.seed(20191206)
 spe <-
@@ -524,6 +552,9 @@ Sys.time()
 
 # save
 save(spe, file = here::here("rdata", "spe", "spe_090821.Rdata"))
+
+
+#######end redo later 
 
 ## Reproducibility information
 print('Reproducibility information:')
@@ -714,9 +745,6 @@ session_info()
 # [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/site-library
 # [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
 
-#load(here::here("rdata", "spe", "spe.Rdata"), verbose = TRUE)
-#load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe.Rdata")
-
 Sys.time()
 g_k50 <- buildSNNGraph(spe, k = 50, use.dimred = 'PCA')
 Sys.time()
@@ -728,16 +756,58 @@ save(g_k50, file=here::here("processed-data", "rdata","spe","g_k50_090921.Rdata"
 Sys.time()
 g_walk_k50 <- igraph::cluster_walktrap(g_k50)
 Sys.time()
+save(g_walk_k50, file = here::here("processed-data", "rdata","spe","g_walk_k50_091421.Rdata"))
+## For me, failed at 6 days
 
-#see screenshot from 9/9
+##try fewwer pcs (8) and lower K (20) to decrease runtime
+Sys.time()
+g_k20 <- buildSNNGraph(spe, k = 20, use.dimred = 'PCA')
+Sys.time()
+## 092121 About 11 minutes 
+save(g_k20, file=here::here("processed-data", "rdata","spe","g_k20_092121.Rdata"))
 
-## About 1 hour? Nope, closer to a day
-# [1] "2019-11-13 15:31:50 EST"
-# [1] "2019-11-14 12:05:23 EST"
+Sys.time()
+g_walk_k20 <- igraph::cluster_walktrap(g_k20)
+Sys.time()
+save(g_walk_k20, file = here::here("processed-data", "rdata","spe","g_walk_k20_092121.Rdata"))
+
+clust_k20 <- sort_clusters(g_walk_k20$membership)
+save(clust_k20, file = here::here("processed-data", "rdata","spe","clust_k20_092121.Rdata"))
+#finished in 4.5 hours
+
+### For the SNN graph with K = 50, find which nested subset best matches
+## the clusters from 10x Genomics labeled by Kristen Maynard and Keri Martinowich
+clust_k5_list <- lapply(4:28, function(n) {
+  message(paste(Sys.time(), 'n =', n))
+  sort_clusters(igraph::cut_at(g_walk_k20, n = n))
+})
+names(clust_k5_list) <- paste0('k', 4:28)
+save(clust_k5_list, file = here::here("processed-data", "rdata", "clust_k5_092121_list.Rdata"))
+
+## Add clusters to spe colData
+col.names <- paste0("SNN_k10_k",4:28)
+for (i in seq_along(col.names)){
+  colData(spe) <- cbind(colData(spe),clust_k5_list[i])
+}
+colnames(colData(spe))[19:43] <- col.names
+
+save(spe, file = here::here("processed-data", "rdata","spe", "spe_snn_clusters_092121.Rdata"))
+
+
+#Now do 8 PCs and k = 50
+Sys.time()
+g_k50 <- buildSNNGraph(spe, k = 50, use.dimred = 'PCA')
+Sys.time()
+## 092121 About 11 minutes 
+save(g_k50, file=here::here("processed-data", "rdata","spe","g_k50_092121.Rdata"))
+
+Sys.time()
+g_walk_k50 <- igraph::cluster_walktrap(g_k50)
+Sys.time()
+save(g_walk_k50, file = here::here("processed-data", "rdata","spe","g_walk_k50_092121.Rdata"))
 
 clust_k50 <- sort_clusters(g_walk_k50$membership)
-save(g_k50, g_walk_k50, file = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/g_k50.Rdata')
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/g_k50.Rdata")
+save(clust_k50, file = here::here("processed-data", "rdata","spe","clust_k50_092121.Rdata"))
 
 ### For the SNN graph with K = 50, find which nested subset best matches
 ## the clusters from 10x Genomics labeled by Kristen Maynard and Keri Martinowich
@@ -746,17 +816,50 @@ clust_k5_list <- lapply(4:28, function(n) {
   sort_clusters(igraph::cut_at(g_walk_k50, n = n))
 })
 names(clust_k5_list) <- paste0('k', 4:28)
-save(clust_k5_list, file = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/clust_k5_list.Rdata')
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/clust_k5_list.Rdata")
+save(clust_k5_list, file = here::here("processed-data", "rdata", "clust_k5_092121_list_k50.Rdata"))
 
 ## Add clusters to spe colData
-
+col.names <- paste0("SNN_k10_k",4:28)
 for (i in seq_along(col.names)){
   colData(spe) <- cbind(colData(spe),clust_k5_list[i])
 }
+colnames(colData(spe))[19:43] <- col.names
 
-col.names <- paste0("SNN_k50_k",4:28)
-colnames(colData(spe))[21:45] <- col.names
+save(spe, file = here::here("processed-data", "rdata","spe", "spe_snn_clusters_092121_k50.Rdata"))
 
-save(spe, file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe_SNN_clusters.Rdata")
-load(file = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/rdata/spe/spe_SNN_clusters.Rdata")
+#now do 50 pcs and k = 10
+load(file=here::here("processed-data","rdata", "spe", "spe_090821.Rdata"))
+
+Sys.time()
+g_k20 <- buildSNNGraph(spe, k = 10, use.dimred = 'PCA')
+Sys.time()
+save(g_k20, file=here::here("processed-data", "rdata","spe","g_pc50_k10_092221.Rdata"))
+
+Sys.time()
+g_walk_k20 <- igraph::cluster_walktrap(g_k20)
+Sys.time()
+save(g_walk_k20, file = here::here("processed-data", "rdata","spe","g_walk_pc50_k10_092221.Rdata"))
+
+clust_k20 <- sort_clusters(g_walk_k20$membership)
+save(clust_k20, file = here::here("processed-data", "rdata","spe","clust_pc50_k10_092221.Rdata"))
+
+### For the SNN graph with K = 50, find which nested subset best matches
+## the clusters from 10x Genomics labeled by Kristen Maynard and Keri Martinowich
+clust_k5_list <- lapply(4:28, function(n) {
+  message(paste(Sys.time(), 'n =', n))
+  sort_clusters(igraph::cut_at(g_walk_k20, n = n))
+})
+names(clust_k5_list) <- paste0('k', 4:28)
+save(clust_k5_list, file = here::here("processed-data", "rdata", "clust_k5_pc50_k10_092221_list.Rdata"))
+
+## Add clusters to spe colData
+col.names <- paste0("SNN_k10_k",4:28)
+for (i in seq_along(col.names)){
+  colData(spe) <- cbind(colData(spe),clust_k5_list[i])
+}
+colnames(colData(spe))[19:43] <- col.names
+
+save(spe, file = here::here("processed-data", "rdata","spe", "spe_snn_clusters_pc50_k10_092221.Rdata"))
+
+
+
