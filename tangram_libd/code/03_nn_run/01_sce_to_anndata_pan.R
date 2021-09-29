@@ -1,5 +1,4 @@
 suppressPackageStartupMessages(library('basilisk'))
-suppressPackageStartupMessages(library('scRNAseq'))
 suppressPackageStartupMessages(library('SingleCellExperiment'))
 suppressPackageStartupMessages(library('zellkonverter'))
 suppressPackageStartupMessages(library('data.table'))
@@ -7,21 +6,20 @@ suppressPackageStartupMessages(library('tidyverse'))
 suppressPackageStartupMessages(library("DeconvoBuddies"))
 suppressPackageStartupMessages(library("jaffelab"))
 suppressPackageStartupMessages(library('sessioninfo'))
+suppressPackageStartupMessages(library('spatialLIBD'))
 library("here")
 
 #  Path to write the python AnnData object
 dir.create(here("tangram_libd", "processed-data", "03_nn_run"), showWarnings = FALSE))
 visium_out = here("tangram_libd", "processed-data", "03_nn_run", "visium_dlpfc.h5ad")
 sc_out = here("tangram_libd", "processed-data", "03_nn_run", "sce_pan.h5ad")
+expr_plot_out = here("tangram_libd", "plots", "03_nn_run", "expression_cutoffs.pdf")
 
 print('Loading objects...')
 
 #  snRNAseq and spatial objects, respectively
-load(here("tangram_libd", "raw-data", "01_prepare_tangram", "sce_pan.Rdata"))
-load(here("tangram_libd", "raw-data", "01_prepare_tangram", "Human_DLPFC_Visium_processedData_sce_scran_spatialLIBD.Rdata"))
-
-#  Load Louise's marker stats for pan-brain
-load(here("tangram_libd", "raw-data", "01_prepare_tangram", "marker_stats_pan.Rdata"))
+load(here("tangram_libd", "raw-data", "03_nn_run", "sce_pan.v2.Rdata"))
+sce = spatialLIBD::fetch_data("spe")
 
 gc()
 
@@ -58,17 +56,51 @@ write_anndata(sce, visium_out)
 gc()
 
 ###############################################################################
-#  Find marker genes, starting with Louise's marker stats
+#  Filter using expression cutoffs
 ###############################################################################
 
+rna.sce <- sce_pan
+spatial.seq <- sce
+
+# prepairing for expression_cutoff
+seed <- 20210324
+
+# Find expression cutoff for each dataset and filter out genes below that
+# cutoff
+pdf(expr_plot_out)
+counts_rna = as.matrix(assays(rna.sce)$counts)
+cutoff_rna <- max(expression_cutoff(counts_rna, seed = seed))
+rna.sce = rna.sce[rowMeans(counts_rna) > cutoff_rna, ]
+
+counts_spat = as.matrix(assays(spatial.seq)$counts)
+cutoff_spat <- max(expression_cutoff(counts_spat, seed = seed))
+spatial.seq = spatial.seq[rowMeans(counts_spat) > cutoff_spat, ]
+dev.off()
+
+# Getting overlaps between spatial and scRNAseq data
+overlaps <-
+    rna.sce[rowData(rna.sce)$Symbol %in% rowData(spatial.seq)$gene_name,]
+
+###############################################################################
+#  Find marker genes
+###############################################################################
+
+marker_stats <- get_mean_ratio2(
+    sce_pan,
+    cellType_col = "cellType.Broad",
+    assay_name = "logcounts",
+    add_symbol = TRUE
+)
+
 print('Determining and writing markers...')
-marker_stats_filter <- marker_stats %>%
-    filter(gene %in% rownames(sce)) %>%
-    arrange(rank_ratio) %>%
-    group_by(cellType.target) %>%
-    slice(1:25)
+marker_stats <- marker_stats %>% 
+  mutate(Marker = case_when(rank_ratio <= n_genes & !(Symbol %in% c("MRC1","LINC00278"))  ~ "Marker QC",
+                            rank_ratio <= n_genes ~ 'Marker top25',
+                            TRUE ~ 'Non-Marker')) %>%
+  left_join(markers_mathys) %>%
+  replace_na(list(marker_anno = FALSE))
     
-marker_genes <- marker_stats_filter$Symbol
+marker_genes <- marker_stats[marker_stats$Marker == 'Marker QC', 'Symbol']
 
 writeLines(
     marker_genes,
