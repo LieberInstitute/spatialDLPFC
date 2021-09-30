@@ -52,7 +52,7 @@ sample_info <- data.frame(
     "DLPFC_Br8492_post_manual_alignment",
     "Round2/DLPFC_Br2720_ant_manual_alignment",
     "Round2/DLPFC_Br2720_mid_manual_alignment",
-    "Round2/DLPFC_Br2720_post_manual_alignment",
+    "Round2/DLPFC_Br2720_post_extra_reads",
     "Round2/DLPFC_Br6432_ant_manual_alignment",
     "Round2/DLPFC_Br6432_mid_manual_alignment",
     "Round2/DLPFC_Br6432_post_manual_alignment",
@@ -65,26 +65,29 @@ sample_info <- data.frame(
     "Round3/DLPFC_Br8325_ant_manual_alignment_all",
     "Round3/DLPFC_Br8325_mid_manual_alignment_all",
     "Round3/DLPFC_Br8325_post_manual_alignment_all",
-    "Round3/DLPFC_Br8667_ant_manual_alignment_all",
+    "Round3/DLPFC_Br8667_ant_extra_reads",
     "Round3/DLPFC_Br8667_mid_manual_alignment_all",
-    "Round3/DLPFC_Br8667_post_manual_alignment_all"
+    "Round3/DLPFC_Br8667_post_manual_alignment_all",
+    "Round4/DLPFC_Br2720_ant_2",
+    "Round4/DLPFC_Br6432_ant_2",
+    "Round4/DLPFC_Br8325_mid_2"
   ),
-  subjects = rep(
+  subjects = c(rep(
     c("Br2743", "Br3942", "Br6423", "Br8492", "Br2720","Br6432","Br6471","Br6522","Br8325","Br8667"),
     each = 3
-  ),
-  regions = rep(
+  ),"Br2720","Br6432","Br8325"),
+  regions = c(rep(
     c("anterior", "middle", "posterior"),
     10
-  ),
-  sex = rep(
+  ),"anterior","anterior","middle"),
+  sex = c(rep(
     c("M", "M", "M", "F","F","M","M","M","F","F"),
     each = 3
-  ),
-  age = rep(
+  ),"F","M","F"),
+  age = c(rep(
     c(61.54, 47.53, 51.73, 53.40,48.22,48.88,55.46,33.39,57.62,37.33),
     each = 3
-  ),
+  ),48.22,48.88,57.62),
   diagnosis = "Control"
 )
 sample_info$sample_path <- file.path(
@@ -155,27 +158,12 @@ spe$expr_chrM_ratio <- spe$expr_chrM / spe$sum_umi
 ## Add number of cells per spot
 spe$cell_count <- NA
 
-## Currently we don't have that information
-
-# issue 11
-## Read in the number of cells per spot
-# cells <-
-#     do.call(rbind, lapply(dir("Histology"), function(sampleid) {
-#         x <-
-#             read.csv(file.path("Histology", sampleid, "tissue_spot_counts.csv"))
-#         x$key <- paste0(sampleid, "_", x$barcode)
-#         return(x[, c("key", "count")])
-#     }))
-
-
-
-
 ## Remove genes with no data
 no_expr <- which(rowSums(counts(spe)) == 0)
 length(no_expr)
-# [1] 7627
+# [1] 7484
 length(no_expr) / nrow(spe) * 100
-# [1] 20.83823
+# [1] 20.44753
 
 #remove genes that are not expressed in any spots
 spe <- spe[-no_expr, ]
@@ -183,125 +171,122 @@ spe <- spe[-no_expr, ]
 ## Create two versions: one with and one without filtering by tissue spot
 spe_raw <- spe
 pryr::object_size(spe_raw)
-# 2,359,020,128 B
+# 2,535,468,288 B
 dim(spe_raw)
-# [1] 28974 149757
+# [1] 29117 164733
 
 ## Save the raw version now
 dir.create(here::here("rdata"), showWarnings = FALSE)
 dir.create(here::here("rdata", "spe"), showWarnings = FALSE)
-save(spe_raw, file = here::here("processed-data", "rdata", "spe", "spe_raw_090821.Rdata"))
+save(spe_raw, file = here::here("processed-data", "rdata", "spe", "spe_raw_final.Rdata"))
 
 ## Work with SPE
 spe <- spe_raw[, which(spatialData(spe_raw)$in_tissue=="TRUE")]
 dim(spe)
-#[1]  28974 118010
+#[1]  29117 129437
 
 ## Remove spots without counts
 spe <- spe[, -which(colSums(counts(spe)) == 0)]
-
 dim(spe)
-# [1] 28974 118003
+# [1] 29117 129430
 
-save(spe, file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
-
-#load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_090821.Rdata")
-#load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_raw_090221.Rdata")
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
 
 pryr::object_size(spe)
-# 2,276,730,184 B
+# 2,446,675,856 B
 
 ## Inspect in vs outside of tissue
 vis_grid_clus(
   spe = spe_raw,
   clustervar = "in_tissue",
-  pdf = here::here("plots", "in_tissue_grid.pdf"),
+  pdf = here::here("plots", "in_tissue_grid_final.pdf"),
   sort_clust = FALSE,
   colors = c("TRUE" = "grey90", "FALSE" = "orange")
 )
 
 summary(spe_raw$sum_umi[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-#     0.0    84.0   181.0   292.8   320.0 39053.0
+# 0.0    66.0   169.0   279.6   310.0 39053.0
 
 head(table(spe_raw$sum_umi[which(spatialData(spe_raw)$in_tissue=="FALSE")]))
-# 0 1 2 3 4 5
-# 9 15 35 40 37 54
+# 0  1  2  3  4  5
+# 12 18 50 59 67 87
 
 vis_grid_gene(
   spe = spe_raw[, which(spatialData(spe_raw)$in_tissue=="FALSE")],
   geneid = "sum_umi",
-  pdf = here::here("plots", "out_tissue_sum_umi_all.pdf"),
+  pdf = here::here("plots", "out_tissue_sum_umi_all_finall.pdf"),
   assayname = "counts"
 )
 
 summary(spe_raw$sum_gene[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-#  0.0    69.0   141.0   207.6   245.0  7956.0
+# 0.0    55.0   133.0   198.1   237.0  7956.0
+
 vis_grid_gene(
   spe = spe_raw[, which(spatialData(spe_raw)$in_tissue=="FALSE")],
   geneid = "sum_gene",
-  pdf = here::here("plots", "out_tissue_sum_gene_all.pdf"),
+  pdf = here::here("plots", "out_tissue_sum_gene_all_final.pdf"),
   assayname = "counts"
 )
 
 summary(spe_raw$expr_chrM_ratio[which(spatialData(spe_raw)$in_tissue=="FALSE")])
-#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
-# 0.0000  0.1542  0.1973  0.2101  0.2519  1.0000       9
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
+#  0.0000  0.1532  0.1967  0.2091  0.2518  1.0000      12
 vis_grid_gene(
   spe = spe_raw[, which(spatialData(spe_raw)$in_tissue=="FALSE")],
   geneid = "expr_chrM_ratio",
-  pdf = here::here("plots", "out_tissue_expr_chrM_ratio_all.pdf"),
+  pdf = here::here("plots", "out_tissue_expr_chrM_ratio_all_all.pdf"),
   assayname = "counts"
 )
 
-
 summary(spe$sum_umi)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-#    1    1409    2328    2725    3577   46881
+# 1    1346    2287    2664    3515   46881
 vis_grid_gene(
   spe = spe,
   geneid = "sum_umi",
-  pdf = here::here("plots", "in_tissue_sum_umi_all.pdf"),
+  pdf = here::here("plots", "in_tissue_sum_umi_all_final.pdf"),
   assayname = "counts"
 )
 
 summary(spe$sum_gene)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-#    1     927    1433    1529    2014    8344
+# 1     898    1413    1499    1982    8344
 vis_grid_gene(
   spe = spe,
   geneid = "sum_gene",
-  pdf = here::here("plots", "in_tissue_sum_gene_all.pdf"),
+  pdf = here::here("plots", "in_tissue_sum_gene_all_final.pdf"),
   assayname = "counts"
 )
 
 summary(spe$expr_chrM_ratio)
-#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
-# 0.00000 0.06035 0.08099 0.09029 0.10935 1.00000       7
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+# 0.00000 0.07545 0.10811 0.12391 0.15873 1.00000
 vis_grid_gene(
   spe = spe,
   geneid = "expr_chrM_ratio",
-  pdf = here::here("plots", "in_tissue_expr_chrM_ratio_all.pdf"),
+  pdf = here::here("plots", "in_tissue_expr_chrM_ratio_all_final.pdf"),
   assayname = "counts"
 )
 
 vis_grid_gene(
   spe = spe_raw,
   geneid = "sum_umi",
-  pdf = here::here("plots", "all_sum_umi.pdf"),
+  pdf = here::here("plots", "all_sum_umi_final.pdf"),
   assayname = "counts"
 )
+
 vis_grid_gene(
   spe = spe_raw,
   geneid = "sum_gene",
-  pdf = here::here("plots", "all_sum_gene.pdf"),
+  pdf = here::here("plots", "all_sum_gene_final.pdf"),
   assayname = "counts"
 )
 vis_grid_gene(
   spe = spe_raw,
   geneid = "expr_chrM_ratio",
-  pdf = here::here("plots", "all_expr_chrM_ratio.pdf"),
+  pdf = here::here("plots", "all_expr_chrM_ratio_final.pdf"),
   assayname = "counts"
 )
 
@@ -317,6 +302,7 @@ colSums(as.matrix(qcfilter))
 # 3869                      4578                      3745
 # discard
 # 7776
+
 ## Prior to dropping spots with 0 counts and checking for high chrM,
 ## this was the output:
 
@@ -328,6 +314,7 @@ spe$scran_low_n_features <-
   factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
 spe$scran_high_subsets_Mito_percent <-
   factor(qcfilter$high_subsets_Mito_percent, levels = c("TRUE", "FALSE"))
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
 
 for(i in colnames(qcfilter)) {
   vis_grid_clus(
@@ -339,7 +326,7 @@ for(i in colnames(qcfilter)) {
   )
 }
 
-save(spe, file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
 
 ## Find quick clusters
 set.seed(20191112)
@@ -351,8 +338,8 @@ spe$scran_quick_cluster <- quickCluster(
   block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
-# [1] "2021-09-08 09:52:20 EDT"
-# [1] "2021-09-08 09:56:31 EDT"
+# [1] "2021-09-29 13:56:24 EDT"
+# [1]  "2021-09-29 14:03:36 EDT"
 
 Sys.time()
 ## Might be needed:
@@ -375,11 +362,11 @@ table(spe$scran_quick_cluster)
 
 summary(sizeFactors(spe))
 # Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
-# 0.000034  0.478379  0.838123  1.000000  1.324870 16.630121
+# 0.000035  0.471401  0.844616  1.000000  1.328965 16.976125
 
 spe <- logNormCounts(spe)
 pryr::object_size(spe)
-# 3,723,808,272 B
+# 4,001,932,712 B
 
 ## From
 ## http://bioconductor.org/packages/release/bioc/vignettes/scran/inst/doc/scran.html#4_variance_modelling
@@ -389,7 +376,7 @@ dec <- modelGeneVar(spe,
 )
 
 pdf(
-  here::here("plots", "scran_modelGeneVar.pdf"),
+  here::here("plots", "scran_modelGeneVar_final.pdf"),
   useDingbats = FALSE
 )
 mapply(function(block, blockname) {
@@ -422,23 +409,19 @@ length(top.hvgs.fdr1)
 save(top.hvgs,
      top.hvgs.fdr5,
      top.hvgs.fdr1,
-     file = here::here("processed-data", "rdata", "spe", "top.hvgs_all.Rdata"))
+     file = here::here("processed-data", "rdata", "spe", "top.hvgs_all_final.Rdata"))
 
 
 set.seed(20191112)
 Sys.time()
 spe <- runPCA(spe, subset_row = top.hvgs, ncomponents = 50)
 Sys.time()
-# [1] "2021-09-21"
-# [1] "2021-09-21"
-load(file = here::here("processed-data", "rdata", "spe", "spe_090821.Rdata"))
-load(file = here::here("processed-data", "rdata", "spe", "top.hvgs_all.Rdata"))
+#  "2021-09-29 15:24:44 EDT"
+# "2021-09-29 15:28:19 EDT"
 
 reducedDimNames(spe)
 # [1] "PCA"
 dim(reducedDim(spe, "PCA"))
-
-#deafult is 50 PCs, check on OSTA for the number of PCs I should use. Make github issue for this. 
 
 #make elbow plot to determine PCs to use
 percent.var <- attr(reducedDim(spe,"PCA"), "percentVar")
@@ -446,26 +429,22 @@ chosen.elbow <- PCAtools::findElbowPoint(percent.var)
 chosen.elbow
 
 pdf(
-  here::here("plots", "pca_elbow.pdf"),
+  here::here("plots", "pca_elbow_final.pdf"),
   useDingbats = FALSE
 )
 plot(percent.var, xlab="PC", ylab="Variance explained (%)")
 abline(v=chosen.elbow, col="red")
 dev.off()
 
-#I chose 8 as the elbow
 
-# use getClusteredPCs as another way to determine the correct number of PCs to use
-get.PCs <- getClusteredPCs(reducedDim(spe))
-save(get.PCs, file = here::here("processed-data", "rdata", "spe", "get_PCs_092121.Rdata"))
 
-#####redo later
 summary(apply(reducedDim(spe, "PCA"), 2, sd))
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 0.9129  0.9292  0.9476  1.1828  1.0557  4.1074
+# 0.9178  0.9303  0.9470  1.1880  1.0521  4.2205
+
 summary(colMeans(reducedDim(spe, "PCA")))
 # Min.    1st Qu.     Median       Mean    3rd Qu.       Max.
-# -3.300e-14 -9.055e-15 -2.285e-16  2.575e-17  7.583e-15  2.568e-14
+# -3.742e-14 -1.041e-14  1.173e-15  1.235e-15  1.256e-14  2.981e-14
 
 ## From https://github.com/davismcc/scater/blob/master/R/runTSNE.R#L85
 ## I see that the default perplexity will be 50
@@ -475,7 +454,7 @@ summary(colMeans(reducedDim(spe, "PCA")))
 # > min(50, floor(nrow(mat) / 5))
 # [1] 50
 
-save(spe, file = here::here("processed-data", "rdata", "spe", "spe_092121.Rdata"))
+save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
 Sys.time()
 set.seed(20191206)
 spe <-
@@ -487,6 +466,7 @@ spe <-
 Sys.time()
 # [1] "2021-02-17 10:45:30 EST"
 # [1] "2021-02-17 11:02:59 EST"
+
 
 Sys.time()
 set.seed(20191206)
@@ -536,10 +516,8 @@ Sys.time()
 
 
 # save
-save(spe, file = here::here("rdata", "spe", "spe_090821.Rdata"))
+save(spe, file = here::here("processed-data","rdata", "spe", "spe_final.Rdata"))
 
-
-#######end redo later 
 
 ## Reproducibility information
 print('Reproducibility information:')
@@ -548,187 +526,25 @@ proc.time()
 options(width = 120)
 session_info()
 
-# ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
-#  setting  value
-#  version  R Under development (unstable) (2021-02-17 r80017)
-#  os       CentOS Linux 7 (Core)
-#  system   x86_64, linux-gnu
-#  ui       X11
-#  language (EN)
-#  collate  en_US.UTF-8
-#  ctype    en_US.UTF-8
-#  tz       US/Eastern
-#  date     2021-02-17
-#
-# ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
-#  package                * version  date       lib source
-#  AnnotationDbi            1.53.1   2021-02-04 [2] Bioconductor
-#  AnnotationHub            2.23.2   2021-02-05 [2] Bioconductor
-#  assertthat               0.2.1    2019-03-21 [2] CRAN (R 4.1.0)
-#  attempt                  0.3.1    2020-05-03 [1] CRAN (R 4.1.0)
-#  beachmat                 2.7.6    2021-01-15 [2] Bioconductor
-#  beeswarm                 0.2.3    2016-04-25 [1] CRAN (R 4.1.0)
-#  benchmarkme              1.0.5    2021-02-09 [1] CRAN (R 4.1.0)
-#  benchmarkmeData          1.0.4    2020-04-23 [1] CRAN (R 4.1.0)
-#  Biobase                * 2.51.0   2020-10-27 [2] Bioconductor
-#  BiocFileCache            1.15.1   2020-11-09 [2] Bioconductor
-#  BiocGenerics           * 0.37.1   2021-02-04 [2] Bioconductor
-#  BiocIO                   1.1.2    2020-12-05 [2] Bioconductor
-#  BiocManager              1.30.10  2019-11-16 [2] CRAN (R 4.1.0)
-#  BiocNeighbors            1.9.4    2020-12-17 [1] Bioconductor
-#  BiocParallel           * 1.25.4   2021-02-04 [2] Bioconductor
-#  BiocSingular             1.7.2    2021-01-23 [1] Bioconductor
-#  BiocVersion              3.13.1   2020-10-27 [2] Bioconductor
-#  Biostrings               2.59.2   2020-12-18 [2] Bioconductor
-#  bit                      4.0.4    2020-08-04 [2] CRAN (R 4.1.0)
-#  bit64                    4.0.5    2020-08-30 [2] CRAN (R 4.1.0)
-#  bitops                   1.0-6    2013-08-17 [2] CRAN (R 4.1.0)
-#  blob                     1.2.1    2020-01-20 [2] CRAN (R 4.1.0)
-#  bluster                  1.1.5    2021-01-14 [1] Bioconductor
-#  cachem                   1.0.4    2021-02-13 [2] CRAN (R 4.1.0)
-#  cli                      2.3.0    2021-01-31 [2] CRAN (R 4.1.0)
-#  codetools                0.2-18   2020-11-04 [3] CRAN (R 4.1.0)
-#  colorout                 1.2-2    2021-02-11 [1] Github (jalvesaq/colorout@726d681)
-#  colorspace               2.0-0    2020-11-11 [2] CRAN (R 4.1.0)
-#  config                   0.3.1    2020-12-17 [1] CRAN (R 4.1.0)
-#  cowplot                  1.1.1    2020-12-30 [1] CRAN (R 4.1.0)
-#  crayon                   1.4.1    2021-02-08 [2] CRAN (R 4.1.0)
-#  curl                     4.3      2019-12-02 [2] CRAN (R 4.1.0)
-#  data.table               1.13.6   2020-12-30 [2] CRAN (R 4.1.0)
-#  DBI                      1.1.1    2021-01-15 [2] CRAN (R 4.1.0)
-#  dbplyr                   2.1.0    2021-02-03 [2] CRAN (R 4.1.0)
-#  DelayedArray             0.17.7   2020-12-26 [2] Bioconductor
-#  DelayedMatrixStats       1.13.5   2021-02-04 [2] Bioconductor
-#  desc                     1.2.0    2018-05-01 [2] CRAN (R 4.1.0)
-#  digest                   0.6.27   2020-10-24 [2] CRAN (R 4.1.0)
-#  dockerfiler              0.1.3    2019-03-19 [1] CRAN (R 4.1.0)
-#  doParallel               1.0.16   2020-10-16 [2] CRAN (R 4.1.0)
-#  dotCall64                1.0-1    2021-02-11 [1] CRAN (R 4.1.0)
-#  dplyr                    1.0.4    2021-02-02 [2] CRAN (R 4.1.0)
-#  dqrng                    0.2.1    2019-05-17 [1] CRAN (R 4.1.0)
-#  DropletUtils             1.11.10  2021-02-04 [1] Bioconductor
-#  DT                       0.17     2021-01-06 [2] CRAN (R 4.1.0)
-#  edgeR                    3.33.1   2021-01-11 [2] Bioconductor
-#  ellipsis                 0.3.1    2020-05-15 [2] CRAN (R 4.1.0)
-#  ExperimentHub            1.17.1   2021-02-08 [2] Bioconductor
-#  fastmap                  1.1.0    2021-01-25 [2] CRAN (R 4.1.0)
-#  fields                   11.6     2020-10-09 [2] CRAN (R 4.1.0)
-#  filelock                 1.0.2    2018-10-05 [2] CRAN (R 4.1.0)
-#  foreach                  1.5.1    2020-10-15 [2] CRAN (R 4.1.0)
-#  fs                       1.5.0    2020-07-31 [2] CRAN (R 4.1.0)
-#  generics                 0.1.0    2020-10-31 [2] CRAN (R 4.1.0)
-#  GenomeInfoDb           * 1.27.6   2021-02-04 [2] Bioconductor
-#  GenomeInfoDbData         1.2.4    2020-11-03 [2] Bioconductor
-#  GenomicAlignments        1.27.2   2020-12-12 [2] Bioconductor
-#  GenomicRanges          * 1.43.3   2021-01-14 [2] Bioconductor
-#  ggbeeswarm               0.6.0    2017-08-07 [1] CRAN (R 4.1.0)
-#  ggplot2                * 3.3.3    2020-12-30 [2] CRAN (R 4.1.0)
-#  glue                     1.4.2    2020-08-27 [2] CRAN (R 4.1.0)
-#  golem                    0.2.1    2020-03-05 [1] CRAN (R 4.1.0)
-#  gridExtra                2.3      2017-09-09 [2] CRAN (R 4.1.0)
-#  gtable                   0.3.0    2019-03-25 [2] CRAN (R 4.1.0)
-#  HDF5Array                1.19.4   2021-02-14 [2] Bioconductor
-#  here                   * 1.0.1    2020-12-13 [1] CRAN (R 4.1.0)
-#  htmltools                0.5.1.1  2021-01-22 [2] CRAN (R 4.1.0)
-#  htmlwidgets              1.5.3    2020-12-10 [2] CRAN (R 4.1.0)
-#  httpuv                   1.5.5    2021-01-13 [2] CRAN (R 4.1.0)
-#  httr                     1.4.2    2020-07-20 [2] CRAN (R 4.1.0)
-#  igraph                   1.2.6    2020-10-06 [2] CRAN (R 4.1.0)
-#  interactiveDisplayBase   1.29.0   2020-10-27 [2] Bioconductor
-#  IRanges                * 2.25.6   2020-12-18 [2] Bioconductor
-#  irlba                    2.3.3    2019-02-05 [2] CRAN (R 4.1.0)
-#  iterators                1.0.13   2020-10-15 [2] CRAN (R 4.1.0)
-#  jsonlite                 1.7.2    2020-12-09 [2] CRAN (R 4.1.0)
-#  KEGGREST                 1.31.1   2020-11-23 [2] Bioconductor
-#  knitr                    1.31     2021-01-27 [2] CRAN (R 4.1.0)
-#  later                    1.1.0.1  2020-06-05 [2] CRAN (R 4.1.0)
-#  lattice                  0.20-41  2020-04-02 [3] CRAN (R 4.1.0)
-#  lazyeval                 0.2.2    2019-03-15 [2] CRAN (R 4.1.0)
-#  lifecycle                1.0.0    2021-02-15 [2] CRAN (R 4.1.0)
-#  limma                    3.47.7   2021-02-15 [2] Bioconductor
-#  locfit                   1.5-9.4  2020-03-25 [2] CRAN (R 4.1.0)
-#  magick                   2.6.0    2021-01-13 [2] CRAN (R 4.1.0)
-#  magrittr                 2.0.1    2020-11-17 [2] CRAN (R 4.1.0)
-#  maps                     3.3.0    2018-04-03 [2] CRAN (R 4.1.0)
-#  Matrix                 * 1.3-2    2021-01-06 [3] CRAN (R 4.1.0)
-#  MatrixGenerics         * 1.3.1    2021-02-01 [2] Bioconductor
-#  matrixStats            * 0.58.0   2021-01-29 [2] CRAN (R 4.1.0)
-#  memoise                  2.0.0    2021-01-26 [2] CRAN (R 4.1.0)
-#  metapod                  0.99.5   2020-12-14 [1] Bioconductor
-#  mime                     0.10     2021-02-13 [2] CRAN (R 4.1.0)
-#  munsell                  0.5.0    2018-06-12 [2] CRAN (R 4.1.0)
-#  pillar                   1.4.7    2020-11-20 [2] CRAN (R 4.1.0)
-#  pkgconfig                2.0.3    2019-09-22 [2] CRAN (R 4.1.0)
-#  pkgload                  1.1.0    2020-05-29 [2] CRAN (R 4.1.0)
-#  plotly                   4.9.3    2021-01-10 [2] CRAN (R 4.1.0)
-#  png                      0.1-7    2013-12-03 [2] CRAN (R 4.1.0)
-#  Polychrome               1.2.6    2020-11-11 [1] CRAN (R 4.1.0)
-#  promises                 1.2.0.1  2021-02-11 [1] CRAN (R 4.1.0)
-#  pryr                   * 0.1.4    2018-02-18 [2] CRAN (R 4.1.0)
-#  purrr                    0.3.4    2020-04-17 [2] CRAN (R 4.1.0)
-#  R.methodsS3              1.8.1    2020-08-26 [2] CRAN (R 4.1.0)
-#  R.oo                     1.24.0   2020-08-26 [2] CRAN (R 4.1.0)
-#  R.utils                  2.10.1   2020-08-26 [2] CRAN (R 4.1.0)
-#  R6                       2.5.0    2020-10-28 [2] CRAN (R 4.1.0)
-#  rappdirs                 0.3.3    2021-01-31 [2] CRAN (R 4.1.0)
-#  RColorBrewer             1.1-2    2014-12-07 [2] CRAN (R 4.1.0)
-#  Rcpp                     1.0.6    2021-01-15 [2] CRAN (R 4.1.0)
-#  RCurl                    1.98-1.2 2020-04-18 [2] CRAN (R 4.1.0)
-#  remotes                  2.2.0    2020-07-21 [2] CRAN (R 4.1.0)
-#  restfulr                 0.0.13   2017-08-06 [2] CRAN (R 4.1.0)
-#  rhdf5                    2.35.0   2020-10-27 [2] Bioconductor
-#  rhdf5filters             1.3.3    2020-12-07 [2] Bioconductor
-#  Rhdf5lib                 1.13.0   2020-10-27 [2] Bioconductor
-#  rjson                    0.2.20   2018-06-08 [2] CRAN (R 4.1.0)
-#  rlang                    0.4.10   2020-12-30 [2] CRAN (R 4.1.0)
-#  roxygen2                 7.1.1    2020-06-27 [2] CRAN (R 4.1.0)
-#  rprojroot                2.0.2    2020-11-15 [2] CRAN (R 4.1.0)
-#  Rsamtools                2.7.1    2021-01-18 [2] Bioconductor
-#  RSQLite                  2.2.3    2021-01-24 [2] CRAN (R 4.1.0)
-#  rstudioapi               0.13     2020-11-12 [2] CRAN (R 4.1.0)
-#  rsvd                     1.0.3    2020-02-17 [1] CRAN (R 4.1.0)
-#  rtracklayer            * 1.51.4   2021-01-14 [2] Bioconductor
-#  S4Vectors              * 0.29.7   2021-02-04 [2] Bioconductor
-#  ScaledMatrix             0.99.2   2021-01-14 [1] Bioconductor
-#  scales                   1.1.1    2020-05-11 [2] CRAN (R 4.1.0)
-#  scater                 * 1.19.9   2021-02-01 [1] Bioconductor
-#  scatterplot3d            0.3-41   2018-03-14 [1] CRAN (R 4.1.0)
-#  scran                  * 1.19.13  2021-02-13 [1] Bioconductor
-#  scuttle                * 1.1.15   2021-02-14 [1] Bioconductor
-#  sessioninfo            * 1.1.1    2018-11-05 [2] CRAN (R 4.1.0)
-#  shiny                    1.6.0    2021-01-25 [2] CRAN (R 4.1.0)
-#  shinyWidgets             0.5.7    2021-02-03 [1] CRAN (R 4.1.0)
-#  SingleCellExperiment   * 1.13.10  2021-02-10 [1] Bioconductor
-#  spam                     2.6-0    2020-12-14 [2] CRAN (R 4.1.0)
-#  sparseMatrixStats        1.3.6    2021-02-04 [2] Bioconductor
-#  SpatialExperiment      * 1.1.432  2021-02-17 [1] Github (drighelli/SpatialExperiment@8407ee8)
-#  spatialLIBD            * 1.3.5    2021-02-17 [1] Github (LieberInstitute/spatialLIBD@3fbc875)
-#  statmod                  1.4.35   2020-10-19 [2] CRAN (R 4.1.0)
-#  stringi                  1.5.3    2020-09-09 [2] CRAN (R 4.1.0)
-#  stringr                  1.4.0    2019-02-10 [2] CRAN (R 4.1.0)
-#  SummarizedExperiment   * 1.21.1   2020-12-12 [2] Bioconductor
-#  testthat                 3.0.2    2021-02-14 [2] CRAN (R 4.1.0)
-#  tibble                   3.0.6    2021-01-29 [2] CRAN (R 4.1.0)
-#  tidyr                    1.1.2    2020-08-27 [2] CRAN (R 4.1.0)
-#  tidyselect               1.1.0    2020-05-11 [2] CRAN (R 4.1.0)
-#  usethis                  2.0.1    2021-02-10 [2] CRAN (R 4.1.0)
-#  uwot                   * 0.1.10   2020-12-15 [1] CRAN (R 4.1.0)
-#  vctrs                    0.3.6    2020-12-17 [2] CRAN (R 4.1.0)
-#  vipor                    0.4.5    2017-03-22 [1] CRAN (R 4.1.0)
-#  viridis                  0.5.1    2018-03-29 [2] CRAN (R 4.1.0)
-#  viridisLite              0.3.0    2018-02-01 [2] CRAN (R 4.1.0)
-#  withr                    2.4.1    2021-01-26 [2] CRAN (R 4.1.0)
-#  xfun                     0.21     2021-02-10 [2] CRAN (R 4.1.0)
-#  XML                      3.99-0.5 2020-07-23 [2] CRAN (R 4.1.0)
-#  xml2                     1.3.2    2020-04-23 [2] CRAN (R 4.1.0)
-#  xtable                   1.8-4    2019-04-21 [2] CRAN (R 4.1.0)
-#  XVector                  0.31.1   2020-12-12 [2] Bioconductor
-#  yaml                     2.2.1    2020-02-01 [2] CRAN (R 4.1.0)
-#  zlibbioc                 1.37.0   2020-10-27 [2] Bioconductor
-#
-# [1] /users/lcollado/R/devel
-# [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/site-library
-# [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
+
+#make downsampled version of spe object 
+if(spatialData(spe)$array_col < 64 & spatialData(spe)$array_row < 39) {
+  spe$quadrant<-"topleft"} else if(spatialData(spe)$array_col >= 64 & spatialData(spe)$array_row < 39){
+  spe$quadrant<-"topright"}else if(spatialData(spe)$array_col < 64 & spatialData(spe)$array_row >= 39){
+  spe$quadrant<-"bottomleft"}else if(spatialData(spe)$array_col >= 64 & spatialData(spe)$array_row >= 39){
+  spe$quadrant<-"bottomright"}else{
+  spe$quadrant<-"NA"}
+
+
+spe$sample_quadrant <- paste0(spe$sampleid, "_", spe$quadrant)
+sample_quad_list <- rafalib::splitit(spe$sample_quadrant)
+selected_sample_quad <- unlist(lapply(sample_squad_list, sample, n = 250))
+spe_subsampled <- spe[, selected_sample_quad]
+
+# use getClusteredPCs as another way to determine the correct number of PCs to use
+# get.PCs <- getClusteredPCs(reducedDim(spe))
+# save(get.PCs, file = here::here("processed-data", "rdata", "spe", "get_PCs_092121.Rdata"))
+
 
 Sys.time()
 g_k50 <- buildSNNGraph(spe, k = 50, use.dimred = 'PCA')
