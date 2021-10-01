@@ -101,7 +101,7 @@ get_markers = function(sce, n, combine=TRUE) {
             add_symbol = TRUE
         )
     
-    #  We are taking the top x markers per cell type, and totalling as close to
+    #  We are taking the top x markers per cell type, and totaling as close to
     #  n as possible (rounding down if n isn't divisible by x)
     n_per_group = n %/% nlevels(mean_ratio$cellType.target)
     n_actual = n_per_group * nlevels(mean_ratio$cellType.target)
@@ -118,30 +118,6 @@ get_markers = function(sce, n, combine=TRUE) {
     
     return(unique(markers$Symbol))
 }
-
-mean_ratio <-
-    map(
-        "cell_type",
-        ~ get_mean_ratio2(
-            overlaps,
-            cellType_col = .x,
-            assay_name = "counts",
-            add_symbol = TRUE
-        )
-    )
-markers_1vAll <-
-    map(
-        "cell_type",
-        ~ findMarkers_1vAll(
-            overlaps,
-            cellType_col = .x,
-            assay_name = "counts",
-            add_symbol = TRUE
-        )
-    )
-
-marker_stats <- map2(mean_ratio, markers_1vAll,
-                     ~ left_join(.x, .y, by = c("gene", "cellType.target", "Symbol")))
 
 tangram_markers <- get_markers(overlaps, 200)
 tangram_markers
