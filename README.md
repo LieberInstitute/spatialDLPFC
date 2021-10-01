@@ -15,7 +15,8 @@ Testing ground (sandbox) for `libd_jhu_spatial_python`.
 
 # JHPCE
 
-Location: `/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython`
+Location: `/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython`  
+New Location: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spython/`
 
 * Use the `lieber_jaffe` user group.
 * Remember to edit your `~/.bashrc` file as shown at https://lcolladotor.github.io/bioc_team_ds/config-files.html#bashrc to include the command `umask u=rwx,g=rwx,o=`. This will make our lives easier in terms of working with the same JHPCE clone.
