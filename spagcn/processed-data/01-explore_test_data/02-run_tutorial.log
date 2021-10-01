@@ -1,0 +1,121 @@
+Loading LIBD module for spagcn/1.2.0
+Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+... storing 'feature_types' as categorical
+... storing 'genome' as categorical
+... storing 'genename' as categorical
+Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+WARNING: It seems you use rank_genes_groups on the raw count data. Please logarithmize your data before calling rank_genes_groups.
+Trying to set attribute `.obs` of view, copying.
+WARNING: It seems you use rank_genes_groups on the raw count data. Please logarithmize your data before calling rank_genes_groups.
+Trying to set attribute `.obs` of view, copying.
+WARNING: It seems you use rank_genes_groups on the raw count data. Please logarithmize your data before calling rank_genes_groups.
+Trying to set attribute `.obs` of view, copying.
+WARNING: It seems you use rank_genes_groups on the raw count data. Please logarithmize your data before calling rank_genes_groups.
+Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+Variable names are not unique. To make them unique, call `.var_names_make_unique`.
+Calculateing adj matrix using histology image...
+Var of c0,c1,c2 =  33.30687202862215 174.55510595352243 46.84205750749746
+Var of x,y,z =  5606737.526317932 4468793.817921193 5606737.526317932
+Run 1: l [0.01, 1000], p [0.0, 153.882049263866]
+Run 2: l [0.01, 500.005], p [0.0, 28.01544761657715]
+Run 3: l [0.01, 250.0075], p [0.0, 4.240330219268799]
+Run 4: l [0.01, 125.00874999999999], p [0.0, 0.5157277584075928]
+Run 5: l [62.509375, 125.00874999999999], p [0.028496861457824707, 0.5157277584075928]
+Run 6: l [93.7590625, 125.00874999999999], p [0.18753135204315186, 0.5157277584075928]
+Run 7: l [109.38390625, 125.00874999999999], p [0.32801353931427, 0.5157277584075928]
+Run 8: l [117.196328125, 125.00874999999999], p [0.41564691066741943, 0.5157277584075928]
+Run 9: l [121.1025390625, 125.00874999999999], p [0.4640926122665405, 0.5157277584075928]
+Run 10: l [123.05564453125, 125.00874999999999], p [0.4895068407058716, 0.5157277584075928]
+recommended l =  124.032197265625
+Start at res =  0.7 step =  0.1
+Initializing cluster centers with louvain, resolution =  0.7
+Epoch  0
+Epoch  10
+Res =  0.7 Num of clusters =  7
+recommended res =  0.7
+Initializing cluster centers with louvain, resolution =  0.7
+Epoch  0
+Epoch  10
+Epoch  20
+Epoch  30
+Epoch  40
+Epoch  50
+Epoch  60
+Epoch  70
+Epoch  80
+Epoch  90
+Epoch  100
+Epoch  110
+Epoch  120
+Epoch  130
+Epoch  140
+Epoch  150
+Epoch  160
+Epoch  170
+Epoch  180
+Epoch  190
+Calculateing adj matrix using xy only...
+Calculateing adj matrix using xy only...
+Calculateing adj matrix using xy only...
+Calculateing adj matrix using xy only...
+Run 1: radius [1.4142135381698608, 16.970561981201172], num_nbr [1.0, 264.784]
+Calculateing adj matrix using xy only...
+Run 2: radius [1.4142135381698608, 9.192387759685516], num_nbr [1.0, 94.512]
+Calculateing adj matrix using xy only...
+Run 3: radius [1.4142135381698608, 5.303300648927689], num_nbr [1.0, 33.91466666666667]
+Calculateing adj matrix using xy only...
+Run 4: radius [1.4142135381698608, 3.3587570935487747], num_nbr [1.0, 16.778666666666666]
+Calculateing adj matrix using xy only...
+Run 5: radius [2.386485315859318, 3.3587570935487747], num_nbr [7.656, 16.778666666666666]
+Calculateing adj matrix using xy only...
+recommended radius =  2.8726212047040462 num_nbr=10.712
+radius= 2.8726212047040462 average number of neighbors for each spot is 10.712
+ Cluster 0 has neighbors:
+Dmain  1 :  495
+Dmain  4 :  446
+Dmain  6 :  208
+SVGs for domain  0 : []
+Add gene:  PCP4
+Minus gene:  GFAP
+Absolute mean change: 0.74509454
+Number of non-target spots reduced to: 1848
+===========================================================================
+Meta gene is:  GFAP+PCP4-GFAP
+===========================================================================
+Add gene:  PCP4L1
+Minus gene:  CCK
+Absolute mean change: 0.9866736
+Number of non-target spots reduced to: 196
+===========================================================================
+Meta gene is:  GFAP+PCP4-GFAP+PCP4L1-CCK
+===========================================================================
+Add gene:  CCK
+Minus gene:  GFAP
+Stopped! Previous Number of non-target spots 196 403 0.9866736 1.466069
+Previous Number of non-target spots 196 403 0.9866736 1.466069
+Previous Number of non-target spots 196
+Current Number of non-target spots 403
+Absolute mean change 0.9866736
+===========================================================================
+Meta gene:  GFAP+PCP4-GFAP+PCP4L1-CCK
+===========================================================================
+Run 1: l [0.01, 1000], p [0.0, 144.17116893743565]
+Run 2: l [0.01, 500.005], p [0.0, 24.78992462158203]
+Run 3: l [0.01, 250.0075], p [0.0, 3.649960994720459]
+Run 4: l [125.00874999999999, 250.0075], p [0.4487175941467285, 3.649960994720459]
+Run 5: l [125.00874999999999, 187.508125], p [0.4487175941467285, 1.5741894245147705]
+Run 6: l [125.00874999999999, 156.2584375], p [0.4487175941467285, 0.9070142507553101]
+Run 7: l [125.00874999999999, 140.63359375], p [0.4487175941467285, 0.6537595987319946]
+Run 8: l [125.00874999999999, 132.821171875], p [0.4487175941467285, 0.5454769134521484]
+recommended l =  128.91496093749998
+Initializing cluster centers with louvain, resolution =  1.0
+Epoch  0
+Epoch  10
+Epoch  20
+Epoch  30
+delta_label  0.0036369647875681933 < tol  0.005
+Reach tolerance threshold. Stopping training.
+Total epoch: 37
