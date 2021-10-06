@@ -10,6 +10,13 @@ anndata_out = here(
 
 spe = fetch_data("spe")
 
+#  Append 'spatialCoords' slot to 'colData', since in
+#  conversion we're treating the spatialExperiment object as if it is a
+#  singleCellExperiment, which doesn't have that additional slot. Note that
+#  in this case, the 'spatialData' slot only contains duplicate information,
+#  which is why we don't append it
+colData(spe) = cbind(colData(spe), spatialCoords(spe))
+
 write_anndata = function(sce, out_path) {
     invisible(
         basiliskRun(
