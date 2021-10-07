@@ -33,17 +33,17 @@ cd outputs/NextSeq
 
 # run spaceranger count for each sample
 
-spaceranger count \
---id=DLPFC_Br2743_mid_manual_alignment_extra_reads \
---transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
---fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/8_DLPFC_Br8492_mid,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br8492_mid_L002_ds.deb2d4a1944a4a83a79f976bfb2c581a,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br8492_mid_L001_ds.b97357d3c73f4d89b975fcec46022c4d \
---image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif \
---slide=V19B23-074 \
---area=A1 \
---loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-074-A1_5_Br2743_mid_manual_alignment.json \
---jobmode=local \
---localcores=8 \
---localmem=64
+# spaceranger count \
+# --id=DLPFC_Br2743_mid_manual_alignment_extra_reads \
+# --transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
+# --fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/8_DLPFC_Br8492_mid,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br8492_mid_L002_ds.deb2d4a1944a4a83a79f976bfb2c581a,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br8492_mid_L001_ds.b97357d3c73f4d89b975fcec46022c4d \
+# --image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif \
+# --slide=V19B23-074 \
+# --area=A1 \
+# --loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-074-A1_5_Br2743_mid_manual_alignment.json \
+# --jobmode=local \
+# --localcores=8 \
+# --localmem=64
 
 # spaceranger count \
 # --id=DLPFC_3942_mid_manual_alignment \
@@ -57,17 +57,17 @@ spaceranger count \
 # --localcores=8 \
 # --localmem=64
 
-# spaceranger count \
-# --id=DLPFC_Br6423_mid_manual_alignment \
-# --transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
-# --fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/10_DLPFC_Br3942_post \
-# --image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush-001_mid_3.tif \
-# --slide=V19B23-074 \
-# --area=C1 \
-# --loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-074-C1_7_Br6432_mid_manual_alignment.json \
-# --jobmode=local \
-# --localcores=8 \
-# --localmem=64
+spaceranger count \
+--id=DLPFC_Br6423_mid_extra_reads \
+--transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
+--fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/raw-data/FASTQ/10_DLPFC_Br3942_post,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-10-06_KMay110220/r1_sample10_L002_ds.6cea0b18c46c427db81aace3e84b8331,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-10-06_KMay110220/r1_sample10_L001_ds.21cbcc783c724f219328be5aa7f078f3 \
+--image=/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_3.tif \
+--slide=V19B23-074 \
+--area=C1 \
+--loupe-alignment=/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/images_raw_align_json/V19B23-074-C1_7_Br6432_mid_manual_alignment.json \
+--jobmode=local \
+--localcores=8 \
+--localmem=64
 
 # spaceranger count \
 # --id=DLPFC_Br8492_mid_manual_alignment_extra_reads \
