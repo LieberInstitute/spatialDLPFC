@@ -1,10 +1,10 @@
 #!/bin/bash
 #$ -cwd
 #$ -l bluejay,mem_free=70G,h_vmem=70G,h_fsize=100G
-#$ -N "sce-to-anndata-pan"
+#$ -N "sce_to_anndata_pan_01"
 #$ -j y
-#$ -o ../../processed-data/03_nn_run/logs/sce-2-anndata-pan.log
-#$ -e ../../processed-data/03_nn_run/logs/sce-2-anndata-pan.log
+#$ -o ../../processed-data/03_nn_run/logs/01_sce_to_anndata_pan.log
+#$ -e ../../processed-data/03_nn_run/logs/01_sce_to_anndata_pan.log
 
 echo "**** Job starts ****"
 date
@@ -16,7 +16,7 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 ## Load dependencies
-module load conda_R/4.0.x
+module load conda_R/4.1
 
 ## List current modules
 module list
