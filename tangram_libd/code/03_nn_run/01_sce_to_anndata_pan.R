@@ -17,11 +17,14 @@ visium_out = here("tangram_libd", "processed-data", "03_nn_run", "visium_DLPFC.h
 sce_out = here("tangram_libd", "processed-data", "03_nn_run", "sce_pan.h5ad")
 expr_plot_out = here("tangram_libd", "plots", "03_nn_run", "expression_cutoffs.pdf")
 overlaps_out = here("tangram_libd", "processed-data", "03_nn_run", "overlaps.Rda")
+
+marker_path_in = here("tangram_libd", "raw-data", "03_nn_run", "marker_stats_pan.v2.Rdata")
+marker_path_out = here("tangram_libd", "processed-data", "03_nn_run", "marker_genes.Rdata")
   
 print('Loading objects...')
 
 #  snRNAseq and spatial objects, respectively
-load(here("tangram_libd", "raw-data", "03_nn_run", "sce_pan.v2.Rdata"))
+load(here("tangram_libd", "raw-data", "03_nn_run", "sce_pan.v2.Rdata"), verbose = TRUE)
 visium_DLPFC = spatialLIBD::fetch_data("spe")
 
 gc()
@@ -62,13 +65,7 @@ gc()
 #  Find marker genes
 ###############################################################################
 
-marker_stats <- get_mean_ratio2(
-  sce_pan,
-  cellType_col = "cellType.Broad",
-  assay_name = "logcounts",
-  add_symbol = TRUE
-)
-
+load(marker_path_in, verbose = TRUE)
 
 print('Determining and writing markers...')
 
@@ -78,46 +75,53 @@ marker_stats1 <- marker_stats %>%
                             rank_ratio <= n_genes ~ 'Marker top25',
                             TRUE ~ 'Non-Marker'))
 
-marker_genes <- data.frame(marker_stats1[marker_stats1$Marker == 'Marker QC', 'Symbol'])
+marker_genes <- data.frame(marker_stats1[marker_stats1$Marker == 'Marker QC', 'gene'])
 
+#  All the marker genes are present in the spatial data, as required
+all(marker_genes$gene %in% rowData(visium_DLPFC)$gene_id)
+
+#  Save entire marker object
+save(marker_genes, file=marker_path_out)
+
+#  Save just gene names for use in python
 writeLines(
-  marker_genes$Symbol,
-  con = here("tangram_libd", "processed-data", "03_nn_run", "pan_markers.txt")
+    marker_genes$gene,
+    con = here("tangram_libd", "processed-data", "03_nn_run", "pan_markers.txt")
 )
 
 ###############################################################################
 #  Filter using expression cutoffs
 ###############################################################################
 
-seed <- 20210324
+#seed <- 20210324
 
 # Find expression cutoff for each dataset and filter out genes below that cutoff
-pdf(expr_plot_out)
-counts_sce = as.matrix(assays(sce_pan)$counts)
-cutoff_sce <- max(expression_cutoff(counts_sce, seed = seed))
-sce_pan1 = sce_pan[rowMeans(counts_sce) > cutoff_sce, ]
+#pdf(expr_plot_out)
+#counts_sce = as.matrix(assays(sce_pan)$counts)
+#cutoff_sce <- max(expression_cutoff(counts_sce, seed = seed))
+#sce_pan1 = sce_pan[rowMeans(counts_sce) > cutoff_sce, ]
 
-counts_visium = as.matrix(assays(visium_DLPFC)$counts)
-cutoff_visium <- max(expression_cutoff(counts_visium, seed = seed))
-visium_DLPFC1 = visium_DLPFC[rowMeans(counts_visium) > cutoff_visium, ]
-dev.off()
+#counts_visium = as.matrix(assays(visium_DLPFC)$counts)
+#cutoff_visium <- max(expression_cutoff(counts_visium, seed = seed))
+#visium_DLPFC1 = visium_DLPFC[rowMeans(counts_visium) > cutoff_visium, ]
+#dev.off()
 
 # Getting overlaps between spatial and scRNAseq data
-overlaps <- sce_pan1[rowData(sce_pan1)$Symbol %in% rowData(visium_DLPFC1)$gene_name,]
-save(overlaps, file = overlaps_out)
+#overlaps <- sce_pan1[rowData(sce_pan1)$Symbol %in% rowData(visium_DLPFC1)$gene_name,]
+#save(overlaps, file = overlaps_out)
 
-overlaps_genes = rowData(overlaps)$Symbol
-overlaps_genes = rowData(visium_DLPFC1)$gene_name
-common_genes = intersect(marker_genes$Symbol, overlaps_genes)
+#overlaps_genes = rowData(overlaps)$Symbol
+#overlaps_genes = rowData(visium_DLPFC1)$gene_name
+#common_genes = intersect(marker_genes$Symbol, overlaps_genes)
 ###############################################################################
 #  Write the sample names to a file for use in the python script
 ###############################################################################
 
 print('Writing sample names for use in python...')
-ids = as.character(unique(colData(visium_DLPFC1)$sample_id))
+ids = as.character(unique(colData(visium_DLPFC)$sample_id))
 writeLines(
-  ids,
-  con = here("tangram_libd", "processed-data", "03_nn_run", "brain_samples.txt")
+    ids,
+    con = here("tangram_libd", "processed-data", "03_nn_run", "brain_samples.txt")
 )
 
 print('Done.')
