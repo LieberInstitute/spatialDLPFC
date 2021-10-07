@@ -70,22 +70,22 @@ load(marker_path_in, verbose = TRUE)
 print('Determining and writing markers...')
 
 n_genes <- 25
-marker_stats1 <- marker_stats %>% 
+marker_stats <- marker_stats %>% 
   mutate(Marker = case_when(rank_ratio <= n_genes & !(Symbol %in% c("MRC1","LINC00278"))  ~ "Marker QC",
                             rank_ratio <= n_genes ~ 'Marker top25',
                             TRUE ~ 'Non-Marker'))
 
-marker_genes <- data.frame(marker_stats1[marker_stats1$Marker == 'Marker QC', 'gene'])
+marker_stats <- data.frame(marker_stats[marker_stats$Marker == 'Marker QC', ])
 
 #  All the marker genes are present in the spatial data, as required
-all(marker_genes$gene %in% rowData(visium_DLPFC)$gene_id)
+all(marker_stats$gene %in% rowData(visium_DLPFC)$gene_id)
 
 #  Save entire marker object
-save(marker_genes, file=marker_path_out)
+save(marker_stats, file=marker_path_out)
 
 #  Save just gene names for use in python
 writeLines(
-    marker_genes$gene,
+    marker_stats$gene,
     con = here("tangram_libd", "processed-data", "03_nn_run", "pan_markers.txt")
 )
 
