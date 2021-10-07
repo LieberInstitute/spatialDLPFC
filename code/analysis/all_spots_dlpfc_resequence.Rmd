@@ -1,0 +1,447 @@
+---
+title: "LC analyses: features per spot (LC samples) - all spots"
+author: "Lukas Weber"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    number_sections: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Introduction
+
+Analyses for LC project: number of features per spot.
+
+One of the key characteristics of the LC Visium samples is that most spots contain very small numbers of features (UMI counts or expressed genes) per spot, and a small region of spots contains much higher numbers of features.
+
+Our initial thoughts are that this could be either due to:
+
+1. LC neurons are concentrated in the smaller region, so these spots capture orders of magnitude higher numbers of mRNAs than the "background" spots consisting largely of axon tracts / fiber bundles in white matter.
+
+2. Experimental problems, e.g. with capturing mRNAs in the "background" spots.
+
+This file contains analyses and plots to investigate these questions.
+
+
+## Data
+
+In this file, we are using the combined NextSeq and MiSeq reads for the LC samples (LC_1 and LC_2).
+
+Here we also use all spots (not just "filtered" spots) from Space Ranger, i.e. including background spots that are not over tissue.
+
+
+# Analysis
+
+## Load data
+
+Load data from Space Ranger outputs into R.
+
+Notes about Space Ranger outputs:
+
+- "raw" feature-barcode matrix contains all spots
+- "filtered" feature-barcode matrix contains only spots identified as being under tissue
+- more details: https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/matrices
+
+Here we use the "raw" feature-barcode matrix to create a `SingleCellExperiment`.
+
+In the future, we will use `SpatialExperiment` instead (once the class structure is finalized): https://bioconductor.org/packages/SpatialExperiment
+
+```{r, message=FALSE}
+library(SingleCellExperiment)
+library(Matrix)
+library(rjson)
+```
+
+```{r}
+sample_names <- c("DLPFC_Br8492_mid_manual_alignment_resequence")
+sce_list <- vector("list", length = length(sample_names))
+names(sce_list) <- sample_names
+
+for (i in seq_along(sample_names)) {
+  
+  # ---------
+  # load data
+  # ---------
+  
+  # select sample
+  sample_name <- sample_names[i]
+  
+  # path to Space Ranger output files
+  if (Sys.info()["sysname"] == "Linux") {
+    # files on JHPCE cluster
+    dir_outputs <- "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/outputs/NextSeq"
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    # copy of files on Mac laptop
+    dir_outputs <- "~/DLPFC"
+  }
+  
+  # note: using "raw" barcodes list containing all spots
+  dir_matrix <- file.path(dir_outputs, sample_name, "outs", "raw_feature_bc_matrix")
+  
+  # barcodes
+  file_barcodes <- file.path(dir_matrix, "barcodes.tsv.gz")
+  df_barcodes <- read.csv(file_barcodes, sep = "\t", header = FALSE, 
+                          col.names = c("barcode_id"))
+  # features
+  file_features <- file.path(dir_matrix, "features.tsv.gz")
+  df_features <- read.csv(file_features, sep = "\t", header = FALSE, 
+                          col.names = c("gene_id", "gene_name", "feature_type"))
+  # counts
+  file_counts <- file.path(dir_matrix, "matrix.mtx.gz")
+  counts <- readMM(file = file_counts)
+  
+  # spatial coordinates
+  dir_spatial <- file.path(dir_outputs, sample_name, "outs", "spatial")
+  file_tisspos <- file.path(dir_spatial, "tissue_positions_list.csv")
+  df_tisspos <- read.csv(file_tisspos, header = FALSE, 
+                         col.names=c("barcode_id", "in_tissue", "array_row", "array_col", 
+                                     "pxl_col_in_fullres", "pxl_row_in_fullres"))
+  
+  # check dimensions
+  dim(df_barcodes)
+  dim(df_features)
+  dim(counts)
+  # note df_tisspos contains all spots (not filtered) - need to check rows match
+  dim(df_tisspos)
+  
+  # image paths
+  imageFilePath <- file.path(dir_spatial, c("tissue_hires_image.png", "tissue_lores_image.png"))
+  
+  # spatial scale factors
+  file_scale <- file.path(dir_spatial, "scalefactors_json.json")
+  scalefactors <- fromJSON(file = file_scale)
+  
+  
+  # ---------------------------
+  # create SingleCellExperiment
+  # ---------------------------
+  
+  # note: check and/or re-order rows to make sure barcode IDs match in df_barcodes and df_tisspos
+  dim(df_barcodes)
+  dim(df_tisspos)
+  ord <- match(df_barcodes$barcode_id, df_tisspos$barcode_id)
+  df_tisspos_ord <- df_tisspos[ord, ]
+  dim(df_tisspos_ord)
+  stopifnot(nrow(df_barcodes) == nrow(df_tisspos_ord))
+  stopifnot(all(df_barcodes$barcode_id == df_tisspos_ord$barcode_id))
+  
+  head(df_barcodes)
+  head(df_tisspos_ord)
+  
+  col_data <- cbind(df_barcodes, df_tisspos_ord[, -1])
+  head(col_data)
+  
+  sce <- SingleCellExperiment(
+    rowData = df_features, 
+    colData = col_data, 
+    assays = c(counts = counts), 
+    metadata = list(scalefactors = scalefactors)
+  )
+  
+  sce
+  
+  # store object
+  sce_list[[i]] <- sce
+}
+
+sce_list
+```
+
+
+## Calculate scater QC metrics
+
+```{r, message=FALSE}
+library(here)
+library(scater)
+library(ggplot2)
+```
+
+```{r, message=FALSE}
+for (i in seq_along(sample_names)) {
+  
+  # select sample
+  sce <- sce_list[[i]]
+  
+  # identify mitochondrial genes
+  is_mito <- grepl("(^MT-)|(^mt-)", rowData(sce)$gene_name)
+  table(is_mito)
+  rowData(sce)$gene_name[is_mito]
+  
+  # calculate QC metrics using scater package
+  sce <- addPerCellQC(sce, subsets = list(mito = is_mito))
+  
+  colData(sce)
+  
+  # store
+  sce_list[[i]] <- sce
+}
+```
+
+
+## Calculate log counts
+
+Calculate log-transformed normalized counts using `scran`.
+
+```{r, message=FALSE}
+# library(scran)
+```
+
+```{r, message=FALSE}
+# for (i in seq_along(sample_names)) {
+#   
+#   # select sample
+#   sce <- sce_list[[i]]
+#   
+#   # calculate logcounts (log-transformed normalized counts)
+#   set.seed(100)
+#   clus <- quickCluster(sce)
+#   sce <- computeSumFactors(sce, cluster = clus)
+#   sce <- logNormCounts(sce)
+#   assayNames(sce)
+#   
+#   # store
+#   sce_list[[i]] <- sce
+# }
+```
+
+
+## Number of features per spot
+
+Spot-level summaries from Space Ranger output file `web_summary.html` for each sample.
+
+Note that we are using combined reads from the NextSeq and MiSeq runs, where 97-99% of total reads are from NextSeq.
+
+
+## Number of UMI counts per spot
+
+Thresholds for the regions with high UMI counts were selected by checking plots with various thresholds, to find values that most clearly distinguish between the two regions.
+
+```{r, message=FALSE, fig.width=4.75, fig.height=3.5}
+# number of UMI counts per spot in different regions of each sample
+
+dir_plot <- here("plots", "features_per_spot_all_spots")
+if (!dir.exists(dir_plot)) dir.create(dir_plot, recursive = TRUE)
+
+thresh_nonzero_counts <- c(1000, 500)
+
+for (i in seq_along(sample_names)) {
+  
+  # select sample
+  sce <- sce_list[[i]]
+  
+  # identify spots with nonzero counts
+  colData(sce)$is_nonzero_counts <- colData(sce)$sum > thresh_nonzero_counts
+  # store object
+  sce_list[[i]] <- sce
+  
+  
+  # plot spots with nonzero UMI counts
+  
+ 
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = is_nonzero_counts)) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_manual(values = c("gray95", "black")) + 
+    ggtitle(paste0("Spots with UMI counts > ", thresh_nonzero_counts, ": ", sample_names)) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+
+  
+  fn <- file.path(dir_plot, paste0("xyplot_nonzero_counts_all_spots", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+  
+  
+  # plot UMI counts per spot
+  
+  pdf(file = paste0("/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/plots/resequence/all_spots_Br8492_mid.pdf"))
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = sum)) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_gradient(low = "gray95", high = "navy") + 
+    ggtitle(paste0("UMI counts per spot: ", sample_name)) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+    dev.off()
+  
+  fn <- file.path(dir_plot, paste0("xyplot_UMI_counts_per_spot_all_spots_", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+  
+  
+  # plot UMI counts per spot (log10 scale)
+  
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = log10(sum))) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_gradient(low = "gray95", high = "navy") + 
+    ggtitle(paste0("UMI counts per spot: ", sample_names[i])) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+  
+  fn <- file.path(dir_plot, paste0("xyplot_log10_UMI_counts_per_spot_all_spots_", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+  
+  
+  # plot UMI counts per spot (sqrt scale)
+  
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = sqrt(sum))) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_gradient(low = "gray95", high = "navy") + 
+    ggtitle(paste0("UMI counts per spot: ", sample_names[i])) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+  
+  fn <- file.path(dir_plot, paste0("xyplot_sqrt_UMI_counts_per_spot_all_spots_", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+}
+```
+
+
+## Number of detected genes per spot
+
+Thresholds for the regions with high numbers of detected genes were selected by checking plots with various thresholds, to find values that most clearly distinguish between the two regions.
+
+```{r, message=FALSE, fig.width=4.75, fig.height=3.5}
+# number of detected genes per spot in different regions of each sample
+
+thresh_nonzero_genes <- c(500, 250)
+
+for (i in seq_along(sample_names)) {
+  
+  # select sample
+  sce <- sce_list[[i]]
+  
+  # identify spots with nonzero counts
+  colData(sce)$is_nonzero_genes <- colData(sce)$sum > thresh_nonzero_genes[i]
+  # store object
+  sce_list[[i]] <- sce
+  
+  
+  # plot spots with nonzero number of detected genes
+  
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = is_nonzero_genes)) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_manual(values = c("gray95", "black")) + 
+    ggtitle(paste0("Spots with no. detected genes > ", thresh_nonzero_genes[i], ": ", sample_names[i])) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+  
+  fn <- file.path(dir_plot, paste0("xyplot_nonzero_genes_all_spots_", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+  
+  
+  # plot number of genes detected per spot
+  
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = detected)) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_gradient(low = "gray95", high = "darkgreen") + 
+    ggtitle(paste0("Detected genes per spot: ", sample_names[i])) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+  
+  fn <- file.path(dir_plot, paste0("xyplot_n_genes_per_spot_all_spots_", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+  
+  
+  # plot number of genes detected per spot (log10 scale)
+  
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = log10(detected))) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_gradient(low = "gray95", high = "darkgreen") + 
+    ggtitle(paste0("Detected genes per spot: ", sample_names[i])) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+  
+  fn <- file.path(dir_plot, paste0("xyplot_log10_n_genes_per_spot_all_spots_", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+  
+  
+  # plot number of genes detected per spot (sqrt scale)
+  
+  p <- ggplot(as.data.frame(colData(sce)), 
+              aes(x = pxl_row_in_fullres, y = pxl_col_in_fullres, color = sqrt(detected))) + 
+    geom_point(size = 0.5) + 
+    coord_fixed() + 
+    scale_y_reverse() + 
+    scale_color_gradient(low = "gray95", high = "darkgreen") + 
+    ggtitle(paste0("Detected genes per spot: ", sample_names[i])) + 
+    theme_bw() + 
+    theme(panel.grid = element_blank(), 
+          axis.title = element_blank(), 
+          axis.text = element_blank(), 
+          axis.ticks = element_blank())
+  
+  print(p)
+  
+  fn <- file.path(dir_plot, paste0("xyplot_sqrt_n_genes_per_spot_all_spots_", sample_names[i], ".png"))
+  ggsave(fn, width = 4.75, height = 3.5)
+}
+```
+
+
+# Session info
+
+```{r, message=FALSE}
+sessionInfo()
+```
+
