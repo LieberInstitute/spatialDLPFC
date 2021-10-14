@@ -61,7 +61,7 @@ library(rjson)
 ```
 
 ```{r}
-sample_names <- c("DLPFC_Br8492_mid_manual_alignment_resequence")
+sample_names <- c("DLPFC_Br6423_mid_extra_reads")
 sce_list <- vector("list", length = length(sample_names))
 names(sce_list) <- sample_names
 
@@ -77,10 +77,10 @@ for (i in seq_along(sample_names)) {
   # path to Space Ranger output files
   if (Sys.info()["sysname"] == "Linux") {
     # files on JHPCE cluster
-    dir_outputs <- "/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/outputs/NextSeq"
+    dir_outputs <- "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq"
   } else if (Sys.info()["sysname"] == "Darwin") {
     # copy of files on Mac laptop
-    dir_outputs <- "~/DLPFC"
+    dir_outputs <- "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots"
   }
   
   # note: using "raw" barcodes list containing all spots
@@ -227,7 +227,7 @@ Thresholds for the regions with high UMI counts were selected by checking plots 
 ```{r, message=FALSE, fig.width=4.75, fig.height=3.5}
 # number of UMI counts per spot in different regions of each sample
 
-dir_plot <- here("plots", "features_per_spot_all_spots")
+dir_plot <- here("plots", "features_per_spot_all_spots_Br6423_mid_extra_reads")
 if (!dir.exists(dir_plot)) dir.create(dir_plot, recursive = TRUE)
 
 thresh_nonzero_counts <- c(1000, 500)
