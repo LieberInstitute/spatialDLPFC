@@ -28,7 +28,7 @@ module load spaceranger
 # run in outputs directory (spaceranger can only save outputs in current working directory)
 cwd=$(pwd)
 #mkdir -p outputs/NextSeq
-cd outputs/NextSeq
+cd processed-data/NextSeq
 
 
 # run spaceranger count for each sample
@@ -57,29 +57,29 @@ cd outputs/NextSeq
 # --localcores=8 \
 # --localmem=64
 
-# spaceranger count \
-# --id=DLPFC_Br6423_post_manual_alignment \
-# --transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
-# --fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/7_DLPFC_Br6423_mid \
-# --image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush_posterior_3.tif \
-# --slide=V19B23-073 \
-# --area=C1 \
-# --loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-073-C1_11_Br6423_post_manual_alignment.json \
-# --jobmode=local \
-# --localcores=8 \
-# --localmem=64
-
 spaceranger count \
---id=DLPFC_Br8492_post_manual_alignment \
+--id=DLPFC_Br6423_post_extra_reads \
 --transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
---fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/12_DLPFC_Br8492_post \
---image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush_posterior_4.tif \
+--fastqs=/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/FASTQ/7_DLPFC_Br6423_mid,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-10-06_KMay110220/r1_sample10_L002_ds.6cea0b18c46c427db81aace3e84b8331,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-10-06_KMay110220/r1_sample10_L001_ds.21cbcc783c724f219328be5aa7f078f3 \
+--image=/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_3.tif \
 --slide=V19B23-073 \
---area=D1 \
---loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-073-D1_12_Br8492_post_manual_alignment.json \
+--area=C1 \
+--loupe-alignment=/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/images_raw_align_json/V19B23-073-C1_11_Br6423_post_manual_alignment.json \
 --jobmode=local \
 --localcores=8 \
 --localmem=64
+
+# spaceranger count \
+# --id=DLPFC_Br8492_post_manual_alignment \
+# --transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
+# --fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/FASTQ/12_DLPFC_Br8492_post \
+# --image=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/Liebert_Institute_OTS-20-7748_rush_posterior_4.tif \
+# --slide=V19B23-073 \
+# --area=D1 \
+# --loupe-alignment=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/images_raw_align_json/V19B23-073-D1_12_Br8492_post_manual_alignment.json \
+# --jobmode=local \
+# --localcores=8 \
+# --localmem=64
 
 # restore working directory
 cd $cwd

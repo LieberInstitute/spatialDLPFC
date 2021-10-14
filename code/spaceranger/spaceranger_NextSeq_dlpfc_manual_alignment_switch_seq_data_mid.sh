@@ -58,9 +58,9 @@ cd outputs/NextSeq
 # --localmem=64
 
 spaceranger count \
---id=DLPFC_Br6423_mid_extra_reads \
+--id=DLPFC_Br6423_mid_manual_alignment \
 --transcriptome=/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A \
---fastqs=/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/raw-data/FASTQ/10_DLPFC_Br3942_post,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-10-06_KMay110220/r1_sample10_L002_ds.6cea0b18c46c427db81aace3e84b8331,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-10-06_KMay110220/r1_sample10_L001_ds.21cbcc783c724f219328be5aa7f078f3 \
+--fastqs= /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/raw-data/FASTQ/10_DLPFC_Br3942_post \
 --image=/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_3.tif \
 --slide=V19B23-074 \
 --area=C1 \
