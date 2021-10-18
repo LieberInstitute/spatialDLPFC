@@ -22,7 +22,7 @@ import pyhere # this was added; analagous to 'here' in R
 first_sample_name = '151507'
 
 
-os.mkdir(pyhere.here("spagcn/processed-data/02-our_data/sample_results"))
+#os.mkdir(pyhere.here("spagcn/processed-data/02-our_data/sample_results"))
 
 adata = sc.read_h5ad(
     pyhere.here("spagcn/processed-data/02-our_data/spe_anndata.h5ad")
@@ -221,3 +221,38 @@ for g in filtered_info["genes"].tolist():
         ), dpi=600
     )
     plt.close()
+
+#Use domain 2 as an example
+target=2
+meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
+                    pred=raw.obs["pred"].tolist(),
+                    target_domain=target,
+                    start_gene="ENSG00000131095",
+                    mean_diff=0,
+                    early_stop=True,
+                    max_iter=3,
+                    use_raw=False)
+
+raw.obs["meta"]=meta_exp
+
+#Plot meta gene
+g="ENSG00000131095" # GFAP
+raw.obs["exp"]=raw.X[:,raw.var.index==g]
+ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=g,color_map=color_self,show=False,size=100000/raw.shape[0])
+ax.set_aspect('equal', 'box')
+ax.axes.invert_yaxis()
+plt.savefig(
+    pyhere.here("spagcn/processed-data/02-our_data/sample_results/" + g + ".png"),
+    dpi=600
+)
+plt.close()
+
+raw.obs["exp"]=raw.obs["meta"]
+ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=meta_name,color_map=color_self,show=False,size=100000/raw.shape[0])
+ax.set_aspect('equal', 'box')
+ax.axes.invert_yaxis()
+plt.savefig(
+    pyhere.here("spagcn/processed-data/02-our_data/sample_results/meta_gene.png"),
+    dpi=600
+)
+plt.close()
