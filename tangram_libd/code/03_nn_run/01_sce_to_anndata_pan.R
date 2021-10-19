@@ -93,26 +93,35 @@ writeLines(
 #  Filter using expression cutoffs
 ###############################################################################
 
-#seed <- 20210324
+seed <- 20210324
 
 # Find expression cutoff for each dataset and filter out genes below that cutoff
 #pdf(expr_plot_out)
 #counts_sce = as.matrix(assays(sce_pan)$counts)
 #cutoff_sce <- max(expression_cutoff(counts_sce, seed = seed))
 #sce_pan1 = sce_pan[rowMeans(counts_sce) > cutoff_sce, ]
+#dev_off()
 
-#counts_visium = as.matrix(assays(visium_DLPFC)$counts)
-#cutoff_visium <- max(expression_cutoff(counts_visium, seed = seed))
-#visium_DLPFC1 = visium_DLPFC[rowMeans(counts_visium) > cutoff_visium, ]
-#dev.off()
+counts_visium = as.matrix(assays(visium_DLPFC)$counts)
+cutoff_visium <- expression_cutoff(counts_visium, seed = seed)
+visium_DLPFC_H = visium_DLPFC[rowMeans(counts_visium) > max(cutoff_visium), ]
+visium_DLPFC_L = visium_DLPFC[rowMeans(counts_visium) > 0.02, ]
+visium_DLPFC_L1 = visium_DLPFC[rowMeans(counts_visium) > 0.03, ]
 
-# Getting overlaps between spatial and scRNAseq data
-#overlaps <- sce_pan1[rowData(sce_pan1)$Symbol %in% rowData(visium_DLPFC1)$gene_name,]
-#save(overlaps, file = overlaps_out)
+VisHigh_overlaps = intersect(marker_stats$gene,rowData(visium_DLPFC_H)$gene_id)
+VisLow = intersect(marker_stats$gene,rowData(visium_DLPFC_L)$gene_id)
+VisLow1 = intersect(marker_stats$gene,rowData(visium_DLPFC_L1)$gene_id)
+VisLow_overlaps = setdiff(VisLow,VisLow1)
 
-#overlaps_genes = rowData(overlaps)$Symbol
-#overlaps_genes = rowData(visium_DLPFC1)$gene_name
-#common_genes = intersect(marker_genes$Symbol, overlaps_genes)
+writeLines(
+  VisLow_overlaps,
+  con = here("tangram_libd", "processed-data", "03_nn_run", "VisLow_overlaps.txt")
+)
+writeLines(
+  VisHigh_overlaps,
+  con = here("tangram_libd", "processed-data", "03_nn_run", "VisHigh_overlaps.txt")
+)
+
 ###############################################################################
 #  Write the sample names to a file for use in the python script
 ###############################################################################
