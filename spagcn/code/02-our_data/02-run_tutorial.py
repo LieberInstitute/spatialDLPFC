@@ -233,22 +233,66 @@ meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
                     max_iter=3,
                     use_raw=False)
 
+
+#  Given an AnnData and Ensembl ID, return the gene symbol
+def get_symbol(anndata, ens_id):
+    return anndata.var.gene_name[anndata.var.gene_id == ens_id][0]
+
+#  Convert meta-gene name string from 'spg.find_meta_gene' to string
+#  containing gene symbol(s) instead of Ensembl IDs. Also correct name,
+#  accounting for a bug: a gene name may appear up to 3 times
+#  (e.g. 'gene1+gene2-gene1-gene1' should really be 'gene2-gene1')
+def parse_metaname(adata, meta_name, convert=True):
+    #  Get lists of genes whose expressions are high and low with respect to
+    #  outside the spatial domain
+    additive = [x.split('-')[0] for x in meta_name.split('+')]
+    subtractive = [x.split('+')[0] for x in meta_name.split('-')][1:]
+    
+    #  Due to (arguably) a bug, it's possible for a gene to be added then
+    #  subtracted twice. Remove the first instance of any "duplicate" gene
+    overlaps = [x for x in additive if x in subtractive]
+    for x in overlaps:
+        additive.remove(x)
+        subtractive.remove(x)
+    
+    if convert:
+        #  Convert from Ensembl IDs to gene symbols
+        additive = [get_symbol(adata, x) for x in additive]
+        subtractive = [get_symbol(adata, x) for x in subtractive]
+    
+    #  Form a new "meta_name" string of the same format as the input
+    if len(subtractive) > 0:
+        new_meta_name = "+".join(additive) + "-" + "-".join(subtractive)
+    else:
+        new_meta_name = "+".join(additive)
+    
+    return new_meta_name
+
+
+#  Show that the somewhat complicated 'parse_metaname' function works as
+#  intended
+expected_in = ['a+b+c-a+d-b-b', 'a-b', 'gene1-gene2-gene1+gene3+gene4-gene1']
+expected_out = ['c+d-b', 'a-b', 'gene3+gene4-gene2-gene1']
+for i in range(len(expected_in)):
+    assert parse_metaname(adata, expected_in[i], False) == expected_out[i]
+
 raw.obs["meta"]=meta_exp
 
 #Plot meta gene
 g="ENSG00000131095" # GFAP
+title = get_symbol(raw, g) + ' (marker for domain ' + str(target) + ')'
 raw.obs["exp"]=raw.X[:,raw.var.index==g]
-ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=g,color_map=color_self,show=False,size=100000/raw.shape[0])
+ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=title,color_map=color_self,show=False,size=100000/raw.shape[0])
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/processed-data/02-our_data/sample_results/" + g + ".png"),
+    pyhere.here("spagcn/processed-data/02-our_data/sample_results/" + get_symbol(raw, g) + ".png"),
     dpi=600
 )
 plt.close()
 
 raw.obs["exp"]=raw.obs["meta"]
-ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=meta_name,color_map=color_self,show=False,size=100000/raw.shape[0])
+ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=parse_metaname(raw, meta_name),color_map=color_self,show=False,size=100000/raw.shape[0])
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
