@@ -22,7 +22,7 @@ import pyhere # this was added; analagous to 'here' in R
 first_sample_name = '151507'
 
 
-#os.mkdir(pyhere.here("spagcn/processed-data/02-our_data/sample_results"))
+#os.mkdir(pyhere.here("spagcn/plots/02-our_data/sample_results"))
 
 adata = sc.read_h5ad(
     pyhere.here("spagcn/processed-data/02-our_data/spe_anndata.h5ad")
@@ -56,7 +56,7 @@ for i in range(len(x_pixel)):
     img_new[int(x-20):int(x+20), int(y-20):int(y+20),:]=0
 
 cv2.imwrite(
-    str(pyhere.here("spagcn/processed-data/02-our_data/coord_test.jpg")),
+    str(pyhere.here("spagcn/plots/02-our_data/coord_test.jpg")),
     img_new
 )
 
@@ -133,7 +133,7 @@ ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domai
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/processed-data/02-our_data/pred.png"), dpi=600
+    pyhere.here("spagcn/plots/02-our_data/pred.png"), dpi=600
 )
 plt.close()
 
@@ -144,7 +144,7 @@ ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domai
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/processed-data/02-our_data/refined_pred.png"),
+    pyhere.here("spagcn/plots/02-our_data/refined_pred.png"),
     dpi=600
 )
 plt.close()
@@ -217,7 +217,7 @@ for g in filtered_info["genes"].tolist():
     ax.axes.invert_yaxis()
     plt.savefig(
         pyhere.here(
-            "spagcn/processed-data/02-our_data/sample_results/" + g + ".png"
+            "spagcn/plots/02-our_data/sample_results/" + g + ".png"
         ), dpi=600
     )
     plt.close()
@@ -286,7 +286,7 @@ ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=title,col
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/processed-data/02-our_data/sample_results/" + get_symbol(raw, g) + ".png"),
+    pyhere.here("spagcn/plots/02-our_data/sample_results/" + get_symbol(raw, g) + ".png"),
     dpi=600
 )
 plt.close()
@@ -296,7 +296,7 @@ ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=parse_met
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/processed-data/02-our_data/sample_results/meta_gene.png"),
+    pyhere.here("spagcn/plots/02-our_data/sample_results/meta_gene.png"),
     dpi=600
 )
 plt.close()
