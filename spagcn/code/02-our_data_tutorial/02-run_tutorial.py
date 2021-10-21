@@ -22,10 +22,10 @@ import pyhere # this was added; analagous to 'here' in R
 first_sample_name = '151507'
 
 
-#os.mkdir(pyhere.here("spagcn/plots/02-our_data/sample_results"))
+#os.mkdir(pyhere.here("spagcn/plots/02-our_data_tutorial/sample_results"))
 
 adata = sc.read_h5ad(
-    pyhere.here("spagcn/processed-data/02-our_data/spe_anndata.h5ad")
+    pyhere.here("spagcn/processed-data/02-our_data_tutorial/spe_anndata.h5ad")
 )
 
 #  Take just the first sample for testing
@@ -45,7 +45,7 @@ y_pixel=adata.obs["y_pixel"].astype(np.int32).tolist()
 
 #  Read in histology image
 img=cv2.imread(
-    str(pyhere.here("spagcn/raw-data/02-our_data/" + first_sample_name + ".tif"))
+    str(pyhere.here("spagcn/raw-data/02-our_data_tutorial/" + first_sample_name + ".tif"))
 )
 
 #Test coordinates on the image
@@ -56,7 +56,7 @@ for i in range(len(x_pixel)):
     img_new[int(x-20):int(x+20), int(y-20):int(y+20),:]=0
 
 cv2.imwrite(
-    str(pyhere.here("spagcn/plots/02-our_data/coord_test.jpg")),
+    str(pyhere.here("spagcn/plots/02-our_data_tutorial/coord_test.jpg")),
     img_new
 )
 
@@ -68,7 +68,7 @@ b=49
 
 adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=img, beta=b, alpha=s, histology=True)
 np.savetxt(
-    pyhere.here("spagcn/processed-data/02-our_data/adj.csv"),
+    pyhere.here("spagcn/processed-data/02-our_data_tutorial/adj.csv"),
     adj,
     delimiter=','
 )
@@ -119,7 +119,7 @@ adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
 
 #Save results
 adata.write_h5ad(
-    pyhere.here("spagcn/processed-data/02-our_data/results.h5ad")
+    pyhere.here("spagcn/processed-data/02-our_data_tutorial/results.h5ad")
 )
 
 #Set colors used
@@ -133,7 +133,7 @@ ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domai
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/plots/02-our_data/pred.png"), dpi=600
+    pyhere.here("spagcn/plots/02-our_data_tutorial/pred.png"), dpi=600
 )
 plt.close()
 
@@ -144,14 +144,14 @@ ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domai
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/plots/02-our_data/refined_pred.png"),
+    pyhere.here("spagcn/plots/02-our_data_tutorial/refined_pred.png"),
     dpi=600
 )
 plt.close()
 
 #Read in raw data
 raw = sc.read_h5ad(
-    pyhere.here("spagcn/processed-data/02-our_data/spe_anndata.h5ad")
+    pyhere.here("spagcn/processed-data/02-our_data_tutorial/spe_anndata.h5ad")
 )
 raw.var_names_make_unique()
 
@@ -217,7 +217,7 @@ for g in filtered_info["genes"].tolist():
     ax.axes.invert_yaxis()
     plt.savefig(
         pyhere.here(
-            "spagcn/plots/02-our_data/sample_results/" + g + ".png"
+            "spagcn/plots/02-our_data_tutorial/sample_results/" + g + ".png"
         ), dpi=600
     )
     plt.close()
@@ -286,7 +286,7 @@ ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=title,col
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/plots/02-our_data/sample_results/" + get_symbol(raw, g) + ".png"),
+    pyhere.here("spagcn/plots/02-our_data_tutorial/sample_results/" + get_symbol(raw, g) + ".png"),
     dpi=600
 )
 plt.close()
@@ -296,7 +296,7 @@ ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=parse_met
 ax.set_aspect('equal', 'box')
 ax.axes.invert_yaxis()
 plt.savefig(
-    pyhere.here("spagcn/plots/02-our_data/sample_results/meta_gene.png"),
+    pyhere.here("spagcn/plots/02-our_data_tutorial/sample_results/meta_gene.png"),
     dpi=600
 )
 plt.close()

@@ -5,7 +5,7 @@ library('here')
 library('sessioninfo')
 
 anndata_out = here(
-    'spagcn', 'processed-data', '02-our_data', 'spe_anndata.h5ad'
+    'spagcn', 'processed-data', '02-our_data_tutorial', 'spe_anndata.h5ad'
 )
 
 spe = fetch_data("spe")
