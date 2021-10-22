@@ -60,6 +60,48 @@ def parse_metaname(adata, meta_name, convert=True):
     
     return new_meta_name
 
+#  Given an AnnData, a particular number of clusters, and other info, write and
+#  return an output AnnData containing additional 'obs' columns with info about
+#  cluster predictions
+def find_domains(adata_in, x_array, y_array, adj, l, n_clusters, out_file, seed):
+    adata = adata_in.copy()
+    
+    #Search for suitable resolution
+    res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=seed, t_seed=seed, n_seed=seed)
+    
+    clf=spg.SpaGCN()
+    clf.set_l(l)
+    
+    #Run
+    clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+    y_pred, prob=clf.predict()
+    adata.obs["pred"]= y_pred
+    adata.obs["pred"]=adata.obs["pred"].astype('category')
+    
+    #Do cluster refinement(optional)
+    #shape="hexagon" for Visium data, "square" for ST data.
+    adj_2d=spg.calculate_adj_matrix(x=x_array,y=y_array, histology=False)
+    refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
+    adata.obs["refined_pred"]=refined_pred
+    adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
+    
+    #Save results
+    adata.write_h5ad(out_file)
+    
+    return adata
+
+#  Given an AnnData, a column name in 'adata.obs', a color list, plot title, 
+#  and output file path, create a PNG file containing a plot
+def plot_adata(adata, colname, title, plot_color, out_file):
+    ax = sc.pl.scatter(
+        adata, alpha=1, x="y_pixel", y="x_pixel", color=colname, title=title,
+        color_map=plot_color, show=False, size=100000/adata.shape[0]
+    )
+    ax.set_aspect('equal', 'box')
+    ax.axes.invert_yaxis()
+    plt.savefig(out_file, dpi=600)
+    plt.close()
+
 ###############################################################################
 #  Main Analysis
 ###############################################################################
@@ -81,6 +123,12 @@ adata = sc.read_h5ad(input_adata_path)
 #  Subset to just this sample
 sample_name = adata.obs.sample_id.unique()[sample_index - 1]
 adata = adata[adata.obs.sample_id == sample_name, :]
+
+print('Continuing with sample ' + sample_name + '...')
+out_dir_processed = pyhere.here(out_dir_processed, sample_name)
+out_dir_plots = pyhere.here(out_dir_plots, sample_name)
+os.mkdir(out_dir_processed)
+os.mkdir(out_dir_plots)
 
 #  Rename and set some variables for compatibility with original code from
 #  tutorial
@@ -108,7 +156,7 @@ for i in range(len(x_pixel)):
     img_new[int(x-20):int(x+20), int(y-20):int(y+20),:]=0
 
 cv2.imwrite(
-    str(pyhere.here(out_dir_plots, "coord_test_" + sample_name + ".jpg")),
+    str(pyhere.here(out_dir_plots, "coord_test.jpg")),
     img_new
 )
 
@@ -120,7 +168,7 @@ b=49
 
 adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=img, beta=b, alpha=s, histology=True)
 np.savetxt(
-    pyhere.here(out_dir_processed, "adj_" + sample_name + ".csv"),
+    pyhere.here(out_dir_processed, "adj.csv"),
     adj,
     delimiter=','
 )
@@ -139,67 +187,35 @@ p=0.5
 #Find the l value given p
 l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
 
+#  Set seed
+seed = 100
+random.seed(seed)
+torch.manual_seed(seed)
+np.random.seed(seed)
+
 #  Is this appropriate for our data?
 n_clusters=7
 
-#Set seed
-r_seed=t_seed=n_seed=100
+this_out_dir_plots = pyhere.here(out_dir_plots, str(n_clusters) + "_clusters")
+this_out_dir_processed = pyhere.here(out_dir_processed, str(n_clusters) + "_clusters")
+os.mkdir(this_out_dir_plots)
+os.mkdir(this_out_dir_processed)
+    
+out_file = pyhere.here(this_out_dir_processed, 'results.h5ad')
+adata = find_domains(adata, x_array, y_array, adj, 1, n_clusters, out_file, seed)
 
-#Search for suitable resolution
-res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=r_seed, t_seed=t_seed, n_seed=n_seed)
-
-clf=spg.SpaGCN()
-clf.set_l(l)
-
-#Set seed
-random.seed(r_seed)
-torch.manual_seed(t_seed)
-np.random.seed(n_seed)
-
-#Run
-clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
-y_pred, prob=clf.predict()
-adata.obs["pred"]= y_pred
-adata.obs["pred"]=adata.obs["pred"].astype('category')
-
-#Do cluster refinement(optional)
-#shape="hexagon" for Visium data, "square" for ST data.
-adj_2d=spg.calculate_adj_matrix(x=x_array,y=y_array, histology=False)
-refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
-adata.obs["refined_pred"]=refined_pred
-adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
-
-#Save results
-adata.write_h5ad(
-    pyhere.here(out_dir_processed, "results_" + sample_name + ".h5ad")
-)
-
-#Set colors used
+#  Plot spatial domains, raw and refined
 plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
 
-#Plot spatial domains
-domains="pred"
-num_celltype=len(adata.obs[domains].unique())
-adata.uns[domains+"_colors"]=list(plot_color[:num_celltype])
-ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domains,color_map=plot_color,show=False,size=100000/adata.shape[0])
-ax.set_aspect('equal', 'box')
-ax.axes.invert_yaxis()
-plt.savefig(
-    pyhere.here(out_dir_plots, "domains_" + sample_name + ".png"), dpi=600
-)
-plt.close()
+num_celltype=len(adata.obs["pred"].unique())
+adata.uns["pred_colors"]=list(plot_color[:num_celltype])
+out_file = pyhere.here(this_out_dir_plots, "domains.png")
+plot_adata(adata, "pred", "Raw spatial domains", plot_color, out_file)
 
-domains="refined_pred"
-num_celltype=len(adata.obs[domains].unique())
-adata.uns[domains+"_colors"]=list(plot_color[:num_celltype])
-ax=sc.pl.scatter(adata,alpha=1,x="y_pixel",y="x_pixel",color=domains,title=domains,color_map=plot_color,show=False,size=100000/adata.shape[0])
-ax.set_aspect('equal', 'box')
-ax.axes.invert_yaxis()
-plt.savefig(
-    pyhere.here(out_dir_plots, "refined_domains_" + sample_name + ".png"),
-    dpi=600
-)
-plt.close()
+num_celltype=len(adata.obs["refined_pred"].unique())
+adata.uns["refined_pred_colors"]=list(plot_color[:num_celltype])
+out_file = pyhere.here(this_out_dir_plots, "refined_domains.png")
+plot_adata(adata, "pred", "Refined spatial domains", plot_color, out_file)
 
 #  Read in raw data and subset to current sample
 raw = sc.read_h5ad(input_adata_path)
@@ -230,27 +246,15 @@ meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
 
 raw.obs["meta"]=meta_exp
 
-#  Plot "start gene" in meta gene set
 color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
-g=start_gene
-title = get_symbol(raw, g) + ' (marker for domain ' + str(target) + ')'
-raw.obs["exp"]=raw.X[:,raw.var.index==g]
-ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=title,color_map=color_self,show=False,size=100000/raw.shape[0])
-ax.set_aspect('equal', 'box')
-ax.axes.invert_yaxis()
-plt.savefig(
-    pyhere.here(out_dir_plots, "sample_results", "start_meta_gene_" + sample_name + "_domain_" + str(target) + ".png"),
-    dpi=600
-)
-plt.close()
+
+#  Plot "start gene" in meta gene set
+title = get_symbol(raw, start_gene) + ' (marker for domain ' + str(target) + ')'
+out_file = pyhere.here(this_out_dir_plots, "start_meta_gene_domain_" + str(target) + ".png")
+raw.obs["exp"]=raw.X[:,raw.var.index==start_gene]
+plot_adata(raw, "exp", title, color_self, out_file)
 
 #  Plot entire meta gene set
 raw.obs["exp"]=raw.obs["meta"]
-ax=sc.pl.scatter(raw,alpha=1,x="y_pixel",y="x_pixel",color="exp",title=parse_metaname(raw, meta_name),color_map=color_self,show=False,size=100000/raw.shape[0])
-ax.set_aspect('equal', 'box')
-ax.axes.invert_yaxis()
-plt.savefig(
-    pyhere.here(out_dir_plots, "sample_results", "all_meta_genes_" + sample_name + "_domain_" + str(target) + ".png"),
-    dpi=600
-)
-plt.close()
+out_file = pyhere.here(this_out_dir_plots, "all_meta_genes_domain_" + str(target) + ".png")
+plot_adata(raw, "exp", parse_metaname(raw, meta_name), color_self, out_file)
