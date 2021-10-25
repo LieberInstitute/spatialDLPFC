@@ -60,10 +60,10 @@ def parse_metaname(adata, meta_name, convert=True):
     
     return new_meta_name
 
-#  Given an AnnData, a particular number of clusters, and other info, write and
-#  return an output AnnData containing additional 'obs' columns with info about
-#  cluster predictions
-def find_domains(adata_in, x_array, y_array, adj, l, n_clusters, out_file, seed):
+#  Given an AnnData, a particular number of clusters, and other info, return an
+#  output AnnData containing additional 'obs' columns with info about cluster
+#  predictions
+def find_domains(adata_in, x_array, y_array, adj, l, n_clusters, seed):
     adata = adata_in.copy()
     
     #Search for suitable resolution
@@ -84,9 +84,6 @@ def find_domains(adata_in, x_array, y_array, adj, l, n_clusters, out_file, seed)
     refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
     adata.obs["refined_pred"]=refined_pred
     adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
-    
-    #Save results
-    adata.write_h5ad(out_file)
     
     return adata
 
@@ -197,30 +194,37 @@ np.random.seed(seed)
 
 adata_orig = adata
 
-#  Try different numbers of clusters: 5, 7, 9
+#  Try different numbers of clusters: 5, 7, 9 (might not be exact)
 for n_clusters in range(5, 11, 2):
     adata = adata_orig.copy()
     
-    this_out_dir_plots = pyhere.here(out_dir_plots, str(n_clusters) + "_clusters")
-    this_out_dir_processed = pyhere.here(out_dir_processed, str(n_clusters) + "_clusters")
+    #  Compute/ determine spatial domains
+    adata = find_domains(adata, x_array, y_array, adj, 1, n_clusters, seed)
+    
+    #  With Louvain clustering, the exact 'n_clusters' specified might not be
+    #  found.
+    actual_n_clusters = len(adata.obs.pred.unique())
+    assert actual_n_clusters == len(adata.obs.refined_pred.unique())
+    
+    this_out_dir_plots = pyhere.here(out_dir_plots, str(actual_n_clusters) + "_clusters")
+    this_out_dir_processed = pyhere.here(out_dir_processed, str(actual_n_clusters) + "_clusters")
     if not os.path.exists(this_out_dir_plots):
         os.mkdir(this_out_dir_plots)
     if not os.path.exists(this_out_dir_processed):
         os.mkdir(this_out_dir_processed)
-        
+    
+    #  Save results
     out_file = pyhere.here(this_out_dir_processed, 'results.h5ad')
-    adata = find_domains(adata, x_array, y_array, adj, 1, n_clusters, out_file, seed)
+    adata.write_h5ad(out_file)
     
     #  Plot spatial domains, raw and refined
     plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
     
-    num_celltype=len(adata.obs["pred"].unique())
-    adata.uns["pred_colors"]=list(plot_color[:num_celltype])
+    adata.uns["pred_colors"]=list(plot_color[:actual_n_clusters])
     out_file = pyhere.here(this_out_dir_plots, "domains.png")
     plot_adata(adata, "pred", "Raw spatial domains", plot_color, out_file)
     
-    num_celltype=len(adata.obs["refined_pred"].unique())
-    adata.uns["refined_pred_colors"]=list(plot_color[:num_celltype])
+    adata.uns["refined_pred_colors"]=list(plot_color[:actual_n_clusters])
     out_file = pyhere.here(this_out_dir_plots, "refined_domains.png")
     plot_adata(adata, "refined_pred", "Refined spatial domains", plot_color, out_file)
     
@@ -241,7 +245,7 @@ for n_clusters in range(5, 11, 2):
     sc.pp.log1p(raw)
     
     #  Find meta genes for each domain found
-    for target in range(n_clusters):
+    for target in range(actual_n_clusters):
         meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
                             pred=raw.obs["pred"].tolist(),
                             target_domain=target,
