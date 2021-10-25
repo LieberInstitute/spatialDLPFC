@@ -41,9 +41,9 @@ def parse_metaname(adata, meta_name, convert=True):
     subtractive = [x.split('+')[0] for x in meta_name.split('-')][1:]
     
     #  Due to (arguably) a bug, it's possible for a gene to be added then
-    #  subtracted twice. Remove the first instance of any "duplicate" gene
+    #  subtracted. Remove the first instance of any "duplicate" gene
     overlaps = [x for x in additive if x in subtractive]
-    for x in overlaps:
+    for x in list(np.unique(overlaps)):
         additive.remove(x)
         subtractive.remove(x)
     
@@ -54,9 +54,9 @@ def parse_metaname(adata, meta_name, convert=True):
     
     #  Form a new "meta_name" string of the same format as the input
     if len(subtractive) > 0:
-        new_meta_name = "+".join(additive) + "-" + "-".join(subtractive)
+        new_meta_name = " + ".join(additive) + " - " + " - ".join(subtractive)
     else:
-        new_meta_name = "+".join(additive)
+        new_meta_name = " + ".join(additive)
     
     return new_meta_name
 
