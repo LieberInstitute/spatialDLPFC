@@ -26,12 +26,20 @@ Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(out_dir).mkdir(parents=True, exist_ok=True)
 
 sc_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'sce_pan.h5ad')
-sp_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'visium_dlpfc.h5ad')
+sp_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'visium_DLPFC.h5ad')
 marker_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'pan_markers.txt')
 sample_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'brain_samples.txt')
+VisHigh_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'VisHigh_overlaps.txt')
+VisLow_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'VisLow_overlaps.txt')
 
 select_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN']
 
+#  import Visium high and low expressing genes
+with open(VisHigh_path, 'r') as f:
+    VisHigh = f.read().splitlines()
+with open(VisLow_path, 'r') as f:
+    VisLow = f.read().splitlines()
+    
 #  Grab the full list of sample names we will subset from
 with open(sample_path, 'r') as f:
     sample_names = f.read().splitlines()
@@ -68,7 +76,7 @@ for gene in select_genes:
 #  Subset and otherwise prepare objects for mapping
 sc.pp.normalize_total(ad_sc)
 
-ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_name, :].copy()
+ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :].copy()
 
 ad_sc, ad_sp = tg.pp_adatas(ad_sc, ad_sp, genes=markers)
 assert ad_sc.var.index.equals(ad_sp.var.index)
@@ -85,10 +93,10 @@ ad_map.write_h5ad(os.path.join(out_dir, 'ad_map_' + sample_name + '.h5ad'))
 #  Reload the original objects and subset the spatial object by sample
 ad_sp = sc.read_h5ad(sp_path)
 ad_sc = sc.read_h5ad(sc_path)
-ad_sp = ad_sp[ad_sp.obs['sample_name'] == sample_name, :].copy()
+ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :].copy()
 
 #  Generate plots
-tg.plot_cell_annotation(ad_map, annotation='cell_type', x='imagerow', y='imagecol', nrows=5, ncols=4)
+tg.plot_cell_annotation(ad_map, annotation='cellType', x='array_row', y='array_col', nrows=5, ncols=4)
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'), bbox_inches='tight')
 
@@ -102,9 +110,17 @@ ad_ge.write_h5ad(os.path.join(plot_dir, 'ad_ge' + sample_name + '.h5ad'))
 
 #  Plot expected vs. actual expression maps for particular test genes of
 #  interest
-tg.plot_genes(select_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='imagerow', y='imagecol')
+tg.plot_genes(select_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='array_row', y='array_col')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_select_genes_' + sample_name + '.pdf'), bbox_inches='tight')
+
+tg.plot_genes(VisHigh, adata_measured=ad_sp, adata_predicted=ad_ge, x='array_row', y='array_col')
+f = plt.gcf()
+f.savefig(os.path.join(plot_dir, 'mapped_VisHigh_genes_' + sample_name + '.pdf'), bbox_inches='tight')
+
+tg.plot_genes(VisLow, adata_measured=ad_sp, adata_predicted=ad_ge, x='array_row', y='array_col')
+f = plt.gcf()
+f.savefig(os.path.join(plot_dir, 'mapped_VisLow_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
 #  Compute average cosine similarity for test genes
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
