@@ -12,6 +12,7 @@ conda env create -n tangram -f Tangram/environment.yml
 conda activate tangram
 pip install tangram-sc # install the tangram python package
 pip install pyhere     # python's equivalent to 'here' in R
+pip install numpy==1.20
 conda deactivate
 
 #  To later load the environment:
