@@ -96,7 +96,7 @@ ad_sc = sc.read_h5ad(sc_path)
 ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :].copy()
 
 #  Generate plots
-tg.plot_cell_annotation(ad_map, annotation='cellType', x='array_row', y='array_col', nrows=5, ncols=4)
+tg.plot_cell_annotation(ad_map, annotation='cellType', x='pxl_row_in_fullres', y='pxl_col_in_fullres', nrows=5, ncols=4)
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'), bbox_inches='tight')
 
@@ -110,15 +110,15 @@ ad_ge.write_h5ad(os.path.join(plot_dir, 'ad_ge' + sample_name + '.h5ad'))
 
 #  Plot expected vs. actual expression maps for particular test genes of
 #  interest
-tg.plot_genes(select_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='array_row', y='array_col')
+tg.plot_genes(select_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_select_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
-tg.plot_genes(VisHigh, adata_measured=ad_sp, adata_predicted=ad_ge, x='array_row', y='array_col')
+tg.plot_genes(VisHigh, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_VisHigh_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
-tg.plot_genes(VisLow, adata_measured=ad_sp, adata_predicted=ad_ge, x='array_row', y='array_col')
+tg.plot_genes(VisLow, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_VisLow_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
