@@ -32,7 +32,12 @@ sample_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'brain_
 VisHigh_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'VisHigh_overlaps.txt')
 VisLow_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'VisLow_overlaps.txt')
 
-select_genes = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN']
+#  Genes we want to plot predicted vs. actual expression for, and their
+#  corresponding gene symbols
+select_genes_names = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN']
+select_genes = ["ENSG00000132639", "ENSG00000197971", "ENSG00000183036", 
+    "ENSG00000187094", "ENSG00000198963", "ENSG00000171617", "ENSG00000164326",
+    "ENSG00000153234", "ENSG00000189056"]
 
 #  import Visium high and low expressing genes
 with open(VisHigh_path, 'r') as f:
@@ -67,25 +72,28 @@ with open(marker_path, 'r') as f:
     markers = f.read().splitlines()
     
 #  Note when genes of interest are present in the training set   
-for gene in select_genes:
+for i in range(len(select_genes)):
+    gene = select_genes[i]
+    gene_name = select_genes_names[i]
+    
     if gene in markers:
-        print('Gene', gene, 'is in the training set.')
+        print('Gene', gene, '(' + gene_name + ') is in the training set.')
     else:
-        print('Gene', gene, 'is in the test set.')
+        print('Gene', gene, '(' + gene_name + ') is in the test set.')
 
 #  Subset and otherwise prepare objects for mapping
 sc.pp.normalize_total(ad_sc)
 
-ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :].copy()
+ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :]
 
-ad_sc, ad_sp = tg.pp_adatas(ad_sc, ad_sp, genes=markers)
-assert ad_sc.var.index.equals(ad_sp.var.index)
+tg.pp_adatas(ad_sc, ad_sp, genes=markers)
+assert ad_sc.uns['training_genes'] == ad_sp.uns['training_genes']
 
 #  Mapping step using GPU
 ad_map = tg.map_cells_to_space(
     adata_cells=ad_sc,
     adata_space=ad_sp,
-    device='cuda: 0'
+    device='cuda:0'
 )
 
 ad_map.write_h5ad(os.path.join(out_dir, 'ad_map_' + sample_name + '.h5ad'))
