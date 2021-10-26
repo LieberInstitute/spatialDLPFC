@@ -27,6 +27,15 @@ print('Loading objects...')
 load(here("tangram_libd", "raw-data", "03_nn_run", "sce_pan.v2.Rdata"), verbose = TRUE)
 visium_DLPFC = spatialLIBD::fetch_data("spe")
 
+#  Append 'spatialCoords' slot to 'colData', since in
+#  conversion we're treating the spatialExperiment object as if it is a
+#  singleCellExperiment, which doesn't have that additional slot. Note that
+#  in this case, the 'spatialData' slot only contains duplicate information,
+#  which is why we don't append it
+colData(visium_DLPFC) = cbind(
+    colData(visium_DLPFC), spatialCoords(visium_DLPFC)
+)
+
 gc()
 
 ###############################################################################
