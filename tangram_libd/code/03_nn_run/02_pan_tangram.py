@@ -129,7 +129,7 @@ tg.plot_genes(VisHigh, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_i
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_VisHigh_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
-VisHigh = [x.lower() for x in VisLow]
+VisLow = [x.lower() for x in VisLow]
 tg.plot_genes(VisLow, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_VisLow_genes_' + sample_name + '.pdf'), bbox_inches='tight')
