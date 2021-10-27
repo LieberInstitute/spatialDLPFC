@@ -35,9 +35,9 @@ VisLow_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'VisLow
 #  Genes we want to plot predicted vs. actual expression for, and their
 #  corresponding gene symbols
 select_genes_names = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN']
-select_genes = ["ENSG00000132639", "ENSG00000197971", "ENSG00000183036", 
-    "ENSG00000187094", "ENSG00000198963", "ENSG00000171617", "ENSG00000164326",
-    "ENSG00000153234", "ENSG00000189056"]
+#select_genes = ["ENSG00000132639", "ENSG00000197971", "ENSG00000183036", 
+#    "ENSG00000187094", "ENSG00000198963", "ENSG00000171617", "ENSG00000164326",
+#    "ENSG00000153234", "ENSG00000189056"]
     
 print('Using tangram version:', tg.__version__)
 
@@ -73,7 +73,10 @@ ad_sc = sc.read_h5ad(sc_path)
 with open(marker_path, 'r') as f:
     markers = f.read().splitlines()
     
-#  Note when genes of interest are present in the training set   
+#  Note when genes of interest are present in the training set  
+select_genes = ad_sp.var.gene_id[ad_sp.var.gene_name.isin(select_genes_names)]
+assert len(select_genes_names) == len(select_genes)
+
 for i in range(len(select_genes)):
     gene = select_genes[i]
     gene_name = select_genes_names[i]
@@ -117,23 +120,6 @@ f.savefig(os.path.join(plot_dir, 'train_scores' + sample_name + '.pdf'), bbox_in
 ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
 ad_ge.write_h5ad(os.path.join(plot_dir, 'ad_ge' + sample_name + '.h5ad'))
 
-#  Plot expected vs. actual expression maps for particular test genes of
-#  interest
-select_genes = [x.lower() for x in select_genes]
-tg.plot_genes(select_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
-f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'mapped_select_genes_' + sample_name + '.pdf'), bbox_inches='tight')
-
-VisHigh = [x.lower() for x in VisHigh]
-tg.plot_genes(VisHigh, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
-f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'mapped_VisHigh_genes_' + sample_name + '.pdf'), bbox_inches='tight')
-
-VisLow = [x.lower() for x in VisLow]
-tg.plot_genes(VisLow, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
-f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'mapped_VisLow_genes_' + sample_name + '.pdf'), bbox_inches='tight')
-
 #  Compute average cosine similarity for test genes
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
 test_score = np.mean(df_all_genes.score[np.logical_not(df_all_genes.is_training)])
@@ -142,3 +128,35 @@ print('Average test score:', round(float(test_score), 4))
 #  Compute average cosine similarity for training genes
 train_score = np.mean(df_all_genes.score[df_all_genes.is_training])
 print('Average training score:', round(float(train_score), 4))
+
+#  Tangram plotting functions assume lowercase gene names
+ad_ge.var.gene_name = [x.lower() for x in ad_ge.var.gene_name]
+ad_ge.var.gene_id = [x.lower() for x in ad_ge.var.gene_id]
+ad_sp.var.gene_name = [x.lower() for x in ad_sp.var.gene_name]
+ad_sp.var.gene_id = [x.lower() for x in ad_sp.var.gene_id]
+
+select_genes = [x.lower() for x in select_genes]
+VisHigh = [x.lower() for x in VisHigh]
+VisLow = [x.lower() for x in VisLow]
+
+#  For plotting, we want to use gene symbols rather than Ensembl IDs
+ad_ge.var.index = ad_ge.var.gene_name
+ad_sp.var.index = ad_sp.var.gene_name
+
+select_genes = ad_sp.var.gene_name[ad_sp.var.gene_id.isin(select_genes)]
+VisHigh = ad_sp.var.gene_name[ad_sp.var.gene_id.isin(VisHigh)]
+VisLow = ad_sp.var.gene_name[ad_sp.var.gene_id.isin(VisLow)]
+
+#  Plot expected vs. actual expression maps for particular test genes of
+#  interest
+tg.plot_genes(select_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
+f = plt.gcf()
+f.savefig(os.path.join(plot_dir, 'mapped_select_genes_' + sample_name + '.pdf'), bbox_inches='tight')
+
+tg.plot_genes(VisHigh, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
+f = plt.gcf()
+f.savefig(os.path.join(plot_dir, 'mapped_VisHigh_genes_' + sample_name + '.pdf'), bbox_inches='tight')
+
+tg.plot_genes(VisLow, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
+f = plt.gcf()
+f.savefig(os.path.join(plot_dir, 'mapped_VisLow_genes_' + sample_name + '.pdf'), bbox_inches='tight')
