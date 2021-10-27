@@ -104,11 +104,6 @@ ad_map = tg.map_cells_to_space(
 
 ad_map.write_h5ad(os.path.join(out_dir, 'ad_map_' + sample_name + '.h5ad'))
 
-#  Reload the original objects and subset the spatial object by sample
-ad_sp = sc.read_h5ad(sp_path)
-ad_sc = sc.read_h5ad(sc_path)
-ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :]
-
 #  Generate plots
 tg.plot_cell_annotation(ad_map, ad_sp, annotation='cellType', x='pxl_row_in_fullres', y='pxl_col_in_fullres', nrows=5, ncols=4)
 f = plt.gcf()
