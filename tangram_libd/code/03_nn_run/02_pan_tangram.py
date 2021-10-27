@@ -38,6 +38,8 @@ select_genes_names = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 
 select_genes = ["ENSG00000132639", "ENSG00000197971", "ENSG00000183036", 
     "ENSG00000187094", "ENSG00000198963", "ENSG00000171617", "ENSG00000164326",
     "ENSG00000153234", "ENSG00000189056"]
+    
+print('Using tangram version:', tg.__version__)
 
 #  import Visium high and low expressing genes
 with open(VisHigh_path, 'r') as f:
@@ -76,6 +78,10 @@ for i in range(len(select_genes)):
     gene = select_genes[i]
     gene_name = select_genes_names[i]
     
+    #  Verify genes of interest were measured in the experiment
+    assert gene in ad_sp.var.gene_id
+    assert gene in ad_sc.var.gene_id
+    
     if gene in markers:
         print('Gene', gene, '(' + gene_name + ') is in the training set.')
     else:
@@ -91,8 +97,8 @@ assert ad_sc.uns['training_genes'] == ad_sp.uns['training_genes']
 
 #  Mapping step using GPU
 ad_map = tg.map_cells_to_space(
-    adata_cells=ad_sc,
-    adata_space=ad_sp,
+    adata_sc=ad_sc,
+    adata_sp=ad_sp,
     device='cuda:0'
 )
 
@@ -101,10 +107,10 @@ ad_map.write_h5ad(os.path.join(out_dir, 'ad_map_' + sample_name + '.h5ad'))
 #  Reload the original objects and subset the spatial object by sample
 ad_sp = sc.read_h5ad(sp_path)
 ad_sc = sc.read_h5ad(sc_path)
-ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :].copy()
+ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :]
 
 #  Generate plots
-tg.plot_cell_annotation(ad_map, annotation='cellType', x='pxl_row_in_fullres', y='pxl_col_in_fullres', nrows=5, ncols=4)
+tg.plot_cell_annotation(ad_map, ad_sp, annotation='cellType', x='pxl_row_in_fullres', y='pxl_col_in_fullres', nrows=5, ncols=4)
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'), bbox_inches='tight')
 
@@ -118,14 +124,17 @@ ad_ge.write_h5ad(os.path.join(plot_dir, 'ad_ge' + sample_name + '.h5ad'))
 
 #  Plot expected vs. actual expression maps for particular test genes of
 #  interest
+select_genes = [x.lower() for x in select_genes]
 tg.plot_genes(select_genes, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_select_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
+VisHigh = [x.lower() for x in VisHigh]
 tg.plot_genes(VisHigh, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_VisHigh_genes_' + sample_name + '.pdf'), bbox_inches='tight')
 
+VisHigh = [x.lower() for x in VisLow]
 tg.plot_genes(VisLow, adata_measured=ad_sp, adata_predicted=ad_ge, x='pxl_row_in_fullres', y='pxl_col_in_fullres')
 f = plt.gcf()
 f.savefig(os.path.join(plot_dir, 'mapped_VisLow_genes_' + sample_name + '.pdf'), bbox_inches='tight')
