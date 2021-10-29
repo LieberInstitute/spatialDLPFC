@@ -118,7 +118,7 @@ f.savefig(os.path.join(plot_dir, 'train_scores' + sample_name + '.pdf'), bbox_in
 
 #  Project all cells based on trained mapping, and save the result
 ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
-ad_ge.write_h5ad(os.path.join(plot_dir, 'ad_ge' + sample_name + '.h5ad'))
+ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge' + sample_name + '.h5ad'))
 
 #  Compute average cosine similarity for test genes
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp)
