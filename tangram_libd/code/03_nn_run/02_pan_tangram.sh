@@ -5,7 +5,7 @@
 #$ -o ../../processed-data/03_nn_run/logs/02_pan_tangram_$TASK_ID.log
 #$ -e ../../processed-data/03_nn_run/logs/02_pan_tangram_$TASK_ID.log
 #$ -l gpu,mf=64G,h_vmem=64G
-#$ -t 1-4
+#$ -t 1
 #$ -tc 1
 
 echo "**** Job starts ****"
@@ -17,9 +17,7 @@ echo "Job name: ${JOB_NAME}"
 echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
-conda activate tangram
-
-module list
+module load tangram/1.0.0
 
 python 02_pan_tangram.py -i $SGE_TASK_ID
 
