@@ -204,7 +204,13 @@ for n_clusters in range(5, 11, 2):
     #  With Louvain clustering, the exact 'n_clusters' specified might not be
     #  found.
     actual_n_clusters = len(adata.obs.pred.unique())
-    assert actual_n_clusters == len(adata.obs.refined_pred.unique())
+    refined_n_clusters = len(adata.obs.refined_pred.unique())
+    if actual_n_clusters != refined_n_clusters:
+        print(
+            'Warning:', actual_n_clusters,
+            'raw clusters were found, but this changed to' ,refined_n_clusters,
+            'after refining!'
+        )
     
     this_out_dir_plots = pyhere.here(out_dir_plots, str(actual_n_clusters) + "_clusters")
     this_out_dir_processed = pyhere.here(out_dir_processed, str(actual_n_clusters) + "_clusters")
@@ -224,7 +230,7 @@ for n_clusters in range(5, 11, 2):
     out_file = pyhere.here(this_out_dir_plots, "domains.png")
     plot_adata(adata, "pred", "Raw spatial domains", plot_color, out_file)
     
-    adata.uns["refined_pred_colors"]=list(plot_color[:actual_n_clusters])
+    adata.uns["refined_pred_colors"]=list(plot_color[:refined_n_clusters])
     out_file = pyhere.here(this_out_dir_plots, "refined_domains.png")
     plot_adata(adata, "refined_pred", "Refined spatial domains", plot_color, out_file)
     
