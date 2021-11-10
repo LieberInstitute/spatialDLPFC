@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Oct  7 13:53:22 EDT 2021
+Tue Oct 26 13:22:38 EDT 2021
 **** JHPCE info ****
 User: neagles
-Job id: 7175440
+Job id: 7389959
 Job name: sce_to_anndata_pan_01
-Hostname: compute-093.cm.cluster
+Hostname: compute-098.cm.cluster
 Task id: undefined
 Loading conda_R/4.1
 
@@ -21,15 +21,15 @@ Currently Loaded Modules:
 Loading objects:
   sce_pan
 snapshotDate(): 2021-05-18
-2021-10-07 13:54:48 loading file /users/neagles/.cache/R/BiocFileCache/59127d2bcb5_Human_DLPFC_Visium_processedData_sce_scran_spatialLIBD.Rdata%3Fdl%3D1
+2021-10-26 13:28:30 loading file /users/neagles/.cache/R/BiocFileCache/59127d2bcb5_Human_DLPFC_Visium_processedData_sce_scran_spatialLIBD.Rdata%3Fdl%3D1
 Warning message:
 DEPRECATION: As of ExperimentHub (>1.17.2), default caching location has changed.
   Problematic cache: /users/neagles/.cache/ExperimentHub
   See https://bioconductor.org/packages/devel/bioc/vignettes/ExperimentHub/inst/doc/ExperimentHub.html#default-caching-location-update
  
              used   (Mb) gc trigger    (Mb)   max used   (Mb)
-Ncells    9242240  493.6   16404015   876.1   15997282  854.4
-Vcells 1133430131 8647.4 1634494512 12470.3 1144210827 8729.7
+Ncells    9243416  493.7   16404015   876.1   15997154  854.4
+Vcells 1133528914 8648.2 1634494512 12470.3 1146100565 8744.1
 [1] "Writing AnnDatas..."
 Note: using the 'counts' assay as the X matrix
 ... storing 'Sample' as categorical
@@ -57,12 +57,13 @@ Note: using the 'counts' assay as the X matrix
 ... storing 'gene_source' as categorical
 ... storing 'gene_biotype' as categorical
              used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    9269752  495.1   16404015   876.1   15997282   854.4
-Vcells 1136518820 8671.0 2051700046 15653.3 2037070421 15541.7
+Ncells    9270573  495.2   16404015   876.1   15997154   854.4
+Vcells 1136616606 8671.7 2051818586 15654.2 2037169075 15542.4
 Loading objects:
   marker_stats
 [1] "Determining and writing markers..."
 [1] TRUE
+2021-10-26 14:59:43 the suggested expression cutoff is 0.36
 [1] "Writing sample names for use in python..."
 [1] "Done."
 ─ Session info ───────────────────────────────────────────────────────────────
@@ -75,7 +76,7 @@ Loading objects:
  collate  en_US.UTF-8                                
  ctype    en_US.UTF-8                                
  tz       US/Eastern                                 
- date     2021-10-07                                 
+ date     2021-10-26                                 
 
 ─ Packages ───────────────────────────────────────────────────────────────────
  package                * version  date       lib
@@ -465,4 +466,4 @@ Loading objects:
 [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.1/R/4.1/lib64/R/site-library
 [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.1/R/4.1/lib64/R/library
 **** Job ends ****
-Thu Oct  7 14:03:56 EDT 2021
+Tue Oct 26 15:11:00 EDT 2021
