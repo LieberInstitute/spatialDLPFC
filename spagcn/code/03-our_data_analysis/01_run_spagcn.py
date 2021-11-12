@@ -219,9 +219,23 @@ for n_clusters in range(5, 11, 2):
     if not os.path.exists(this_out_dir_processed):
         os.mkdir(this_out_dir_processed)
     
-    #  Save results
+    #  Save result AnnData
     out_file = pyhere.here(this_out_dir_processed, 'results.h5ad')
     adata.write_h5ad(out_file)
+    
+    #  Form and write a CSV file containing rows of the form:
+    #  (barcode, raw cluster num, refined cluster num)
+    #  This is designed for compatibility with the R function
+    #  spatialLIBD::import_cluster
+    cluster_list = adata.obs[['pred', 'refined_pred']]
+    cluster_list.index.name = 'Barcode'
+    cluster_list.rename(
+        columns={'pred': 'raw_cluster', 'refined_pred': 'refined_cluster'},
+        inplace=True
+    )
+    
+    out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
+    cluster_list.to_csv(out_file)
     
     #  Plot spatial domains, raw and refined
     plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
