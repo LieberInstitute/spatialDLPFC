@@ -21,6 +21,7 @@ out_dir_processed = pyhere.here("spagcn/processed-data/03-our_data_analysis")
 out_dir_plots = pyhere.here("spagcn/plots/03-our_data_analysis")
 input_adata_path = pyhere.here("spagcn/processed-data/02-our_data_tutorial/spe_anndata.h5ad")
 start_gene = "ENSG00000131095" # Finding meta-genes requires a "start gene"; this is GFAP here
+NUM_META_COLUMNS = 5
 
 ###############################################################################
 #  Helper functions
@@ -234,9 +235,6 @@ for n_clusters in range(5, 11, 2):
         inplace=True
     )
     
-    out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
-    cluster_list.to_csv(out_file)
-    
     #  Plot spatial domains, raw and refined
     plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
     
@@ -264,6 +262,12 @@ for n_clusters in range(5, 11, 2):
     raw.raw=raw
     sc.pp.log1p(raw)
     
+    cl_copy = cluster_list.copy()
+    assert all(raw.obs.pred == cl_copy.raw_cluster)
+    
+    for i in range(NUM_META_COLUMNS):
+        cl_copy['meta_gene_' + str(i + 1)] = ''
+        
     #  Find meta genes for each domain found
     for target in range(actual_n_clusters):
         meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
@@ -277,6 +281,25 @@ for n_clusters in range(5, 11, 2):
         
         raw.obs["meta"]=meta_exp
         
+        #  Form a list of meta genes
+        meta_list = parse_metaname(raw, meta_name, convert=False)
+        if (meta_list[0] == ' '): # really asking if the first meta gene is subtracted
+            meta_list = meta_list[1:]
+            assert meta_list[0] == '-'
+        else:
+            meta_list = '+' + meta_list
+        
+        meta_list = meta_list.replace(' + ', ' +').replace(' - ', ' -').split(' ')
+        assert all([x[0] in ['+', '-'] for x in meta_list])
+        
+        if len(meta_list) > NUM_META_COLUMNS:
+            print('Warning: dropping one or more meta genes for this domain when forming CSV, since we are only taking the first ' + str(NUM_META_COLUMNS) + '.')
+        
+        #  Populate each meta gene column for rows associated with this
+        #  cluster
+        for i in range(min(NUM_META_COLUMNS, len(meta_list))):
+            cl_copy['meta_gene_' + str(i + 1)][cl_copy.raw_cluster == target] = meta_list[i]
+        
         color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
         
         #  Plot "start gene" in meta gene set
@@ -289,3 +312,11 @@ for n_clusters in range(5, 11, 2):
         raw.obs["exp"]=raw.obs["meta"]
         out_file = pyhere.here(this_out_dir_plots, "all_meta_genes_domain_" + str(target) + ".png")
         plot_adata(raw, "exp", parse_metaname(raw, meta_name), color_self, out_file)
+
+    #  At this point, the meta gene columns should be fully populated for as
+    #  many meta genes as exist for this domain
+    for i in range(min(NUM_META_COLUMNS, len(meta_list))):
+        assert '' not in cl_copy['meta_gene_' + str(i + 1)]
+    
+    out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
+    cl_copy.to_csv(out_file)
