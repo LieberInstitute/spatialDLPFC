@@ -225,10 +225,11 @@ for n_clusters in range(5, 11, 2):
     adata.write_h5ad(out_file)
     
     #  Form and write a CSV file containing rows of the form:
-    #  (barcode, raw cluster num, refined cluster num)
+    #  (barcode + sample ID, raw cluster num, refined cluster num)
     #  This is designed for compatibility with the R function
     #  spatialLIBD::import_cluster
     cluster_list = adata.obs[['pred', 'refined_pred']]
+    cluster_list.index += '_' + sample_name
     cluster_list.index.name = 'Barcode'
     cluster_list.rename(
         columns={'pred': 'raw_cluster', 'refined_pred': 'refined_cluster'},
