@@ -89,3 +89,55 @@ spe_wrapper <- read10xVisiumWrapper(
   reference_gtf = "/dcl02/lieber/ajaffe/SpatialTranscriptomics/refdata-gex-GRCh38-2020-A/genes/genes.gtf"
 )
 Sys.time()
+
+# 2021-11-23 15:05:05 SpatialExperiment::read10xVisium: reading basic data from SpaceRanger
+# 2021-11-23 15:12:23 read10xVisiumAnalysis: reading analysis output from SpaceRanger
+# 2021-11-23 15:13:09 add10xVisiumAnalysis: adding analysis output from SpaceRanger
+# 2021-11-23 15:13:15 rtracklayer::import: reading the reference GTF file
+# 2021-11-23 15:14:03 adding gene information to the SPE object
+# 2021-11-23 15:14:04 adding information used by spatialLIBD
+
+## Add the experimental information
+### Equivalent to:
+## colData(spe_wrapper)$subject <- ...
+spe_wrapper$subject <- sample_info$subjects[match(spe_wrapper$sample_id, sample_info$sample_id)]
+spe_wrapper$region <- sample_info$regions[match(spe_wrapper$sample_id, sample_info$sample_id)]
+spe_wrapper$sex <- sample_info$sex[match(spe_wrapper$sample_id, sample_info$sample_id)]
+spe_wrapper$age <- sample_info$age[match(spe_wrapper$sample_id, sample_info$sample_id)]
+spe_wrapper$diagnosis <- sample_info$diagnosis[match(spe_wrapper$sample_id, sample_info$sample_id)]
+
+## Remove genes with no data
+no_expr <- which(rowSums(counts(spe_wrapper)) == 0)
+length(no_expr)
+# [1] 7468
+length(no_expr) / nrow(spe_wrapper) * 100
+# [1] 20.40381
+
+#remove genes that are not expressed in any spots
+spe_wrapper <- spe_wrapper[-no_expr, ]
+
+spe_wrapper <- spe_wrapper[, which(spatialData(spe_wrapper)$in_tissue=="TRUE")]
+
+## Remove spots without counts
+spe_wrapper <- spe_wrapper[, -which(colSums(counts(spe_wrapper)) == 0)]
+
+## Read in cell counts and segmentation results
+segmentations_list <- lapply(sample_info$sample_id, function(sampleid) {
+  current<-sample_info$sample_path[sample_info$sample_id==sampleid]
+  file <- file.path(current, "spatial", "tissue_spot_counts.csv")
+  if(!file.exists(file)) return(NULL)
+  x <- read.csv(file)
+  x$key <- paste0(x$barcode, "_", sampleid)
+  return(x)
+})
+## Merge them (once the these files are done, this could be replaced by an rbind)
+segmentations <- Reduce(function(...) merge(..., all = TRUE), segmentations_list[lengths(segmentations_list) > 0])
+
+## Add the information
+segmentation_match <- match(spe_wrapper$key, segmentations$key)
+segmentation_info <- segmentations[segmentation_match, - which(colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")), drop=FALSE]
+colData(spe_wrapper) <- cbind(colData(spe_wrapper), segmentation_info)
+
+
+
+
