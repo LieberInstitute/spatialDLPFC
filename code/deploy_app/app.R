@@ -11,7 +11,6 @@ options("golem.app.prod" = TRUE)
 options(repos = BiocManager::repositories())
 
 ## Load the data
-# spe <- readRDS("spe_workflow_Visium_spatialLIBD.rds")
 
 ## Create a soft link to the data, otherwise rsconnect::deployApp doesn't work
 # system("ln -s processed-data/rdata/spe/spe_merged_final.Rdata code/deploy_app/spe_merged_final.Rdata")
@@ -21,7 +20,7 @@ vars <- colnames(colData(spe))
 
 ## Deploy the website
 spatialLIBD::run_app(
-    spe_raw,
+    spe,
     sce_layer = NULL,
     modeling_results = NULL,
     sig_genes = NULL,
