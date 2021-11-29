@@ -18,7 +18,7 @@ rsconnect::deployApp(
     appDir = here("code", "deploy_app"),
     appFiles = c(
         "app.R",
-        "spe_merged_final.Rdata"
+        "spe_merged_final_nocounts.Rdata"
     ),
     appName = 'spatialDLPFC_Spangler2021',
     account = 'libd',

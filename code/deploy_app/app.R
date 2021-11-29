@@ -11,12 +11,9 @@ options("golem.app.prod" = TRUE)
 options(repos = BiocManager::repositories())
 
 ## Load the data
-
-## Create a soft link to the data, otherwise rsconnect::deployApp doesn't work
-## Run this from code/deploy_app otherwise the link won't work properly since it
-## has to use relative paths
-# system("../../processed-data/rdata/spe/spe_merged_final.Rdata spe_merged_final.Rdata")
-load("spe_merged_final.Rdata", verbose = TRUE)
+load("spe_merged_final_nocounts.Rdata", verbose = TRUE)
+## If you want to see the unfiltered data locally (it's too big for shinyapps.io)
+# load(here::here("processed-data", "rdata", "spe", "spe_merged_final.Rdata"), verbose = TRUE)
 
 ## Don't include scran_quick_cluster since it's too big (288 levels)
 spe$scran_quick_cluster <- NULL
