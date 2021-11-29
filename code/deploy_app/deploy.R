@@ -3,7 +3,7 @@ library("here")
 
 ## Or you can go to your shinyapps.io account and copy this
 ## Here we do this to keep our information hidden.
-load(here("code", "05_deploy_app", ".deploy_info.Rdata"), verbose = TRUE)
+load(here("code", "deploy_app", ".deploy_info.Rdata"), verbose = TRUE)
 rsconnect::setAccountInfo(
     name = deploy_info$name,
     token = deploy_info$token,

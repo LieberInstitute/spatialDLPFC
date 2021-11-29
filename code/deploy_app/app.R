@@ -13,8 +13,17 @@ options(repos = BiocManager::repositories())
 ## Load the data
 
 ## Create a soft link to the data, otherwise rsconnect::deployApp doesn't work
-# system("ln -s processed-data/rdata/spe/spe_merged_final.Rdata code/deploy_app/spe_merged_final.Rdata")
+## Run this from code/deploy_app otherwise the link won't work properly since it
+## has to use relative paths
+# system("../../processed-data/rdata/spe/spe_merged_final.Rdata spe_merged_final.Rdata")
 load("spe_merged_final.Rdata", verbose = TRUE)
+
+## Don't include scran_quick_cluster since it's too big (288 levels)
+spe$scran_quick_cluster <- NULL
+
+## Rename 'count' to make it more intuitive
+spe$cell_count <- spe$count
+spe$count <- NULL
 
 vars <- colnames(colData(spe))
 
@@ -26,7 +35,7 @@ spatialLIBD::run_app(
     sig_genes = NULL,
     title = "spatialDLPFC, Spangler et al, 2021",
     spe_discrete_vars = c(
-        vars[grep("10x_", vars)],
+        vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
         "BayesSpace",
         "BayesSpace_cluster.init"
@@ -36,8 +45,7 @@ spatialLIBD::run_app(
         "sum_gene",
         "expr_chrM",
         "expr_chrM_ratio",
-        "count"
-
+        "cell_count"
     ),
-    default_cluster = "10x_graphclust"
+    default_cluster = "BayesSpace"
 )
