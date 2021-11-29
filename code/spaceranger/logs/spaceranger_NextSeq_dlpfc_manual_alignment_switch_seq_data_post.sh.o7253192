@@ -1,0 +1,71 @@
+Adding LIBD modules
+Loading git
+Martian Runtime - v4.0.5
+2021-10-12 15:34:53 [runtime] Reattaching in local mode.
+2021-10-12 15:35:06 [runtime] Found orphaned stage: ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPACERANGER_PREFLIGHT
+Serving UI at http://compute-072.cm.cluster:38737?auth=i4xK65CQhdif0TXncNthxoKv6SEDMSKNoQofOSmx26Y
+
+2021-10-12 15:35:06 [runtime] Found orphaned local stage: ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPACERANGER_PREFLIGHT
+2021-10-12 15:35:57 [runtime] (ready)           ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION
+2021-10-12 15:35:58 [runtime] (run:local)       ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION.fork0.chnk0.main
+2021-10-12 15:35:58 [runtime] (ready)           ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM
+2021-10-12 15:35:58 [runtime] (run:local)       ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.split
+2021-10-12 15:35:58 [runtime] (ready)           ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX
+2021-10-12 15:35:58 [runtime] (run:local)       ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX.fork0.chnk0.main
+2021-10-12 15:35:58 [runtime] (ready)           ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES
+2021-10-12 15:35:58 [runtime] (run:local)       ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES.fork0.split
+2021-10-12 15:35:58 [runtime] (ready)           ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_SUMMARY
+2021-10-12 15:35:58 [runtime] (run:local)       ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_SUMMARY.fork0.chnk0.main
+2021-10-12 15:35:58 [runtime] (ready)           ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MULTI_COLLATE_PER_SAMPLE_METRICS
+2021-10-12 15:36:00 [runtime] (failed)          ID.DLPFC_Br6423_post_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_SUMMARY
+
+[error] Pipestance failed. Error log at:
+DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/WRITE_BARCODE_SUMMARY/fork0/chnk0-uffa165e39e/_errors
+
+Log message:
+The martian-rust adapter failed while deserializing the file "_args" as cr_lib::barcode_summary::WriteBarcodeSummaryStageInputs due to the following error:
+
+invalid type: null, expected path string at line 5 column 25
+
+This typically happens when one or more fields in the struct cr_lib::barcode_summary::WriteBarcodeSummaryStageInputs cannot be built from the JSON. The contents of the JSON are shown below: 
+   1: {
+   2:     "__mem_gb": 4,
+   3:     "__threads": 1,
+   4:     "__vmem_gb": 7,
+   5:     "barcode_index": null,
+   6:     "bc_umi_info": [
+   7:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk00-uf2926077a5/files/bc_umi_info.bui",
+   8:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk01-uf2926077a5/files/bc_umi_info.bui",
+   9:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk02-uf2926077a5/files/bc_umi_info.bui",
+  10:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk03-uf2926077a5/files/bc_umi_info.bui",
+  11:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk04-uf2926077a5/files/bc_umi_info.bui",
+  12:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk05-uf2926077a5/files/bc_umi_info.bui",
+  13:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk06-uf2926077a5/files/bc_umi_info.bui",
+  14:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk07-uf2926077a5/files/bc_umi_info.bui",
+  15:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk08-uf2926077a5/files/bc_umi_info.bui",
+  16:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk09-uf2926077a5/files/bc_umi_info.bui",
+  17:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk10-uf2926077a5/files/bc_umi_info.bui",
+  18:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk11-uf2926077a5/files/bc_umi_info.bui",
+  19:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk12-uf2926077a5/files/bc_umi_info.bui",
+  20:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk13-uf2926077a5/files/bc_umi_info.bui",
+  21:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk14-uf2926077a5/files/bc_umi_info.bui",
+  22:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk15-uf2926077a5/files/bc_umi_info.bui",
+  23:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk16-uf2926077a5/files/bc_umi_info.bui",
+  24:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk17-uf2926077a5/files/bc_umi_info.bui",
+  25:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk18-uf2926077a5/files/bc_umi_info.bui",
+  26:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk19-uf2926077a5/files/bc_umi_info.bui",
+  27:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk20-uf2926077a5/files/bc_umi_info.bui",
+  28:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk21-uf2926077a5/files/bc_umi_info.bui",
+  29:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk22-uf2926077a5/files/bc_umi_info.bui",
+  30:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk23-uf2926077a5/files/bc_umi_info.bui",
+  31:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk24-uf2926077a5/files/bc_umi_info.bui",
+  32:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk25-uf2926077a5/files/bc_umi_info.bui",
+  33:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk26-uf2926077a5/files/bc_umi_info.bui",
+  34:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk27-uf2926077a5/files/bc_umi_info.bui",
+  35:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/DLPFC_Br6423_post_extra_reads/SPATIAL_RNA_COUNTER_CS/SPATIAL_RNA_COUNTER/_BASIC_SPATIAL_RNA_COUNTER/_MATRIX_COMPUTER/ALIGN_AND_COUNT/fork0/chnk28-uf2926077a5/files/bc_umi_info.bui",
+  36:         "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/
+
+Waiting 6 seconds for UI to do final refresh.
+Pipestance failed. Use --noexit option to keep UI running after failure.
+
+2021-10-12 15:36:06 Shutting down.

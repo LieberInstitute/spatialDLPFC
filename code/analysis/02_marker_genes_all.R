@@ -72,10 +72,10 @@ for (i in seq_along(sample_ids)){
 # cluster_colNames <- c(paste0("SNN_k50_k", seq_len(28)))
 # cluster_colNames <-cluster_colNames[4:28]
 
-cluster_colNames <-colnames(colData(spe))[19:43]
+cluster_colNames <-colnames(colData(spe))[72:96] #12:36
 sample_ids <- unique(colData(spe)$sample_id)
 
-pdf(file = here::here("plots", "vis_grid_clus_spe_pc8_k20.pdf"))
+pdf(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/vis_grid_clus_spe_pilot_batch_corr.pdf")
 for (i in seq_along(sample_ids)){
     for(j in seq_along(cluster_colNames)){
         my_plot <- vis_clus(
@@ -104,7 +104,6 @@ for(i in seq_along(cluster_colNames)){
                 ## Subset to two samples of interest
                 #spe_sub <- spe[, spe$sample_id %in% "Br2743_ant"]
                 
-                
                 ## Obtain the plot list
                 p_list <-
                     vis_grid_clus(
@@ -131,6 +130,7 @@ for(i in seq_along(cluster_colNames)){
 }
 
 dev.off()
+
 
 
 ## Reproducibility information

@@ -46,7 +46,7 @@ sample_info <- data.frame(
     "DLPFC_Br3942_post_manual_alignment",
     "DLPFC_Br6423_ant_manual_alignment_extra_reads",
     "DLPFC_Br6423_mid_manual_alignment",
-    "DLPFC_Br6423_post_manual_alignment",
+    "DLPFC_Br6423_post_extra_reads",
     "DLPFC_Br8492_ant_manual_alignment",
     "DLPFC_Br8492_mid_manual_alignment_extra_reads",
     "DLPFC_Br8492_post_manual_alignment",
@@ -158,42 +158,48 @@ spe$expr_chrM_ratio <- spe$expr_chrM / spe$sum_umi
 ## Add number of cells per spot
 spe$cell_count <- NA
 
+dim(spe)
+# 36601 164733
+
 ## Remove genes with no data
 no_expr <- which(rowSums(counts(spe)) == 0)
 length(no_expr)
-# [1] 7484
+# [1] 7468
 length(no_expr) / nrow(spe) * 100
-# [1] 20.44753
-
-#remove genes that are not expressed in any spots
-spe <- spe[-no_expr, ]
+# [1] 20.40381
 
 ## Create two versions: one with and one without filtering by tissue spot
 spe_raw <- spe
 pryr::object_size(spe_raw)
-# 2,535,468,288 B
+# 2,566,897,847 B
 dim(spe_raw)
-# [1] 29117 164733
+# [1] 36601 164733
 
 ## Save the raw version now
 dir.create(here::here("rdata"), showWarnings = FALSE)
 dir.create(here::here("rdata", "spe"), showWarnings = FALSE)
 save(spe_raw, file = here::here("processed-data", "rdata", "spe", "spe_raw_final.Rdata"))
 
-## Work with SPE
-spe <- spe_raw[, which(spatialData(spe_raw)$in_tissue=="TRUE")]
+#remove genes that are not expressed in any spots
+spe <- spe_raw[-no_expr, ]
+
 dim(spe)
-#[1]  29117 129437
+# 29133 164733
+
+## Work with SPE
+spe <- spe[, which(spatialData(spe_raw)$in_tissue=="TRUE")]
+dim(spe)
+#[1]  29133 129437
 
 ## Remove spots without counts
 spe <- spe[, -which(colSums(counts(spe)) == 0)]
 dim(spe)
-# [1] 29117 129430
+# [1] 29133129430
 
 save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
 
 pryr::object_size(spe)
-# 2,446,675,856 B
+# 2,473,727,880 B
 
 ## Inspect in vs outside of tissue
 vis_grid_clus(
@@ -206,7 +212,7 @@ vis_grid_clus(
 
 summary(spe_raw$sum_umi[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 0.0    66.0   169.0   279.6   310.0 39053.0
+# 0.0    66.0   170.5   287.0   318.0 39053.0
 
 head(table(spe_raw$sum_umi[which(spatialData(spe_raw)$in_tissue=="FALSE")]))
 # 0  1  2  3  4  5
@@ -221,7 +227,7 @@ vis_grid_gene(
 
 summary(spe_raw$sum_gene[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 0.0    55.0   133.0   198.1   237.0  7956.0
+# 0.0    55.0   133.0   203.4   242.0  7956.0
 
 vis_grid_gene(
   spe = spe_raw[, which(spatialData(spe_raw)$in_tissue=="FALSE")],
@@ -232,7 +238,7 @@ vis_grid_gene(
 
 summary(spe_raw$expr_chrM_ratio[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
-#  0.0000  0.1532  0.1967  0.2091  0.2518  1.0000      12
+#  0.0000  0.1515  0.1963  0.2084  0.2518  1.0000      12
 vis_grid_gene(
   spe = spe_raw[, which(spatialData(spe_raw)$in_tissue=="FALSE")],
   geneid = "expr_chrM_ratio",
@@ -242,7 +248,7 @@ vis_grid_gene(
 
 summary(spe$sum_umi)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 1    1346    2287    2664    3515   46881
+# 1    1346    2315    2701    3579   46881
 vis_grid_gene(
   spe = spe,
   geneid = "sum_umi",
@@ -252,7 +258,7 @@ vis_grid_gene(
 
 summary(spe$sum_gene)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 1     898    1413    1499    1982    8344
+# 1     908    1425    1516    2012    8344
 vis_grid_gene(
   spe = spe,
   geneid = "sum_gene",
@@ -262,7 +268,7 @@ vis_grid_gene(
 
 summary(spe$expr_chrM_ratio)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 0.00000 0.07545 0.10811 0.12391 0.15873 1.00000
+# 0.00000 0.07488 0.10776 0.12361 0.15866 1.00000
 vis_grid_gene(
   spe = spe,
   geneid = "expr_chrM_ratio",
@@ -299,9 +305,9 @@ qcstats <- perCellQCMetrics(spe, subsets = list(
 qcfilter <- quickPerCellQC(qcstats, sub.fields="subsets_Mito_percent")
 colSums(as.matrix(qcfilter))
 # low_lib_size            low_n_features high_subsets_Mito_percent
-# 3869                      4578                      3745
+# 5126                    6105                      3490
 # discard
-# 7776
+# 9035
 
 ## Prior to dropping spots with 0 counts and checking for high chrM,
 ## this was the output:
@@ -326,7 +332,6 @@ for(i in colnames(qcfilter)) {
   )
 }
 
-save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
 
 ## Find quick clusters
 set.seed(20191112)
@@ -338,8 +343,8 @@ spe$scran_quick_cluster <- quickCluster(
   block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
-# [1] "2021-09-29 13:56:24 EDT"
-# [1]  "2021-09-29 14:03:36 EDT"
+# [1] "2021-10-28 13:05:32 EDT"
+# [1]  "2021-10-28 13:14:52 EDT"
 
 Sys.time()
 ## Might be needed:
@@ -350,8 +355,9 @@ spe <-
                     BPPARAM = MulticoreParam(4)
   )
 Sys.time()
-# [1] "2021-09-08 09:57:55 EDT"
-# [1] "2021-09-02 13:15:54 EDT"
+# [1] "2021-10-28 13:14:52 EDT"
+# [1] "2021-10-28 13:16:36 EDT"
+
 ## Related to https://github.com/LTLA/scuttle/issues/7
 # In .rescale_clusters(clust.profile, ref.col = ref.clust, min.mean = min.mean) :
 #   inter-cluster rescaling factor for cluster 64 is not strictly positive,
@@ -362,11 +368,11 @@ table(spe$scran_quick_cluster)
 
 summary(sizeFactors(spe))
 # Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
-# 0.000035  0.471401  0.844616  1.000000  1.328965 16.976125
+# 0.000034  0.471505  0.840405  1.000000  1.333201 16.712342
 
 spe <- logNormCounts(spe)
 pryr::object_size(spe)
-# 4,001,932,712 B
+# 4,047,023,760 B, 3.8gb
 
 ## From
 ## http://bioconductor.org/packages/release/bioc/vignettes/scran/inst/doc/scran.html#4_variance_modelling
@@ -396,11 +402,11 @@ dev.off()
 
 top.hvgs <- getTopHVGs(dec, prop = 0.1)
 length(top.hvgs)
-# [1] 2039
+# [1] 2059
 
 top.hvgs.fdr5 <- getTopHVGs(dec, fdr.threshold = 0.05)
 length(top.hvgs.fdr5)
-# [1] 18525
+# [1] 18830
 
 top.hvgs.fdr1 <- getTopHVGs(dec, fdr.threshold = 0.01)
 length(top.hvgs.fdr1)
@@ -422,11 +428,13 @@ Sys.time()
 reducedDimNames(spe)
 # [1] "PCA"
 dim(reducedDim(spe, "PCA"))
+## 129430   50
 
 #make elbow plot to determine PCs to use
 percent.var <- attr(reducedDim(spe,"PCA"), "percentVar")
 chosen.elbow <- PCAtools::findElbowPoint(percent.var)
 chosen.elbow
+# 50
 
 pdf(
   here::here("plots", "pca_elbow_final.pdf"),
@@ -440,11 +448,9 @@ dev.off()
 
 summary(apply(reducedDim(spe, "PCA"), 2, sd))
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-# 0.9178  0.9303  0.9470  1.1880  1.0521  4.2205
+# 0.9191 0.9321  0.9488  1.1913  1.0570  4.2217
 
 summary(colMeans(reducedDim(spe, "PCA")))
-# Min.    1st Qu.     Median       Mean    3rd Qu.       Max.
-# -3.742e-14 -1.041e-14  1.173e-15  1.235e-15  1.256e-14  2.981e-14
 
 ## From https://github.com/davismcc/scater/blob/master/R/runTSNE.R#L85
 ## I see that the default perplexity will be 50

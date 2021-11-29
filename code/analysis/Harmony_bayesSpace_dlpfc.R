@@ -13,7 +13,7 @@ suppressPackageStartupMessages({
   library(scran)
 })
 
-load(file=here::here("processed-data","rdata", "spe", "spe_for_talk.Rdata"))
+load(file=here::here("processed-data","rdata", "spe", "for_talk","spe_snn_clusters_pc50_k10_101421.Rdata"))
 dim(spe)
 # [1]  28974 118003
 
@@ -38,6 +38,14 @@ ggplot(data.frame(reducedDim(spe_sub, "UMAP")),
   theme_bw()
 dev.off()
 
+pdf(file=here::here("plots", "UMAP_dlpfc_spe.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP")), 
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
+  geom_point() +
+  labs(color = "Sample") +
+  theme_bw()
+dev.off()
+
 # install.packages("devtools")
 # devtools::install_github("immunogenomics/harmony")
 
@@ -48,6 +56,14 @@ colnames(reducedDim(spe_sub, "UMAP.HARMONY")) = c("UMAP1", "UMAP2")
 pdf(file=here::here("plots", "UMAP_harmony_spe_sub.pdf"))
 ggplot(data.frame(reducedDim(spe_sub, "UMAP.HARMONY")), 
        aes(x = UMAP1, y = UMAP2, color = factor(spe_sub$sample_id))) +
+  geom_point() +
+  labs(color = "Sample") +
+  theme_bw()
+dev.off()
+
+pdf(file=here::here("plots", "UMAP_harmony_spe.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")), 
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
   geom_point() +
   labs(color = "Sample") +
   theme_bw()
@@ -94,7 +110,7 @@ dev.off()
 
 ###graph-based clustering with harmony dimensions
 Sys.time()
-g_k10 <- buildSNNGraph(spe_sub, k = 10, use.dimred = 'HARMONY')
+g_k10 <- buildSNNGraph(spe, k = 10, use.dimred = 'HARMONY')
 Sys.time()
 #took a few minutes
 save(g_k10, file=here::here("processed-data", "rdata","spe","g_k10_harmony.Rdata"))
@@ -116,11 +132,11 @@ save(clust_k5_list, file = here::here("processed-data", "rdata", "clust_k5_harmo
 
 col.names <- paste0("SNN_k10_k",4:28)
 for (i in seq_along(col.names)){
-  colData(spe_sub) <- cbind(colData(spe_sub),clust_k5_list[i])
+  colData(spe) <- cbind(colData(spe),clust_k5_list[i])
 }
-colnames(colData(spe_sub))[19:43] <- col.names
+colnames(colData(spe))[19:43] <- col.names
 
-save(spe_sub, file = here::here("processed-data", "rdata","spe", "spe_sub_snn_clusters_harmony.Rdata"))
+save(spe, file = here::here("processed-data", "rdata","spe", "spe_snn_clusters_harmony.Rdata"))
 
 ##
 pdf(file = here::here("plots","UMAP_pc50_k10_harmony.pdf"))
@@ -134,46 +150,30 @@ dev.off()
 summary(spatialData(spe_sub)$array_row)
 summary(spatialData(spe_sub)$array_col)
 
-auto_offset_row <- as.numeric(factor(unique(spe_sub$sample_id))) * 100
-names(auto_offset_row) <-unique(spe_sub$sample_id)
-spe_sub$row <- spatialData(spe_sub)$array_row + auto_offset_row[spe_sub$sample_id]
+auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
+names(auto_offset_row) <-unique(spe$sample_id)
+spe$row <- spatialData(spe)$array_row + auto_offset_row[spe$sample_id]
+spe$col <- spatialData(spe)$array_col
 
-spe_sub$row[spe_sub$sample_id == "Br2743_ant"] = 
-  100 + spatialData(spe)$array_row[spe_sub$sample_id == "Br2743_ant"]
-spe_sub$col[spe_sub$sample_id == "Br2743_ant"] = 
-  spatialData(spe)$array_col[spe_sub$sample_id == "Br2743_ant"]
-
-spe_sub$row[spe_sub$sample_id == "Br6423_ant"] = 
-  200 + spatialData(spe_sub)$array_row[spe_sub$sample_id == "Br6423_ant"]
-spe_sub$col[spe_sub$sample_id == "Br6423_ant"] =
-  spatialData(spe_sub)$array_col[spe_sub$sample_id == "Br6423_ant"]
-
-spe_sub$row[spe_sub$sample_id == "Br3942_post"] = 
-  300 + spatialData(spe_sub)$array_row[spe_sub$sample_id == "Br3942_post"]
-spe_sub$col[spe_sub$sample_id == "Br3942_post"] = 
-  spatialData(spe_sub)$array_col[spe_sub$sample_id == "Br3942_post"]
-
-spe_sub$row[spe_sub$sample_id == "Br8492_post"] = 
-  400 + spatialData(spe_sub)$array_row[spe_sub$sample_id == "Br8492_post"]
-spe_sub$col[spe_sub$sample_id == "Br8492_post"] = 
-  spatialData(spe_sub)$array_col[spe_sub$sample_id == "Br8492_post"]
-
-summary(colData(spe_sub)$row)
-summary(colData(spe_sub)$col)
+summary(spe_sub$row)
+summary(spe_sub$col)
 
 
-pdf(file=here::here("plots", "bayesSpace_offset_check_dlpfc.pdf"))
-clusterPlot(spe_sub, "sample_id", color = NA) + #make sure no overlap between samples
+pdf(file=here::here("plots", "bayesSpace_offset_check_dlpfc.pdf"),height = 7*length(unique(spe$sample_id)))
+clusterPlot(spe, "sample_id", color = NA) + #make sure no overlap between samples
   labs(fill = "Sample", title = "Offset check")
 dev.off()
 
 save(spe_sub, file=here::here("processed-data","rdata", "spe", "spe_sub.Rdata"))
 
 Sys.time() #4:30pm
-spe_sub = spatialCluster(spe_sub, use.dimred = "HARMONY", q = 7, nrep = 10000) #use HARMONY
+spe = spatialCluster(spe, use.dimred = "HARMONY", q = 7, nrep = 10000) #use HARMONY
 Sys.time()
 
 pdf(file=here::here("plots","bayesSpace_clusterPlot_dlpfc.pdf"))
-clusterPlot(spe_sub, color = NA) + #plot clusters
+clusterPlot(spe, color = NA) + #plot clusters
   labs(title = "BayesSpace joint clustering")
 dev.off()
+
+save(spe, file=here::here("processed-data","rdata", "spe", "spe_bayesSpace.Rdata"))
+
