@@ -11,6 +11,8 @@ lobstr::obj_size(spe) / 1024^3
 ## Inspect how big are some parts of the spe object
 lobstr::obj_size(counts(spe)) / 1024^3
 # 2.196542
+lobstr::obj_size(logcounts(spe)) / 1024^3
+# 2.196542
 lobstr::obj_size(imgData(spe)) / 1024^3
 # 2.515935
 lobstr::obj_size(subset(imgData(spe), image_id == "hires")) / 1024^3
@@ -25,11 +27,13 @@ lobstr::obj_size(spe) / 1024^3
 # 4.897936
 
 ## Also drop the detected & aligned images
-imgData(spe) <- subset(imgData(spe), image_id %in% c("lowres", "hires"))
+imgData(spe) <- subset(imgData(spe), image_id == "lowres")
 lobstr::obj_size(spe) / 1024^3
-# 3.278569
+# 2.463861
+
 ## Other options:
 # 4.084106 (dropping only hires)
+# 3.278569 (keeping hires and lowres)
 # 2.463861 (keeping only lowres)
 
 save(spe, file = here("code", "deploy_app", "spe_merged_final_nocounts.Rdata"))
