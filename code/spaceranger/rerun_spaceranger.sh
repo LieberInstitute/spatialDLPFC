@@ -1,13 +1,13 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=10G,h_vmem=10G,h_fsize=100G
+#$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
 #$ -pe local 4
-#$ -N spaceranger_miseq
-#$ -o logs/spaceranger_miseq.$TASK_ID.txt
-#$ -e logs/spaceranger_miseq.$TASK_ID.txt
+#$ -N spatialDLPFC_rerun_spaceranger
+#$ -o logs/rerun_spaceranger.$TASK_ID.txt
+#$ -e logs/rerun_spaceranger.$TASK_ID.txt
 #$ -m e
-#$ -t 1-8
-#$ -tc 5
+#$ -t 1-30
+#$ -tc 10
 
 echo "**** Job starts ****"
 date
@@ -25,37 +25,39 @@ module load spaceranger/1.3.0
 ## List current modules for reproducibility
 module list
 
-## Locate file
-SAMPLE=$(awk "NR==${SGE_TASK_ID}" samples_miseq.txt)
-echo "Processing sample ${SAMPLE}"
+## Read parameters
+SAMPLE=$(awk 'BEGIN {FS="\t"} {print $1}' spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
+SLIDE=$(awk 'BEGIN {FS="\t"} {print $2}' spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
+CAPTUREAREA=$(awk 'BEGIN {FS="\t"} {print $3}' spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
+IMAGEPATH=$(awk 'BEGIN {FS="\t"} {print $4}' spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
+LOUPEPATH=$(awk 'BEGIN {FS="\t"} {print $5}' spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
+FASTQPATH=$(awk 'BEGIN {FS="\t"} {print $6}' spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
+
+echo "Processing sample ${SAMPLE} from slide ${SLIDE} and capture area ${CAPTUREAREA} with image ${IMAGEPATH} and aligned with ${LOUPEPATH} with FASTQs: ${FASTQPATH}"
 date
 
-## Get slide and area
-SLIDE=$(echo ${SAMPLE} | cut -d "_" -f 1)
-CAPTUREAREA=$(echo ${SAMPLE} | cut -d "_" -f 2)
-echo "Slide: ${SLIDE}, capture area: ${CAPTUREAREA}"
-
-## Find FASTQ file path
-FASTQPATH=$(ls -d ../../raw-data/FASTQ/MiSeq/${SAMPLE}/)
+## For keeping track of dates of the input files
+ls -lh ${IMAGEPATH}
+ls -lh ${LOUPEPATH}
 
 ## Run SpaceRanger
 spaceranger count \
     --id=${SAMPLE} \
     --transcriptome=/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A \
     --fastqs=${FASTQPATH} \
-    --image=../../processed-data/Images/VistoSeg/Capture_areas/${SAMPLE}.tif \
+    --image=${IMAGEPATH} \
     --slide=${SLIDE} \
     --area=${CAPTUREAREA} \
-    --loupe-alignment=../../processed-data/Images/loupe-alignment/${SAMPLE}.json \
+    --loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=4 \
-    --localmem=40
+    --localmem=60
 
 ## Move output
 echo "Moving results to new location"
 date
-mkdir -p ../../processed-data/spaceranger_miseq/
-mv ${SAMPLE} ../../processed-data/spaceranger_miseq/
+mkdir -p ../../processed-data/rerun_spaceranger/
+mv ${SAMPLE} ../../processed-data/rerun_spaceranger/
 
 echo "**** Job ends ****"
 date
