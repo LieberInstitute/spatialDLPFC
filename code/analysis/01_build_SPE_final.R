@@ -452,6 +452,7 @@ spe <-
   )
 Sys.time()
 #"2021-12-07 14:57:57 EST"
+#"2021-12-07 15:56:37 EST"
 
 save(spe, file = here::here("processed-data","rdata", "spe", "spe_final.Rdata"))
 
