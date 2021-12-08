@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
+#$ -l bluejay,mem_free=6G,h_vmem=6G,h_fsize=100G
 #$ -pe local 4
 #$ -N spatialDLPFC_rerun_spaceranger
 #$ -o logs/rerun_spaceranger.$TASK_ID.txt
@@ -51,7 +51,7 @@ spaceranger count \
     --loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
     --localcores=4 \
-    --localmem=60
+    --localmem=24
 
 ## Move output
 echo "Moving results to new location"
