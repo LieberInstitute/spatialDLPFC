@@ -6,53 +6,36 @@ module load aws/2.2.35
 ## Upload main SpatialExperiment object
 aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_merged_final.Rdata s3://bioturing-spatial/spatialDLPFC/spe_merged_final.Rdata
 
-## Locate raw images
-grep "\-image" /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/*.sh
-ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round*/*.tif | grep -v cluster | grep -v nuclei
-
-## Locate images using the SpaceRanger ouptut (ignore 3 of them: the 2 duplicated and the 1 that had to be fixed)
+## Locate images using the SpaceRanger output
 for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/_invocation /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/*/_invocation
 do
     grep "tissue_image_paths" $i
 done
 
+## Ignored SpaceRanger output dirs:
+# $ ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq_not_used
+# total 98K
+# drwxrws--- 4 aspangle lieber_lcolladotor 19 Oct 21 02:51 DLPFC_Br2720_ant_2_old
+# drwxrws--- 4 lcollado lieber_lcolladotor 19 Jul  8 13:48 DLPFC_Br2720_ant_manual_alignment
+# drwxrws--- 4 lcollado lieber_lcolladotor 19 Jul 15 19:57 DLPFC_Br6432_ant_manual_alignment
+# drwxrws--- 4 lcollado lieber_lcolladotor 19 Jul 27 23:57 DLPFC_Br8325_mid_manual_alignment_all
+# drwxrws--- 4 lcollado lieber_lcolladotor 19 Jul 28 00:57 DLPFC_Br8667_ant_manual_alignment_all
+## 3 samples were dropped due to being re-done fully in round4
+## One was re-done due to
+## https://github.com/LieberInstitute/spatialDLPFC/issues/39
+
 ## Upload images
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_1.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_2.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_2.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_3.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_3.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_4.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_4.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_2.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_2.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_3.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_3.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_4.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_4.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_1.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_2.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_2.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_3.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_3.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_4.tif s3://bioturing-spatial/spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_4.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-091_A1_Br2720_DLPFC_ant_1.tif s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-091_A1_Br2720_DLPFC_ant_1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-091_B1_Br2720_DLPFC_mid_2.tif s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-091_B1_Br2720_DLPFC_mid_2.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-091_C1_Br2720_DLPFC_post_3.tif s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-091_C1_Br2720_DLPFC_post_3.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-092_A1_Br6432_DLPFC_ant_1.tif s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-092_A1_Br6432_DLPFC_ant_1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-092_B1_Br6432_DLPFC_mid_2.tif s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-092_B1_Br6432_DLPFC_mid_2.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-092_C1_Br6432_DLPFC_post_3.tif s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-092_C1_Br6432_DLPFC_post_3.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_A1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000140_dlpfc_ant_round3_A1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_B1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000140_dlpfc_ant_round3_B1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_C1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000140_dlpfc_ant_round3_C1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_D1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000140_dlpfc_ant_round3_D1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_A1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_A1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_B1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_B1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_C1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_C1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_D1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_D1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_A1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_A1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_B1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_B1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_C1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_C1.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_D1.tif s3://bioturing-spatial/spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_D1.tif
+sh upload_images.sh
+
 ## Don't upload this image since it's not used in the SPE object
-#aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif
+# aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif
 # aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_B1_Br6432_ant_DLPFC.tif s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_B1_Br6432_ant_DLPFC.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_C1_Br8325_mid_DLPFC.tif s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_C1_Br8325_mid_DLPFC.tif
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif
+
+## These 3 samples were dropped due to being re-done fully in round4
+# aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-091_A1_Br2720_DLPFC_ant_1.tif
+# aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-092_A1_Br6432_DLPFC_ant_1.tif
+# aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_C1.tif
+
 
 ## Locate SpaceRanger _invocation files and upload them
 ## These files will enable matching with the raw images as shown below:
@@ -79,28 +62,14 @@ for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-
     aws --profile bioturing-spatial s3 cp $i s3://bioturing-spatial/spatialDLPFC/SpaceRanger/${dirname}/outs/spatial/${filename}
 done
 
-## Ignored SpaceRanger output dirs:
-# /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/Round4/DLPFC_Br2720_ant_2_old/
-# /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/Round3/DLPFC_Br8667_ant_manual_alignment_all/
-# /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/Round2/DLPFC_Br2720_post_manual_alignment/
-
-## Remove directory we are not using. This one had an incorrect input image:
-## it wasn't aligned well and was breaking VistoSeg as detailed at
-## https://github.com/LieberInstitute/spatialDLPFC/issues/39
-aws --profile bioturing-spatial s3 rm --recursive s3://bioturing-spatial/spatialDLPFC/SpaceRanger/DLPFC_Br2720_ant_2_old
-
-## Remove duplicated ones: we sequenced more reads for these ones
-aws --profile bioturing-spatial s3 rm --recursive s3://bioturing-spatial/spatialDLPFC/SpaceRanger/DLPFC_Br8667_ant_manual_alignment_all
-aws --profile bioturing-spatial s3 rm --recursive s3://bioturing-spatial/spatialDLPFC/SpaceRanger/DLPFC_Br2720_post_manual_alignment
-
 
 ## Locate loupe alignment json files
-for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/images_raw_align_json/*.json /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/images_raw_align_json/*/*.json
-    do echo $i
-    filename=$(basename $i)
-    #echo "$i s3://bioturing-spatial/spatialDLPFC/images_raw_align_json/${filename}"
-    aws --profile bioturing-spatial s3 cp $i s3://bioturing-spatial/spatialDLPFC/images_raw_align_json/${filename}
+for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/_invocation /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/*/_invocation
+do
+    grep "loupe_alignment_file" $i
 done
+
+sh upload_raw_images_align_json.sh
 
 ## Re-upload on 2021-12-07 new tif image that Heena made on 2021-12-01 which
 ## was 2 days after the initial image upload
@@ -114,6 +83,7 @@ aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIB
 
 ## List files on the S3 bucket
 aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturing-spatial/spatialDLPFC/
+
 # 2021-11-29 10:37:52    2.5 GiB spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_1.tif
 # 2021-11-29 10:40:15    2.3 GiB spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_2.tif
 # 2021-11-29 10:41:00    2.4 GiB spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_3.tif
@@ -126,10 +96,8 @@ aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturin
 # 2021-11-29 10:46:17    3.0 GiB spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_2.tif
 # 2021-11-29 10:50:01    2.6 GiB spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_3.tif
 # 2021-11-29 10:50:44    3.6 GiB spatialDLPFC/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_4.tif
-# 2021-11-29 10:51:42    2.1 GiB spatialDLPFC/Images/round2/V10U24-091_A1_Br2720_DLPFC_ant_1.tif
 # 2021-11-29 10:52:21    2.0 GiB spatialDLPFC/Images/round2/V10U24-091_B1_Br2720_DLPFC_mid_2.tif
 # 2021-11-29 10:52:57    2.1 GiB spatialDLPFC/Images/round2/V10U24-091_C1_Br2720_DLPFC_post_3.tif
-# 2021-11-29 10:53:33    1.8 GiB spatialDLPFC/Images/round2/V10U24-092_A1_Br6432_DLPFC_ant_1.tif
 # 2021-11-29 10:54:09    1.8 GiB spatialDLPFC/Images/round2/V10U24-092_B1_Br6432_DLPFC_mid_2.tif
 # 2021-11-29 10:54:42    1.7 GiB spatialDLPFC/Images/round2/V10U24-092_C1_Br6432_DLPFC_post_3.tif
 # 2021-11-29 10:55:39    2.2 GiB spatialDLPFC/Images/round3/1000140_dlpfc_ant_round3_A1.tif
@@ -138,7 +106,6 @@ aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturin
 # 2021-11-29 10:57:33    2.0 GiB spatialDLPFC/Images/round3/1000140_dlpfc_ant_round3_D1.tif
 # 2021-11-29 10:58:07    2.9 GiB spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_A1.tif
 # 2021-11-29 10:58:57    2.6 GiB spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_B1.tif
-# 2021-11-29 10:59:40    2.6 GiB spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_C1.tif
 # 2021-11-29 11:00:24    2.6 GiB spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_D1.tif
 # 2021-11-29 11:01:23    2.5 GiB spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_A1.tif
 # 2021-11-29 11:02:04    2.4 GiB spatialDLPFC/Images/round3/1000146_dlpfc_post_round3_B1.tif
@@ -147,111 +114,107 @@ aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturin
 # 2021-11-29 11:04:57    3.1 GiB spatialDLPFC/Images/round4/V10B01-002_B1_Br6432_ant_DLPFC.tif
 # 2021-11-29 11:05:46    3.1 GiB spatialDLPFC/Images/round4/V10B01-002_C1_Br8325_mid_DLPFC.tif
 # 2021-12-07 10:18:41    3.5 GiB spatialDLPFC/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif
-# 2021-12-07 12:22:10    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2720_ant_2/_invocation
-# 2021-12-07 12:30:07  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2720_ant_2/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:19:36    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2720_ant_manual_alignment/_invocation
-# 2021-12-07 12:27:28  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2720_ant_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:19:44    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2720_mid_manual_alignment/_invocation
-# 2021-12-07 12:27:36  148 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2720_mid_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:19:53    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2720_post_extra_reads/_invocation
-# 2021-12-07 12:27:44  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2720_post_extra_reads/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:17:47    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2743_ant_manual_alignment/_invocation
-# 2021-12-07 12:25:53  165 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2743_ant_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:18:00    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2743_mid_manual_alignment_extra_reads/_invocation
-# 2021-12-07 12:26:01  146 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:18:08    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2743_post_manual_alignment/_invocation
-# 2021-12-07 12:26:09  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2743_post_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:18:21    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br3942_ant_manual_alignment/_invocation
-# 2021-12-07 12:26:17  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br3942_ant_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:18:30    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br3942_mid_manual_alignment/_invocation
-# 2021-12-07 12:26:25  155 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br3942_mid_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:18:38    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br3942_post_manual_alignment/_invocation
-# 2021-12-07 12:26:33  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br3942_post_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:18:46    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6423_ant_manual_alignment_extra_reads/_invocation
-# 2021-12-07 12:26:41  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6423_ant_manual_alignment_extra_reads/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:18:54    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6423_mid_manual_alignment/_invocation
-# 2021-12-07 12:26:48  163 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6423_mid_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:19:02    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6423_post_extra_reads/_invocation
-# 2021-12-07 12:26:57  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6423_post_extra_reads/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:22:26    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6432_ant_2/_invocation
-# 2021-12-07 12:30:15  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6432_ant_2/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:01    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6432_ant_manual_alignment/_invocation
-# 2021-12-07 12:27:52  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6432_ant_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:09    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6432_mid_manual_alignment/_invocation
-# 2021-12-07 12:28:00  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6432_mid_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:17    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6432_post_manual_alignment/_invocation
-# 2021-12-07 12:28:08  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6432_post_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:25    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6471_ant_manual_alignment_all/_invocation
-# 2021-12-07 12:28:16  164 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6471_ant_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:33    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6471_mid_manual_alignment_all/_invocation
-# 2021-12-07 12:28:24  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6471_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:41    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6471_post_manual_alignment_all/_invocation
-# 2021-12-07 12:28:32  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6471_post_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:49    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6522_ant_manual_alignment_all/_invocation
-# 2021-12-07 12:28:40  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6522_ant_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:20:58    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6522_mid_manual_alignment_all/_invocation
-# 2021-12-07 12:28:48  149 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6522_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:21:06    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6522_post_manual_alignment_all/_invocation
-# 2021-12-07 12:28:56  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6522_post_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:21:14    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8325_ant_manual_alignment_all/_invocation
-# 2021-12-07 12:29:04  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8325_ant_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:22:34    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8325_mid_2/_invocation
-# 2021-12-07 12:30:23  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8325_mid_2/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:21:22    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8325_mid_manual_alignment_all/_invocation
-# 2021-12-07 12:29:12  149 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8325_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:21:30    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8325_post_manual_alignment_all/_invocation
-# 2021-12-07 12:29:20  148 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8325_post_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:19:10    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8492_ant_manual_alignment/_invocation
-# 2021-12-07 12:27:04  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8492_ant_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:19:19    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8492_mid_manual_alignment_extra_reads/_invocation
-# 2021-12-07 12:27:12  146 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8492_mid_manual_alignment_extra_reads/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:19:27    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8492_post_manual_alignment/_invocation
-# 2021-12-07 12:27:20  158 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8492_post_manual_alignment/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:21:38    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_ant_extra_reads/_invocation
-# 2021-12-07 12:29:27  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_ant_extra_reads/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:21:54    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_mid_manual_alignment_all/_invocation
-# 2021-12-07 12:29:43  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 12:22:02    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/_invocation
-# 2021-12-07 12:29:51  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:46:26    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2720_ant_2/_invocation
+# 2021-12-07 20:51:55  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2720_ant_2/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:44:22    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2720_mid_manual_alignment/_invocation
+# 2021-12-07 20:49:50  148 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2720_mid_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:44:30    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2720_post_extra_reads/_invocation
+# 2021-12-07 20:49:59  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2720_post_extra_reads/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:42:41    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2743_ant_manual_alignment/_invocation
+# 2021-12-07 20:48:09  165 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2743_ant_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:42:49    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2743_mid_manual_alignment_extra_reads/_invocation
+# 2021-12-07 20:48:17  146 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:42:58    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br2743_post_manual_alignment/_invocation
+# 2021-12-07 20:48:26  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br2743_post_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:43:06    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br3942_ant_manual_alignment/_invocation
+# 2021-12-07 20:48:34  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br3942_ant_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:43:15    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br3942_mid_manual_alignment/_invocation
+# 2021-12-07 20:48:43  155 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br3942_mid_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:43:23    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br3942_post_manual_alignment/_invocation
+# 2021-12-07 20:48:51  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br3942_post_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:43:31    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6423_ant_manual_alignment_extra_reads/_invocation
+# 2021-12-07 20:48:59  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6423_ant_manual_alignment_extra_reads/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:43:40    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6423_mid_manual_alignment/_invocation
+# 2021-12-07 20:49:08  163 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6423_mid_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:43:48    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6423_post_extra_reads/_invocation
+# 2021-12-07 20:49:17  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6423_post_extra_reads/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:46:34    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6432_ant_2/_invocation
+# 2021-12-07 20:52:04  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6432_ant_2/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:44:38    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6432_mid_manual_alignment/_invocation
+# 2021-12-07 20:50:07  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6432_mid_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:44:47    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6432_post_manual_alignment/_invocation
+# 2021-12-07 20:50:15  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6432_post_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:44:55    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6471_ant_manual_alignment_all/_invocation
+# 2021-12-07 20:50:24  164 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6471_ant_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:45:03    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6471_mid_manual_alignment_all/_invocation
+# 2021-12-07 20:50:32  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6471_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:45:11    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6471_post_manual_alignment_all/_invocation
+# 2021-12-07 20:50:40  166 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6471_post_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:45:20    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6522_ant_manual_alignment_all/_invocation
+# 2021-12-07 20:50:49  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6522_ant_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:45:28    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6522_mid_manual_alignment_all/_invocation
+# 2021-12-07 20:50:57  149 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6522_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:45:36    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br6522_post_manual_alignment_all/_invocation
+# 2021-12-07 20:51:05  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br6522_post_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:45:45    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8325_ant_manual_alignment_all/_invocation
+# 2021-12-07 20:51:14  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8325_ant_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:46:42    2.2 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8325_mid_2/_invocation
+# 2021-12-07 20:52:12  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8325_mid_2/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:45:53    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8325_post_manual_alignment_all/_invocation
+# 2021-12-07 20:51:22  148 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8325_post_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:43:56    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8492_ant_manual_alignment/_invocation
+# 2021-12-07 20:49:25  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8492_ant_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:44:05    2.7 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8492_mid_manual_alignment_extra_reads/_invocation
+# 2021-12-07 20:49:34  146 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8492_mid_manual_alignment_extra_reads/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:44:13    1.5 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8492_post_manual_alignment/_invocation
+# 2021-12-07 20:49:42  158 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8492_post_manual_alignment/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:46:01    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_ant_extra_reads/_invocation
+# 2021-12-07 20:51:30  156 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_ant_extra_reads/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:46:09    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_mid_manual_alignment_all/_invocation
+# 2021-12-07 20:51:39  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
+# 2021-12-07 20:46:18    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/_invocation
+# 2021-12-07 20:51:47  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/outs/spatial/scalefactors_json.json
 # 2021-12-07 19:24:56   12.6 KiB spatialDLPFC/code/check_dates.txt
 # 2021-12-07 19:22:15   27.9 KiB spatialDLPFC/code/upload_bioturing.sh
-# 2021-12-07 12:51:32  556.4 KiB spatialDLPFC/images_raw_align_json/V10B01-002-B1.json
-# 2021-12-07 12:51:40  558.8 KiB spatialDLPFC/images_raw_align_json/V10B01-002-C1.json
-# 2021-12-07 12:51:48  545.7 KiB spatialDLPFC/images_raw_align_json/V10B01-002-D1.json
-# 2021-12-07 12:49:51  564.7 KiB spatialDLPFC/images_raw_align_json/V10B01-052-A1_Br6471_mid.json
-# 2021-12-07 12:49:59  554.0 KiB spatialDLPFC/images_raw_align_json/V10B01-052-B1_Br6522_mid.json
-# 2021-12-07 12:50:08  553.4 KiB spatialDLPFC/images_raw_align_json/V10B01-052-C1_Br8325_mid.json
-# 2021-12-07 12:50:16  560.1 KiB spatialDLPFC/images_raw_align_json/V10B01-052-D1_Br8667_mid.json
-# 2021-12-07 12:50:24  557.2 KiB spatialDLPFC/images_raw_align_json/V10B01-053-A1_Br6471_post.json
-# 2021-12-07 12:50:33  555.1 KiB spatialDLPFC/images_raw_align_json/V10B01-053-B1_Br6522_post.json
-# 2021-12-07 12:50:41  562.3 KiB spatialDLPFC/images_raw_align_json/V10B01-053-C1_Br8325_post.json
-# 2021-12-07 12:50:50  562.2 KiB spatialDLPFC/images_raw_align_json/V10B01-053-D1_Br8667_post.json
-# 2021-12-07 12:49:00  546.9 KiB spatialDLPFC/images_raw_align_json/V10U24-091-A1_Br2770_ant.json
-# 2021-12-07 12:49:08  527.3 KiB spatialDLPFC/images_raw_align_json/V10U24-091-B1_Br2770_mid.json
-# 2021-12-07 12:49:17  566.4 KiB spatialDLPFC/images_raw_align_json/V10U24-091-C1_Br2770_post.json
-# 2021-12-07 12:49:25  548.3 KiB spatialDLPFC/images_raw_align_json/V10U24-092-A1_Br6432_ant.json
-# 2021-12-07 12:49:34  550.1 KiB spatialDLPFC/images_raw_align_json/V10U24-092-B1_Br6432_mid.json
-# 2021-12-07 12:49:42  536.6 KiB spatialDLPFC/images_raw_align_json/V10U24-092-C1_Br6432_post.json
-# 2021-12-07 12:50:58  540.8 KiB spatialDLPFC/images_raw_align_json/V10U24-094-A1_Br6471_ant.json
-# 2021-12-07 12:51:06  560.8 KiB spatialDLPFC/images_raw_align_json/V10U24-094-B1_Br6522_ant.json
-# 2021-12-07 12:51:15  550.3 KiB spatialDLPFC/images_raw_align_json/V10U24-094-C1_Br8325_ant.json
-# 2021-12-07 12:51:23  552.0 KiB spatialDLPFC/images_raw_align_json/V10U24-094-D1_Br8667_ant.json
-# 2021-12-07 12:47:18  555.6 KiB spatialDLPFC/images_raw_align_json/V19B23-073-A1_9_Br2743_post_manual_alignment.json
-# 2021-12-07 12:47:26  562.2 KiB spatialDLPFC/images_raw_align_json/V19B23-073-B1_10_Br3942_post_manual_alignment.json
-# 2021-12-07 12:47:35  550.4 KiB spatialDLPFC/images_raw_align_json/V19B23-073-C1_11_Br6423_post_manual_alignment.json
-# 2021-12-07 12:47:43  560.8 KiB spatialDLPFC/images_raw_align_json/V19B23-073-D1_12_Br8492_post_manual_alignment.json
-# 2021-12-07 12:47:52  560.3 KiB spatialDLPFC/images_raw_align_json/V19B23-074-A1_5_Br2743_mid_manual_alignment.json
-# 2021-12-07 12:48:00  555.9 KiB spatialDLPFC/images_raw_align_json/V19B23-074-B1_6_Br3942_mid_manual_alignment.json
-# 2021-12-07 12:48:09  556.1 KiB spatialDLPFC/images_raw_align_json/V19B23-074-C1_7_Br6432_mid_manual_alignment.json
-# 2021-12-07 12:48:17  562.8 KiB spatialDLPFC/images_raw_align_json/V19B23-074-D1_8_Br8492_mid_manual_alignment.json
-# 2021-12-07 12:48:25  554.1 KiB spatialDLPFC/images_raw_align_json/V19B23-075-A1_1_Br2743_ant_manual_alignment.json
-# 2021-12-07 12:48:35  555.6 KiB spatialDLPFC/images_raw_align_json/V19B23-075-B1_2_Br3942_ant_manual_alignment.json
-# 2021-12-07 12:48:43  555.4 KiB spatialDLPFC/images_raw_align_json/V19B23-075-C1_3_Br6423_ant_manual_alignment.json
-# 2021-12-07 12:48:51  567.5 KiB spatialDLPFC/images_raw_align_json/V19B23-075-D1_4_Br8492_ant_manual_alignment.json
+# 2021-12-07 21:26:05    7.4 KiB spatialDLPFC/code/upload_images.sh
+# 2021-12-07 21:26:13    7.8 KiB spatialDLPFC/code/upload_raw_images_align_json.sh
+# 2021-12-07 21:16:43  556.4 KiB spatialDLPFC/images_raw_align_json/V10B01-002-B1.json
+# 2021-12-07 21:16:52  558.8 KiB spatialDLPFC/images_raw_align_json/V10B01-002-C1.json
+# 2021-12-07 21:16:34  545.7 KiB spatialDLPFC/images_raw_align_json/V10B01-002-D1.json
+# 2021-12-07 21:15:06  564.7 KiB spatialDLPFC/images_raw_align_json/V10B01-052-A1_Br6471_mid.json
+# 2021-12-07 21:15:33  554.0 KiB spatialDLPFC/images_raw_align_json/V10B01-052-B1_Br6522_mid.json
+# 2021-12-07 21:16:17  560.1 KiB spatialDLPFC/images_raw_align_json/V10B01-052-D1_Br8667_mid.json
+# 2021-12-07 21:15:15  557.2 KiB spatialDLPFC/images_raw_align_json/V10B01-053-A1_Br6471_post.json
+# 2021-12-07 21:15:41  555.1 KiB spatialDLPFC/images_raw_align_json/V10B01-053-B1_Br6522_post.json
+# 2021-12-07 21:15:59  562.3 KiB spatialDLPFC/images_raw_align_json/V10B01-053-C1_Br8325_post.json
+# 2021-12-07 21:16:25  562.2 KiB spatialDLPFC/images_raw_align_json/V10B01-053-D1_Br8667_post.json
+# 2021-12-07 21:14:11  527.3 KiB spatialDLPFC/images_raw_align_json/V10U24-091-B1_Br2770_mid.json
+# 2021-12-07 21:14:23  566.4 KiB spatialDLPFC/images_raw_align_json/V10U24-091-C1_Br2770_post.json
+# 2021-12-07 21:14:36  550.1 KiB spatialDLPFC/images_raw_align_json/V10U24-092-B1_Br6432_mid.json
+# 2021-12-07 21:14:45  536.6 KiB spatialDLPFC/images_raw_align_json/V10U24-092-C1_Br6432_post.json
+# 2021-12-07 21:14:55  540.8 KiB spatialDLPFC/images_raw_align_json/V10U24-094-A1_Br6471_ant.json
+# 2021-12-07 21:15:24  560.8 KiB spatialDLPFC/images_raw_align_json/V10U24-094-B1_Br6522_ant.json
+# 2021-12-07 21:15:50  550.3 KiB spatialDLPFC/images_raw_align_json/V10U24-094-C1_Br8325_ant.json
+# 2021-12-07 21:16:08  552.0 KiB spatialDLPFC/images_raw_align_json/V10U24-094-D1_Br8667_ant.json
+# 2021-12-07 21:12:35  555.6 KiB spatialDLPFC/images_raw_align_json/V19B23-073-A1_9_Br2743_post_manual_alignment.json
+# 2021-12-07 21:13:02  562.2 KiB spatialDLPFC/images_raw_align_json/V19B23-073-B1_10_Br3942_post_manual_alignment.json
+# 2021-12-07 21:13:31  550.4 KiB spatialDLPFC/images_raw_align_json/V19B23-073-C1_11_Br6423_post_manual_alignment.json
+# 2021-12-07 21:13:57  560.8 KiB spatialDLPFC/images_raw_align_json/V19B23-073-D1_12_Br8492_post_manual_alignment.json
+# 2021-12-07 21:12:27  560.3 KiB spatialDLPFC/images_raw_align_json/V19B23-074-A1_5_Br2743_mid_manual_alignment.json
+# 2021-12-07 21:12:53  555.9 KiB spatialDLPFC/images_raw_align_json/V19B23-074-B1_6_Br3942_mid_manual_alignment.json
+# 2021-12-07 21:13:23  556.1 KiB spatialDLPFC/images_raw_align_json/V19B23-074-C1_7_Br6432_mid_manual_alignment.json
+# 2021-12-07 21:13:49  562.8 KiB spatialDLPFC/images_raw_align_json/V19B23-074-D1_8_Br8492_mid_manual_alignment.json
+# 2021-12-07 21:12:13  554.1 KiB spatialDLPFC/images_raw_align_json/V19B23-075-A1_1_Br2743_ant_manual_alignment.json
+# 2021-12-07 21:12:44  555.6 KiB spatialDLPFC/images_raw_align_json/V19B23-075-B1_2_Br3942_ant_manual_alignment.json
+# 2021-12-07 21:13:14  555.4 KiB spatialDLPFC/images_raw_align_json/V19B23-075-C1_3_Br6423_ant_manual_alignment.json
+# 2021-12-07 21:13:40  567.5 KiB spatialDLPFC/images_raw_align_json/V19B23-075-D1_4_Br8492_ant_manual_alignment.json
 # 2021-11-29 10:21:12    1.5 GiB spatialDLPFC/spe_merged_final.Rdata
 
 
 ## Upload this script
+aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/upload_images.sh s3://bioturing-spatial/spatialDLPFC/code/upload_images.sh
+aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/upload_raw_images_align_json.sh s3://bioturing-spatial/spatialDLPFC/code/upload_raw_images_align_json.sh
+
 aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/check_dates.txt s3://bioturing-spatial/spatialDLPFC/code/check_dates.txt
 aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/upload_bioturing.sh s3://bioturing-spatial/spatialDLPFC/code/upload_bioturing.sh
 
