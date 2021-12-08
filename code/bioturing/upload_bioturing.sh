@@ -163,11 +163,12 @@ aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturin
 # 2021-12-07 20:51:39  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
 # 2021-12-07 20:46:18    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/_invocation
 # 2021-12-07 20:51:47  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 21:43:34   12.6 KiB spatialDLPFC/code/bioturing/check_dates.txt
-# 2021-12-07 21:43:42    3.9 KiB spatialDLPFC/code/bioturing/image_files.sh
-# 2021-12-07 21:43:51   17.4 KiB spatialDLPFC/code/bioturing/upload_bioturing.sh
-# 2021-12-07 21:44:00    7.4 KiB spatialDLPFC/code/bioturing/upload_images.sh
-# 2021-12-07 21:44:08    7.8 KiB spatialDLPFC/code/bioturing/upload_raw_images_align_json.sh
+# 2021-12-07 22:42:04   16.0 KiB spatialDLPFC/code/bioturing/check_dates.txt
+# 2021-12-07 22:42:13    3.9 KiB spatialDLPFC/code/bioturing/files_images.sh
+# 2021-12-07 22:42:21    4.1 KiB spatialDLPFC/code/bioturing/files_raw_images_align_json.sh
+# 2021-12-07 22:42:30   17.2 KiB spatialDLPFC/code/bioturing/upload_bioturing.sh
+# 2021-12-07 22:42:38    7.4 KiB spatialDLPFC/code/bioturing/upload_images.sh
+# 2021-12-07 22:42:46    7.8 KiB spatialDLPFC/code/bioturing/upload_raw_images_align_json.sh
 # 2021-12-07 21:16:43  556.4 KiB spatialDLPFC/images_raw_align_json/V10B01-002-B1.json
 # 2021-12-07 21:16:52  558.8 KiB spatialDLPFC/images_raw_align_json/V10B01-002-C1.json
 # 2021-12-07 21:16:34  545.7 KiB spatialDLPFC/images_raw_align_json/V10B01-002-D1.json
