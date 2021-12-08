@@ -163,6 +163,7 @@ dim(spe)
 
 ## Remove genes with no data
 no_expr <- which(rowSums(counts(spe)) == 0)
+
 length(no_expr)
 # [1] 7468
 length(no_expr) / nrow(spe) * 100
@@ -170,6 +171,7 @@ length(no_expr) / nrow(spe) * 100
 
 ## Create two versions: one with and one without filtering by tissue spot
 spe_raw <- spe
+
 pryr::object_size(spe_raw)
 # 2,566,897,847 B
 dim(spe_raw)
