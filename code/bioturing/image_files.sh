@@ -1,0 +1,37 @@
+#!/bin/bash
+
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_2.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_2.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_2.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_3.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_3.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_3.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_4.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_4.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_4.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-091_A1_Br2720_DLPFC_ant_1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-091_B1_Br2720_DLPFC_mid_2.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-091_C1_Br2720_DLPFC_post_3.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-092_A1_Br6432_DLPFC_ant_1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-092_B1_Br6432_DLPFC_mid_2.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round2/V10U24-092_C1_Br6432_DLPFC_post_3.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_A1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_A1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_A1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_B1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_B1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_B1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_C1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_C1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_C1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_D1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000140_dlpfc_ant_round3_D1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000145_dlpfc_mid_round3_D1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round3/1000146_dlpfc_post_round3_D1.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_B1_Br6432_ant_DLPFC.tif
+ls -lh /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_C1_Br8325_mid_DLPFC.tif
