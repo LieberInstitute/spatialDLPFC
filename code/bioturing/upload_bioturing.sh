@@ -3,6 +3,8 @@
 ## Load aws module
 module load aws/2.2.35
 
+
+## TODO (waiting for the new spe from Abby)
 ## Upload main SpatialExperiment object
 aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_merged_final.Rdata s3://bioturing-spatial/spatialDLPFC/spe_merged_final.Rdata
 
@@ -27,20 +29,9 @@ done
 ## Upload images
 sh upload_images.sh
 
-## Don't upload this image since it's not used in the SPE object
-# aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif
-# aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif
-
-## These 3 samples were dropped due to being re-done fully in round4
-# aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-091_A1_Br2720_DLPFC_ant_1.tif
-# aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round2/V10U24-092_A1_Br6432_DLPFC_ant_1.tif
-# aws --profile bioturing-spatial s3 rm s3://bioturing-spatial/spatialDLPFC/Images/round3/1000145_dlpfc_mid_round3_C1.tif
-
-
-## Locate SpaceRanger _invocation files and upload them
-## These files will enable matching with the raw images as shown below:
-# $ grep "tissue_image_paths" /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/Round3/DLPFC_Br8667_ant_manual_alignment_all/_invocation
-#     tissue_image_paths        = ["/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC/Images/round3/1000140_dlpfc_ant_round3_D1.tif"],
+## Locate SpaceRanger _invocation files and upload them. These files include
+## * tissue_image_paths: useful for locating the matching input image
+## * loupe_alignment_file: useful for locating the matching Loupe json file
 for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/_invocation /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/*/_invocation
     do echo $i
     dir1=$(dirname $i)
@@ -63,23 +54,21 @@ for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-
 done
 
 
-## Locate loupe alignment json files
+## Locate Loupe alignment json files
 for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/_invocation /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/*/*/_invocation
 do
     grep "loupe_alignment_file" $i
 done
 
+## Upload Loupe alignment json files
 sh upload_raw_images_align_json.sh
 
-## Re-upload on 2021-12-07 new tif image that Heena made on 2021-12-01 which
-## was 2 days after the initial image upload
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif s3://bioturing-spatial/spatialDLPFC/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif
-## Companion new SpaceRanger output
-# /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/Round4/DLPFC_Br2720_ant_2
-
-## TODO (waiting for the new spe from Abby)
-## Upload main SpatialExperiment object
-# aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_merged_final.Rdata s3://bioturing-spatial/spatialDLPFC/spe_merged_final.Rdata
+## Upload this script and companion ones
+for i in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/*
+    do echo $i
+    filename=$(basename $i)
+    aws --profile bioturing-spatial s3 cp $i s3://bioturing-spatial/spatialDLPFC/code/bioturing/${filename}
+done
 
 ## List files on the S3 bucket
 aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturing-spatial/spatialDLPFC/
@@ -174,10 +163,11 @@ aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturin
 # 2021-12-07 20:51:39  167 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_mid_manual_alignment_all/outs/spatial/scalefactors_json.json
 # 2021-12-07 20:46:18    3.3 KiB spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/_invocation
 # 2021-12-07 20:51:47  157 Bytes spatialDLPFC/SpaceRanger/DLPFC_Br8667_post_manual_alignment_all/outs/spatial/scalefactors_json.json
-# 2021-12-07 19:24:56   12.6 KiB spatialDLPFC/code/check_dates.txt
-# 2021-12-07 19:22:15   27.9 KiB spatialDLPFC/code/upload_bioturing.sh
-# 2021-12-07 21:26:05    7.4 KiB spatialDLPFC/code/upload_images.sh
-# 2021-12-07 21:26:13    7.8 KiB spatialDLPFC/code/upload_raw_images_align_json.sh
+# 2021-12-07 21:43:34   12.6 KiB spatialDLPFC/code/bioturing/check_dates.txt
+# 2021-12-07 21:43:42    3.9 KiB spatialDLPFC/code/bioturing/image_files.sh
+# 2021-12-07 21:43:51   17.4 KiB spatialDLPFC/code/bioturing/upload_bioturing.sh
+# 2021-12-07 21:44:00    7.4 KiB spatialDLPFC/code/bioturing/upload_images.sh
+# 2021-12-07 21:44:08    7.8 KiB spatialDLPFC/code/bioturing/upload_raw_images_align_json.sh
 # 2021-12-07 21:16:43  556.4 KiB spatialDLPFC/images_raw_align_json/V10B01-002-B1.json
 # 2021-12-07 21:16:52  558.8 KiB spatialDLPFC/images_raw_align_json/V10B01-002-C1.json
 # 2021-12-07 21:16:34  545.7 KiB spatialDLPFC/images_raw_align_json/V10B01-002-D1.json
@@ -210,11 +200,7 @@ aws --profile bioturing-spatial s3 ls --recursive --human-readable s3://bioturin
 # 2021-12-07 21:13:40  567.5 KiB spatialDLPFC/images_raw_align_json/V19B23-075-D1_4_Br8492_ant_manual_alignment.json
 # 2021-11-29 10:21:12    1.5 GiB spatialDLPFC/spe_merged_final.Rdata
 
-
-## Upload this script
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/upload_images.sh s3://bioturing-spatial/spatialDLPFC/code/upload_images.sh
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/upload_raw_images_align_json.sh s3://bioturing-spatial/spatialDLPFC/code/upload_raw_images_align_json.sh
-
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/check_dates.txt s3://bioturing-spatial/spatialDLPFC/code/check_dates.txt
-aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/upload_bioturing.sh s3://bioturing-spatial/spatialDLPFC/code/upload_bioturing.sh
+## Re-upload this script after updating the ls output and re-saving this
+## script
+aws --profile bioturing-spatial s3 cp /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/bioturing/upload_bioturing.sh s3://bioturing-spatial/spatialDLPFC/code/bioturing/upload_bioturing.sh
 
