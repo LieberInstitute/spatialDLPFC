@@ -1,13 +1,13 @@
 spaceranger  (spaceranger-1.3.0)
 Copyright (c) 2021 10x Genomics, Inc.  All rights reserved.
 -------------------------------------------------------------------------------
-Thu Oct 21 02:51:01 EDT 2021
+Mon Dec  6 21:38:10 EST 2021
 
 =====================================================================
 System Info
 uname -a
 ---------------------------------------------------------------------
-Linux compute-096.cm.cluster 3.10.0-1160.el7.x86_64 #1 SMP Mon Oct 19 16:18:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+Linux compute-100.cm.cluster 3.10.0-1160.el7.x86_64 #1 SMP Mon Oct 19 16:18:59 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
 =====================================================================
 
 =====================================================================
@@ -78,7 +78,7 @@ fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush 
 Memory Total
 grep MemTotal /proc/meminfo | cut -d ':' -f 2 | sed 's/^[ \t]*//'
 ---------------------------------------------------------------------
-231008304 kB
+264038428 kB
 =====================================================================
 
 =====================================================================
@@ -86,25 +86,24 @@ Disk Space
 df -Ph | awk '{print $2, $3, $4}'
 ---------------------------------------------------------------------
 Size Used Avail
-111G 0 111G
-111G 60K 111G
-111G 123M 111G
-111G 0 111G
-20G 3.8G 16G
-5.9G 446M 5.5G
+126G 0 126G
+126G 252K 126G
+126G 243M 126G
+126G 0 126G
+20G 3.9G 16G
 49G 34M 49G
 846G 33M 846G
-925G 178G 748G
-47T 32T 16T
-1.0T 820G 205G
-22T 2.8T 19T
-23G 0 23G
-200T 23T 178T
-23G 0 23G
-1.5P 480T 1021T
-500T 170T 331T
-87T 86T 1.3T
-1.7P 1.6P 90T
+5.9G 477M 5.4G
+925G 182G 744G
+22T 4.0T 18T
+47T 32T 15T
+1022G 903G 119G
+26G 0 26G
+300T 248T 53T
+1.5P 612T 889T
+26G 0 26G
+1.7P 1.6P 107T
+200T 34T 167T
 100T 94T 5.5T
 =====================================================================
 
@@ -114,7 +113,7 @@ mount | cut -d ' ' -f 5,6
 ---------------------------------------------------------------------
 sysfs (rw,nosuid,nodev,noexec,relatime)
 proc (rw,nosuid,nodev,noexec,relatime)
-devtmpfs (rw,nosuid,size=115493460k,nr_inodes=28873365,mode=755)
+devtmpfs (rw,nosuid,size=132008660k,nr_inodes=33002165,mode=755)
 securityfs (rw,nosuid,nodev,noexec,relatime)
 tmpfs (rw,nosuid,nodev)
 devpts (rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000)
@@ -122,19 +121,19 @@ tmpfs (rw,nosuid,nodev,mode=755)
 tmpfs (ro,nosuid,nodev,noexec,mode=755)
 cgroup (rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/usr/lib/systemd/systemd-cgroups-agent,name=systemd)
 pstore (rw,nosuid,nodev,noexec,relatime)
-cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
-cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
 cgroup (rw,nosuid,nodev,noexec,relatime,cpuset)
-cgroup (rw,nosuid,nodev,noexec,relatime,net_prio,net_cls)
-cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct,cpu)
-cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
 cgroup (rw,nosuid,nodev,noexec,relatime,memory)
+cgroup (rw,nosuid,nodev,noexec,relatime,net_prio,net_cls)
+cgroup (rw,nosuid,nodev,noexec,relatime,freezer)
+cgroup (rw,nosuid,nodev,noexec,relatime,perf_event)
+cgroup (rw,nosuid,nodev,noexec,relatime,cpuacct,cpu)
 cgroup (rw,nosuid,nodev,noexec,relatime,devices)
 cgroup (rw,nosuid,nodev,noexec,relatime,pids)
+cgroup (rw,nosuid,nodev,noexec,relatime,hugetlb)
 cgroup (rw,nosuid,nodev,noexec,relatime,blkio)
 configfs (rw,relatime)
 xfs (rw,relatime,attr2,inode64,noquota)
-autofs (rw,relatime,fd=22,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=509)
+autofs (rw,relatime,fd=32,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=26722)
 mqueue (rw,relatime)
 debugfs (rw,relatime)
 hugetlbfs (rw,relatime)
@@ -142,24 +141,23 @@ xfs (rw,relatime,attr2,inode64,noquota)
 xfs (rw,relatime,attr2,inode64,noquota)
 xfs (rw,relatime,attr2,inode64,noquota)
 rpc_pipefs (rw,relatime)
-nfs4 (rw,noatime,nodiratime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.96,local_lock=none,addr=192.168.11.252)
-nfs4 (rw,noatime,nodiratime,vers=4.0,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.96,local_lock=none,addr=192.168.11.205)
-nfs4 (rw,noatime,nodiratime,vers=4.0,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.96,local_lock=none,addr=192.168.11.205)
-nfs4 (rw,noatime,nodiratime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.96,local_lock=none,addr=192.168.11.207)
-autofs (rw,relatime,fd=35,pgrp=4663,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=102390738)
-tmpfs (rw,nosuid,nodev,relatime,size=23100832k,mode=700,uid=42512,gid=100)
-nfs4 (rw,noatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.96,local_lock=none,addr=192.168.11.209)
-autofs (rw,relatime,fd=5,pgrp=4663,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=102200120)
-autofs (rw,relatime,fd=11,pgrp=4663,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=102390651)
-autofs (rw,relatime,fd=17,pgrp=4663,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=102390672)
-autofs (rw,relatime,fd=23,pgrp=4663,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=102390677)
-autofs (rw,relatime,fd=29,pgrp=4663,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=102390725)
-autofs (rw,relatime,fd=41,pgrp=4663,timeout=1200,minproto=5,maxproto=5,direct,pipe_ino=102390742)
-tmpfs (rw,nosuid,nodev,relatime,size=23100832k,mode=700,uid=42057,gid=4181)
-nfs4 (rw,noatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.96,local_lock=none,addr=192.168.11.209)
-nfs4 (rw,noatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.96,local_lock=none,addr=192.168.11.209)
+nfs4 (rw,noatime,nodiratime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.100,local_lock=none,addr=192.168.11.252)
+nfs4 (rw,noatime,nodiratime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.100,local_lock=none,addr=192.168.11.207)
+nfs4 (rw,noatime,nodiratime,vers=4.0,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.100,local_lock=none,addr=192.168.11.205)
+nfs4 (rw,noatime,nodiratime,vers=4.0,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.100,local_lock=none,addr=192.168.11.205)
+autofs (rw,relatime,fd=35,pgrp=10996,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=155444171)
+tmpfs (rw,nosuid,nodev,relatime,size=26403844k,mode=700,uid=42366,gid=100)
+nfs4 (rw,noatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.100,local_lock=none,addr=192.168.11.209)
+nfs4 (rw,noatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.100,local_lock=none,addr=192.168.11.209)
+autofs (rw,relatime,fd=5,pgrp=10996,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=155444167)
+autofs (rw,relatime,fd=11,pgrp=10996,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=155435972)
+autofs (rw,relatime,fd=17,pgrp=10996,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=155435993)
+autofs (rw,relatime,fd=23,pgrp=10996,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=155435998)
+autofs (rw,relatime,fd=29,pgrp=10996,timeout=1200,minproto=5,maxproto=5,indirect,pipe_ino=155449358)
+autofs (rw,relatime,fd=41,pgrp=10996,timeout=1200,minproto=5,maxproto=5,direct,pipe_ino=155444175)
+tmpfs (rw,nosuid,nodev,relatime,size=26403844k,mode=700,uid=42522,gid=100)
 lustre (rw,flock,lazystatfs)
-lustre (rw,flock,lazystatfs)
+nfs4 (rw,noatime,vers=4.1,rsize=1048576,wsize=1048576,namlen=255,hard,proto=tcp,timeo=600,retrans=2,sec=sys,clientaddr=192.168.11.100,local_lock=none,addr=192.168.11.209)
 lustre (rw,flock,lazystatfs)
 =====================================================================
 
@@ -171,7 +169,7 @@ core file size          (blocks, -c) unlimited
 data seg size           (kbytes, -d) unlimited
 scheduling priority             (-e) 0
 file size               (blocks, -f) 104857600
-pending signals                 (-i) 902292
+pending signals                 (-i) 1031317
 max locked memory       (kbytes, -l) 64
 max memory size         (kbytes, -m) unlimited
 open files                      (-n) 1024
@@ -180,7 +178,7 @@ POSIX message queues     (bytes, -q) 819200
 real-time priority              (-r) 0
 stack size              (kbytes, -s) 2097152
 cpu time               (seconds, -t) unlimited
-max user processes              (-u) 902292
+max user processes              (-u) 1031317
 virtual memory          (kbytes, -v) 167772160
 file locks                      (-x) unlimited
 =====================================================================
@@ -193,7 +191,7 @@ core file size          (blocks, -c) unlimited
 data seg size           (kbytes, -d) unlimited
 scheduling priority             (-e) 0
 file size               (blocks, -f) 104857600
-pending signals                 (-i) 902292
+pending signals                 (-i) 1031317
 max locked memory       (kbytes, -l) 64
 max memory size         (kbytes, -m) unlimited
 open files                      (-n) 4096
@@ -202,7 +200,7 @@ POSIX message queues     (bytes, -q) 819200
 real-time priority              (-r) 0
 stack size              (kbytes, -s) 2097152
 cpu time               (seconds, -t) unlimited
-max user processes              (-u) 902292
+max user processes              (-u) 1031317
 virtual memory          (kbytes, -v) 167772160
 file locks                      (-x) unlimited
 =====================================================================
@@ -211,8 +209,8 @@ file locks                      (-x) unlimited
 Global File Limit
 cat /proc/sys/fs/file-{max,nr}
 ---------------------------------------------------------------------
-22140992
-3072	0	22140992
+25316240
+14352	0	25316240
 =====================================================================
 
 =====================================================================
@@ -273,15 +271,15 @@ cgroups
 cat /proc/self/cgroup
 ---------------------------------------------------------------------
 11:blkio:/
-10:pids:/
-9:devices:/
-8:memory:/
-7:freezer:/
-6:cpuacct,cpu:/
-5:net_prio,net_cls:/
-4:cpuset:/
-3:hugetlb:/
-2:perf_event:/
+10:hugetlb:/
+9:pids:/
+8:devices:/
+7:cpuacct,cpu:/
+6:perf_event:/
+5:freezer:/
+4:net_prio,net_cls:/
+3:memory:/
+2:cpuset:/
 1:name=systemd:/system.slice/sge.service
 =====================================================================
 
@@ -289,35 +287,35 @@ cat /proc/self/cgroup
 cgroup mem stats
 cat /sys/fs/cgroup/memory//memory.stat
 ---------------------------------------------------------------------
-cache 129062404096
-rss 15054761984
-rss_huge 1564475392
-mapped_file 73449472
-swap 294219776
-pgpgin 200223736881
-pgpgout 200608256255
-pgfault 381620647107
-pgmajfault 2682931
-inactive_anon 2915598336
-active_anon 12186722304
-inactive_file 122544467968
-active_file 6472335360
+cache 149170593792
+rss 47725121536
+rss_huge 5765070848
+mapped_file 321216512
+swap 8227495936
+pgpgin 789365415727
+pgpgout 789990009532
+pgfault 1223663263386
+pgmajfault 5852200
+inactive_anon 3904385024
+active_anon 43944333312
+inactive_file 65213030400
+active_file 83840909312
 unevictable 0
 hierarchical_memory_limit 9223372036854771712
 hierarchical_memsw_limit 9223372036854771712
-total_cache 129062404096
-total_rss 15054761984
-total_rss_huge 1564475392
-total_mapped_file 73449472
-total_swap 294219776
+total_cache 149170593792
+total_rss 47725121536
+total_rss_huge 5765070848
+total_mapped_file 321216512
+total_swap 8227495936
 total_pgpgin 0
 total_pgpgout 0
 total_pgfault 0
 total_pgmajfault 0
-total_inactive_anon 2915598336
-total_active_anon 12186722304
-total_inactive_file 122544467968
-total_active_file 6472335360
+total_inactive_anon 3904385024
+total_active_anon 43944333312
+total_inactive_file 65213030400
+total_active_file 83840909312
 total_unevictable 0
 =====================================================================
 
