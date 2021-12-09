@@ -2,8 +2,8 @@
 #$ -cwd
 #$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
 #$ -pe local 9
-#$ -o /users/hdivecha/VistoSeg/code/Logs/V10B01-002_D1_Br2720_ant_DLPFC.txt
-#$ -e /users/hdivecha/VistoSeg/code/Logs/V10B01-002_D1_Br2720_ant_DLPFC.txt
+#$ -o Logs/V10B01-002_D1_Br2720_ant_DLPFC.txt
+#$ -e Logs/V10B01-002_D1_Br2720_ant_DLPFC.txt
 #$ -m e
 #$ -M heenadivecha@gmail.com
 
@@ -24,7 +24,7 @@ echo "****"
 
 module load matlab/R2019a
 
-toolbox='/users/hdivecha/VistoSeg/code'
+toolbox='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code'
 mask='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC_nuclei.mat'
 jsonname='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/Round4/DLPFC_Br2720_ant_2/outs/spatial/scalefactors_json.json'
 posname='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/NextSeq/Round4/DLPFC_Br2720_ant_2/outs/spatial/tissue_positions_list.csv'

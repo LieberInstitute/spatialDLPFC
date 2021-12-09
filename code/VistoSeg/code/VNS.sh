@@ -2,8 +2,8 @@
 #$ -cwd
 #$ -l mem_free=20G,h_vmem=20G,h_fsize=100G
 #$ -pe local 8
-#$ -o /users/hdivecha/VistoSeg/code/Logs/V10B01-002_D1_Br2720_ant_DLPFC_VNS.txt
-#$ -e /users/hdivecha/VistoSeg/code/Logs/V10B01-002_D1_Br2720_ant_DLPFC_VNS.txt
+#$ -o /Logs/V10B01-002_D1_Br2720_ant_DLPFC_VNS.txt
+#$ -e Logs/V10B01-002_D1_Br2720_ant_DLPFC_VNS.txt
 #$ -m e
 #$ -M heenadivecha@gmail.com
 
@@ -24,7 +24,7 @@ echo "****"
 
 module load matlab/R2019a
 
-toolbox='/users/hdivecha/VistoSeg/code'
+toolbox='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code'
 fname='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif'
 
 matlab -nodesktop -nosplash -nojvm -r "addpath(genpath('$toolbox')), VNS('$fname',5)"
