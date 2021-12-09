@@ -1,0 +1,353 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Sep 16 11:36:10 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6907426
+Job name: VNS.sh
+Hostname: compute-052.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+{Error using load
+File name is empty.
+
+Error in countNuclei (line 9)
+temp = load(mask);
+} 
+>> **** Job ends ****
+Thu Sep 16 11:36:18 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Sep 16 11:41:10 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6907445
+Job name: VNS.sh
+Hostname: compute-048.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+{Error using load
+Unknown text on line number 1 of ASCII file
+/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif
+"I*".
+
+Error in countNuclei (line 9)
+temp = load(mask);
+} 
+>> **** Job ends ****
+Thu Sep 16 11:41:17 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Sep 16 11:50:42 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6907519
+Job name: VNS.sh
+Hostname: compute-094.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+{Error using load
+Unknown text on line number 1 of ASCII file
+/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_A1_Br2720_mid_DLPFC.tif
+"I*".
+
+Error in countNuclei (line 9)
+temp = load(mask);
+} 
+>> **** Job ends ****
+Thu Sep 16 11:50:47 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Sep 16 11:53:27 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6907526
+Job name: VNS.sh
+Hostname: compute-095.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+Elapsed time is 52.338477 seconds.
+Performing smoothing and contrast adjustment
+Elapsed time is 131.971650 seconds.
+Performing rgb to Lab color space conversion
+Elapsed time is 120.903128 seconds.
+Applying Kmeans
+{Error using imsegkmeans
+The value of 'k' is invalid. Expected input number 2, k, to be one of these
+types:
+
+double, single, uint8, uint16, uint32, uint64, int8, int16, int32, int64
+
+Error in images.internal.algkmeans>ParseInputs (line 96)
+p.parse(varargin{:});
+
+Error in images.internal.algkmeans (line 13)
+[Inp,k,NormalizeInput, NumAttempts, MaxIterations, Threshold] =
+ParseInputs(filename,Inp,k,args{:});
+
+Error in imsegkmeans (line 138)
+[L, Centers] = images.internal.algkmeans(I,k,'imsegkmeans', varargin{:});
+
+Error in VNS (line 25)
+pixel_labels = imsegkmeans(ab,N,'NumAttempts',3); % apply Kmeans
+} 
+>> **** Job ends ****
+Thu Sep 16 11:59:09 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Sep 16 13:54:00 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6917543
+Job name: VNS.sh
+Hostname: compute-075.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+Elapsed time is 378.601269 seconds.
+Performing smoothing and contrast adjustment
+Elapsed time is 745.689573 seconds.
+Performing rgb to Lab color space conversion
+Elapsed time is 805.104031 seconds.
+Applying Kmeans
+{Error using imsegkmeans
+The value of 'k' is invalid. Expected input number 2, k, to be one of these
+types:
+
+double, single, uint8, uint16, uint32, uint64, int8, int16, int32, int64
+
+Error in images.internal.algkmeans>ParseInputs (line 96)
+p.parse(varargin{:});
+
+Error in images.internal.algkmeans (line 13)
+[Inp,k,NormalizeInput, NumAttempts, MaxIterations, Threshold] =
+ParseInputs(filename,Inp,k,args{:});
+
+Error in imsegkmeans (line 138)
+[L, Centers] = images.internal.algkmeans(I,k,'imsegkmeans', varargin{:});
+
+Error in VNS (line 25)
+pixel_labels = imsegkmeans(ab,N,'NumAttempts',3); % apply Kmeans
+} 
+>> **** Job ends ****
+Thu Sep 16 14:30:16 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Fri Sep 17 09:50:22 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6923960
+Job name: VNS.sh
+Hostname: compute-052.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+Elapsed time is 45.345923 seconds.
+Performing smoothing and contrast adjustment
+Elapsed time is 124.785805 seconds.
+Performing rgb to Lab color space conversion
+Elapsed time is 190.958454 seconds.
+Applying Kmeans
+{Error using imsegkmeans
+The value of 'k' is invalid. Expected input number 2, k, to be one of these
+types:
+
+double, single, uint8, uint16, uint32, uint64, int8, int16, int32, int64
+
+Error in images.internal.algkmeans>ParseInputs (line 96)
+p.parse(varargin{:});
+
+Error in images.internal.algkmeans (line 13)
+[Inp,k,NormalizeInput, NumAttempts, MaxIterations, Threshold] =
+ParseInputs(filename,Inp,k,args{:});
+
+Error in imsegkmeans (line 138)
+[L, Centers] = images.internal.algkmeans(I,k,'imsegkmeans', varargin{:});
+
+Error in VNS (line 25)
+pixel_labels = imsegkmeans(ab,N,'NumAttempts',3); % apply Kmeans
+} 
+>> **** Job ends ****
+Fri Sep 17 09:57:10 EDT 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Fri Sep 17 12:15:18 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6924986
+Job name: VNS.sh
+Hostname: compute-052.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+Elapsed time is 246.056711 seconds.
+Performing smoothing and contrast adjustment
+Elapsed time is 208.229578 seconds.
+Performing rgb to Lab color space conversion
+Elapsed time is 193.377840 seconds.
+Applying Kmeans
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Fri Sep 17 14:14:46 EDT 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 6925505
+Job name: VNS.sh
+Hostname: compute-052.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_A1_Br2720_mid_DLPFC
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+Importing capture area
+Elapsed time is 41.959062 seconds.
+Performing smoothing and contrast adjustment
+Elapsed time is 187.549132 seconds.
+Performing rgb to Lab color space conversion
+Elapsed time is 187.145198 seconds.
+Applying Kmeans
