@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=20G,h_vmem=20G,h_fsize=100G
+#$ -l bluejay,mem_free=70G,h_vmem=70G,h_fsize=100G
 #$ -N "sce_to_anndata_dlpfc_03"
 #$ -o ../../processed-data/03_nn_run/logs/03_sce_to_anndata_dlpfc.log
 #$ -e ../../processed-data/03_nn_run/logs/03_sce_to_anndata_dlpfc.log
