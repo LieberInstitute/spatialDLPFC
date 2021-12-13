@@ -22,6 +22,7 @@ out_dir_plots = pyhere.here("spagcn/plots/03-our_data_analysis")
 input_adata_path = pyhere.here("spagcn/processed-data/02-our_data_tutorial/spe_anndata.h5ad")
 start_gene = "ENSG00000131095" # Finding meta-genes requires a "start gene"; this is GFAP here
 NUM_META_COLUMNS = 5
+N_CLUSTERS = 7
 
 ###############################################################################
 #  Helper functions
@@ -192,132 +193,126 @@ seed = 100
 random.seed(seed)
 torch.manual_seed(seed)
 np.random.seed(seed)
+    
+#  Compute/ determine spatial domains
+adata = find_domains(adata, x_array, y_array, adj, 1, N_CLUSTERS, seed)
 
-adata_orig = adata
-
-#  Try different numbers of clusters: 5, 7, 9 (might not be exact)
-for n_clusters in range(5, 11, 2):
-    adata = adata_orig.copy()
-    
-    #  Compute/ determine spatial domains
-    adata = find_domains(adata, x_array, y_array, adj, 1, n_clusters, seed)
-    
-    #  With Louvain clustering, the exact 'n_clusters' specified might not be
-    #  found.
-    actual_n_clusters = len(adata.obs.pred.unique())
-    refined_n_clusters = len(adata.obs.refined_pred.unique())
-    if actual_n_clusters != refined_n_clusters:
-        print(
-            'Warning:', actual_n_clusters,
-            'raw clusters were found, but this changed to' ,refined_n_clusters,
-            'after refining!'
-        )
-    
-    this_out_dir_plots = pyhere.here(out_dir_plots, str(actual_n_clusters) + "_clusters")
-    this_out_dir_processed = pyhere.here(out_dir_processed, str(actual_n_clusters) + "_clusters")
-    if not os.path.exists(this_out_dir_plots):
-        os.mkdir(this_out_dir_plots)
-    if not os.path.exists(this_out_dir_processed):
-        os.mkdir(this_out_dir_processed)
-    
-    #  Save result AnnData
-    out_file = pyhere.here(this_out_dir_processed, 'results.h5ad')
-    adata.write_h5ad(out_file)
-    
-    #  Form and write a CSV file containing rows of the form:
-    #  (barcode + sample ID, raw cluster num, refined cluster num)
-    #  This is designed for compatibility with the R function
-    #  spatialLIBD::import_cluster
-    cluster_list = adata.obs[['pred', 'refined_pred']]
-    cluster_list.index += '_' + sample_name
-    cluster_list.index.name = 'Barcode'
-    cluster_list.rename(
-        columns={'pred': 'raw_cluster', 'refined_pred': 'refined_cluster'},
-        inplace=True
+#  With Louvain clustering, the exact 'n_clusters' specified might not be
+#  found.
+actual_n_clusters = len(adata.obs.pred.unique())
+refined_n_clusters = len(adata.obs.refined_pred.unique())
+if actual_n_clusters != refined_n_clusters:
+    print(
+        'Warning:', actual_n_clusters,
+        'raw clusters were found, but this changed to' ,refined_n_clusters,
+        'after refining!'
     )
-    
-    #  Plot spatial domains, raw and refined
-    plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
-    
-    adata.uns["pred_colors"]=list(plot_color[:actual_n_clusters])
-    out_file = pyhere.here(this_out_dir_plots, "domains.png")
-    plot_adata(adata, "pred", "Raw spatial domains", plot_color, out_file)
-    
-    adata.uns["refined_pred_colors"]=list(plot_color[:refined_n_clusters])
-    out_file = pyhere.here(this_out_dir_plots, "refined_domains.png")
-    plot_adata(adata, "refined_pred", "Refined spatial domains", plot_color, out_file)
-    
-    #  Read in raw data and subset to current sample
-    raw = sc.read_h5ad(input_adata_path)
-    raw.var_names_make_unique()
-    raw = raw[raw.obs.sample_id == sample_name, :]
-    
-    raw.obs["pred"] = adata.obs["pred"].astype('category') # The 'adata' instead of 'raw' here is intentional
-    raw.obs["x_array"]=raw.obs["array_row"]
-    raw.obs["y_array"]=raw.obs["array_col"]
-    raw.obs["x_pixel"]= raw.obs["pxl_col_in_fullres"]
-    raw.obs["y_pixel"]= raw.obs["pxl_row_in_fullres"]
-    
-    #Convert sparse matrix to non-sparse
-    raw.X=(raw.X.A if issparse(raw.X) else raw.X)
-    raw.raw=raw
-    sc.pp.log1p(raw)
-    
-    cl_copy = cluster_list.copy()
-    assert all(raw.obs.pred == cl_copy.raw_cluster)
-    
-    for i in range(NUM_META_COLUMNS):
-        cl_copy['meta_gene_' + str(i + 1)] = ''
-        
-    #  Find meta genes for each domain found
-    for target in range(actual_n_clusters):
-        meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
-                            pred=raw.obs["pred"].tolist(),
-                            target_domain=target,
-                            start_gene=start_gene,
-                            mean_diff=0,
-                            early_stop=True,
-                            max_iter=3,
-                            use_raw=False)
-        
-        raw.obs["meta"]=meta_exp
-        
-        #  Form a list of meta genes
-        meta_list = parse_metaname(raw, meta_name, convert=False)
-        if (meta_list[0] == ' '): # really asking if the first meta gene is subtracted
-            meta_list = meta_list[1:]
-            assert meta_list[0] == '-'
-        else:
-            meta_list = '+' + meta_list
-        
-        meta_list = meta_list.replace(' + ', ' +').replace(' - ', ' -').split(' ')
-        assert all([x[0] in ['+', '-'] for x in meta_list])
-        
-        if len(meta_list) > NUM_META_COLUMNS:
-            print('Warning: dropping one or more meta genes for this domain when forming CSV, since we are only taking the first ' + str(NUM_META_COLUMNS) + '.')
-        
-        #  Populate each meta gene column for rows associated with this
-        #  cluster
-        for i in range(min(NUM_META_COLUMNS, len(meta_list))):
-            cl_copy['meta_gene_' + str(i + 1)][cl_copy.raw_cluster == target] = meta_list[i]
-        
-        color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
-        
-        #  Plot "start gene" in meta gene set
-        title = get_symbol(raw, start_gene) + ' (marker for domain ' + str(target) + ')'
-        out_file = pyhere.here(this_out_dir_plots, "start_meta_gene_domain_" + str(target) + ".png")
-        raw.obs["exp"]=raw.X[:,raw.var.index==start_gene]
-        plot_adata(raw, "exp", title, color_self, out_file)
-        
-        #  Plot entire meta gene set
-        raw.obs["exp"]=raw.obs["meta"]
-        out_file = pyhere.here(this_out_dir_plots, "all_meta_genes_domain_" + str(target) + ".png")
-        plot_adata(raw, "exp", parse_metaname(raw, meta_name), color_self, out_file)
 
-    #  At this point, the meta gene columns should be fully populated for as
-    #  many meta genes as exist for this domain
-    for i in range(min(NUM_META_COLUMNS, len(meta_list))):
-        assert '' not in cl_copy['meta_gene_' + str(i + 1)]
+this_out_dir_plots = pyhere.here(out_dir_plots, str(actual_n_clusters) + "_clusters")
+this_out_dir_processed = pyhere.here(out_dir_processed, str(actual_n_clusters) + "_clusters")
+if not os.path.exists(this_out_dir_plots):
+    os.mkdir(this_out_dir_plots)
+if not os.path.exists(this_out_dir_processed):
+    os.mkdir(this_out_dir_processed)
+
+#  Save result AnnData
+out_file = pyhere.here(this_out_dir_processed, 'results.h5ad')
+adata.write_h5ad(out_file)
+
+#  Form and write a CSV file containing rows of the form:
+#  (barcode + sample ID, raw cluster num, refined cluster num)
+#  This is designed for compatibility with the R function
+#  spatialLIBD::import_cluster
+cluster_list = adata.obs[['pred', 'refined_pred']]
+cluster_list.index += '_' + sample_name
+cluster_list.index.name = 'Barcode'
+cluster_list.rename(
+    columns={'pred': 'raw_cluster', 'refined_pred': 'refined_cluster'},
+    inplace=True
+)
+
+#  Plot spatial domains, raw and refined
+plot_color=["#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C","#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236","#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"]
+
+adata.uns["pred_colors"]=list(plot_color[:actual_n_clusters])
+out_file = pyhere.here(this_out_dir_plots, "domains.png")
+plot_adata(adata, "pred", "Raw spatial domains", plot_color, out_file)
+
+adata.uns["refined_pred_colors"]=list(plot_color[:refined_n_clusters])
+out_file = pyhere.here(this_out_dir_plots, "refined_domains.png")
+plot_adata(adata, "refined_pred", "Refined spatial domains", plot_color, out_file)
+
+#  Read in raw data and subset to current sample
+raw = sc.read_h5ad(input_adata_path)
+raw.var_names_make_unique()
+raw = raw[raw.obs.sample_id == sample_name, :]
+
+raw.obs["pred"] = adata.obs["pred"].astype('category') # The 'adata' instead of 'raw' here is intentional
+raw.obs["x_array"]=raw.obs["array_row"]
+raw.obs["y_array"]=raw.obs["array_col"]
+raw.obs["x_pixel"]= raw.obs["pxl_col_in_fullres"]
+raw.obs["y_pixel"]= raw.obs["pxl_row_in_fullres"]
+
+#Convert sparse matrix to non-sparse
+raw.X=(raw.X.A if issparse(raw.X) else raw.X)
+raw.raw=raw
+sc.pp.log1p(raw)
+
+cl_copy = cluster_list.copy()
+assert all(raw.obs.pred == cl_copy.raw_cluster)
+
+for i in range(NUM_META_COLUMNS):
+    cl_copy['meta_gene_' + str(i + 1)] = ''
     
-    out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
-    cl_copy.to_csv(out_file)
+#  Find meta genes for each domain found
+for target in range(actual_n_clusters):
+    meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
+                        pred=raw.obs["pred"].tolist(),
+                        target_domain=target,
+                        start_gene=start_gene,
+                        mean_diff=0,
+                        early_stop=True,
+                        max_iter=3,
+                        use_raw=False)
+    
+    raw.obs["meta"]=meta_exp
+    
+    #  Form a list of meta genes
+    meta_list = parse_metaname(raw, meta_name, convert=False)
+    if (meta_list[0] == ' '): # really asking if the first meta gene is subtracted
+        meta_list = meta_list[1:]
+        assert meta_list[0] == '-'
+    else:
+        meta_list = '+' + meta_list
+    
+    meta_list = meta_list.replace(' + ', ' +').replace(' - ', ' -').split(' ')
+    assert all([x[0] in ['+', '-'] for x in meta_list])
+    
+    if len(meta_list) > NUM_META_COLUMNS:
+        print('Warning: dropping one or more meta genes for this domain when forming CSV, since we are only taking the first ' + str(NUM_META_COLUMNS) + '.')
+    
+    #  Populate each meta gene column for rows associated with this
+    #  cluster
+    for i in range(min(NUM_META_COLUMNS, len(meta_list))):
+        cl_copy['meta_gene_' + str(i + 1)][cl_copy.raw_cluster == target] = meta_list[i]
+    
+    color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
+    
+    #  Plot "start gene" in meta gene set
+    title = get_symbol(raw, start_gene) + ' (marker for domain ' + str(target) + ')'
+    out_file = pyhere.here(this_out_dir_plots, "start_meta_gene_domain_" + str(target) + ".png")
+    raw.obs["exp"]=raw.X[:,raw.var.index==start_gene]
+    plot_adata(raw, "exp", title, color_self, out_file)
+    
+    #  Plot entire meta gene set
+    raw.obs["exp"]=raw.obs["meta"]
+    out_file = pyhere.here(this_out_dir_plots, "all_meta_genes_domain_" + str(target) + ".png")
+    plot_adata(raw, "exp", parse_metaname(raw, meta_name), color_self, out_file)
+
+#  At this point, the meta gene columns should be fully populated for as
+#  many meta genes as exist for this domain
+for i in range(min(NUM_META_COLUMNS, len(meta_list))):
+    assert '' not in cl_copy['meta_gene_' + str(i + 1)]
+
+out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
+cl_copy.to_csv(out_file)
