@@ -101,6 +101,32 @@ def plot_adata(adata, colname, title, plot_color, out_file):
     plt.savefig(out_file, dpi=600)
     plt.close()
 
+#  Given an AnnData, 'meta_name' as output as from the first index of
+#  'spg.find_meta_gene', data frame containing cluster indices by spot,
+#  domain index 'target', and number of meta-gene columns to produce, this
+#  function modifies 'cluster_list' to replace NAs present in the meta-gene
+#  columns with gene names for spots belonging to the given domain.
+def fill_meta_column(adata, meta_name, cluster_list, target, NUM_META_COLUMNS):
+    #  Form a list of meta genes
+    meta_list = parse_metaname(adata, meta_name, convert=False)
+      
+    if (meta_list[0] == ' '): # really asking if the first meta gene is subtracted
+        meta_list = meta_list[1:]
+        assert meta_list[0] == '-'
+    else:
+        meta_list = '+' + meta_list
+    
+    meta_list = meta_list.replace(' + ', ' +').replace(' - ', ' -').split(' ')
+    assert all([x[0] in ['+', '-'] for x in meta_list])
+    
+    if len(meta_list) > NUM_META_COLUMNS:
+        print('Warning: dropping one or more meta genes for this domain when forming CSV, since we are only taking the first ' + str(NUM_META_COLUMNS) + '.')
+    
+    #  Populate each meta gene column for rows associated with this
+    #  cluster
+    for i in range(min(NUM_META_COLUMNS, len(meta_list))):
+        cluster_list['meta_gene_' + str(i + 1)][cluster_list.raw_cluster == target] = meta_list[i]
+    
 ###############################################################################
 #  Main Analysis
 ###############################################################################
@@ -258,11 +284,10 @@ raw.X=(raw.X.A if issparse(raw.X) else raw.X)
 raw.raw=raw
 sc.pp.log1p(raw)
 
-cl_copy = cluster_list.copy()
-assert all(raw.obs.pred == cl_copy.raw_cluster)
+assert all(raw.obs.pred == cluster_list.raw_cluster)
 
 for i in range(NUM_META_COLUMNS):
-    cl_copy['meta_gene_' + str(i + 1)] = ''
+    cluster_list['meta_gene_' + str(i + 1)] = ''
     
 #  Find meta genes for each domain found
 for target in range(actual_n_clusters):
@@ -277,24 +302,9 @@ for target in range(actual_n_clusters):
     
     raw.obs["meta"]=meta_exp
     
-    #  Form a list of meta genes
-    meta_list = parse_metaname(raw, meta_name, convert=False)
-    if (meta_list[0] == ' '): # really asking if the first meta gene is subtracted
-        meta_list = meta_list[1:]
-        assert meta_list[0] == '-'
-    else:
-        meta_list = '+' + meta_list
-    
-    meta_list = meta_list.replace(' + ', ' +').replace(' - ', ' -').split(' ')
-    assert all([x[0] in ['+', '-'] for x in meta_list])
-    
-    if len(meta_list) > NUM_META_COLUMNS:
-        print('Warning: dropping one or more meta genes for this domain when forming CSV, since we are only taking the first ' + str(NUM_META_COLUMNS) + '.')
-    
-    #  Populate each meta gene column for rows associated with this
-    #  cluster
-    for i in range(min(NUM_META_COLUMNS, len(meta_list))):
-        cl_copy['meta_gene_' + str(i + 1)][cl_copy.raw_cluster == target] = meta_list[i]
+    #  Fill in meta-gene columns in 'cluster_list' that are associated with
+    #  domain 'target'
+    fill_meta_column(raw, meta_name, cluster_list, target, NUM_META_COLUMNS)
     
     color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
     
