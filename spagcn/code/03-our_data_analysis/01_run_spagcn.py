@@ -24,6 +24,11 @@ start_gene = "ENSG00000131095" # Finding meta-genes requires a "start gene"; thi
 NUM_META_COLUMNS = 5
 N_CLUSTERS = 7
 
+#  Column names expected to be present in adata.obs for X and Y array and pixel
+#  coordinates, respectively
+array_names = ("array_row", "array_col")
+pixel_names = ("pxl_col_in_fullres", "pxl_row_in_fullres")
+
 ###############################################################################
 #  Helper functions
 ###############################################################################
@@ -159,11 +164,11 @@ if not os.path.exists(out_dir_plots):
 
 #  Rename and set some variables for compatibility with original code from
 #  tutorial
-adata.obs["x_array"]=adata.obs["array_row"]
-adata.obs["y_array"]=adata.obs["array_col"]
+adata.obs["x_array"]=adata.obs[array_names[0]]
+adata.obs["y_array"]=adata.obs[array_names[1]]
 
-adata.obs["x_pixel"]= adata.obs["pxl_col_in_fullres"]
-adata.obs["y_pixel"]= adata.obs["pxl_row_in_fullres"]
+adata.obs["x_pixel"]= adata.obs[pixel_names[0]]
+adata.obs["y_pixel"]= adata.obs[pixel_names[1]]
 
 x_array=adata.obs["x_array"].astype(np.int32).tolist()
 y_array=adata.obs["y_array"].astype(np.int32).tolist()
@@ -274,10 +279,10 @@ raw.var_names_make_unique()
 raw = raw[raw.obs.sample_id == sample_name, :]
 
 raw.obs["pred"] = adata.obs["pred"].astype('category') # The 'adata' instead of 'raw' here is intentional
-raw.obs["x_array"]=raw.obs["array_row"]
-raw.obs["y_array"]=raw.obs["array_col"]
-raw.obs["x_pixel"]= raw.obs["pxl_col_in_fullres"]
-raw.obs["y_pixel"]= raw.obs["pxl_row_in_fullres"]
+raw.obs["x_array"]=raw.obs[array_names[0]]
+raw.obs["y_array"]=raw.obs[array_names[1]]
+raw.obs["x_pixel"]= raw.obs[pixel_names[0]]
+raw.obs["y_pixel"]= raw.obs[pixel_names[1]]
 
 #Convert sparse matrix to non-sparse
 raw.X=(raw.X.A if issparse(raw.X) else raw.X)
