@@ -322,7 +322,7 @@ for target in range(actual_n_clusters):
 #  At this point, the meta gene columns should be fully populated for as
 #  many meta genes as exist for this domain
 for i in range(min(NUM_META_COLUMNS, len(meta_list))):
-    assert '' not in cl_copy['meta_gene_' + str(i + 1)]
+    assert '' not in cluster_list['meta_gene_' + str(i + 1)]
 
 out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
-cl_copy.to_csv(out_file)
+cluster_list.to_csv(out_file)
