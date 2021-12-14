@@ -289,7 +289,7 @@ raw.X=(raw.X.A if issparse(raw.X) else raw.X)
 raw.raw=raw
 sc.pp.log1p(raw)
 
-assert all(raw.obs.pred == cluster_list.raw_cluster)
+assert all(cluster_list.raw_cluster.values == raw.obs.pred.values)
 
 for i in range(NUM_META_COLUMNS):
     cluster_list['meta_gene_' + str(i + 1)] = ''
