@@ -1,0 +1,38 @@
+@include "rna/spatial_rna_counter_cs.mro"
+
+call SPATIAL_RNA_COUNTER_CS(
+    sample_id                 = "DLPFC_Br3942_ant_manual_alignment",
+    sample_def                = [
+        {
+            "fastq_id": null,
+            "fastq_mode": "ILMN_BCL2FASTQ",
+            "gem_group": null,
+            "lanes": null,
+            "library_type": "Gene Expression",
+            "read_path": "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/FASTQ/3_DLPFC_Br6423_ant",
+            "sample_indices": ["any"],
+            "sample_names": ["3"],
+            "subsample_rate": null,
+            "target_set": null,
+            "target_set_name": null,
+        },
+    ],
+    sample_desc               = "",
+    slide_serial_capture_area = "V19B23-075-B1",
+    loupe_alignment_file      = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/images_raw_align_json/V19B23-075-B1_2_Br3942_ant_manual_alignment.json",
+    gpr_file                  = null,
+    reference_path            = "/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A",
+    no_bam                    = false,
+    no_secondary_analysis     = false,
+    no_probe_filter           = false,
+    rps_limit                 = null,
+    r1_length                 = null,
+    r2_length                 = null,
+    targeting_method          = null,
+    aligner                   = null,
+    trim_polya_min_score      = 20,
+    trim_tso_min_score        = 20,
+    tissue_image_paths        = ["/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7690_rush_anterior_2.tif"],
+    dark_images               = 0,
+    reorientation_mode        = null,
+)

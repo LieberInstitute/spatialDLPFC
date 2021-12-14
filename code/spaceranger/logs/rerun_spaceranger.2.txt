@@ -1,0 +1,488 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Wed Dec  8 00:24:36 EST 2021
+**** JHPCE info ****
+User: lcollado
+Job id: 7952946
+Job name: spatialDLPFC_rerun_spaceranger
+Hostname: compute-096.cm.cluster
+Task id: 2
+Loading LIBD module for spaceranger/1.3.0
+Reference files, for use with the '--transcriptome' argument, can be accessed
+or downloaded into /dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x. 
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.1.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0                  15) spaceranger/1.3.0
+
+ 
+
+Processing sample DLPFC_Br2743_mid_manual_alignment_extra_reads from slide V19B23-074 and capture area A1 with image /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif and aligned with /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/images_raw_align_json/V19B23-074-A1_5_Br2743_mid_manual_alignment.json with FASTQs: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/FASTQ/8_DLPFC_Br8492_mid,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br8492_mid_L002_ds.deb2d4a1944a4a83a79f976bfb2c581a,/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-06-17_ASpa041621/Br8492_mid_L001_ds.b97357d3c73f4d89b975fcec46022c4d
+Wed Dec  8 00:24:36 EST 2021
+-rwxrwx--- 1 lcollado lieber_lcolladotor 2.3G Nov 24  2020 /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1.tif
+-rwxrwx--- 1 lcollado lieber_lcolladotor 561K Dec  9  2020 /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/images_raw_align_json/V19B23-074-A1_5_Br2743_mid_manual_alignment.json
+Martian Runtime - v4.0.5
+2021-12-08 00:24:37 [jobmngr] WARNING: The current virtual address space size
+                              limit is too low.
+	Limiting virtual address space size interferes with the operation of many
+	common libraries and programs, and is not recommended.
+	Contact your system administrator to remove this limit.
+Serving UI at http://compute-096.cm.cluster:34053?auth=SOQYcdilugu-WR-qHMRy4fRoFxmd70sUGpSKsVzEPr4
+
+Running preflight checks (please wait)...
+Checking sample info...
+Checking FASTQ folder...
+Checking reference...
+Checking reference_path (/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A) on compute-096.cm.cluster...
+Checking optional arguments...
+mrc: v4.0.5
+
+mrp: v4.0.5
+
+Anaconda: Python 3.7.7
+
+numpy: 1.19.2
+
+scipy: 1.2.1
+
+pysam: 0.16.0.1
+
+h5py: 2.10.0
+
+pandas: 1.2.4
+
+STAR: 2.7.2a
+
+samtools: samtools 1.10
+Using htslib 1.10.2
+Copyright (C) 2019 Genome Research Ltd.
+
+2021-12-08 00:24:49 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION
+2021-12-08 00:24:49 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION.fork0.chnk0.main
+2021-12-08 00:24:49 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES
+2021-12-08 00:24:49 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES.fork0.split
+2021-12-08 00:24:49 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.CHEMISTRY_DETECTOR
+2021-12-08 00:24:49 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.CHEMISTRY_DETECTOR.fork0.chnk0.main
+2021-12-08 00:24:49 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2021-12-08 00:24:49 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES.fork0.split
+2021-12-08 00:24:49 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX
+2021-12-08 00:24:49 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX.fork0.chnk0.main
+2021-12-08 00:24:49 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.DISABLE_BAMS
+2021-12-08 00:24:49 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.DISABLE_BAMS.fork0.chnk0.main
+2021-12-08 00:24:50 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION
+2021-12-08 00:24:50 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES
+2021-12-08 00:24:50 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES.fork0.join
+2021-12-08 00:24:51 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.DISABLE_BAMS
+2021-12-08 00:24:51 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2021-12-08 00:24:51 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES.fork0.join
+2021-12-08 00:25:08 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.CHEMISTRY_DETECTOR
+2021-12-08 00:25:08 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS
+2021-12-08 00:25:08 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS.fork0.chnk0.main
+2021-12-08 00:25:10 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS
+2021-12-08 00:25:11 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.GPR_READER
+2021-12-08 00:25:11 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.GPR_READER.fork0.chnk0.main
+2021-12-08 00:25:14 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.GPR_READER
+2021-12-08 00:25:35 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2021-12-08 00:25:35 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.ALIGN_FIDUCIALS
+2021-12-08 00:25:35 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.ALIGN_FIDUCIALS.fork0.chnk0.main
+2021-12-08 00:25:40 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.ALIGN_FIDUCIALS
+2021-12-08 00:25:40 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETECT_TISSUE
+2021-12-08 00:25:40 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETECT_TISSUE.fork0.chnk0.main
+2021-12-08 00:25:51 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETECT_TISSUE
+2021-12-08 00:25:59 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX
+2021-12-08 00:25:59 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES
+2021-12-08 00:25:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES.fork0.chnk0.main
+2021-12-08 00:26:03 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES
+2021-12-08 00:26:03 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2021-12-08 00:26:03 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.split
+2021-12-08 00:30:52 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES.fork0 join_running
+2021-12-08 00:36:45 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES
+2021-12-08 00:36:47 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 split_running
+2021-12-08 00:36:57 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2021-12-08 00:36:57 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk0.main
+2021-12-08 00:36:57 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk1.main
+2021-12-08 00:36:57 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk2.main
+2021-12-08 00:36:57 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk3.main
+2021-12-08 00:43:00 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (0/4 completed)
+2021-12-08 00:49:06 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (0/4 completed)
+2021-12-08 00:55:18 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 chunks running (2/4 completed)
+2021-12-08 01:00:36 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2021-12-08 01:00:36 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.join
+2021-12-08 01:00:36 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2021-12-08 01:00:36 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION
+2021-12-08 01:00:36 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.split
+2021-12-08 01:00:37 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk00.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk01.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk02.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk03.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk04.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk05.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk06.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk07.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk08.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk09.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk10.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk11.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk12.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk13.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk14.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk15.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk16.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk17.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk18.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk19.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk20.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk21.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk22.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk23.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk24.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk25.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk26.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk27.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk28.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk29.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk30.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk31.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk32.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk33.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk34.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk35.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk36.main
+2021-12-08 01:00:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.chnk37.main
+2021-12-08 01:05:38 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0 chunks running (32/38 completed)
+2021-12-08 01:06:36 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION
+2021-12-08 01:06:36 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION.fork0.join
+2021-12-08 01:06:36 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.BARCODE_CORRECTION
+2021-12-08 01:06:37 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER._SLFE_PARTIAL_FIRST_PASS.SUBSAMPLE_BARCODES
+2021-12-08 01:06:37 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.SET_ALIGNER_SUBSAMPLE_RATE
+2021-12-08 01:06:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.SET_ALIGNER_SUBSAMPLE_RATE.fork0.chnk0.main
+2021-12-08 01:06:37 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_INDEX
+2021-12-08 01:06:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_INDEX.fork0.chnk0.main
+2021-12-08 01:06:37 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER._SLFE_PARTIAL_FIRST_PASS.INITIAL_ALIGN_AND_COUNT
+2021-12-08 01:06:37 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.SET_ALIGNER_SUBSAMPLE_RATE
+2021-12-08 01:06:37 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER._SLFE_PARTIAL_FIRST_PASS.SET_TARGETED_UMI_FILTER
+2021-12-08 01:06:38 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT
+2021-12-08 01:06:38 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.split
+2021-12-08 01:06:38 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_INDEX
+2021-12-08 01:06:39 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk00.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk01.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk02.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk03.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk04.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk05.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk06.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk07.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk08.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk09.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk10.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk11.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk12.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk13.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk14.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk15.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk16.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk17.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk18.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk19.main
+2021-12-08 01:06:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.chnk20.main
+2021-12-08 01:12:06 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (1/21 completed)
+2021-12-08 01:17:30 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (2/21 completed)
+2021-12-08 01:22:45 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (5/21 completed)
+2021-12-08 01:29:14 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (6/21 completed)
+2021-12-08 01:34:34 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (7/21 completed)
+2021-12-08 01:40:33 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (7/21 completed)
+2021-12-08 01:46:36 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (7/21 completed)
+2021-12-08 01:52:35 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (7/21 completed)
+2021-12-08 01:58:21 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (8/21 completed)
+2021-12-08 02:04:23 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (8/21 completed)
+2021-12-08 02:10:22 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (8/21 completed)
+2021-12-08 02:16:24 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (8/21 completed)
+2021-12-08 02:23:01 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (9/21 completed)
+2021-12-08 02:29:03 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (9/21 completed)
+2021-12-08 02:35:02 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (9/21 completed)
+2021-12-08 02:40:48 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (10/21 completed)
+2021-12-08 02:46:50 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (10/21 completed)
+2021-12-08 02:52:49 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (10/21 completed)
+2021-12-08 02:58:52 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (10/21 completed)
+2021-12-08 03:04:02 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (11/21 completed)
+2021-12-08 03:10:01 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (11/21 completed)
+2021-12-08 03:16:04 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (11/21 completed)
+2021-12-08 03:21:55 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (12/21 completed)
+2021-12-08 03:27:57 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (12/21 completed)
+2021-12-08 03:33:59 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (12/21 completed)
+2021-12-08 03:40:22 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (13/21 completed)
+2021-12-08 03:46:23 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (13/21 completed)
+2021-12-08 03:52:22 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (13/21 completed)
+2021-12-08 03:58:10 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (14/21 completed)
+2021-12-08 04:04:11 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (14/21 completed)
+2021-12-08 04:10:11 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (14/21 completed)
+2021-12-08 04:15:13 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (15/21 completed)
+2021-12-08 04:21:15 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (15/21 completed)
+2021-12-08 04:27:15 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (15/21 completed)
+2021-12-08 04:33:00 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (16/21 completed)
+2021-12-08 04:39:00 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (16/21 completed)
+2021-12-08 04:45:02 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (16/21 completed)
+2021-12-08 04:51:20 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (17/21 completed)
+2021-12-08 04:57:20 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (17/21 completed)
+2021-12-08 05:03:22 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (17/21 completed)
+2021-12-08 05:08:35 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (18/21 completed)
+2021-12-08 05:14:38 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (18/21 completed)
+2021-12-08 05:20:37 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (18/21 completed)
+2021-12-08 05:25:43 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (19/21 completed)
+2021-12-08 05:31:46 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (19/21 completed)
+2021-12-08 05:37:46 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (19/21 completed)
+2021-12-08 05:43:48 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (19/21 completed)
+2021-12-08 05:49:23 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (20/21 completed)
+2021-12-08 05:55:25 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (20/21 completed)
+2021-12-08 06:01:24 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (20/21 completed)
+2021-12-08 06:07:24 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (20/21 completed)
+2021-12-08 06:13:26 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0 chunks running (20/21 completed)
+2021-12-08 06:13:49 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT
+2021-12-08 06:13:50 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT.fork0.join
+2021-12-08 06:13:51 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.ALIGN_AND_COUNT
+2021-12-08 06:13:58 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_H5_MATRIX
+2021-12-08 06:13:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_H5_MATRIX.fork0.chnk0.main
+2021-12-08 06:13:58 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.COLLATE_METRICS
+2021-12-08 06:13:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.COLLATE_METRICS.fork0.split
+2021-12-08 06:13:58 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MULTI_COLLATE_PER_SAMPLE_METRICS
+2021-12-08 06:13:58 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MULTI_WRITE_PER_SAMPLE_BAM
+2021-12-08 06:13:58 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM
+2021-12-08 06:13:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.split
+2021-12-08 06:13:58 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_MATRIX_MARKET
+2021-12-08 06:13:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_MATRIX_MARKET.fork0.chnk0.main
+2021-12-08 06:13:58 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_SUMMARY
+2021-12-08 06:13:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_SUMMARY.fork0.chnk0.main
+2021-12-08 06:13:58 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.COLLATE_METRICS
+2021-12-08 06:13:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.COLLATE_METRICS.fork0.chnk0.main
+2021-12-08 06:13:59 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk00.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk01.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk02.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk03.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk04.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk05.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk06.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk07.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk08.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk09.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk10.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk11.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk12.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk13.main
+2021-12-08 06:13:59 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk14.main
+2021-12-08 06:14:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk15.main
+2021-12-08 06:14:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk16.main
+2021-12-08 06:14:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk17.main
+2021-12-08 06:14:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk18.main
+2021-12-08 06:14:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk19.main
+2021-12-08 06:14:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.chnk20.main
+2021-12-08 06:14:07 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_BARCODE_SUMMARY
+2021-12-08 06:14:07 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_H5_MATRIX
+2021-12-08 06:14:07 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES
+2021-12-08 06:14:07 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES.fork0.split
+2021-12-08 06:14:09 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.WRITE_MATRIX_MARKET
+2021-12-08 06:14:10 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.COLLATE_METRICS
+2021-12-08 06:14:10 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.COLLATE_METRICS.fork0.join
+2021-12-08 06:19:07 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0 chunks running (3/21 completed)
+2021-12-08 06:24:07 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0 chunks running (6/21 completed)
+2021-12-08 06:29:22 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0 chunks running (10/21 completed)
+2021-12-08 06:34:41 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0 chunks running (14/21 completed)
+2021-12-08 06:39:48 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0 chunks running (18/21 completed)
+2021-12-08 06:40:30 [runtime] (update)          ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES.fork0 split_running
+2021-12-08 06:40:37 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES
+2021-12-08 06:40:37 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES.fork0.join
+2021-12-08 06:43:13 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM
+2021-12-08 06:43:13 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM.fork0.join
+2021-12-08 06:43:13 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.COLLATE_METRICS
+2021-12-08 06:43:13 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MERGE_METRICS
+2021-12-08 06:43:13 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MERGE_METRICS.fork0.chnk0.main
+2021-12-08 06:43:47 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.FILTER_BARCODES
+2021-12-08 06:43:47 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MULTI_WRITE_PER_SAMPLE_MATRICES
+2021-12-08 06:43:47 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.ANALYZER_PREFLIGHT
+2021-12-08 06:43:47 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.ANALYZER_PREFLIGHT.fork0.chnk0.main
+2021-12-08 06:43:47 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT
+2021-12-08 06:43:47 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.split
+2021-12-08 06:47:30 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.WRITE_POS_BAM
+2021-12-08 06:47:38 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.ANALYZER_PREFLIGHT
+2021-12-08 06:47:38 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MERGE_METRICS
+2021-12-08 06:47:39 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.WRITE_MOLECULE_INFO
+2021-12-08 06:47:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.WRITE_MOLECULE_INFO.fork0.chnk0.main
+2021-12-08 06:47:39 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MULTI_WRITE_PER_SAMPLE_MOLECULE_INFO
+2021-12-08 06:47:39 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.PREPROCESS_MATRIX
+2021-12-08 06:47:39 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.PREPROCESS_MATRIX.fork0.split
+2021-12-08 06:47:41 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.PREPROCESS_MATRIX
+2021-12-08 06:47:41 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.PREPROCESS_MATRIX.fork0.join
+2021-12-08 06:47:47 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk00.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk01.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk02.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk03.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk04.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk05.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk06.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk07.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk08.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk09.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk10.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk11.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk12.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk13.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk14.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk15.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk16.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk17.main
+2021-12-08 06:47:48 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.chnk18.main
+2021-12-08 06:47:52 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.PREPROCESS_MATRIX
+2021-12-08 06:47:52 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_PCA
+2021-12-08 06:47:52 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_PCA.fork0.split
+2021-12-08 06:47:52 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_FBPCA
+2021-12-08 06:47:52 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_MULTIGENOME_ANALYSIS
+2021-12-08 06:47:52 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.WRITE_MOLECULE_INFO
+2021-12-08 06:47:53 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CORRECT_CHEMISTRY_BATCH
+2021-12-08 06:47:53 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS
+2021-12-08 06:47:53 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS.fork0.split
+2021-12-08 06:47:53 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._TARGETED_ANALYZER.SUBSAMPLE_ON_TARGET_READS
+2021-12-08 06:47:53 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._TARGETED_ANALYZER.SUBSAMPLE_OFF_TARGET_READS
+2021-12-08 06:49:58 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_PCA
+2021-12-08 06:49:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_PCA.fork0.chnk0.main
+2021-12-08 06:50:01 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS
+2021-12-08 06:50:01 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS.fork0.chnk0.main
+2021-12-08 06:50:01 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS.fork0.chnk1.main
+2021-12-08 06:50:20 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT
+2021-12-08 06:50:20 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT.fork0.join
+2021-12-08 06:50:21 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_PCA
+2021-12-08 06:50:21 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_PCA.fork0.join
+2021-12-08 06:50:23 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_PCA
+2021-12-08 06:50:23 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION_OUTPUT
+2021-12-08 06:50:23 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION_OUTPUT.fork0.chnk0.main
+2021-12-08 06:50:24 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION_OUTPUT
+2021-12-08 06:50:24 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS
+2021-12-08 06:50:24 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.split
+2021-12-08 06:50:24 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_GRAPH_CLUSTERING
+2021-12-08 06:50:24 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_GRAPH_CLUSTERING.fork0.split
+2021-12-08 06:50:24 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_TSNE
+2021-12-08 06:50:24 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_TSNE.fork0.split
+2021-12-08 06:50:24 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_UMAP
+2021-12-08 06:50:24 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_UMAP.fork0.split
+2021-12-08 06:50:25 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.RUN_SPATIAL_ENRICHMENT
+2021-12-08 06:50:27 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk0.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk1.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk2.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk3.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk4.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk5.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk6.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk7.main
+2021-12-08 06:50:27 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.chnk8.main
+2021-12-08 06:50:29 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_GRAPH_CLUSTERING
+2021-12-08 06:50:29 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_GRAPH_CLUSTERING.fork0.chnk0.main
+2021-12-08 06:50:29 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_TSNE
+2021-12-08 06:50:29 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_TSNE.fork0.chnk0.main
+2021-12-08 06:50:36 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_UMAP
+2021-12-08 06:50:36 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_UMAP.fork0.chnk0.main
+2021-12-08 06:50:50 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS
+2021-12-08 06:50:50 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS.fork0.join
+2021-12-08 06:50:51 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_GRAPH_CLUSTERING
+2021-12-08 06:50:51 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_GRAPH_CLUSTERING.fork0.join
+2021-12-08 06:51:17 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_TSNE
+2021-12-08 06:51:17 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_TSNE.fork0.join
+2021-12-08 06:53:06 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS
+2021-12-08 06:53:06 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS.fork0.join
+2021-12-08 06:53:47 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_UMAP
+2021-12-08 06:53:47 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_UMAP.fork0.join
+2021-12-08 06:53:49 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_TSNE
+2021-12-08 06:53:50 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_KMEANS
+2021-12-08 06:53:50 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUBSAMPLE_READS
+2021-12-08 06:53:50 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUMMARIZE_BASIC_REPORTS
+2021-12-08 06:53:50 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUMMARIZE_BASIC_REPORTS.fork0.split
+2021-12-08 06:53:52 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUMMARIZE_BASIC_REPORTS
+2021-12-08 06:53:52 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUMMARIZE_BASIC_REPORTS.fork0.join
+2021-12-08 06:53:54 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_UMAP
+2021-12-08 06:53:56 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_GRAPH_CLUSTERING
+2021-12-08 06:53:56 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.MERGE_CLUSTERS
+2021-12-08 06:53:56 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.MERGE_CLUSTERS.fork0.split
+2021-12-08 06:53:58 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.MERGE_CLUSTERS
+2021-12-08 06:53:58 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.MERGE_CLUSTERS.fork0.chnk0.main
+2021-12-08 06:53:59 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._CELLS_REPORTER.SUMMARIZE_BASIC_REPORTS
+2021-12-08 06:54:00 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MERGE_METRICS
+2021-12-08 06:54:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MERGE_METRICS.fork0.chnk0.main
+2021-12-08 06:54:00 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.MERGE_METRICS
+2021-12-08 06:54:00 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._TARGETED_ANALYZER.CALCULATE_TARGETED_METRICS
+2021-12-08 06:54:00 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._TARGETED_ANALYZER.SUMMARIZE_TARGETED_ANALYSIS
+2021-12-08 06:54:00 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.MERGE_CLUSTERS
+2021-12-08 06:54:00 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.MERGE_CLUSTERS.fork0.join
+2021-12-08 06:54:24 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.MERGE_CLUSTERS
+2021-12-08 06:54:24 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.COMBINE_CLUSTERING
+2021-12-08 06:54:24 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.COMBINE_CLUSTERING.fork0.chnk0.main
+2021-12-08 06:54:25 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.COMBINE_CLUSTERING
+2021-12-08 06:54:26 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION
+2021-12-08 06:54:26 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.split
+2021-12-08 06:54:28 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk00.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk01.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk02.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk03.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk04.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk05.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk06.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk07.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk08.main
+2021-12-08 06:54:28 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.chnk09.main
+2021-12-08 06:57:07 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION
+2021-12-08 06:57:07 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION.fork0.join
+2021-12-08 06:57:13 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.RUN_DIFFERENTIAL_EXPRESSION
+2021-12-08 06:57:14 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.SUMMARIZE_ANALYSIS
+2021-12-08 06:57:14 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.SUMMARIZE_ANALYSIS.fork0.split
+2021-12-08 06:57:15 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.SUMMARIZE_ANALYSIS
+2021-12-08 06:57:15 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.SUMMARIZE_ANALYSIS.fork0.chnk0.main
+2021-12-08 06:57:19 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.SUMMARIZE_ANALYSIS
+2021-12-08 06:57:19 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.SUMMARIZE_ANALYSIS.fork0.join
+2021-12-08 06:57:21 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.SUMMARIZE_ANALYSIS
+2021-12-08 06:57:22 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_REPORTER
+2021-12-08 06:57:22 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_REPORTER.fork0.chnk0.main
+2021-12-08 06:57:33 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_REPORTER
+2021-12-08 06:57:35 [runtime] (ready)           ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_PREPROCESS
+2021-12-08 06:57:35 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_PREPROCESS.fork0.split
+2021-12-08 06:57:36 [runtime] (split_complete)  ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_PREPROCESS
+2021-12-08 06:57:36 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_PREPROCESS.fork0.chnk0.main
+2021-12-08 06:59:55 [runtime] (chunks_complete) ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_PREPROCESS
+2021-12-08 06:59:55 [runtime] (run:local)       ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_PREPROCESS.fork0.join
+2021-12-08 07:00:05 [runtime] (join_complete)   ID.DLPFC_Br2743_mid_manual_alignment_extra_reads.SPATIAL_RNA_COUNTER_CS.CLOUPE_PREPROCESS
+
+Outputs:
+- Run summary HTML:                         /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/web_summary.html
+- Outputs of spatial pipeline:              /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/spatial
+- Run summary CSV:                          /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/metrics_summary.csv
+- BAM:                                      /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/possorted_genome_bam.bam
+- BAM index:                                /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/possorted_genome_bam.bam.bai
+- Filtered feature-barcode matrices MEX:    /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/filtered_feature_bc_matrix
+- Filtered feature-barcode matrices HDF5:   /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/filtered_feature_bc_matrix.h5
+- Unfiltered feature-barcode matrices MEX:  /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/raw_feature_bc_matrix
+- Unfiltered feature-barcode matrices HDF5: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/raw_feature_bc_matrix.h5
+- Secondary analysis output CSV:            /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/analysis
+- Per-molecule read information:            /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/molecule_info.h5
+- Loupe Browser file:                       /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/cloupe.cloupe
+- Target Panel file:                        null
+- Probe Set file:                           null
+- Spatial Enrichment (Moran's I) CSV:       /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spaceranger/DLPFC_Br2743_mid_manual_alignment_extra_reads/outs/spatial_enrichment.csv
+
+Waiting 6 seconds for UI to do final refresh.
+Pipestance completed successfully!
+
+2021-12-08 07:00:43 Shutting down.
+Moving results to new location
+Wed Dec  8 07:01:02 EST 2021
+**** Job ends ****
+Wed Dec  8 07:01:02 EST 2021
