@@ -1,12 +1,12 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=5G,h_vmem=5G,h_fsize=100G
+#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -pe local 4
 #$ -N spatialDLPFC_rerun_countNuclei
 #$ -o Logs/rerun_countNuclei.$TASK_ID.txt
 #$ -e Logs/rerun_countNuclei.$TASK_ID.txt
 #$ -m e
-#$ -t 1-27,29-30
+#$ -t 29-30
 #$ -tc 30
 
 echo "**** Job starts ****"
