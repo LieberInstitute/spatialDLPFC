@@ -199,6 +199,12 @@ def get_svgs(raw, adata, x_array, y_array, target):
 #  Main Analysis
 ###############################################################################
 
+#  Set seed
+seed = 100
+random.seed(seed)
+torch.manual_seed(seed)
+np.random.seed(seed)
+
 #  Recieve the '-i' argument, an integer in [1, 12] corresponding to the index
 #  in the 12 samples present in the AnnData object
 try:
@@ -281,12 +287,6 @@ sc.pp.log1p(adata)
 p=0.5 
 #Find the l value given p
 l=spg.search_l(p, adj, start=0.01, end=1000, tol=0.01, max_run=100)
-
-#  Set seed
-seed = 100
-random.seed(seed)
-torch.manual_seed(seed)
-np.random.seed(seed)
     
 #  Compute/ determine spatial domains
 adata = find_domains(adata, x_array, y_array, adj, 1, N_CLUSTERS, seed)
