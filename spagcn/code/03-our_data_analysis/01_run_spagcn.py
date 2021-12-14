@@ -20,7 +20,6 @@ import getopt
 out_dir_processed = pyhere.here("spagcn/processed-data/03-our_data_analysis")
 out_dir_plots = pyhere.here("spagcn/plots/03-our_data_analysis")
 input_adata_path = pyhere.here("spagcn/processed-data/02-our_data_tutorial/spe_anndata.h5ad")
-start_gene = "ENSG00000131095" # Finding meta-genes requires a "start gene"; this is GFAP here
 NUM_META_COLUMNS = 5
 N_CLUSTERS = 7
 
@@ -162,13 +161,34 @@ def get_svgs(raw, adata, x_array, y_array, target):
                                     label_col="pred", 
                                     adj_nbr=True, 
                                     log=True)
-    #Filter genes
+    
+    #  Take significant genes only                                
     de_genes_info=de_genes_info[(de_genes_info["pvals_adj"]<0.05)]
+    assert de_genes_info.shape[0] > 0, "No significant SVGs found for domain " + str(target) + "!"
     filtered_info=de_genes_info
-    filtered_info=filtered_info[(filtered_info["pvals_adj"]<0.05) &
-                                (filtered_info["in_out_group_ratio"]>min_in_out_group_ratio) &
-                                (filtered_info["in_group_fraction"]>min_in_group_fraction) &
-                                (filtered_info["fold_change"]>min_fold_change)]
+    
+    #  Take genes that exceed the expression seen in neighboring domains
+    assert np.count_nonzero(filtered_info["in_out_group_ratio"] > min_in_out_group_ratio) > 0, \
+        "Can't find any genes such that more spots in domain " + str(domain) + " express the gene than its neighbors!"
+    filtered_info = filtered_info[filtered_info["in_out_group_ratio"] > min_in_out_group_ratio]
+    
+    #  Relax filtering criteria if required to find at least one SVG
+    while np.count_nonzero(
+        (filtered_info["in_group_fraction"] > min_in_group_fraction) &
+        (filtered_info["fold_change"] > min_fold_change)
+        ) == 0:
+        #  Relax both parameters simultaneously
+        min_in_group_fraction -= 0.1
+        min_fold_change = (min_fold_change + 1) / 2
+        assert min_in_group_fraction > 0, 'No "min_in_group_fraction" exists that finds any SVGs!'
+        assert min_fold_change > 1.01, 'No "fold_change" > 1.01 exists that finds any SVGs!'
+        
+        print('Warning: lowering "min_in_group_fraction" to ', min_in_group_fraction, 'and "min_fold_change" to ', min_fold_change, 'for domain', target, 'to find at least 1 SVG.')
+    
+    #  Filter significant genes
+    filtered_info=filtered_info[(filtered_info["in_group_fraction"] > min_in_group_fraction) &
+                                (filtered_info["fold_change"] > min_fold_change)]
+    
     filtered_info=filtered_info.sort_values(by="in_group_fraction", ascending=False)
     filtered_info["target_dmain"]=target
     filtered_info["neighbors"]=str(nbr_domians)
@@ -341,8 +361,12 @@ for i in range(NUM_META_COLUMNS):
 for target in range(actual_n_clusters):
     #  Determine SVGs
     filtered_info = get_svgs(raw, adata, x_array, y_array, target)
-    svgs = filtered_info["genes"].tolist()
-    print("SVGs for domain ", str(target),":", svgs)
+    print("SVGs for domain ", str(target),":", filtered_info["genes"].tolist())
+    
+    #  Order SVGs by "in_group_fraction" and within that, "pvals_adj"
+    filtered_info=filtered_info.sort_values(by="pvals_adj", ascending=True)
+    filtered_info=filtered_info.sort_values(by="in_group_fraction", ascending=False)
+    start_gene = filtered_info.genes.values[0]
 
     meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
                         pred=raw.obs["pred"].tolist(),
