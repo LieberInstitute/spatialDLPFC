@@ -6,7 +6,7 @@
 #$ -o Logs/rerun_countNuclei.$TASK_ID.txt
 #$ -e Logs/rerun_countNuclei.$TASK_ID.txt
 #$ -m e
-#$ -t 29-30
+#$ -t 1-27
 #$ -tc 30
 
 echo "**** Job starts ****"
