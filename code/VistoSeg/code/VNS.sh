@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -l mem_free=20G,h_vmem=20G,h_fsize=100G
 #$ -pe local 8
-#$ -o /Logs/V10B01-002_D1_Br2720_ant_DLPFC_VNS.txt
+#$ -o Logs/V10B01-002_D1_Br2720_ant_DLPFC_VNS.txt
 #$ -e Logs/V10B01-002_D1_Br2720_ant_DLPFC_VNS.txt
 #$ -m e
 #$ -M heenadivecha@gmail.com
