@@ -1,0 +1,136 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Dec 16 12:24:39 EST 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 8163070
+Job name: refineVNS.sh
+Hostname: compute-047.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_D1_Br2720_ant_DLPFC_refineVNS
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+Elapsed time is 171.230024 seconds.
+refining segmentations
+{Out of memory. Type "help memory" for your options.
+
+Error in images.color.ColorConverter/convert (line 223)
+            out = zeros(output_column_size,output_type);
+
+Error in images.color.ColorConverter/evaluate (line 364)
+            out = convert(self, in);
+
+Error in images.color.internal.Callable/subsref (line 15)
+                [varargout{1:nargout}] = self.evaluate(s(1).subs{:});
+
+Error in rgb2lab (line 74)
+lab = converter(rgb);
+
+Error in refineVNS (line 12)
+lab_he = rgb2lab(he);
+} 
+>> **** Job ends ****
+Thu Dec 16 12:41:04 EST 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Dec 16 12:45:06 EST 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 8163109
+Job name: refineVNS.sh
+Hostname: compute-122.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_D1_Br2720_ant_DLPFC_refineVNS
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+Elapsed time is 34.609306 seconds.
+refining segmentations
+{Out of memory. Type "help memory" for your options.
+
+Error in images.color.ColorConverter/convert (line 223)
+            out = zeros(output_column_size,output_type);
+
+Error in images.color.ColorConverter/evaluate (line 364)
+            out = convert(self, in);
+
+Error in images.color.internal.Callable/subsref (line 15)
+                [varargout{1:nargout}] = self.evaluate(s(1).subs{:});
+
+Error in rgb2lab (line 74)
+lab = converter(rgb);
+
+Error in refineVNS (line 12)
+lab_he = rgb2lab(he);
+} 
+>> **** Job ends ****
+Thu Dec 16 12:47:42 EST 2021
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Thu Dec 16 13:51:10 EST 2021
+**** JHPCE info ****
+User: hdivecha
+Job id: 8163305
+Job name: refineVNS.sh
+Hostname: compute-099.cm.cluster
+Task id: undefined
+****
+Sample id: V10B01-002_D1_Br2720_ant_DLPFC_refineVNS
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+Elapsed time is 116.277425 seconds.
+refining segmentations
+Elapsed time is 426.820850 seconds.
+saving final segmentations
+Elapsed time is 36.186265 seconds.
+>> **** Job ends ****
+Thu Dec 16 14:01:06 EST 2021
