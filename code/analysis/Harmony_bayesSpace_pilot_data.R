@@ -55,22 +55,22 @@ colnames(reducedDim(spe, "UMAP.HARMONY")) = c("UMAP1", "UMAP2")
 
 save(spe, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_102121.Rdata")
 
-# pdf(file="/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/UMAP_harmony_pilot_data_subject.pdf")
-# ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")), 
-#        aes(x = UMAP1, y = UMAP2, color = factor(spe$subject))) +
-#   geom_point() +
-#   labs(color = "Subject") +
-#   theme_bw()
-# dev.off()
+pdf(file="/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/UMAP_harmony_pilot_data_subject.pdf")
+ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$subject))) +
+  geom_point() +
+  labs(color = "Subject") +
+  theme_bw()
+dev.off()
 
-# pdf(file="/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/UMAP_harmony_pilot_data_subject_position.pdf")
-# ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")), 
-#        aes(x = UMAP1, y = UMAP2, color = factor(spe$subject_position))) +
-#   geom_point() +
-#   labs(color = "Subject Position") +
-#   theme_bw()
-# dev.off()
-# 
+pdf(file="/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/UMAP_harmony_pilot_data_subject_position.pdf")
+ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$subject_position))) +
+  geom_point() +
+  labs(color = "Subject Position") +
+  theme_bw()
+dev.off()
+
 pdf(file="/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/UMAP_harmony_pilot_data_sample_id.pdf")
 ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
        aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +

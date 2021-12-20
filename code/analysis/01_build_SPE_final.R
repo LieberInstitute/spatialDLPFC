@@ -18,6 +18,7 @@ library("rtracklayer")
 
 ## vis
 library("spatialLIBD")
+library("RColorBrewer")
 
 ## analysis
 library("scran") ## requires uwot for UMAP
@@ -45,24 +46,24 @@ sample_info <- data.frame(
     "DLPFC_Br8492_ant_manual_alignment",
     "DLPFC_Br8492_mid_manual_alignment_extra_reads",
     "DLPFC_Br8492_post_manual_alignment",
-    "Round4/DLPFC_Br2720_ant_2",
-    "Round2/DLPFC_Br2720_mid_manual_alignment",
-    "Round2/DLPFC_Br2720_post_extra_reads",
-    "Round4/DLPFC_Br6432_ant_2",
-    "Round2/DLPFC_Br6432_mid_manual_alignment",
-    "Round2/DLPFC_Br6432_post_manual_alignment",
-    "Round3/DLPFC_Br6471_ant_manual_alignment_all",
-    "Round3/DLPFC_Br6471_mid_manual_alignment_all",
-    "Round3/DLPFC_Br6471_post_manual_alignment_all",
-    "Round3/DLPFC_Br6522_ant_manual_alignment_all",
-    "Round3/DLPFC_Br6522_mid_manual_alignment_all",
-    "Round3/DLPFC_Br6522_post_manual_alignment_all",
-    "Round3/DLPFC_Br8325_ant_manual_alignment_all",
-    "Round4/DLPFC_Br8325_mid_2",
-    "Round3/DLPFC_Br8325_post_manual_alignment_all",
-    "Round3/DLPFC_Br8667_ant_extra_reads",
-    "Round3/DLPFC_Br8667_mid_manual_alignment_all",
-    "Round3/DLPFC_Br8667_post_manual_alignment_all"
+    "DLPFC_Br2720_ant_2",
+    "DLPFC_Br2720_mid_manual_alignment",
+    "DLPFC_Br2720_post_extra_reads",
+    "DLPFC_Br6432_ant_2",
+    "DLPFC_Br6432_mid_manual_alignment",
+    "DLPFC_Br6432_post_manual_alignment",
+    "DLPFC_Br6471_ant_manual_alignment_all",
+    "DLPFC_Br6471_mid_manual_alignment_all",
+    "DLPFC_Br6471_post_manual_alignment_all",
+    "DLPFC_Br6522_ant_manual_alignment_all",
+    "DLPFC_Br6522_mid_manual_alignment_all",
+    "DLPFC_Br6522_post_manual_alignment_all",
+    "DLPFC_Br8325_ant_manual_alignment_all",
+    "DLPFC_Br8325_mid_2",
+    "DLPFC_Br8325_post_manual_alignment_all",
+    "DLPFC_Br8667_ant_extra_reads",
+    "DLPFC_Br8667_mid_manual_alignment_all",
+    "DLPFC_Br8667_post_manual_alignment_all"
     
   ),
   subjects = c(rep(
@@ -84,7 +85,7 @@ sample_info <- data.frame(
   diagnosis = "Control"
 )
 sample_info$sample_path <- file.path(
-  here::here("processed-data", "NextSeq"),
+  here::here("processed-data", "rerun_spaceranger"),
   sample_info$sample_id,
   "outs"
 )
@@ -106,7 +107,8 @@ spe <- read10xVisiumWrapper(
 )
 Sys.time()
 
-##"2021-12-07 12:06:15 EST"
+#[1] "2021-12-15 10:59:02 EST"
+#[1] "2021-12-15 11:10:57 EST"
 
 ## Add the experimental information
 ### Equivalent to:
@@ -149,15 +151,15 @@ dim(spe)
 no_expr <- which(rowSums(counts(spe)) == 0)
 
 length(no_expr)
-# [1] 7468
+# [1] 7685
 length(no_expr) / nrow(spe) * 100
-# [1] 20.40381
+# [1] 20.99669
 
 ## Create two versions: one with and one without filtering by tissue spot
 spe_raw <- spe
 
 pryr::object_size(spe_raw)
-# 24,754,498,680 B
+# 4,754,346,424 B
 dim(spe_raw)
 # [1] 36601 149757
 
@@ -170,22 +172,20 @@ save(spe_raw, file = here::here("processed-data", "rdata", "spe", "spe_raw_final
 spe <- spe_raw[-no_expr, ]
 
 dim(spe)
-# 29133 164733
+# 28916 149757
 
 ## Work with SPE
 spe <- spe[, which(spatialData(spe_raw)$in_tissue=="TRUE")]
 dim(spe)
-#[1]  29133 129437
+#[1]  28916 118800
 
 ## Remove spots without counts
 spe <- spe[, -which(colSums(counts(spe)) == 0)]
 dim(spe)
-# [1] 29133129430
-
-save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
+# [1] 28916 118793
 
 pryr::object_size(spe)
-# 4,663,066,584 B
+# 4,664,781,528 B
 
 ## Inspect in vs outside of tissue
 vis_grid_clus(
@@ -198,7 +198,7 @@ vis_grid_clus(
 
 summary(spe_raw$sum_umi[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0.0    67.0   171.0   297.5   329.0 39053.0 
+# 0.0    66.0   170.0   291.6   326.0 39053.0 
 
 head(table(spe_raw$sum_umi[which(spatialData(spe_raw)$in_tissue=="FALSE")]))
 # 0  1  2  3  4  5 
@@ -213,7 +213,7 @@ vis_grid_gene(
 
 summary(spe_raw$sum_gene[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0      55     133     210     250    7956
+# 0.0    55.0   133.0   206.6   249.0  7956.0 
 
 vis_grid_gene(
   spe = spe_raw[, which(spatialData(spe_raw)$in_tissue=="FALSE")],
@@ -224,7 +224,7 @@ vis_grid_gene(
 
 summary(spe_raw$expr_chrM_ratio[which(spatialData(spe_raw)$in_tissue=="FALSE")])
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-#  0.0000  0.1497  0.1944  0.2068  0.2500  1.0000      12 
+#  0.0000  0.1500  0.1947  0.2072  0.2500  1.0000      12 
 
 vis_grid_gene(
   spe = spe_raw[, which(spatialData(spe_raw)$in_tissue=="FALSE")],
@@ -235,7 +235,7 @@ vis_grid_gene(
 
 summary(spe$sum_umi)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 1    1362    2312    2677    3542   46881 
+# 1    1358    2310    2674    3540   46881 
 vis_grid_gene(
   spe = spe,
   geneid = "sum_umi",
@@ -245,7 +245,7 @@ vis_grid_gene(
 
 summary(spe$sum_gene)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 1     912    1427    1510    2000    8344 
+# 1     910    1426    1508    1999    8344 
 
 vis_grid_gene(
   spe = spe,
@@ -256,7 +256,7 @@ vis_grid_gene(
 
 summary(spe$expr_chrM_ratio)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0.00000 0.07273 0.10433 0.12102 0.15511 1.00000 
+# 0.00000 0.07279 0.10440 0.12106 0.15513 1.00000 
 vis_grid_gene(
   spe = spe,
   geneid = "expr_chrM_ratio",
@@ -292,9 +292,9 @@ qcfilter <- quickPerCellQC(qcstats, sub.fields="subsets_Mito_percent")
 colSums(as.matrix(qcfilter))
 
 # low_lib_size            low_n_features high_subsets_Mito_percent 
-# 4991                      5984                      3739 
+# 5043                      6036                      3740 
 # discard 
-# 9127 
+# 9183 
 
 
 ## Prior to dropping spots with 0 counts and checking for high chrM,
@@ -308,7 +308,6 @@ spe$scran_low_n_features <-
   factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
 spe$scran_high_subsets_Mito_percent <-
   factor(qcfilter$high_subsets_Mito_percent, levels = c("TRUE", "FALSE"))
-save(spe, file = here::here("processed-data", "rdata", "spe", "spe_final.Rdata"))
 
 for(i in colnames(qcfilter)) {
   vis_grid_clus(
@@ -330,11 +329,11 @@ spe$scran_quick_cluster <- quickCluster(
   block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
-# [1]"2021-12-07 13:16:29 EST"
-# [1] "2021-12-07 13:16:29 EST"
+# [1] "2021-12-15 13:06:04 EST"
+# [1] "2021-12-15 13:17:12 EST"
 
 Sys.time()
-#"2021-12-07 13:16:29 EST"
+#[1] "2021-12-15 13:19:48 EST"
 ## Might be needed:
 # options(error = recover)
 spe <-
@@ -344,6 +343,7 @@ spe <-
   )
 Sys.time()
 #"2021-12-07 13:24:55 EST"
+# 1] "2021-12-15 13:40:18 EST"
 
 
 ## Related to https://github.com/LTLA/scuttle/issues/7
@@ -356,11 +356,11 @@ table(spe$scran_quick_cluster)
 
 summary(sizeFactors(spe))
 # Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-# 0.000034  0.478415  0.847992  1.000000  1.330493 16.795995 
+# 0.000034  0.477444  0.847973  1.000000  1.331274 16.813313 
 
 spe <- logNormCounts(spe)
 pryr::object_size(spe)
-#6,098,469,888 B
+#6,101,374,224 B
 
 
 
@@ -392,15 +392,15 @@ dev.off()
 
 top.hvgs <- getTopHVGs(dec, prop = 0.1)
 length(top.hvgs)
-# [1]  2005
+# [1] 2016
 
 top.hvgs.fdr5 <- getTopHVGs(dec, fdr.threshold = 0.05)
 length(top.hvgs.fdr5)
-# [1] 18299
+# [1] 18417
 
 top.hvgs.fdr1 <- getTopHVGs(dec, fdr.threshold = 0.01)
 length(top.hvgs.fdr1)
-# [1] 17712
+# [1] 17830
 
 save(top.hvgs,
      top.hvgs.fdr5,
@@ -412,11 +412,12 @@ set.seed(20211207)
 Sys.time()
 spe = spatialPreprocess(spe, n.PCs = 50)
 Sys.time()
-#"2021-12-07 13:39:03 EST"
-#"2021-12-07 14:07:02 EST"
+#2021-12-15 13:51:04 EST"
+#"2021-12-15 14:54:10 EST"
+
 
 dim(reducedDim(spe, "PCA"))
-#118584     50
+# 118793     50
 
 #make elbow plot to determine PCs to use
 percent.var <- attr(reducedDim(spe,"PCA"), "percentVar")
@@ -435,11 +436,16 @@ dev.off()
 
 summary(apply(reducedDim(spe, "PCA"), 2, sd))
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 0.9192  0.9339  0.9503  1.1889  1.0560  4.2002 
+# 0.9184  0.9343  0.9509  1.1872  1.0561  4.1944 
 
 # RunUMAP
+Sys.time()
 spe = runUMAP(spe, dimred = "PCA")
 colnames(reducedDim(spe, "UMAP")) = c("UMAP1", "UMAP2")
+Sys.time()
+
+#[1] "2021-12-15 15:22:25 EST"
+#[1] "2021-12-15 15:28:23 EST"
 
 #Run TSNE
 Sys.time()
@@ -451,12 +457,188 @@ spe <-
           perplexity = 80
   )
 Sys.time()
-#"2021-12-07 14:57:57 EST"
-#"2021-12-07 15:56:37 EST"
+#[1] "2021-12-15 15:30:48 EST"
+#[1] "2021-12-15 16:49:28 EST"
 
+Sys.time()
 save(spe, file = here::here("processed-data","rdata", "spe", "spe_final.Rdata"))
+Sys.time()
+#[1] "2021-12-15 16:59:47 EST"
+# [1] "2021-12-15 17:10:13 EST"
 
-#make plots of TSNE and UMAP
-#Run harmony batch correction and produce plots 
 
+#make plots ofUMAP
+pdf(file=here::here("plots", "UMAP_subject.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP")), 
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$subject))) +
+  geom_point() +
+  labs(color = "Subject") +
+  theme_bw()
+dev.off()
+
+pdf(file=here::here("plots", "UMAP_sample_id.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP")), 
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
+  geom_point() +
+  labs(color = "sample_id") +
+  theme_bw()
+dev.off()
+
+
+###harmony batch correction
+spe = RunHarmony(spe, "sample_id", verbose = F)
+spe = runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
+colnames(reducedDim(spe, "UMAP.HARMONY")) = c("UMAP1", "UMAP2")
+
+
+pdf(file=here::here("plots", "UMAP_harmony_sample_id.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
+  geom_point() +
+  labs(color = "sample_id") +
+  theme_bw()
+dev.off()
+
+Sys.time()
+save(spe, file = here::here("processed-data","rdata", "spe", "spe_final.Rdata"))
+Sys.time()
+#[1] "2021-12-16 15:02:28 EST"
+
+
+#graph-based clustering, no batch correction
+Sys.time()
+g_k10 <- buildSNNGraph(spe, k = 10, use.dimred = 'PCA')
+Sys.time()
+# [1] "2021-12-16 01:09:06 EST"
+#  "2021-12-16 01:24:11 EST"
+
+save(g_k10, file=here::here("processed-data", "rdata","spe","g_k10.Rdata"))
+
+Sys.time()
+g_walk_k10 <- igraph::cluster_walktrap(g_k10)
+Sys.time()
+# "2021-12-16 01:27:49 EST"
+# [1] "2021-12-16 09:26:14 EST"
+
+save(g_walk_k10, file = here::here("processed-data", "rdata","spe","g_walk_k10.Rdata"))
+
+clust_k10 <- sort_clusters(g_walk_k10$membership)
+save(clust_k10, file = here::here("processed-data", "rdata","spe","clust_k10.Rdata"))
+#use cluster_export
+
+clust_k5_list <- lapply(4:28, function(n) {
+  message(paste(Sys.time(), 'n =', n))
+  sort_clusters(igraph::cut_at(g_walk_k10, n = n))
+})
+names(clust_k5_list) <- paste0('k', 4:28)
+save(clust_k5_list, file = here::here("processed-data", "rdata", "spe", "clust_k5_list.Rdata"))
+
+## Add clusters to spe colData
+cluster_colNames <- paste0("SNN_k10_k",4:28)
+for (i in seq_along(cluster_colNames)){
+  colData(spe) <- cbind(colData(spe),clust_k5_list[i])
+}
+colnames(colData(spe))[34:58] <- cluster_colNames
+
+##make plot
+nb.cols <- 25
+mycolors <- colorRampPalette(brewer.pal(8, "Dark2"))(nb.cols)
+sample_ids <- unique(colData(spe)$sample_id)
+pdf(file = here::here("plots","vis_clus_graph_based_pca.pdf"))
+for (i in seq_along(sample_ids)){
+  for(j in seq_along(cluster_colNames)){
+    my_plot <- vis_clus(
+      spe = spe,
+      clustervar = cluster_colNames[j],
+      sampleid = sample_ids[i],
+      colors =  mycolors,
+      ... = paste0(" ",cluster_colNames[j])
+    )
+    print(my_plot)
+  }
+  
+}
+dev.off()
+
+
+##graph-based on batch correct
+Sys.time()
+g_k10 <- buildSNNGraph(spe, k = 10, use.dimred = 'HARMONY')
+Sys.time()
+#"2021-12-16 16:17:31 EST"
+#"2021-12-16 16:34:28 EST"
+save(g_k10, file=here::here("processed-data", "rdata","spe","g_k10_harmony.Rdata"))
+
+Sys.time()
+g_walk_k10 <- igraph::cluster_walktrap(g_k10)
+Sys.time()
+#[1] "2021-12-17 13:05:59 EST"
+
+save(g_walk_k10, file = here::here("processed-data", "rdata","spe","g_walk_k10_harmony.Rdata"))
+
+clust_k10 <- sort_clusters(g_walk_k10$membership)
+save(clust_k10, file = here::here("processed-data", "rdata","spe","clust_k10_harmony.Rdata"))
+
+clust_k5_list <- lapply(4:28, function(n) {
+  message(paste(Sys.time(), 'n =', n))
+  sort_clusters(igraph::cut_at(g_walk_k10, n = n))
+})
+names(clust_k5_list) <- paste0('k', 4:28)
+save(clust_k5_list, file = here::here("processed-data", "rdata", "spe", "clust_k5_list_harmony.Rdata"))
+
+
+##do offset so we can run BayesSpace
+auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
+names(auto_offset_row) <-unique(spe$sample_id)
+spe$row <- spatialData(spe)$array_row + auto_offset_row[spe$sample_id]
+spe$col <- spatialData(spe)$array_col
+
+pdf(file=here::here("plots", "bayesSpace_offset_check.pdf"))
+clusterPlot(spe, "subject", color = NA) + #make sure no overlap between samples
+  labs(fill = "Subject", title = "Offset check")
+dev.off()
+
+#non-batch corrected bayesSpace terminal 2
+spe = spatialCluster(spe, use.dimred = "PCA", q = 7, nrep = 10000)
+
+pdf(file=here::here("plots", "bayesSpace_clusterPlot_PCA.pdf"))
+    clusterPlot(spe, color = NA) + #plot clusters
+      labs(title = "BayesSpace joint clustering")
+  dev.off()
+
+  cluster_export(
+    spe,
+    "spatial.cluster",
+    cluster_dir = here::here("processed-data", "rdata", "spe", "bayesSpace_PCs.csv" )
+  )
+
+
+##bayesSpace on batch corrected data terminal 3
+spe = spatialCluster(spe, use.dimred = "HARMONY", q = 7, nrep = 10000) 
+
+pdf(file=here::here("plots", "bayesSpace_clusterPlot_harmony.pdf"))
+clusterPlot(spe, color = NA) + #plot clusters
+  labs(title = "BayesSpace joint clustering")
+dev.off()
+
+cluster_export(
+  spe,
+  "spatial.cluster",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "bayesSpace_harmony.csv" )
+)
+
+spe.enhanced <- spatialEnhance(spe, use.dimred = "HARMONY", q = 7, nrep = 10000,  burn.in=100)
+
+pdf(file=here::here("plots", "bayesSpace_clusterPlot_harmony.pdf"))
+clusterPlot(spe.enhaced, color = NA) + #plot clusters
+  labs(title = "BayesSpace enhanced clustering")
+dev.off()
+
+cluster_export(
+  spe.enhanced,
+  "spatial.cluster",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "bayesSpace_enhanced_harmony" )
+)
+
+#semi_supervised
 
