@@ -797,7 +797,58 @@ for (i in seq_along(sample_names)) {
   
 }
 
+## Plots: clustering
+method_names <- c(
+  "pseudobulk_PCA","pseudobulk_UMAP"
+  )
 
+# color palette
+set1 <- brewer.pal(8, "Set1")
+accent <- brewer.pal(8, "Accent")
+my_palette <- set1
+my_palette[1] <- accent[6]
+my_palette[6] <- "darkorange1"
+my_palette[5] <- "gold"
+my_palette[8] <- "gray40"
+my_palette[7] <- "gray10"
+my_palette
+library(gplots)
+my_palette <- col2hex(my_palette)
+my_palette
 
+# separate plots for each sample
+p_clustering_semisupervised <- list()
+colors <- c(my_palette, rep("gray50", 8))
+
+pdf(file=here::here("plots", "semi_supervised.pdf"))
+for (i in seq_along(sample_names)) {
+  
+  d_plot_sub <- d_plot[d_plot$sample_name == sample_names[i], ]
+  
+  d_plot_sub$method <- factor(d_plot_sub$method, levels = method_names)
+  d_plot_sub$cluster <- as.factor(d_plot_sub$cluster)
+  
+  
+  p_clustering_semisupervised[[i]] <- 
+    ggplot(d_plot_sub, aes(x = x_coord, y = y_coord, color = cluster)) + 
+    facet_wrap(~ method, nrow = 2) + 
+    geom_point(size = 0.2) + 
+    coord_fixed() + 
+    scale_color_manual(values = colors) + 
+    ggtitle(paste0("Sample ", gsub("^sample_", "", sample_names[i]), 
+                   ": Clustering (semi-supervised and markers)")) + 
+    guides(color = guide_legend(override.aes = list(size = 2))) + 
+    theme_bw() + 
+    theme(axis.title.x = element_blank(), 
+          axis.title.y = element_blank(), 
+          axis.text.x = element_blank(), 
+          axis.text.y = element_blank(), 
+          axis.ticks.x = element_blank(), 
+          axis.ticks.y = element_blank(), 
+          panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank())
+  
+}
+dev.off()
 
 
