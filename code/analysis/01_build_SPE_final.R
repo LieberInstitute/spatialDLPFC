@@ -716,15 +716,8 @@ n_clus <- 7 #changed from 8
 
 d_plot <- data.frame()
 
-# function to sort cluster labels by descending frequency (from Leo)
-sort_clusters <- function(clusters, map_subset = NULL) {
-  if (is.null(map_subset)) {
-    map_subset <- rep(TRUE, length(clusters))
-  }
-  map <- rank(length(clusters[map_subset]) - table(clusters[map_subset]), ties.method = "first")
-  res <- map[clusters]
-  factor(res)
-}
+#filter out pseudobulk genes that aren't in data, removes 1 gene
+genes_pseudobulk <- genes_pseudobulk[which(genes_pseudobulk$gene_id %in% rownames(spe)),]
 
 # run once per sample
 for (i in seq_along(sample_names)) {
@@ -737,9 +730,6 @@ for (i in seq_along(sample_names)) {
   # ---------------------------------------------
   
   ### pseudobulk layer genes (from Leo's analyses; 198 genes)
-  
-  #filter out pseudobulk genes that aren't in data, removes 1 gene
-  genes_pseudobulk <- genes_pseudobulk[which(genes_pseudobulk$gene_id %in% rownames(spe_sub)),]
   
   # run PCA on pseudobulk layer genes (from Leo's analyses; 198 genes)
   logcounts_pseudobulk <- logcounts(spe_sub[genes_pseudobulk$gene_id, ])
@@ -797,58 +787,54 @@ for (i in seq_along(sample_names)) {
   
 }
 
-## Plots: clustering
-method_names <- c(
-  "pseudobulk_PCA","pseudobulk_UMAP"
+
+
+library(tidyr)
+#divide d_plot by method
+d_plot_wide <-as.data.frame(pivot_wider(d_plot, names_from = method, values_from = cluster))
+#make key and add to d_plot
+d_plot_wide$key <-gsub("sample_","", with(d_plot_wide,paste0(spot_name,"_",sample_name)))
+#drop two columns we used to make the key
+d_plot_wide$spot_name <- NULL
+d_plot_wide$sample_name <-NULL
+#match keys and reorder
+#https://github.com/LieberInstitute/spatialLIBD/blob/master/R/cluster_import.R#L51-L64
+merged_info <-
+  merge(
+    colData(spe),
+    d_plot_wide,
+    by = "key",
+    sort = FALSE,
+    all = TRUE
   )
+m <- match(spe$key, merged_info$key)
+merged_info <- merged_info[m, ]
+spot_names <- rownames(colData(spe))
 
-# color palette
-set1 <- brewer.pal(8, "Set1")
-accent <- brewer.pal(8, "Accent")
-my_palette <- set1
-my_palette[1] <- accent[6]
-my_palette[6] <- "darkorange1"
-my_palette[5] <- "gold"
-my_palette[8] <- "gray40"
-my_palette[7] <- "gray10"
-my_palette
-library(gplots)
-my_palette <- col2hex(my_palette)
-my_palette
+colData(spe) <- DataFrame(merged_info, check.names = FALSE)
+colnames(spe) <- spot_names
 
-# separate plots for each sample
-p_clustering_semisupervised <- list()
-colors <- c(my_palette, rep("gray50", 8))
+##make plot
+sample_ids <- unique(colData(spe)$sample_id)
+cluster_colNames <- c("pseudobulk_PCA","pseudobulk_UMAP")
+mycolors <- brewer.pal(7, "Dark2")
 
-pdf(file=here::here("plots", "semi_supervised.pdf"))
-for (i in seq_along(sample_names)) {
-  
-  d_plot_sub <- d_plot[d_plot$sample_name == sample_names[i], ]
-  
-  d_plot_sub$method <- factor(d_plot_sub$method, levels = method_names)
-  d_plot_sub$cluster <- as.factor(d_plot_sub$cluster)
-  
-  
-  p_clustering_semisupervised[[i]] <- 
-    ggplot(d_plot_sub, aes(x = x_coord, y = y_coord, color = cluster)) + 
-    facet_wrap(~ method, nrow = 2) + 
-    geom_point(size = 0.2) + 
-    coord_fixed() + 
-    scale_color_manual(values = colors) + 
-    ggtitle(paste0("Sample ", gsub("^sample_", "", sample_names[i]), 
-                   ": Clustering (semi-supervised and markers)")) + 
-    guides(color = guide_legend(override.aes = list(size = 2))) + 
-    theme_bw() + 
-    theme(axis.title.x = element_blank(), 
-          axis.title.y = element_blank(), 
-          axis.text.x = element_blank(), 
-          axis.text.y = element_blank(), 
-          axis.ticks.x = element_blank(), 
-          axis.ticks.y = element_blank(), 
-          panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank())
-  
+pdf(file = here::here("plots","vis_clus_semi_supervised.pdf"))
+for (i in seq_along(sample_ids)){
+  for(j in seq_along(cluster_colNames)){
+    my_plot <- vis_clus(
+      spe = spe,
+      clustervar = cluster_colNames[j],
+      sampleid = sample_ids[i],
+      colors =  mycolors,
+      ... = paste0(" ",cluster_colNames[j])
+    )
+    print(my_plot)
+  }
+
 }
 dev.off()
+
+with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA,sample_id)))
 
 
