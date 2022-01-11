@@ -51,4 +51,23 @@ table_percent(table.layer)
 
 adjustedRandIndex(spe$SNN_k50_k7,spe$layer_guess_reordered_short)
 
+#plot ARI for pilot data comparing different clustering algorithms to Kristen's manual annnotations
+library(ggplot2)
+Method <- c("BayesSpace", "BayesSpace Batch Corrected", "Graph-Based", "Graph-Based Batch Corrected")
+ARI<- c(0.21, 0.34, 0.13, 0.16)
+
+df <- data.frame(Method, ARI)
+
+print (df)
+
+pdf(here::here("plots","pilot_ARI.pdf"))
+  ggplot(df, aes(x=Method, y=ARI)) +
+    geom_point(size=2) +
+    theme_bw()
+dev.off()
+
+#plot ARI for my data comparing different clustering methods against BayesSpace batch corrected
+
+
+
 
