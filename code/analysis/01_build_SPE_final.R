@@ -719,74 +719,99 @@ d_plot <- data.frame()
 #filter out pseudobulk genes that aren't in data, removes 1 gene
 genes_pseudobulk <- genes_pseudobulk[which(genes_pseudobulk$gene_id %in% rownames(spe)),]
 
-# run once per sample
-for (i in seq_along(sample_names)) {
-  # select spots from this sample
-  spe_sub <- spe[, colData(spe)$sample_id == gsub("^sample_", "", sample_names[i])]
-  dim(spe_sub)
+# ---------------------------------------------
+# extract and calculate features (PCA and UMAP)
+# ---------------------------------------------
+
+### pseudobulk layer genes (from Leo's analyses; 198 genes)
+
+# run PCA on pseudobulk layer genes (from Leo's analyses; 198 genes)
+logcounts_pseudobulk <- logcounts(spe[genes_pseudobulk$gene_id, ])
+
+# note: use 'prcomp' instead of 'calculatePCA' due to small number of genes
+out_pca_pseudobulk <- prcomp(t(as.matrix(logcounts_pseudobulk)))$x[, 1:50]
+
+dims_pseudobulk_PCA <- out_pca_pseudobulk
+rownames(dims_pseudobulk_PCA) <- colnames(spe)
+dim(dims_pseudobulk_PCA)
+#[1] 298  50
+stopifnot(nrow(dims_pseudobulk_PCA) == ncol(spe))
+
+#add pseudobulk PCA to spe object 
+reducedDims(spe)$pseudobulk_PCA <- dims_pseudobulk_PCA
+
+
+# run UMAP on pseudobulk layer genes (from Leo's analyses; 197 genes)
+set.seed(1234)
+out_umap_pseudobulk <- umap(dims_pseudobulk_PCA, scale = TRUE, n_components = n_umap)
+
+dims_pseudobulk_UMAP <- out_umap_pseudobulk
+colnames(dims_pseudobulk_UMAP) <- paste0("UMAP", seq_len(n_umap))
+rownames(dims_pseudobulk_UMAP) <- colnames(spe)
+dim(dims_pseudobulk_UMAP)
+stopifnot(nrow(dims_pseudobulk_UMAP) == ncol(spe))
+
+reducedDims(spe)$pseudobulk_UMAP <- dims_pseudobulk_UMAP
+
+#plot UMAP before batch correction
+# ggplot(data.frame(reducedDim(sce.combined, "UMAP")), 
+#        aes(x = UMAP1, y = UMAP2, color = factor(sce.combined$sample_name))) +
+#   geom_point() +
+#   labs(color = "Sample") +
+#   theme_bw()
+
+
+
+###harmony batch correction
+spe = RunHarmony(spe, "sample_id",reduction = "pseudobulk_PCA", verbose = F)
+
+spe = runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
+colnames(reducedDim(spe, "UMAP.HARMONY")) = c("UMAP1", "UMAP2")
+
+
+pdf(file=here::here("plots", "UMAP_pseudobulk_harmony_sample_id.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
+  geom_point() +
+  labs(color = "sample_id") +
+  theme_bw()
+dev.off()
+
+Sys.time()
+save(spe, file = here::here("processed-data","rdata", "spe", "spe_final_pseudobulk.Rdata"))
+Sys.time()
+
+
+# --------------------------------------------------------------------------------------------
+# run clustering and calculate Adjusted Rand Index (ARI) / Normalized Mutual Information (NMI)
+# --------------------------------------------------------------------------------------------
+
+# using graph-based clustering (see Bioconductor OSCA book)
+
+# convenience function; note uses some external variables from above
+run_clustering <- function(input, method) {
+  dims_clus <- input
   
-  # ---------------------------------------------
-  # extract and calculate features (PCA and UMAP)
-  # ---------------------------------------------
-  
-  ### pseudobulk layer genes (from Leo's analyses; 198 genes)
-  
-  # run PCA on pseudobulk layer genes (from Leo's analyses; 198 genes)
-  logcounts_pseudobulk <- logcounts(spe_sub[genes_pseudobulk$gene_id, ])
-  
-  # note: use 'prcomp' instead of 'calculatePCA' due to small number of genes
-  out_pca_pseudobulk <- prcomp(t(as.matrix(logcounts_pseudobulk)))$x[, 1:50]
-  
-  dims_pseudobulk_PCA <- out_pca_pseudobulk
-  rownames(dims_pseudobulk_PCA) <- colnames(spe_sub)
-  dim(dims_pseudobulk_PCA)
-  #[1] 298  50
-  stopifnot(nrow(dims_pseudobulk_PCA) == ncol(spe_sub))
-  
-  
-  # run UMAP on pseudobulk layer genes (from Leo's analyses; 197 genes)
   set.seed(1234)
-  out_umap_pseudobulk <- umap(dims_pseudobulk_PCA, scale = TRUE, n_components = n_umap)
+  g <- buildSNNGraph(t(dims_clus), k = n_neighbors, d = ncol(dims_clus))
+  g_walk <- igraph::cluster_walktrap(g)
+  clus <- igraph::cut_at(g_walk, n = n_clus)
+  clus <- sort_clusters(clus)
   
-  dims_pseudobulk_UMAP <- out_umap_pseudobulk
-  colnames(dims_pseudobulk_UMAP) <- paste0("UMAP", seq_len(n_umap))
-  rownames(dims_pseudobulk_UMAP) <- colnames(spe_sub)
-  dim(dims_pseudobulk_UMAP)
-  stopifnot(nrow(dims_pseudobulk_UMAP) == ncol(spe_sub))
+  table(clus)
+  stopifnot(length(clus) == nrow(dims_clus))
   
-  # --------------------------------------------------------------------------------------------
-  # run clustering and calculate Adjusted Rand Index (ARI) / Normalized Mutual Information (NMI)
-  # --------------------------------------------------------------------------------------------
-  
-  # using graph-based clustering (see Bioconductor OSCA book)
-  
-  # convenience function; note uses some external variables from above
-  run_clustering <- function(input, method) {
-    dims_clus <- input
-    
-    set.seed(1234)
-    g <- buildSNNGraph(t(dims_clus), k = n_neighbors, d = ncol(dims_clus))
-    g_walk <- igraph::cluster_walktrap(g)
-    clus <- igraph::cut_at(g_walk, n = n_clus)
-    clus <- sort_clusters(clus)
-    
-    table(clus)
-    stopifnot(length(clus) == nrow(dims_clus))
-    
-    data.frame(
-      spot_name = as.character(rownames(dims_clus)), 
-      sample_name = as.character(sample_names[i]), 
-      method = as.character(method), 
-      cluster = as.numeric(clus),  
-      stringsAsFactors = FALSE
-    )
-  }
-  
-  d_plot <- rbind(d_plot, run_clustering(dims_pseudobulk_PCA, method = "pseudobulk_PCA"))
-  d_plot <- rbind(d_plot, run_clustering(dims_pseudobulk_UMAP, method = "pseudobulk_UMAP"))
-  
+  data.frame(
+    spot_name = as.character(rownames(dims_clus)), 
+    sample_name = as.character(colData(spe)$sample_id), 
+    method = as.character(method), 
+    cluster = as.numeric(clus),  
+    stringsAsFactors = FALSE
+  )
 }
 
+d_plot <- rbind(d_plot, run_clustering(reducedDim(spe, "HARMONY"), method = "pseudobulk_PCA"))
+d_plot <- rbind(d_plot, run_clustering(reducedDim(spe, "UMAP.HARMONY"), method = "pseudobulk_UMAP"))
 
 
 library(tidyr)
@@ -816,10 +841,10 @@ colnames(spe) <- spot_names
 
 ##make plot
 sample_ids <- unique(colData(spe)$sample_id)
-cluster_colNames <- c("pseudobulk_PCA","pseudobulk_UMAP")
+cluster_colNames <- c("pseudobulk_PCA.y","pseudobulk_UMAP")
 mycolors <- brewer.pal(7, "Dark2")
 
-pdf(file = here::here("plots","vis_clus_semi_supervised.pdf"))
+pdf(file = here::here("plots","vis_clus_semi_supervised_across_samples_2.pdf"))
 for (i in seq_along(sample_ids)){
   for(j in seq_along(cluster_colNames)){
     my_plot <- vis_clus(
@@ -831,10 +856,10 @@ for (i in seq_along(sample_ids)){
     )
     print(my_plot)
   }
-
+  
 }
 dev.off()
 
-with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA,sample_id)))
+with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA.y,sample_id)))
 
 
