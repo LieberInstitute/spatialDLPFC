@@ -646,10 +646,11 @@ pdf(file=here::here("plots", "bayesSpace_clusterPlot_PCA.pdf"))
       labs(title = "BayesSpace joint clustering")
   dev.off()
 
+spe$bayesSpace_PCs <- spe$spatial.cluster
   cluster_export(
     spe,
-    "spatial.cluster",
-    cluster_dir = here::here("processed-data", "rdata", "spe", "bayesSpace_PCs.csv" )
+    "bayesSpace_PCs",
+    cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" ) #don't need to put .csv part 
   )
 
 
@@ -661,10 +662,12 @@ clusterPlot(spe, color = NA) + #plot clusters
   labs(title = "BayesSpace joint clustering")
 dev.off()
 
+spe$bayesSpace_harmony<-spe$spatial.cluster
+
 cluster_export(
   spe,
-  "spatial.cluster",
-  cluster_dir = here::here("processed-data", "rdata", "spe", "bayesSpace_harmony.csv" )
+  "bayesSpace_harmony",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
 )
 
 spe.enhanced <- spatialEnhance(spe, use.dimred = "HARMONY", q = 7, nrep = 10000,  burn.in=100)
@@ -674,10 +677,12 @@ clusterPlot(spe.enhaced, color = NA) + #plot clusters
   labs(title = "BayesSpace enhanced clustering")
 dev.off()
 
+spe$bayesSpace_enhanced_harmony <- spe$spatial.cluster 
+
 cluster_export(
   spe.enhanced,
-  "spatial.cluster",
-  cluster_dir = here::here("processed-data", "rdata", "spe", "bayesSpace_enhanced_harmony" )
+  "bayesSpace_enhanced_harmony",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
 )
 
 #semi_supervised 
@@ -861,5 +866,9 @@ for (i in seq_along(sample_ids)){
 dev.off()
 
 with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA.y,sample_id)))
+
+
+## import clusters
+spe <- cluster_import(spe,cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"),prefix = "") #use when re-running graph-baed. version control csv files 
 
 
