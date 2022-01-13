@@ -67,7 +67,24 @@ pdf(here::here("plots","pilot_ARI.pdf"))
 dev.off()
 
 #plot ARI for my data comparing different clustering methods against BayesSpace batch corrected
+cluster_colNames <- paste0("SNN_k10_k",4:28)
+for (i in seq_along(cluster_colNames)){
+  colData(spe) <- cbind(colData(spe),clust_k5_list[i])
+}
+colnames(colData(spe))[37:61] <- cluster_colNamesload("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/graph_based_harmony/clust_k5_list_harmony.Rdata")
 
+adjustedRandIndex(spe$spatial.cluster,spe$SNN_k10_k7)
+# [1] 0.1958784
 
+adjustedRandIndex(spe$spatial.cluster,spe$pseudobulk_PCA.y)
+#[1] 0.1958784
 
+adjustedRandIndex(spe$spatial.cluster,spe$cluster.init) 
+#[1] 0.3465709
+adjustedRandIndex(spe$spatial.cluster,spe$pseudobulk_PCA.y)  
+#[1] 0.1958784
+adjustedRandIndex(spe$spatial.cluster,spe$SNN_k10_k24)
+#[1] 0.2009123
+adjustedRandIndex(spe$spatial.cluster,spe$SNN_k10_k8)
+#[1] 0.1908048
 
