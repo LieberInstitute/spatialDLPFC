@@ -154,6 +154,13 @@ def get_svgs(raw, adata, x_array, y_array, target):
                                        radius=r,
                                        ratio=1/2)
     
+    #  I've observed that domains where no neighbors are found are spatially
+    #  scattered and are likely not biologically meaningful or interpretable.
+    #  Stop here in that case, and don't find SVGs                               
+    if nbr_domians is None:
+        print('Found no neighbors for domain', target, '. No SVGs will be found for this domain.')
+        return None
+    
     nbr_domians=nbr_domians[0:3]
     de_genes_info=spg.rank_genes_groups(input_adata=raw,
                                     target_cluster=target,
@@ -361,13 +368,16 @@ for i in range(NUM_META_COLUMNS):
 for target in range(actual_n_clusters):
     #  Determine SVGs
     filtered_info = get_svgs(raw, adata, x_array, y_array, target)
+    if filtered_info is None:
+        continue
+    
     print("SVGs for domain ", str(target),":", filtered_info["genes"].tolist())
     
     #  Order SVGs by "in_group_fraction" and within that, "pvals_adj"
     filtered_info=filtered_info.sort_values(by="pvals_adj", ascending=True)
     filtered_info=filtered_info.sort_values(by="in_group_fraction", ascending=False)
     start_gene = filtered_info.genes.values[0]
-
+    
     meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
                         pred=raw.obs["pred"].tolist(),
                         target_domain=target,
@@ -396,10 +406,6 @@ for target in range(actual_n_clusters):
     out_file = pyhere.here(this_out_dir_plots, "all_meta_genes_domain_" + str(target) + ".png")
     plot_adata(raw, "exp", parse_metaname(raw, meta_name), color_self, out_file)
 
-#  At this point, the meta gene columns should be fully populated for as
-#  many meta genes as exist for this domain
-for i in range(min(NUM_META_COLUMNS, len(meta_list))):
-    assert '' not in cluster_list['meta_gene_' + str(i + 1)]
 
 out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
 cluster_list.to_csv(out_file)
