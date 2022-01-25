@@ -575,6 +575,11 @@ for (i in seq_along(sample_ids)){
 }
 dev.off()
 
+cluster_export(
+  spe,
+  "SNN_k10_k7",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+)
 
 ##graph-based on batch correct
 Sys.time()
@@ -626,6 +631,11 @@ for (i in seq_along(sample_ids)){
 }
 dev.off()
 
+cluster_export(
+  spe,
+  "SNN_k10_k7",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+)
 
 ##do offset so we can run BayesSpace
 auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
@@ -669,6 +679,19 @@ cluster_export(
   "bayesSpace_harmony",
   cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
 )
+
+
+pdf(file = here::here("plots","vis_clus_bayesSpace_harmony.pdf"))
+for (i in seq_along(sample_ids)){
+    my_plot <- vis_clus(
+      spe = spe,
+      clustervar = "spatial.cluster",
+      sampleid = sample_ids[i],
+      colors =  mycolors
+    )
+    print(my_plot)
+}
+dev.off()
 
 spe.enhanced <- spatialEnhance(spe, use.dimred = "HARMONY", q = 7, nrep = 10000,  burn.in=100)
 
@@ -867,6 +890,155 @@ dev.off()
 
 with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA.y,sample_id)))
 
+#graph-based clustering within samples
+#adapted from Luka's script https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/SpatialDE_clustering.Rmd
+# sample names
+sample_names <- paste0("sample_", unique(colData(spe)$sample_id))
+sample_names
+## Load pseudobulk genes (from Leo's analyses)
+# load spreadsheet of significant genes for pseudobulk layers (from Leo's analyses)
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/top.hvgs_all_final.Rdata")
+top.hvgs
+
+genes<- rowData(spe)[rownames(rowData(spe))%in%top.hvgs,c("gene_id", "gene_name")]
+
+dim(genes)
+#[1] 2016    2
+
+
+##Clustering
+# -clustering on top 50 PCs on pseudobulk layer genes (from Leo's analyses; 198 genes)
+# -clustering on top 10 UMAPs on pseudobulk layer genes (from Leo's analyses; 198 genes)
+# parameters
+n_umap <- 10
+max_spatial <- 1
+n_neighbors <- 10
+n_clus <- 7 #changed from 8
+d_plot <- data.frame()
+
+#filter out pseudobulk genes that aren't in data, doesn't remove any genes
+genes <- genes[which(genes$gene_id %in% rownames(spe)),]
+dim(genes)
+
+d_plot <- data.frame()
+# run once per sample
+for (i in seq_along(sample_names)) {
+  # select spots from this sample
+  spe_sub <- spe[, colData(spe)$sample_id == gsub("^sample_", "", sample_names[i])]
+  dim(spe_sub)
+  
+  # ---------------------------------------------
+  # extract and calculate features (PCA and UMAP)
+  # ---------------------------------------------
+  
+  ### pseudobulk layer genes (from Leo's analyses; 198 genes)
+  
+  # run PCA on pseudobulk layer genes (from Leo's analyses; 198 genes)
+  logcounts_gb <- logcounts(spe_sub[genes$gene_id, ])
+  
+  # note: use 'prcomp' instead of 'calculatePCA' due to small number of genes
+  out_pca <- prcomp(t(as.matrix(logcounts_gb)))$x[, 1:50]
+  
+  dims_PCA <- out_pca
+  rownames(dims_PCA) <- colnames(spe_sub)
+  dim(dims_PCA)
+  #[1] 298  50
+  stopifnot(nrow(dims_PCA) == ncol(spe_sub))
+  
+  
+  # run UMAP on pseudobulk layer genes (from Leo's analyses; 197 genes)
+  set.seed(1234)
+  out_umap <- umap(dims_PCA, scale = TRUE, n_components = n_umap)
+  
+  dims_UMAP <- out_umap
+  colnames(dims_UMAP) <- paste0("UMAP", seq_len(n_umap))
+  rownames(dims_UMAP) <- colnames(spe_sub)
+  dim(dims_UMAP)
+  stopifnot(nrow(dims_UMAP) == ncol(spe_sub))
+  
+  # --------------------------------------------------------------------------------------------
+  # run clustering and calculate Adjusted Rand Index (ARI) / Normalized Mutual Information (NMI)
+  # --------------------------------------------------------------------------------------------
+  
+  # using graph-based clustering (see Bioconductor OSCA book)
+  
+  # convenience function; note uses some external variables from above
+  run_clustering <- function(input, method) {
+    dims_clus <- input
+    
+    set.seed(1234)
+    g <- buildSNNGraph(t(dims_clus), k = n_neighbors, d = ncol(dims_clus))
+    g_walk <- igraph::cluster_walktrap(g)
+    clus <- igraph::cut_at(g_walk, n = n_clus)
+    clus <- sort_clusters(clus)
+    
+    table(clus)
+    stopifnot(length(clus) == nrow(dims_clus))
+    
+    data.frame(
+      spot_name = as.character(rownames(dims_clus)), 
+      sample_name = as.character(sample_names[i]), 
+      method = as.character(method), 
+      cluster = as.numeric(clus),  
+      stringsAsFactors = FALSE
+    )
+  }
+  
+  d_plot <- rbind(d_plot, run_clustering(dims_PCA, method = "graph_based_PCA"))
+  
+}
+
+save(d_plot, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/clustering_results/graph_based_within_samples/d_plot.Rdata")
+library(tidyr)
+#divide d_plot by method
+d_plot_wide <-as.data.frame(pivot_wider(d_plot, names_from = method, values_from = cluster))
+#make key and add to d_plot
+d_plot_wide$key <-gsub("sample_","", with(d_plot_wide,paste0(spot_name,"_",sample_name)))
+#drop two columns we used to make the key
+d_plot_wide$spot_name <- NULL
+d_plot_wide$sample_name <-NULL
+#match keys and reorder
+#https://github.com/LieberInstitute/spatialLIBD/blob/master/R/cluster_import.R#L51-L64
+merged_info <-
+  merge(
+    colData(spe),
+    d_plot_wide,
+    by = "key",
+    sort = FALSE,
+    all = TRUE
+  )
+m <- match(spe$key, merged_info$key)
+merged_info <- merged_info[m, ]
+spot_names <- rownames(colData(spe))
+colData(spe) <- DataFrame(merged_info, check.names = FALSE)
+colnames(spe) <- spot_names
+
+cluster_export(
+  spe,
+  "graph_based_PCA",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+)
+
+##make plot
+sample_ids <- unique(colData(spe)$sample_id)
+cluster_colNames <- c("graph_based_PCA")
+mycolors <- brewer.pal(7, "Dark2")
+
+pdf(file = here::here("plots","vis_clus_graph_based_within_samples.pdf"))
+for (i in seq_along(sample_ids)){
+  for(j in seq_along(cluster_colNames)){
+    my_plot <- vis_clus(
+      spe = spe,
+      clustervar = cluster_colNames[j],
+      sampleid = sample_ids[i],
+      colors =  mycolors,
+      ... = paste0(" ",cluster_colNames[j])
+    )
+    print(my_plot)
+  }
+  
+}
+dev.off()
 
 ## import clusters
 spe <- cluster_import(spe,cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"),prefix = "") #use when re-running graph-baed. version control csv files 
