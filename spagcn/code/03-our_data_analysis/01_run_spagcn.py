@@ -363,10 +363,11 @@ assert all(cluster_list.raw_cluster.values == raw.obs.pred.values)
 
 #  Due to a bug, domain names are not necessarily sequential, hence why 'range'
 #  is not used here
-for i in adata.obs.pred.cat.categories:
-    cluster_list['meta_gene_' + str(i)] = ''
+for i in range(NUM_META_COLUMNS):
+    cluster_list['meta_gene_' + str(i + 1)] = ''
     
-#  Find meta genes for each domain found
+#  Find meta genes for each domain found (due to a bug, domain names are not
+#  necessarily sequential, hence why 'range' is not used here)
 for target in adata.obs.pred.cat.categories:
     #  Determine SVGs
     filtered_info = get_svgs(raw, adata, x_array, y_array, target)
