@@ -1,6 +1,8 @@
 library("SpatialExperiment")
 library("mclust")
 library("spatialLIBD")
+library(tidyr)
+library(ggplot2)
 
 load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_102121.Rdata")
 
@@ -107,6 +109,7 @@ print (df)
 pdf(here::here("plots","my_data_ARI.pdf"))
 ggplot(df, aes(x=Method, y=ARI)) +
   geom_point(size=2) +
+  ylim(0,0.6)+
   theme_bw()
 dev.off()
 
@@ -121,4 +124,86 @@ spe.temp <- cluster_import(
 
 with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA.y,sample_id)))
 
+### ari for semi-supervised within sample clustering 
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/clustering_results/semi_supervised_pcs_within_samples/d_plot_semi_supervised.Rdata")
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_final.Rdata")
 
+
+#divide d_plot by method
+d_plot_wide <-as.data.frame(pivot_wider(d_plot, names_from = method, values_from = cluster))
+#make key and add to d_plot
+d_plot_wide$key <-gsub("sample_","", with(d_plot_wide,paste0(spot_name,"_",sample_name)))
+#drop two columns we used to make the key
+d_plot_wide$spot_name <- NULL
+d_plot_wide$sample_name <-NULL
+#match keys and reorder
+#https://github.com/LieberInstitute/spatialLIBD/blob/master/R/cluster_import.R#L51-L64
+merged_info <-
+  merge(
+    colData(spe),
+    d_plot_wide,
+    by = "key",
+    sort = FALSE,
+    all = TRUE
+  )
+m <- match(spe$key, merged_info$key)
+merged_info <- merged_info[m, ]
+spot_names <- rownames(colData(spe))
+
+colData(spe) <- DataFrame(merged_info, check.names = FALSE)
+colnames(spe) <- spot_names
+
+spe$semi_supervised_pcs_within_samples <- spe$pseudobulk_PCA 
+spe$semi_supervised_UMAP_within_samples <- spe$pseudobulk_UMAP 
+
+cluster_export(
+  spe,
+  "semi_supervised_pcs_within_samples",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+)
+
+cluster_export(
+  spe,
+  "semi_supervised_UMAP_within_samples",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+)
+
+spe <- cluster_import(
+  spe,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","graph_based_within_samples"),
+  prefix = ""
+)
+
+sample_ids <- unique(spe$sample_id)
+ari.df <- data.frame(matrix(ncol = 4, nrow = 30))
+row.names(ari.df) <- sample_ids
+colnames(ari.df)<-c("sample_id","ari.semi.supervised.pca","ari.semi.supervised.umap","ari.graph.based.pca")
+
+for (i in seq_along(sample_ids)) {
+  spe_sub <- spe[, colData(spe)$sample_id == sample_ids[i]]
+  ari.df$sample_id <-sample_ids[i]
+  ari.df[sample_ids[i],"ari.semi.supervised.pca"]<-adjustedRandIndex(spe_sub$spatial.cluster,spe_sub$semi_supervised_within_PCA)
+  ari.df[sample_ids[i],"ari.semi.supervised.umap"]<-adjustedRandIndex(spe_sub$spatial.cluster,spe_sub$semi_supervised_within_UMAP)
+  ari.df[sample_ids[i],"ari.graph.based.pca"]<-adjustedRandIndex(spe_sub$spatial.cluster,spe_sub$graph_based_PCA)
+  
+}
+
+# The arguments to gather():
+# - data: Data object
+# - key: Name of new key column (made from names of data columns)
+# - value: Name of new value column
+# - ...: Names of source columns that contain values
+# - factor_key: Treat the new key column as a factor (instead of character vector)
+ari.df.long <- gather(ari.df, method, ari, ari.semi.supervised.pca:ari.graph.based.pca, factor_key=TRUE)
+
+pdf(here::here("plots","my_data_ARI_semi_supervised.pdf"))
+ggplot(ari.df.long, aes(x = method, y=ari)) + 
+  geom_boxplot()+
+  theme_bw()+
+  geom_jitter(color="black", size=0.4, alpha=0.9)+
+  ylim(0,0.6)
+dev.off()
+
+save(ari.df.long, file = here::here("processed-data", "rdata", "spe", "ari_semi_supervised_within.Rdata" ))
+
+###ARI for graph based clustering within samples
