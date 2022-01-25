@@ -1,5 +1,6 @@
 library("SpatialExperiment")
 library("mclust")
+library("spatialLIBD")
 
 load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_102121.Rdata")
 
@@ -67,24 +68,57 @@ pdf(here::here("plots","pilot_ARI.pdf"))
 dev.off()
 
 #plot ARI for my data comparing different clustering methods against BayesSpace batch corrected
-cluster_colNames <- paste0("SNN_k10_k",4:28)
-for (i in seq_along(cluster_colNames)){
-  colData(spe) <- cbind(colData(spe),clust_k5_list[i])
-}
-colnames(colData(spe))[37:61] <- cluster_colNamesload("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/graph_based_harmony/clust_k5_list_harmony.Rdata")
 
-adjustedRandIndex(spe$spatial.cluster,spe$SNN_k10_k7)
-# [1] 0.1958784
+spe<- cluster_import(
+  spe,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","graph_based_harmony"),
+  prefix = "harmony_graph_based_"
+)
 
-adjustedRandIndex(spe$spatial.cluster,spe$pseudobulk_PCA.y)
-#[1] 0.1958784
+spe <- cluster_import(
+  spe,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","semi_supervised_harmony_across_samples"),
+  prefix = "harmony_semi_supervised_"
+)
 
-adjustedRandIndex(spe$spatial.cluster,spe$cluster.init) 
-#[1] 0.3465709
-adjustedRandIndex(spe$spatial.cluster,spe$pseudobulk_PCA.y)  
-#[1] 0.1958784
-adjustedRandIndex(spe$spatial.cluster,spe$SNN_k10_k24)
-#[1] 0.2009123
-adjustedRandIndex(spe$spatial.cluster,spe$SNN_k10_k8)
-#[1] 0.1908048
+spe <- cluster_import(
+  spe,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","graph_based_pcs"),
+  prefix = "pcs_graph_based_"
+)
+
+
+adjustedRandIndex(spe$spatial.cluster,spe$harmony_semi_supervised_SNN_k10_k7)
+# 0.1958784
+
+adjustedRandIndex(spe$spatial.cluster,spe$harmony_graph_based_SNN_k10_k7)
+# 0.1958784
+
+adjustedRandIndex(spe$spatial.cluster,spe$pcs_graph_based_SNN_k10_k7)
+# 0.213768
+
+Method <- c("Graph-Based PCs", "Graph-Based Batch Corrected", "Semi-supervised Batch Corrected")
+ARI<- c(0.213768, 0.1958784, 0.1958784)
+
+df <- data.frame(Method, ARI)
+
+print (df)
+
+pdf(here::here("plots","my_data_ARI.pdf"))
+ggplot(df, aes(x=Method, y=ARI)) +
+  geom_point(size=2) +
+  theme_bw()
+dev.off()
+
+
+#### spaGCN ARI for pilot data
+spe.temp <- cluster_import(
+  spe,
+  cluster_dir = here::here("..","spython","spagcn","processed-data","03-our_data_analysis"),
+  prefix = "spaGCN_"
+)
+
+
+with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA.y,sample_id)))
+
 
