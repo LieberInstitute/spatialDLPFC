@@ -4,7 +4,7 @@ library("spatialLIBD")
 library(tidyr)
 library(ggplot2)
 
-load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_102121.Rdata")
+load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_final.Rdata")
 
 table_percent <- function(input.table){
   list(
@@ -206,4 +206,51 @@ dev.off()
 
 save(ari.df.long, file = here::here("processed-data", "rdata", "spe", "ari_semi_supervised_within.Rdata" ))
 
-###ARI for graph based clustering within samples
+#### redo ari calculations for across sample clustering
+spe <- cluster_import(
+  spe,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","graph_based_harmony"),
+  prefix = "graph_based_corrected_across"
+)
+
+spe <- cluster_import(
+  spe,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","graph_based_pcs"),
+  prefix = "graph_based_pca_across"
+)
+
+spe <- cluster_import(
+  spe,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","semi_supervised_harmony_across_samples"),
+  prefix = "semi_supervised_corrected_acrosss"
+)
+
+sample_ids <- unique(spe$sample_id)
+ari.df <- data.frame(matrix(ncol = 4, nrow = 30))
+row.names(ari.df) <- sample_ids
+colnames(ari.df)<-c("sample_id","graph_based_pca_acrossSNN_k10_k7","semi_supervised_corrected_acrosssSNN_k10_k7","graph_based_corrected_acrossSNN_k10_k7.x")
+
+for (i in seq_along(sample_ids)) {
+  spe_sub <- spe[, colData(spe)$sample_id == sample_ids[i]]
+  ari.df$sample_id <-sample_ids[i]
+  ari.df[sample_ids[i],"graph_based_pca_acrossSNN_k10_k7"]<-adjustedRandIndex(spe_sub$spatial.cluster,spe_sub$graph_based_pca_acrossSNN_k10_k7)
+  ari.df[sample_ids[i],"semi_supervised_corrected_acrosssSNN_k10_k7"]<-adjustedRandIndex(spe_sub$spatial.cluster,spe_sub$semi_supervised_corrected_acrosssSNN_k10_k7)
+  ari.df[sample_ids[i],"graph_based_corrected_acrossSNN_k10_k7.x"]<-adjustedRandIndex(spe_sub$spatial.cluster,spe_sub$graph_based_corrected_acrossSNN_k10_k7.x)
+  
+}
+
+ari.df.long <- gather(ari.df, method, ari, graph_based_pca_acrossSNN_k10_k7:graph_based_corrected_acrossSNN_k10_k7.x, factor_key=TRUE)
+
+pdf(here::here("plots","my_data_ARI_clustering_across.pdf"))
+ggplot(ari.df.long, aes(x = method, y=ari)) + 
+  geom_boxplot()+
+  theme_bw()+
+  geom_jitter(color="black", size=0.4, alpha=0.9)+
+  ylim(0,0.6)
+dev.off()
+
+save(ari.df.long, file = here::here("processed-data", "rdata", "spe", "ari_clustering_across.Rdata"))
+
+
+
+
