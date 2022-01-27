@@ -73,14 +73,21 @@ def find_domains(adata_in, x_array, y_array, adj, l, n_clusters, seed):
     adata = adata_in.copy()
     
     #Search for suitable resolution
-    res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20, r_seed=seed, t_seed=seed, n_seed=seed)
+    res=spg.search_res(adata, adj, l, n_clusters, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=200, r_seed=seed, t_seed=seed, n_seed=seed)
     
-    clf=spg.SpaGCN()
-    clf.set_l(l)
+    #  Train the model; a while loop is used because the training process is
+    #  nondeterministic (even with the seeds set) and not guaranteed on a
+    #  given run to find the desired number of clusters
+    found_clusters = 0
+    while found_clusters != n_clusters:
+        #Run
+        clf=spg.SpaGCN()
+        clf.set_l(l)
+        clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
+        y_pred, prob=clf.predict()
+        
+        found_clusters = len(np.unique(y_pred))
     
-    #Run
-    clf.train(adata,adj,init_spa=True,init="louvain",res=res, tol=5e-3, lr=0.05, max_epochs=200)
-    y_pred, prob=clf.predict()
     adata.obs["pred"]= y_pred
     adata.obs["pred"]=adata.obs["pred"].astype('category')
     
