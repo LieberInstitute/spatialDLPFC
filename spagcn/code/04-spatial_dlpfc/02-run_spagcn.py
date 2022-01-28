@@ -142,7 +142,9 @@ def fill_meta_column(adata, meta_name, cluster_list, target, NUM_META_COLUMNS):
     
 
 #  Given a raw Anndata, processed AnnData, X and Y array coordinates, and a
-#  target spatial domain, return a DataFrame of info about SVGs
+#  target spatial domain, return a DataFrame of info about SVGs. Under special
+#  conditions, None may be returned instead of a DataFrame, if no valid SVGs
+#  can be found.
 def get_svgs(raw, adata, x_array, y_array, target):
     #Set filtering criterials
     min_in_group_fraction=0.8
@@ -196,8 +198,14 @@ def get_svgs(raw, adata, x_array, y_array, target):
         #  Relax both parameters simultaneously
         min_in_group_fraction -= 0.1
         min_fold_change = (min_fold_change + 1) / 2
-        assert min_in_group_fraction > 0, 'No "min_in_group_fraction" exists that finds any SVGs!'
-        assert min_fold_change > 1.01, 'No "fold_change" > 1.01 exists that finds any SVGs!'
+        
+        if min_in_group_fraction <= 0:
+            print('No "min_in_group_fraction" exists that finds any SVGs for domain ' + str(target) + "!")
+            return None
+        
+        if min_fold_change <= 1.01:
+            print('No "fold_change" > 1.01 exists that finds any SVGs for domain ' + str(target) + "!")
+            return None
         
         print('Warning: lowering "min_in_group_fraction" to ', min_in_group_fraction, 'and "min_fold_change" to ', min_fold_change, 'for domain', target, 'to find at least 1 SVG.')
     
