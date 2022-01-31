@@ -251,6 +251,38 @@ dev.off()
 
 save(ari.df.long, file = here::here("processed-data", "rdata", "spe", "ari_clustering_across.Rdata"))
 
+#plot ARI for pilot data comparing different clustering algorithms to Kristen's manual annnotations
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_bayesSpace_pcs.Rdata")
+spe.bspc <- spe
+spe$spatial.cluster.pcs <- spe.bspc$spatial.cluster
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_bayesSpace_batch_corr_sampleID.Rdata")
 
+
+sample_ids <- unique(spe$sample_id)
+ari.df <- data.frame(matrix(ncol = 5, nrow = 12))
+row.names(ari.df) <- sample_ids
+colnames(ari.df)<-c("sample_id","SNN_k10_k7","batch_corr_SNN_k10_k7","bayesSpace_pc","bayesSpace")
+
+for (i in seq_along(sample_ids)) {
+  spe_sub <- spe[, colData(spe)$sample_id == sample_ids[i]]
+  ari.df$sample_id <-sample_ids[i]
+  ari.df[sample_ids[i],"SNN_k10_k7"]<-adjustedRandIndex(spe_sub$layer_guess_reordered,spe_sub$SNN_k50_k7)
+  ari.df[sample_ids[i],"batch_corr_SNN_k10_k7"]<-adjustedRandIndex(spe_sub$layer_guess_reordered,spe_sub$batch_corr_SNN_k10_k7)
+  ari.df[sample_ids[i],"bayesSpace_pc"]<-adjustedRandIndex(spe_sub$layer_guess_reordered,spe_sub$spatial.cluster.pcs)
+  ari.df[sample_ids[i],"bayesSpace"]<-adjustedRandIndex(spe_sub$layer_guess_reordered,spe_sub$spatial.cluster)
+  
+}
+
+ari.df.long <- gather(ari.df, method, ari, SNN_k10_k7:bayesSpace, factor_key=TRUE)
+
+pdf(here::here("plots","pilot_ARI_clustering_across.pdf"))
+ggplot(ari.df.long, aes(x = method, y=ari)) + 
+  geom_boxplot()+
+  theme_bw()+
+  geom_jitter(color="black", size=0.4, alpha=0.9)+
+  ylim(0,0.6)
+dev.off()
+
+save(ari.df.long, file = here::here("processed-data", "rdata", "spe", "pilot_ari_clustering_across.Rdata"))
 
 
