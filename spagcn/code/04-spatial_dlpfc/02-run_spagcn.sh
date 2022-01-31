@@ -4,7 +4,7 @@
 #$ -o ../../processed-data/04-spatial_dlpfc/02-run_spagcn_$TASK_ID.log
 #$ -e ../../processed-data/04-spatial_dlpfc/02-run_spagcn_$TASK_ID.log
 #$ -l caracol,mf=60G,h_vmem=60G
-#$ -t 3-30
+#$ -t 28-30
 #$ -tc 2
 
 image_info=../../raw-data/04-spatial_dlpfc/sample_info.txt
