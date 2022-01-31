@@ -1,4 +1,8 @@
 import os,sys,csv,re
+
+#  Some of our images exceed the default maximum number of pixels
+os.environ["OPENCV_IO_MAX_IMAGE_PIXELS"] = str(pow(2,40))
+
 import pandas as pd
 import numpy as np
 import scanpy as sc
