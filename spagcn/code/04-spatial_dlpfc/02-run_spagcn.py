@@ -182,12 +182,17 @@ def get_svgs(raw, adata, x_array, y_array, target):
     
     #  Take significant genes only                                
     de_genes_info=de_genes_info[(de_genes_info["pvals_adj"]<0.05)]
-    assert de_genes_info.shape[0] > 0, "No significant SVGs found for domain " + str(target) + "!"
+    if de_genes_info.shape[0] == 0:
+        print("No significant SVGs found for domain " + str(target) + "!")
+        return None
+    
     filtered_info=de_genes_info
     
     #  Take genes that exceed the expression seen in neighboring domains
-    assert np.count_nonzero(filtered_info["in_out_group_ratio"] > min_in_out_group_ratio) > 0, \
-        "Can't find any genes such that more spots in domain " + str(domain) + " express the gene than its neighbors!"
+    if np.count_nonzero(filtered_info["in_out_group_ratio"] > min_in_out_group_ratio) == 0:
+        print("Can't find any genes such that more spots in domain " + str(target) + " express the gene than its neighbors!")
+        return None
+        
     filtered_info = filtered_info[filtered_info["in_out_group_ratio"] > min_in_out_group_ratio]
     
     #  Relax filtering criteria if required to find at least one SVG
