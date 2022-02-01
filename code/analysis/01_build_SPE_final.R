@@ -1041,6 +1041,27 @@ for (i in seq_along(sample_ids)){
 dev.off()
 
 ## import clusters
-spe <- cluster_import(spe,cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"),prefix = "") #use when re-running graph-baed. version control csv files 
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_final.Rdata")
+spe <- cluster_import(spe,cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","bayesSpace_k"),prefix = "") #use when re-running graph-baed. version control csv files 
 
+sample_ids <- unique(colData(spe)$sample_id)
+cluster_colNames <- colnames(colData(spe))[34:45]
+nb.cols <- 12
+mycolors <- colorRampPalette(brewer.pal(8, "Dark2"))(nb.cols)
+
+pdf(file = here::here("plots","vis_clus_bayesSpace_k_grid.pdf"))
+for (i in seq_along(sample_ids)){
+  for(j in seq_along(cluster_colNames)){
+    my_plot <- vis_clus(
+      spe = spe,
+      clustervar = cluster_colNames[j],
+      sampleid = sample_ids[i],
+      colors =  mycolors,
+      ... = paste0(" ",cluster_colNames[j])
+    )
+    print(my_plot)
+  }
+  
+}
+dev.off()
 
