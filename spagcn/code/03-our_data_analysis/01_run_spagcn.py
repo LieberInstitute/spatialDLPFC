@@ -1,4 +1,8 @@
 import os,sys,csv,re
+
+#  Some of our images may exceed the default maximum number of pixels
+os.environ["OPENCV_IO_MAX_IMAGE_PIXELS"] = str(pow(2,40))
+
 import pandas as pd
 import numpy as np
 import scanpy as sc
@@ -17,9 +21,11 @@ from anndata import AnnData
 import pyhere
 import getopt
 
-out_dir_processed = pyhere.here("spagcn/processed-data/03-our_data_analysis")
-out_dir_plots = pyhere.here("spagcn/plots/03-our_data_analysis")
-input_adata_path = pyhere.here("spagcn/processed-data/02-our_data_tutorial/spe_anndata.h5ad")
+analysis_name = '03-our_data_analysis'
+
+out_dir_processed = pyhere.here('spagcn', 'processed-data', analysis_name)
+out_dir_plots = pyhere.here('spagcn', 'plots', analysis_name)
+input_adata_path = pyhere.here('spagcn', 'processed-data', '02-our_data_tutorial', 'spe_anndata.h5ad')
 NUM_META_COLUMNS = 5
 N_CLUSTERS = 7
 
@@ -140,7 +146,9 @@ def fill_meta_column(adata, meta_name, cluster_list, target, NUM_META_COLUMNS):
     
 
 #  Given a raw Anndata, processed AnnData, X and Y array coordinates, and a
-#  target spatial domain, return a DataFrame of info about SVGs
+#  target spatial domain, return a DataFrame of info about SVGs. Under special
+#  conditions, None may be returned instead of a DataFrame, if no valid SVGs
+#  can be found.
 def get_svgs(raw, adata, x_array, y_array, target):
     #Set filtering criterials
     min_in_group_fraction=0.8
@@ -178,12 +186,17 @@ def get_svgs(raw, adata, x_array, y_array, target):
     
     #  Take significant genes only                                
     de_genes_info=de_genes_info[(de_genes_info["pvals_adj"]<0.05)]
-    assert de_genes_info.shape[0] > 0, "No significant SVGs found for domain " + str(target) + "!"
+    if de_genes_info.shape[0] == 0:
+        print("No significant SVGs found for domain " + str(target) + "!")
+        return None
+    
     filtered_info=de_genes_info
     
     #  Take genes that exceed the expression seen in neighboring domains
-    assert np.count_nonzero(filtered_info["in_out_group_ratio"] > min_in_out_group_ratio) > 0, \
-        "Can't find any genes such that more spots in domain " + str(domain) + " express the gene than its neighbors!"
+    if np.count_nonzero(filtered_info["in_out_group_ratio"] > min_in_out_group_ratio) == 0:
+        print("Can't find any genes such that more spots in domain " + str(target) + " express the gene than its neighbors!")
+        return None
+        
     filtered_info = filtered_info[filtered_info["in_out_group_ratio"] > min_in_out_group_ratio]
     
     #  Relax filtering criteria if required to find at least one SVG
@@ -194,8 +207,14 @@ def get_svgs(raw, adata, x_array, y_array, target):
         #  Relax both parameters simultaneously
         min_in_group_fraction -= 0.1
         min_fold_change = (min_fold_change + 1) / 2
-        assert min_in_group_fraction > 0, 'No "min_in_group_fraction" exists that finds any SVGs!'
-        assert min_fold_change > 1.01, 'No "fold_change" > 1.01 exists that finds any SVGs!'
+        
+        if min_in_group_fraction <= 0:
+            print('No "min_in_group_fraction" exists that finds any SVGs for domain ' + str(target) + "!")
+            return None
+        
+        if min_fold_change <= 1.01:
+            print('No "fold_change" > 1.01 exists that finds any SVGs for domain ' + str(target) + "!")
+            return None
         
         print('Warning: lowering "min_in_group_fraction" to ', min_in_group_fraction, 'and "min_fold_change" to ', min_fold_change, 'for domain', target, 'to find at least 1 SVG.')
     
@@ -368,8 +387,7 @@ sc.pp.log1p(raw)
 
 assert all(cluster_list.raw_cluster.values == raw.obs.pred.values)
 
-#  Due to a bug, domain names are not necessarily sequential, hence why 'range'
-#  is not used here
+#  Initialize empty meta-gene columns
 for i in range(NUM_META_COLUMNS):
     cluster_list['meta_gene_' + str(i + 1)] = ''
     
