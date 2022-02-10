@@ -242,7 +242,7 @@ for (i in seq_along(sample_ids)) {
 ari.df.long <- gather(ari.df, method, ari, graph_based_pca_acrossSNN_k10_k7:graph_based_corrected_acrossSNN_k10_k7.x, factor_key=TRUE)
 
 pdf(here::here("plots","my_data_ARI_clustering_across.pdf"))
-ggplot(ari.df.long, aes(x = method, y=ari)) + 
+ggplot(ari.df.long[31:90,], aes(x = method, y=ari)) + 
   geom_boxplot()+
   theme_bw()+
   geom_jitter(color="black", size=0.4, alpha=0.9)+
@@ -285,4 +285,33 @@ dev.off()
 
 save(ari.df.long, file = here::here("processed-data", "rdata", "spe", "pilot_ari_clustering_across.Rdata"))
 
+####remaking plots for fiure 2b, clustering across
+pdf(here::here("plots","my_data_ARI_clustering_across_2.pdf"))
+ggplot(ari.df.long[31:90,], aes(x = method, y=ari)) + 
+  geom_boxplot()+
+  theme_bw()+
+  geom_jitter(color="black", size=0.4, alpha=0.9)+
+  ylim(0,0.6)+
+  theme(text = element_text(size = 10)) 
+dev.off()
 
+####remaking plots for fiure 2b, clustering within
+pdf(here::here("plots","my_data_ARI_clustering_within_2.pdf"))
+ggplot(ari.df.long, aes(x = method, y=ari)) + 
+  geom_boxplot()+
+  theme_bw()+
+  geom_jitter(color="black", size=0.4, alpha=0.9)+
+  ylim(0,0.6)+
+  theme(text = element_text(size = 40)) 
+dev.off()
+
+
+####remaking plots for fiure 2a, clustering across pilot data
+pdf(here::here("plots","pilot_data_ARI_clustering_across_2.pdf"))
+ggplot(ari.df.long, aes(x = method, y=ari)) + 
+  geom_boxplot()+
+  theme_bw()+
+  geom_jitter(color="black", size=0.4, alpha=0.9)+
+  ylim(0,0.6)+
+  theme(text = element_text(size = 40)) 
+dev.off()
