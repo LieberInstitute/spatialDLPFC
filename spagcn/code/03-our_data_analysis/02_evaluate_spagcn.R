@@ -6,9 +6,12 @@ library('mclust')
 library('sessioninfo')
 
 processed_dir = here('spagcn', 'processed-data', '03-our_data_analysis')
+plot_dir = here('spagcn', 'plots', '03-our_data_analysis')
+n_clusters = 7
 
 spe = fetch_data("spe")
 ari_list = list()
+spe_list = list()
 
 #   Compute ARI using 'clusters.csv' files for all samples
 for(id in unique(spe$sample_id)) {
@@ -29,6 +32,8 @@ for(id in unique(spe$sample_id)) {
             sub_spe$layer_guess_reordered_short
         )
     )
+    
+    spe_list[[id]] = sub_spe
 }
 
 #   Form a data frame of ARI info, which will be useful for plotting
@@ -49,6 +54,37 @@ p = ggboxplot(
     ggtheme = theme_pubr(base_size = 20)
 )
 
-pdf(file.path(processed_dir, 'ARI_boxplots.pdf'))
+pdf(file.path(plot_dir, 'ARI_boxplots.pdf'))
 print(p)
 dev.off()
+
+#   We formed a list of SpatialExperiment objects, one object per sample, each
+#   of which had cluster info imported from 'cluster_import'. We want this as
+#   a single object to use with 'vis_grid_clus'
+spe = do.call(cbind, spe_list)
+
+cols <- Polychrome::palette36.colors(n_clusters)
+names(cols) <- sort(unique(spe$imported_raw_cluster))
+
+#   Plot a grid of spatial cluster info for all samples, once for each cluster
+#   type (raw and refined)
+for (method in c('raw', 'refined')) {
+    vis_grid_clus(
+        spe = spe,
+        clustervar = paste0("imported_", method, "_cluster"),
+        pdf_file = file.path(
+            plot_dir, paste0(method, "_cluster_sample_grid.pdf")
+        ),
+        sort_clust = FALSE,
+        colors = cols,
+        spatial = FALSE,
+        point_size = 2
+    )
+}
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
