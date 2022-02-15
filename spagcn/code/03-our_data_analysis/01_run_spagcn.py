@@ -352,7 +352,7 @@ adata.write_h5ad(out_file)
 #  spatialLIBD::import_cluster
 cluster_list = adata.obs[['pred', 'refined_pred']]
 cluster_list.index += '_' + sample_name
-cluster_list.index.name = 'Barcode'
+cluster_list.index.name = 'key'
 cluster_list.rename(
     columns={'pred': 'raw_cluster', 'refined_pred': 'refined_cluster'},
     inplace=True
