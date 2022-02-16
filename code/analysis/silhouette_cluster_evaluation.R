@@ -19,8 +19,20 @@ library(factoextra)
 
 
 # load SPE object 
-load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/spe_final.Rdata")
+load(file = here::here("processed-data","rdata","spe","spe_final.Rdata"))
 
 #import all BayesSpace cluster
+cluster_export(
+  spe,
+  bayesSpace_name,
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results","bayesSpace_k" )
+)
 
+clusterColnames <- paste0("bayesSpace_harmony_",4:15)
+for(i in seq_along(clusterColnames)){
+  ss <- silhouette(spe$clusterColnames[i], dist(reducedDims(spe)$HARMONY))
+}
+
+#1:10pm
 ss <- silhouette(spe$spatial.cluster, dist(reducedDims(spe)$HARMONY))
+

@@ -459,6 +459,10 @@ spe = runUMAP(spe, dimred = "PCA")
 colnames(reducedDim(spe, "UMAP")) = c("UMAP1", "UMAP2")
 Sys.time()
 
+# RunUMAP
+spe = runUMAP(spe, dimred = "PCA")
+
+
 #[1] "2021-12-15 15:22:25 EST"
 #[1] "2021-12-15 15:28:23 EST"
 
