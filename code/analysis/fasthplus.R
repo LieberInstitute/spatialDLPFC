@@ -24,7 +24,7 @@ spe <- cluster_import(
 set.seed(20220216)
 fasthplus <- hpb(D= reducedDims(spe)$HARMONY,L=colData(spe)[[paste0("bayesSpace_harmony_",k)]],t=1446,r=30)
 results <- data.frame (k=k, fasthplus=fasthplus)
-write.csv(results,file = here::here("processed-data","rdata","spe","fasthplus_resuts.csv"), append = TRUE)
+write.table(results,file = here::here("processed-data","rdata","spe","fasthplus_resuts.csv"), append = TRUE)
 
 ## Reproducibility information
 print("Reproducibility information:")
