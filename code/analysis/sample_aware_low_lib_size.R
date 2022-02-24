@@ -574,6 +574,73 @@ with(colData(spe), addmargins(
 #                     TRUE    2480   2386   4866
 #                     Sum   115289   3504 118793
 
+## Exploring whether we could justify dropping cluster 12 from k = 15
+tapply(spe$sum_umi, spe$bayesSpace_harmony_15, summary)
+# $`1`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#      78    2079    2994    3403    4292   46881
+#
+# $`2`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#     124    2120    2971    3411    4220   26262
+#
+# $`3`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#      26     974    1439    1651    2071   12164
+#
+# $`4`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#      59    2084    2959    3433    4281   26418
+#
+# $`5`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    33.0   475.0   657.5   773.8   928.8  3463.0
+#
+# $`6`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#      99     998    1393    1614    1984   13059
+#
+# $`7`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    19.0   312.0   515.0   620.9   818.8  3933.0
+#
+# $`9`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#     214    2071    2867    3320    4093   18305
+#
+# $`10`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#   212.0   917.5  1464.0  1704.8  2148.0  9612.0
+#
+# $`11`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#     209    1424    2048    2411    2989   11888
+#
+# $`12`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#     1.0    41.0   123.0   190.4   232.0  2458.0
+#
+# $`13`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    11.0   342.0   722.0   779.3  1106.0  4244.0
+#
+# $`14`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#     156    1707    2388    2677    3310   18025
+#
+# $`15`
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+#    70.0   618.0   856.0   990.8  1224.0  6940.0
+
+library("ggplot2")
+pdf(here("plots", "BayesSpace_k15_library_size_boxplots.pdf"), width = 14)
+ggplot(data.frame(
+    cluster = spe$bayesSpace_harmony_15,
+    lib_size = log10(spe$sum_umi + 1)
+), aes(x = cluster, y = lib_size, group = cluster)) + geom_boxplot() +
+    ylab("log10(lib_size = 1)") +
+    theme_bw(base_size = 20)
+dev.off()
 
 
 ## Reproducibility information
