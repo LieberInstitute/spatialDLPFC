@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=80G,h_vmem=80G,h_fsize=100G
+#$ -l mem_free=80G,h_vmem=80G,h_fsize=100G
 #$ -N bayesSpace_k_grid
 #$ -o logs/bayesSpace_k_grid.$TASK_ID.txt
 #$ -e logs/bayesSpace_k_grid.$TASK_ID.txt
