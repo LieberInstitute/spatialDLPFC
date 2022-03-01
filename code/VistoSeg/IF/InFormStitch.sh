@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -pe local 5
+#$ -pe local 6
 #$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -o /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/IF/InFormStitch.log
 #$ -e /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/IF/InFormStitch.log
@@ -25,8 +25,8 @@ toolbox='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/Visto
 
 filename='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/VisiumIF/InForm_0%/20220126_VIF_DLPFC_Real_Scan1_*_component_data.tif'
 fname='V10B01-087'
-matlab -nodesktop -nosplash -nojvm -r "addpath(genpath('$toolbox')), O = extractMD(fname); InFormStitch('$filename',O,6,'$fname')"
+fname2='/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/VisiumIF/InForm_0%/20220126_VIF_DLPFC_Real_Scan1_[14415,65835]_component_data.tif'
+matlab -nodesktop -nosplash -nojvm -r "addpath(genpath('$toolbox')), O = extractMD('$fname2'); InFormStitch('$filename',O,6,'$fname')"
 
 echo "**** Job ends ****"
 date
-
