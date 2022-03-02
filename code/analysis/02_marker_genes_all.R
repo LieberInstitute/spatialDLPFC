@@ -31,6 +31,7 @@ human_markers <-
     c(
         "SNAP25",
         "MBP",
+        "MOBP",
         "PCP4",
         "RELN",
         "AQP4",
@@ -41,12 +42,22 @@ human_markers <-
         "RORB"
     )
 
+human_markers <-
+    c(
+        "SNAP25",
+        "MBP",
+        "MOBP",
+        "PCP4",
+        "RELN"
+    )
+
 ## Locate the marker genes
 human_markers_search <- rowData(spe)$gene_search[match(human_markers, rowData(spe)$gene_name)]
 
 ## Create plots directory
 dir.create(here::here("plots", "human_markers"), showWarnings = FALSE)
 
+#pdf(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/human_markers.pdf")
 for (i in human_markers_search) {
     vis_grid_gene(
         spe = spe,
@@ -55,9 +66,8 @@ for (i in human_markers_search) {
         assayname = "counts"
     )
 }
-
+#dev.off()
 sample_ids <- unique(colData(spe)$sample_id)
-
 
 
 

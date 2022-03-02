@@ -1,0 +1,371 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Tue Mar  1 09:44:40 EST 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9285552
+Job name: spatial_dlpfc_build_spe
+Hostname: compute-095.cm.cluster
+Task id: undefined
+Unloading conda_R/4.1.x
+Loading conda_R/4.1.x
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.1.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘dplyr’
+
+The following object is masked from ‘package:Biobase’:
+
+    combine
+
+The following objects are masked from ‘package:GenomicRanges’:
+
+    intersect, setdiff, union
+
+The following object is masked from ‘package:GenomeInfoDb’:
+
+    intersect
+
+The following objects are masked from ‘package:IRanges’:
+
+    collapse, desc, intersect, setdiff, slice, union
+
+The following objects are masked from ‘package:S4Vectors’:
+
+    first, intersect, rename, setdiff, setequal, union
+
+The following objects are masked from ‘package:BiocGenerics’:
+
+    combine, intersect, setdiff, union
+
+The following object is masked from ‘package:matrixStats’:
+
+    count
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘tidyr’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+
+Attaching package: ‘nlme’
+
+The following object is masked from ‘package:dplyr’:
+
+    collapse
+
+The following object is masked from ‘package:IRanges’:
+
+    collapse
+
+Loading required package: scuttle
+Loading required package: ggrepel
+
+Attaching package: ‘PCAtools’
+
+The following object is masked from ‘package:scran’:
+
+    parallelPCA
+
+The following objects are masked from ‘package:stats’:
+
+    biplot, screeplot
+
+Loading required package: Rcpp
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Package 'mclust' version 5.4.7
+Type 'citation("mclust")' for citing this R package in publications.
+Linking to ImageMagick 7.0.10.28
+Enabled features: cairo, fontconfig, freetype, fftw, pango, rsvg, webp, x11
+Disabled features: ghostscript, heic, lcms, raw
+[1] "2022-03-01 09:45:42 EST"
+2022-03-01 09:45:42 SpatialExperiment::read10xVisium: reading basic data from SpaceRanger
+2022-03-01 10:01:34 read10xVisiumAnalysis: reading analysis output from SpaceRanger
+2022-03-01 10:02:13 add10xVisiumAnalysis: adding analysis output from SpaceRanger
+2022-03-01 10:04:08 adding gene information to the SPE object
+2022-03-01 10:04:12 adding information used by spatialLIBD
+[1] "2022-03-01 10:05:12 EST"
+[1]  36601 149757
+[1] 7685
+[1] 20.99669
+4,754,346,424 B
+[1]  36601 149757
+Error in gzfile(file, "wb") : cannot open the connection
+Calls: save -> gzfile
+In addition: Warning message:
+In gzfile(file, "wb") :
+  cannot open compressed file '/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/01_build_spe/spe_raw_final.Rdata', probable reason 'No such file or directory'
+Execution halted
+**** Job ends ****
+Tue Mar  1 10:09:00 EST 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Tue Mar  1 12:35:12 EST 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9286084
+Job name: spatial_dlpfc_build_spe
+Hostname: compute-106.cm.cluster
+Task id: undefined
+Unloading conda_R/4.1.x
+Loading conda_R/4.1.x
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.1.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: scuttle
+Loading required package: ggplot2
+Loading required package: ggrepel
+
+Attaching package: ‘PCAtools’
+
+The following object is masked from ‘package:scran’:
+
+    parallelPCA
+
+The following objects are masked from ‘package:stats’:
+
+    biplot, screeplot
+
+Loading required package: Rcpp
+[1] "2022-03-01 12:35:33 EST"
+2022-03-01 12:35:33 SpatialExperiment::read10xVisium: reading basic data from SpaceRanger
+2022-03-01 12:41:04 read10xVisiumAnalysis: reading analysis output from SpaceRanger
+2022-03-01 12:41:30 add10xVisiumAnalysis: adding analysis output from SpaceRanger
+2022-03-01 12:41:35 rtracklayer::import: reading the reference GTF file
+2022-03-01 12:42:19 adding gene information to the SPE object
+2022-03-01 12:42:20 adding information used by spatialLIBD
+[1] "2022-03-01 12:42:30 EST"
+[1]  36601 149757
+[1] 7685
+[1] 20.99669
+4,754,346,424 B
+[1]  36601 149757
+[1]  28916 149757
+[1]  28916 118800
+[1]  28916 118793
+4,664,781,528 B
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/in_tissue_grid.pdf"
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.0    66.0   170.0   291.6   326.0 39053.0 
+
+ 0  1  2  3  4  5 
+12 17 50 59 65 81 
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/out_tissue_sum_umi_all.pdf"
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.0    55.0   133.0   206.6   249.0  7956.0 
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/out_tissue_sum_gene_all.pdf"
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+ 0.0000  0.1500  0.1947  0.2072  0.2500  1.0000      12 
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/out_tissue_expr_chrM_ratio_all.pdf"
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      1    1358    2310    2674    3540   46881 
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/in_tissue_sum_umi_all.pdf"
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      1     910    1426    1508    1999    8344 
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/in_tissue_sum_gene_all.pdf"
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00000 0.07279 0.10440 0.12106 0.15513 1.00000 
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/in_tissue_expr_chrM_ratio_all.pdf"
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/all_sum_umi.pdf"
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/all_sum_gene.pdf"
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/all_expr_chrM_ratio.pdf"
+             low_lib_size            low_n_features high_subsets_Mito_percent 
+                     5043                      6036                      3740 
+                  discard 
+                     9183 
+[1] "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/01_build_spe/vis_clus_sample_aware_low_lib_size.pdf"
+[1] "2022-03-01 13:02:14 EST"

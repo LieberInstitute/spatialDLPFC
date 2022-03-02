@@ -10,21 +10,15 @@
 ## utils
 library("here")
 library("sessioninfo")
-library("pryr")
 
 ## reading the data
 library("SpatialExperiment")
 library("rtracklayer")
-library(readr)
-library(readxl)
-library(dplyr)
-library(tidyr)
+
 
 ## vis
 library("spatialLIBD")
 library("RColorBrewer")
-library(nlme)
-library(ggplot2)
 
 ## analysis
 library("scran") ## requires uwot for UMAP
@@ -32,15 +26,6 @@ library("scater")
 library("BiocParallel")
 library("PCAtools")
 library(harmony)
-library(uwot)
-library(mclust)
-library(aricode)
-library(BayesSpace)
-library(Polychrome)
-library(patchwork)
-library(broom)
-library(magick)
-
 
 
 ## Related to https://github.com/LTLA/scuttle/issues/7#issuecomment-778710244
@@ -122,10 +107,10 @@ spe <- read10xVisiumWrapper(
 )
 Sys.time()
 
-#[1] "2021-12-15 10:59:02 EST"
-#[1] "2021-12-15 11:10:57 EST"
+#[1] "2022-03-01 11:22:49 EST"
 
 ## Add the experimental information
+spe$key <- paste0(colnames(spe), '_', spe$sample_id)
 spe$subject <- sample_info$subjects[match(spe$sample_id, sample_info$sample_id)]
 spe$region <- sample_info$regions[match(spe$sample_id, sample_info$sample_id)]
 spe$sex <- sample_info$sex[match(spe$sample_id, sample_info$sample_id)]
@@ -138,24 +123,22 @@ is_mito <- which(seqnames(spe) == "chrM")
 spe$expr_chrM <- colSums(counts(spe)[is_mito, , drop = FALSE])
 spe$expr_chrM_ratio <- spe$expr_chrM / spe$sum_umi
 
-## Add number of cells per spot
-spe$cell_count <- NA
-# ## Read in cell counts and segmentation results
-# segmentations_list <- lapply(sample_info$sample_id, function(sampleid) {
-#   current<-sample_info$sample_path[sample_info$sample_id==sampleid]
-#   file <- file.path(current, "spatial", "tissue_spot_counts.csv")
-#   if(!file.exists(file)) return(NULL)
-#   x <- read.csv(file)
-#   x$key <- paste0(x$barcode, "_", sampleid)
-#   return(x)
-# })
-# ## Merge them (once the these files are done, this could be replaced by an rbind)
-# segmentations <- Reduce(function(...) merge(..., all = TRUE), segmentations_list[lengths(segmentations_list) > 0])
-# 
-# ## Add the information
-# segmentation_match <- match(spe_wrapper$key, segmentations$key)
-# segmentation_info <- segmentations[segmentation_match, - which(colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")), drop=FALSE]
-# colData(spe_wrapper) <- cbind(colData(spe_wrapper), segmentation_info)
+## Read in cell counts and segmentation results
+segmentations_list <- lapply(sample_info$sample_id, function(sampleid) {
+  current<-sample_info$sample_path[sample_info$sample_id==sampleid]
+  file <- file.path(current, "spatial", "tissue_spot_counts.csv")
+  if(!file.exists(file)) return(NULL)
+  x <- read.csv(file)
+  x$key <- paste0(x$barcode, "_", sampleid)
+  return(x)
+})
+## Merge them (once the these files are done, this could be replaced by an rbind)
+segmentations <- Reduce(function(...) merge(..., all = TRUE), segmentations_list[lengths(segmentations_list) > 0])
+
+## Add the information
+segmentation_match <- match(spe$key, segmentations$key)
+segmentation_info <- segmentations[segmentation_match, - which(colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")), drop=FALSE]
+colData(spe) <- cbind(colData(spe), segmentation_info)
 
 dim(spe)
 # [1]  36601 149757
@@ -177,7 +160,6 @@ dim(spe_raw)
 # [1] 36601 149757
 
 ## Save the raw version now
-dir.create(here::here("rdata", "spe","01_build_spe"), showWarnings = FALSE)
 save(spe_raw, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_raw_final.Rdata"))
 
 #remove genes that are not expressed in any spots
@@ -200,11 +182,10 @@ pryr::object_size(spe)
 # 4,664,781,528 B
 
 ## Inspect in vs outside of tissue
-dir.create(here::here("plots", "01_build_spe"), showWarnings = FALSE)
 
 vis_grid_clus(
   spe = spe_raw,
-  clustervar = "in_tissue",
+  clustervar = "in_tissue", x,
   pdf = here::here("plots", "01_build_spe","in_tissue_grid.pdf"),
   sort_clust = FALSE,
   colors = c("TRUE" = "grey90", "FALSE" = "orange")
@@ -316,8 +297,17 @@ colSums(as.matrix(qcfilter))
 
 spe$scran_discard <-
   factor(qcfilter$discard, levels = c("TRUE", "FALSE"))
+## Compute the low library size thresholds in a sample-aware way
 spe$scran_low_lib_size <-
-  factor(qcfilter$low_lib_size, levels = c("TRUE", "FALSE"))
+  factor(
+    isOutlier(
+      spe$sum_umi,
+      type = "lower",
+      log = TRUE,
+      batch = spe$sample_id
+    ),
+    levels = c("TRUE", "FALSE")
+  )
 spe$scran_low_n_features <-
   factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
 spe$scran_high_subsets_Mito_percent <-
@@ -333,8 +323,40 @@ for(i in colnames(qcfilter)) {
   )
 }
 
+## Sample-aware low-library size
+vis_grid_clus(
+  spe = spe,
+  clustervar = "scran_low_lib_size",
+  pdf = here("plots", "01_build_spe",paste0("vis_clus_sample_aware_low_lib_size.pdf")),
+  sort_clust = FALSE,
+  colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+  spatial = FALSE,
+  point_size = 2,
+  height = 24,
+  width = 90
+)
+
+#save
+save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_final.Rdata"))
+
+#discard low library size and save spe
+dim(spe)
+# [1]  36601 149757
+
+## Remove genes with no data
+low_lib_remove <- which(colData(spe)$scran_low_lib_size == TRUE)
+
+length(low_lib_remove)
+# [1] 7685
+
+#remove remove spots that have low lib size
+spe <- spe[,-low_lib_remove]
+
+save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_final_filtered.Rdata"))
+
+
 ## Find quick clusters
-set.seed(20191112)
+set.seed(030122)
 Sys.time()
 spe$scran_quick_cluster <- quickCluster(
   spe,
@@ -343,21 +365,15 @@ spe$scran_quick_cluster <- quickCluster(
   block.BPPARAM = MulticoreParam(4)
 )
 Sys.time()
-# [1] "2021-12-15 13:06:04 EST"
-# [1] "2021-12-15 13:17:12 EST"
+
 
 Sys.time()
-#[1] "2021-12-15 13:19:48 EST"
-## Might be needed:
-# options(error = recover)
 spe <-
   computeSumFactors(spe,
                     clusters = spe$scran_quick_cluster,
                     BPPARAM = MulticoreParam(4)
   )
 Sys.time()
-#"2021-12-07 13:24:55 EST"
-# 1] "2021-12-15 13:40:18 EST"
 
 
 ## Related to https://github.com/LTLA/scuttle/issues/7
@@ -420,4 +436,90 @@ save(top.hvgs,
      top.hvgs.fdr5,
      top.hvgs.fdr1,
      file = here::here("processed-data", "rdata", "spe","01_build_spe", "top.hvgs_all.Rdata"))
+
+set.seed(020122)
+Sys.time()
+spe <- runPCA(spe, subset_row = top.hvgs, ncomponents = 50)
+Sys.time()
+
+dim(reducedDim(spe, "PCA"))
+# 118793     50
+
+#make elbow plot to determine PCs to use
+percent.var <- attr(reducedDim(spe,"PCA"), "percentVar")
+chosen.elbow <- PCAtools::findElbowPoint(percent.var)
+chosen.elbow
+# 50
+
+pdf(
+  here::here("plots","01_build_spe", "pca_elbow_final.pdf"),
+  useDingbats = FALSE
+)
+plot(percent.var, xlab="PC", ylab="Variance explained (%)")
+abline(v=chosen.elbow, col="red")
+dev.off()
+
+
+summary(apply(reducedDim(spe, "PCA"), 2, sd))
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.9184  0.9343  0.9509  1.1872  1.0561  4.1944 
+
+# RunUMAP
+set.seed(030122)
+Sys.time()
+spe = runUMAP(spe, dimred = "PCA")
+colnames(reducedDim(spe, "UMAP")) = c("UMAP1", "UMAP2")
+Sys.time()
+
+#Run TSNE
+set.seed(030122)
+Sys.time()
+spe <-
+  runTSNE(spe,
+          dimred = "PCA",
+          name = "TSNE_perplexity80",
+          perplexity = 80
+  )
+Sys.time()
+#[1] "2021-12-15 15:30:48 EST"
+#[1] "2021-12-15 16:49:28 EST"
+
+
+#make plots of UMAP
+pdf(file=here::here("plots", "01_build_spe","UMAP_subject.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP")), 
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$subject))) +
+  geom_point() +
+  labs(color = "Subject") +
+  theme_bw()
+dev.off()
+
+pdf(file=here::here("plots", "01_build_spe","UMAP_sample_id.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP")), 
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
+  geom_point() +
+  labs(color = "sample_id") +
+  theme_bw()
+dev.off()
+
+
+###harmony batch correction
+spe = RunHarmony(spe, "sample_id", verbose = F)
+spe = runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
+colnames(reducedDim(spe, "UMAP.HARMONY")) = c("UMAP1", "UMAP2")
+
+
+pdf(file=here::here("plots", "01_build_spe","UMAP_harmony_sample_id.pdf"))
+ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
+       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
+  geom_point() +
+  labs(color = "sample_id") +
+  theme_bw()
+dev.off()
+
+Sys.time()
+save(spe, file = here::here("processed-data","rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
+Sys.time()
+#[1] "2021-12-16 15:02:28 EST"
+
 

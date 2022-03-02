@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=50G,h_vmem=50G,h_fsize=100G
+#$ -l mem_free=40G,h_vmem=40G,h_fsize=100G
 #$ -N spatial_dlpfc_build_spe
 #$ -o logs/build_spe.txt
 #$ -e logs/build_spe.txt
