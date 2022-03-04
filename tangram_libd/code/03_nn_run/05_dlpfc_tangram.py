@@ -114,7 +114,10 @@ tg.project_cell_annotations(ad_map, ad_sp, annotation="cellType")
 annotation_list = list(pd.unique(ad_sc.obs['cellType']))
 
 #  Plot spatial expression by cell-type label
-tg.plot_cell_annotation_sc(ad_sp, annotation_list, perc=0.02)
+tg.plot_cell_annotation_sc(
+    ad_sp, annotation_list, x='pxl_row_in_fullres', y='pxl_col_in_fullres',
+    perc=0.02
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'),
@@ -130,11 +133,11 @@ f.savefig(
 )
 
 #  Project all cells based on trained mapping, and save the result
-ad_ge = tg.project_genes(ad_map=ad_map, ad_sc=ad_sc)
+ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
 ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge_' + sample_name + '.h5ad'))
 
-#  Plot low-scoring training genes
-genes = ['rragb', 'trim17', 'eno1b'] #  Will need to adjust this for our data
+#  Plot 5 lowest-scoring training genes
+genes = ad_map.uns['train_genes_df']['train_score'][-5:]
 ad_map.uns['train_genes_df'].loc[genes]
 tg.plot_genes_sc(genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02)
 f = plt.gcf()
