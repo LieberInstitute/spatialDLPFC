@@ -79,6 +79,9 @@ ad_sc = sc.read_h5ad(sc_path)
 
 with open(marker_path, 'r') as f:
     markers = f.read().splitlines()
+
+#  Use Ensembl IDs as gene names for both AnnDatas
+ad_sc.var.index = ad_sc.var.gene_id
     
 #  Note when genes of interest are present in the training set  
 select_genes = ad_sp.var.gene_id[ad_sp.var.gene_name.isin(select_genes_names)]
