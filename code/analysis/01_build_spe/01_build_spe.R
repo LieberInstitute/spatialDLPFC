@@ -517,9 +517,30 @@ ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
   theme_bw()
 dev.off()
 
+
+###########for bayesSpace
+
+##do offset so we can run BayesSpace
+auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
+names(auto_offset_row) <-unique(spe$sample_id)
+spe$row <- colData(spe)$array_row + auto_offset_row[spe$sample_id]
+spe$col <- colData(spe)$array_col
+
+## Set the BayesSpace metadata using code from
+## https://github.com/edward130603/BayesSpace/blob/master/R/spatialPreprocess.R#L43-L46
+metadata(spe)$BayesSpace.data <- list(platform = "Visium", is.enhanced = FALSE)
+
+message("Running spatialCluster()")
+
 Sys.time()
 save(spe, file = here::here("processed-data","rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
 Sys.time()
-#[1] "2021-12-16 15:02:28 EST"
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
 
