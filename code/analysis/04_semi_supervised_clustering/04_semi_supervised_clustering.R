@@ -1,8 +1,28 @@
+library(SingleCellExperiment)
+library(scran)
+library(scater)
+library(readr)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(uwot)
+library(mclust)
+library(aricode)
+library(nlme)
+library(ggplot2)
+library(RColorBrewer)
+library(Polychrome)
+library(patchwork)
+library(broom)
+library(magick)
+library(harmony)
+
+
 ## perform within and across?
+load(file=here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"))
 
 #semi_supervised 
 #adapted from Luka's script https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/SpatialDE_clustering.Rmd
-
 # sample names
 sample_names <- paste0("sample_", unique(colData(spe)$sample_id))
 sample_names
@@ -73,23 +93,15 @@ stopifnot(nrow(dims_pseudobulk_UMAP) == ncol(spe))
 
 reducedDims(spe)$pseudobulk_UMAP <- dims_pseudobulk_UMAP
 
-#plot UMAP before batch correction
-# ggplot(data.frame(reducedDim(sce.combined, "UMAP")), 
-#        aes(x = UMAP1, y = UMAP2, color = factor(sce.combined$sample_name))) +
-#   geom_point() +
-#   labs(color = "Sample") +
-#   theme_bw()
 
-
-
-###harmony batch correction
+###do harmony batch correction for PCA calculated using pseudobulk genes
 spe = RunHarmony(spe, "sample_id",reduction = "pseudobulk_PCA", verbose = F)
 
 spe = runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
 colnames(reducedDim(spe, "UMAP.HARMONY")) = c("UMAP1", "UMAP2")
 
 
-pdf(file=here::here("plots", "UMAP_pseudobulk_harmony_sample_id.pdf"))
+pdf(file=here::here("plots","04_semi_supervised_clustering","UMAP_pseudobulk_harmony_sample_id.pdf"))
 ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
        aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
   geom_point() +
@@ -98,7 +110,7 @@ ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
 dev.off()
 
 Sys.time()
-save(spe, file = here::here("processed-data","rdata", "spe", "spe_final_pseudobulk.Rdata"))
+save(spe, file = here::here("processed-data","rdata", "spe","01_build_spe","spe_filtered_final_pseudobulk.Rdata"))
 Sys.time()
 
 
@@ -133,6 +145,7 @@ run_clustering <- function(input, method) {
 d_plot <- rbind(d_plot, run_clustering(reducedDim(spe, "HARMONY"), method = "pseudobulk_PCA"))
 d_plot <- rbind(d_plot, run_clustering(reducedDim(spe, "UMAP.HARMONY"), method = "pseudobulk_UMAP"))
 
+save(d_plot, file = here::here("processed-data","rdata","spe","clustering_results","d_plot_semi_supervised_across.Rdata"))
 
 library(tidyr)
 #divide d_plot by method
@@ -142,6 +155,7 @@ d_plot_wide$key <-gsub("sample_","", with(d_plot_wide,paste0(spot_name,"_",sampl
 #drop two columns we used to make the key
 d_plot_wide$spot_name <- NULL
 d_plot_wide$sample_name <-NULL
+
 #match keys and reorder
 #https://github.com/LieberInstitute/spatialLIBD/blob/master/R/cluster_import.R#L51-L64
 merged_info <-
@@ -161,10 +175,10 @@ colnames(spe) <- spot_names
 
 ##make plot
 sample_ids <- unique(colData(spe)$sample_id)
-cluster_colNames <- c("pseudobulk_PCA.y","pseudobulk_UMAP")
+cluster_colNames <- c("pseudobulk_PCA","pseudobulk_UMAP")
 mycolors <- brewer.pal(7, "Dark2")
 
-pdf(file = here::here("plots","vis_clus_semi_supervised_across_samples_2.pdf"))
+pdf(file = here::here("plots","vis_clus_semi_supervised_across_samples.pdf"))
 for (i in seq_along(sample_ids)){
   for(j in seq_along(cluster_colNames)){
     my_plot <- vis_clus(
@@ -179,5 +193,17 @@ for (i in seq_along(sample_ids)){
   
 }
 dev.off()
+
+cluster_export(
+  spe,
+  "pseduobulk_PCA_across",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+)
+
+cluster_export(
+  spe,
+  "pseduobulk_PCA_across",
+  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+)
 
 with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA.y,sample_id)))
