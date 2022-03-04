@@ -25,6 +25,7 @@ import matplotlib as mpl
 import skimage
 import seaborn as sns
 import tangram as tg
+from PIL import Image
 
 plot_dir = pyhere.here('tangram_libd', 'plots', '03_nn_run', 'DLPFC')
 out_dir = pyhere.here(
@@ -167,3 +168,82 @@ f.savefig(
     os.path.join(plot_dir, 'test_auc_' + sample_name + '.png'),
     bbox_inches='tight'
 )
+
+################################################################################
+#   Deconvolution
+################################################################################
+
+#   Read histology image in as numpy array
+img_arr = np.array(
+    Image.open(
+        str(
+            pyhere.here(
+                "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
+            )
+        )
+    )
+)
+
+#   Convert to squidpy ImageContainer
+img = sq.im.ImageContainer(img_arr)
+
+#   Apply smoothing and compute segmentation masks
+sq.im.process(img=img, layer="image", method="smooth")
+sq.im.segment(
+    img=img,
+    layer="image_smooth",
+    method="watershed",
+    channel=0,
+)
+
+#-------------------------------------------------------------------------------
+#   Visualize segmentation results
+#-------------------------------------------------------------------------------
+
+# inset_y = 1500
+# inset_x = 1700
+# inset_sy = 400
+# inset_sx = 500
+
+# fig, axs = plt.subplots(1, 3, figsize=(30, 10))
+# sc.pl.spatial(
+#     adata_st, color="cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], title=""
+# )
+# axs[0].set_title("Clusters", fontdict={"fontsize": 20})
+# sf = adata_st.uns["spatial"]["V1_Adult_Mouse_Brain_Coronal_Section_2"]["scalefactors"][
+#     "tissue_hires_scalef"
+# ]
+# rect = mpl.patches.Rectangle(
+#     (inset_y * sf, inset_x * sf),
+#     width=inset_sx * sf,
+#     height=inset_sy * sf,
+#     ec="yellow",
+#     lw=4,
+#     fill=False,
+# )
+# axs[0].add_patch(rect)
+
+# axs[0].axes.xaxis.label.set_visible(False)
+# axs[0].axes.yaxis.label.set_visible(False)
+
+# axs[1].imshow(
+#     img["image"][inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx, 0, 0]
+#     / 65536,
+#     interpolation="none",
+# )
+# axs[1].grid(False)
+# axs[1].set_xticks([])
+# axs[1].set_yticks([])
+# axs[1].set_title("DAPI", fontdict={"fontsize": 20})
+
+# crop = img["segmented_watershed"][
+#     inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx
+# ].values.squeeze(-1)
+# crop = skimage.segmentation.relabel_sequential(crop)[0]
+# cmap = plt.cm.plasma
+# cmap.set_under(color="black")
+# axs[2].imshow(crop, interpolation="none", cmap=cmap, vmin=0.001)
+# axs[2].grid(False)
+# axs[2].set_xticks([])
+# axs[2].set_yticks([])
+# axs[2].set_title("Nucleous segmentation", fontdict={"fontsize": 20});
