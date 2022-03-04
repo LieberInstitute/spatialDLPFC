@@ -9,7 +9,7 @@ library("spatialLIBD")
 library(BayesSpace)
 library("RColorBrewer")
 
-load(file = here::here("processed-data","rdata","spe","spe_final.Rdata"),verbose = TRUE)
+load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
 
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
@@ -18,12 +18,12 @@ set.seed(030122)
 ##do offset so we can run BayesSpace
 auto_offset_row <- as.numeric(factor(unique(spe$sample_id))) * 100
 names(auto_offset_row) <-unique(spe$sample_id)
-spe$row <- spatialData(spe)$array_row + auto_offset_row[spe$sample_id]
-spe$col <- spatialData(spe)$array_col
+spe$row <- colData(spe)$array_row + auto_offset_row[spe$sample_id]
+spe$col <- colData(spe)$array_col
 
-save(spe, file = here::here("processed-data","rdata","spe","spe_final.Rdata"),verbose = TRUE)
+save(spe, file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
 
-pdf(file=here::here("plots","03_BayesSpace", "bayesSpace_offset_check.pdf"))
+pdf(file=here::here("plots","03_BayesSpace", "BayesSpace_offset_check.pdf"))
 clusterPlot(spe, "subject", color = NA) + #make sure no overlap between samples
   labs(fill = "Subject", title = "Offset check")
 dev.off()
@@ -83,7 +83,6 @@ for (i in seq_along(sample_ids)){
   print(my_plot)
 }
 dev.off()
-
 
 
 ## Reproducibility information
