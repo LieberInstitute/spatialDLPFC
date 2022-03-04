@@ -352,7 +352,7 @@ length(low_lib_remove)
 #remove remove spots that have low lib size
 spe <- spe[,-low_lib_remove]
 
-save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_final_filtered.Rdata"))
+save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
 
 ##stopping here
 ## Find quick clusters
