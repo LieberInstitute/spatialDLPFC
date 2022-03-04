@@ -27,17 +27,29 @@ import seaborn as sns
 import tangram as tg
 
 plot_dir = pyhere.here('tangram_libd', 'plots', '03_nn_run', 'DLPFC')
-out_dir = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'tangram_out_DLPFC')
+out_dir = pyhere.here(
+    'tangram_libd', 'processed-data', '03_nn_run', 'tangram_out_DLPFC'
+)
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(out_dir).mkdir(parents=True, exist_ok=True)
 
-sc_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'sce_DLPFC.h5ad')
-sp_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'visium_DLPFC.h5ad')
-marker_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'pan_markers.txt')
-sample_path = pyhere.here('tangram_libd', 'processed-data', '03_nn_run', 'brain_samples.txt')
+sc_path = pyhere.here(
+    'tangram_libd', 'processed-data', '03_nn_run', 'sce_DLPFC.h5ad'
+)
+sp_path = pyhere.here(
+    'tangram_libd', 'processed-data', '03_nn_run', 'visium_DLPFC.h5ad'
+)
+marker_path = pyhere.here(
+    'tangram_libd', 'processed-data', '03_nn_run', 'pan_markers.txt'
+)
+sample_path = pyhere.here(
+    'tangram_libd', 'processed-data', '03_nn_run', 'brain_samples.txt'
+)
 
 #  Genes we want to plot predicted vs. actual expression for
-select_genes_names = ['SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN']
+select_genes_names = [
+    'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
+]
 
 print('Using tangram version:', tg.__version__)
 
@@ -100,12 +112,18 @@ annotation_list = list(pd.unique(ad_sc.obs['cellType']))
 #  Plot spatial expression by cell-type label
 tg.plot_cell_annotation_sc(ad_sp, annotation_list, perc=0.02)
 f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'), bbox_inches='tight')
+f.savefig(
+    os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'),
+    bbox_inches='tight'
+)
 
 #  Plot training scores
 tg.plot_training_scores(ad_map, bins=20, alpha=.5)
 f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'train_scores_' + sample_name + '.pdf'), bbox_inches='tight')
+f.savefig(
+    os.path.join(plot_dir, 'train_scores_' + sample_name + '.pdf'),
+    bbox_inches='tight'
+)
 
 #  Project all cells based on trained mapping, and save the result
 ad_ge = tg.project_genes(ad_map=ad_map, ad_sc=ad_sc)
@@ -116,13 +134,23 @@ genes = ['rragb', 'trim17', 'eno1b'] #  Will need to adjust this for our data
 ad_map.uns['train_genes_df'].loc[genes]
 tg.plot_genes_sc(genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02)
 f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'mapped_low_scoring_train_genes_' + sample_name + '.png'), bbox_inches='tight')
+f.savefig(
+    os.path.join(
+        plot_dir, 'mapped_low_scoring_train_genes_' + sample_name + '.png'
+    ),
+    bbox_inches='tight'
+)
 
 #  Plot genes not present in spatial data
 genes=['loc102633833', 'gm5700', 'gm8292'] # adjust for our data
 tg.plot_genes_sc(genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02)
 f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'mapped_missing_visium_genes_' + sample_name + '.png'), bbox_inches='tight')
+f.savefig(
+    os.path.join(
+        plot_dir, 'mapped_missing_visium_genes_' + sample_name + '.png'
+    ),
+    bbox_inches='tight'
+)
 
 #  Compute average cosine similarity for test genes
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp, ad_sc)
@@ -135,4 +163,7 @@ print('Average training score:', round(float(train_score), 4))
 
 tg.plot_auc(df_all_genes)
 f = plt.gcf()
-f.savefig(os.path.join(plot_dir, 'test_auc_' + sample_name + '.png'), bbox_inches='tight')
+f.savefig(
+    os.path.join(plot_dir, 'test_auc_' + sample_name + '.png'),
+    bbox_inches='tight'
+)
