@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=40G,h_vmem=40G,h_fsize=100G
+#$ -l mem_free=130G,h_vmem=90G,h_fsize=130G
 #$ -N spatial_dlpfc_build_spe
 #$ -o logs/build_spe.txt
 #$ -e logs/build_spe.txt
@@ -17,7 +17,7 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
-module load conda_R/4.1.x
+module load conda_R/devel
 
 ## List current modules for reproducibility
 module list
