@@ -8,6 +8,7 @@ library("SpatialExperiment")
 library("spatialLIBD")
 library(BayesSpace)
 library("RColorBrewer")
+library(ggplot2)
 
 load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
 
