@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol, mem_free=40G,h_vmem=40G,h_fsize=100G
+#$ -l caracol,mem_free=40G,h_vmem=40G,h_fsize=100G
 #$ -N marker_genes
 #$ -o logs/marker_genes.txt
 #$ -e logs/marker_genes.txt
