@@ -132,7 +132,7 @@ cluster_colNames <- paste0("Harmony_SNN_k10_k",4:28)
 for (i in seq_along(cluster_colNames)){
   colData(spe) <- cbind(colData(spe),clust_k5_list[i])
 }
-colnames(colData(spe))[33:57] <- cluster_colNames
+colnames(colData(spe))[35:59] <- cluster_colNames ### this needs to be edited
 
 cluster_export(
   spe,
@@ -251,7 +251,7 @@ for (i in seq_along(sample_names)) {
   
 }
 
-save(d_plot, file = here::here("processed-data","rdata","spe","clustering_results","graph_based_within_samples","d_plot.Rdata"))
+save(d_plot, file = here::here("processed-data","rdata","spe","02_graph_based_clustering","d_plot_harmony_within.Rdata"))
 
 library(tidyr)
 #divide d_plot by method
