@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=100G,h_vmem=100G,h_fsize=100G
-#$ -N spatial_dlpfc_build_spe
+#$ -N semi_supervised_clustering
 #$ -o logs/semi_supervised.txt
 #$ -e logs/semi_supervised.txt
 

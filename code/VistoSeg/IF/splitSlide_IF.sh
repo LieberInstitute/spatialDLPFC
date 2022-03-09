@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -pe local 5
+#$ -pe local 10
 #$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -o /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/IF/splitSlide_IF.txt
 #$ -e /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/IF/splitSlide_IF.txt

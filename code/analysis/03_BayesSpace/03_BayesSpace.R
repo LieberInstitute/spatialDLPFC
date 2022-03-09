@@ -35,7 +35,6 @@ cluster_export(
 )
 
 sample_ids <- unique(colData(spe)$sample_id)
-mycolors <- brewer.pal(7, "Dark2")
 
 pdf(file = here::here("plots","03_BayesSpace",paste0("vis_clus_bayesSpace_harmony_",k,".pdf")))
 for (i in seq_along(sample_ids)){
@@ -43,7 +42,7 @@ for (i in seq_along(sample_ids)){
     spe = spe,
     clustervar = bayesSpace_name,
     sampleid = sample_ids[i],
-    colors =  mycolors
+    colors = setNames(Polychrome::palette36.colors(k),seq_len(k))
   )
   print(my_plot)
 }

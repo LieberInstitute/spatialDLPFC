@@ -16,3 +16,112 @@ Task id: undefined
 ****
 /cm/local/apps/sge/sge-8.1.9/default/spool/compute-054/job_scripts/9286055: line 24: unexpected EOF while looking for matching `''
 /cm/local/apps/sge/sge-8.1.9/default/spool/compute-054/job_scripts/9286055: line 29: syntax error: unexpected end of file
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Tue Mar  1 12:28:05 EST 2022
+**** JHPCE info ****
+User: mtippani
+Job id: 9286066
+Job name: splitSlide_IF.sh
+Hostname: compute-102.cm.cluster
+Task id: undefined
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+The IF image has 6 channels
+Splitting whole slide into individual capture areas
+{Out of memory. Type "help memory" for your options.
+
+Error in splitSlide_IF (line 16)
+    I2.(O{i}) = img.(O{i})(round(y/4)+1:round(y/4)*2,:);
+} 
+>> mv: cannot stat ‘/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/VisiumIF/InForm_0%/V10B01-087_*1*’: No such file or directory
+**** Job ends ****
+Tue Mar  1 12:36:20 EST 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Tue Mar  1 13:37:44 EST 2022
+**** JHPCE info ****
+User: mtippani
+Job id: 9289489
+Job name: splitSlide_IF.sh
+Hostname: compute-105.cm.cluster
+Task id: undefined
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+The IF image has 6 channels
+Splitting whole slide into individual capture areas
+Elapsed time is 6.705468 seconds.
+{Out of memory. Type "help memory" for your options.
+
+Error in splitSlide_IF (line 17)
+    I3.(O{i}) = img.(O{i})((round(y/4)*2)+1:round(y/4)*3,:);
+} 
+>> mv: cannot stat ‘/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/VisiumIF/InForm_0%/V10B01-087_*1*’: No such file or directory
+**** Job ends ****
+Tue Mar  1 13:45:38 EST 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Tue Mar  1 18:16:39 EST 2022
+**** JHPCE info ****
+User: mtippani
+Job id: 9289682
+Job name: splitSlide_IF.sh
+Hostname: compute-048.cm.cluster
+Task id: undefined
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+The IF image has 6 channels
+Splitting whole slide into individual capture areas
+Elapsed time is 15.492608 seconds.
+Elapsed time is 14.299128 seconds.
+Elapsed time is 13.465185 seconds.
+Elapsed time is 13.185988 seconds.
+Elapsed time is 14.522968 seconds.
+Elapsed time is 13.144540 seconds.
+>> **** Job ends ****
+Tue Mar  1 18:46:10 EST 2022
