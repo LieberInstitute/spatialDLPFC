@@ -31,8 +31,26 @@ dim(spe)
 dim(reducedDims(spe)$HARMONY)
 #[1] 99574    50
 
+find_t <- function(L, proportion = 0.05) {
+  initial_t <- floor(length(L) * proportion)
+  smallest_cluster_size <- min(table(L))
+  n_labels <- length(unique(L))
+  ifelse(smallest_cluster_size > (initial_t / n_labels), initial_t, smallest_cluster_size * n_labels)
+}
+
+initial_t <- find_t(L=colData(spe)[[paste0("bayesSpace_harmony_",k)]],proportion = 0.01)
+
+cluster_prop <- table(colData(spe)[[paste0("bayesSpace_harmony_",k)]]) / ncol(spe)
+bad_clusters <- which(cluster_prop < 0.01 / k)
+if(length(bad_clusters) > 0) {
+  message("For k: ", k, " we are dropping small clusters: ", paste(names(bad_clusters), collapse = ", "))
+  spe <- spe[, !colData(spe)[[paste0("bayesSpace_harmony_",k)]] %in% as.integer(names(bad_clusters))]
+  updated_t <- find_t(colData(spe)[[paste0("bayesSpace_harmony_", k)]], 0.01)
+  message("initial t: ", initial_t, "; updated t: ", updated_t)
+}
+
 set.seed(20220216)
-fasthplus <- hpb(D= reducedDims(spe)$HARMONY,L=colData(spe)[[paste0("bayesSpace_harmony_",k)]],t=200,r=30) # t= 99574*0.01
+fasthplus <- hpb(D= reducedDims(spe)$HARMONY,L=colData(spe)[[paste0("bayesSpace_harmony_",k)]],t=updated_t,r=30)
 results <- data.frame (k=k, fasthplus=fasthplus)
 write.table(results,file = here::here("processed-data","rdata","spe","06_fasthplus","fasthplus_results_no_WM.csv"), append = TRUE)
 
@@ -43,21 +61,3 @@ proc.time()
 options(width = 120)
 session_info()
 
-find_t <- function(L, proportion = 0.05) {
-  initial_t <- floor(length(L) * proportion)
-  smallest_cluster_size <- min(table(L))
-  n_labels <- length(unique(L))
-  ifelse(smallest_cluster_size > (initial_t / n_labels), initial_t, smallest_cluster_size * n_labels)
-}
-
-initial_t <- find_t(L=colData(spe)[[paste0("bayesSpace_harmony_",k)]],proportion = 0.01)
-# sort(table(colData(spe)[[paste0("bayesSpace_harmony_",k)]]))
-
-cluster_prop <- table(colData(spe)[[paste0("bayesSpace_harmony_",k)]]) / ncol(spe)
-bad_clusters <- which(cluster_prop < 0.01 / k)
-if(length(bad_clusters) > 0) {
-  message("For k: ", k, " we are dropping small clusters: ", paste(names(bad_clusters), collapse = ", "))
-  spe <- spe[, !colData(spe)[[paste0("bayesSpace_harmony_",k)]] %in% as.integer(names(bad_clusters))]
-  updated_t <- find_t(colData(spe)[[paste0("bayesSpace_harmony_", k)]], 0.01)
-  message("initial t: ", initial_t, "; updated t: ", updated_t)
-}
