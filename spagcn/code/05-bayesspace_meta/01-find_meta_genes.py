@@ -93,15 +93,11 @@ for k in N_CLUSTERS:
     #   Now cluster calls and the AnnData should line up by key, so we add a
     #   cluster column
     assert(all(clusters.key == adata.obs.key))
-    adata.obs['cluster'] = clusters.cluster
+    adata.obs['cluster'] = clusters.cluster.astype('category')
 
     #   Plot what the clusters look like, as a sanity check
-    plot_color=[
-        "#F56867","#FEB915","#C798EE","#59BE86","#7495D3","#D1D1D1","#6D1A9C",
-        "#15821E","#3A84E6","#997273","#787878","#DB4C6C","#9E7A7A","#554236",
-        "#AF5F3C","#93796C","#F9BD3F","#DAB370","#877F6C","#268785"
-    ]
-    adata.uns["cluster_colors"]=list(plot_color[:k])
     out_file = pyhere.here(this_out_dir_plots, "clusters.png")
-    #plot_adata(adata, "cluster", "BayesSpace Clusters", plot_color, out_file)
-    plot_adata(adata, "cluster", "BayesSpace Clusters", 'Accent', out_file)
+    plot_adata(
+        adata, "cluster", "BayesSpace Clusters", plot_color=None,
+        out_file=out_file
+    )
