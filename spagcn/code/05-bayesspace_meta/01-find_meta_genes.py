@@ -139,6 +139,66 @@ def get_svgs(raw, adata, x_array, y_array, target, cluster_col):
     
     return filtered_info
 
+#  Convert meta-gene name string from 'spg.find_meta_gene' to string
+#  containing gene symbol(s) instead of Ensembl IDs. Also correct name,
+#  accounting for a bug: a gene name may appear up to 3 times
+#  (e.g. 'gene1+gene2-gene1-gene1' should really be 'gene2-gene1')
+def parse_metaname(adata, meta_name, convert=True):
+    #  Get lists of genes whose expressions are high and low with respect to
+    #  outside the spatial domain
+    additive = [x.split('-')[0] for x in meta_name.split('+')]
+    subtractive = [x.split('+')[0] for x in meta_name.split('-')][1:]
+    
+    #  Due to (arguably) a bug, it's possible for a gene to be added then
+    #  subtracted. Remove the first instance of any "duplicate" gene
+    overlaps = [x for x in additive if x in subtractive]
+    for x in list(np.unique(overlaps)):
+        additive.remove(x)
+        subtractive.remove(x)
+    
+    if convert:
+        #  Convert from Ensembl IDs to gene symbols
+        additive = [get_symbol(adata, x) for x in additive]
+        subtractive = [get_symbol(adata, x) for x in subtractive]
+    
+    #  Form a new "meta_name" string of the same format as the input
+    if len(subtractive) > 0:
+        new_meta_name = " + ".join(additive) + " - " + " - ".join(subtractive)
+    else:
+        new_meta_name = " + ".join(additive)
+    
+    return new_meta_name
+
+#  Given an AnnData, 'meta_name' as output as from the first index of
+#  'spg.find_meta_gene', data frame containing cluster indices by spot,
+#  domain index 'target', and number of meta-gene columns to produce, this
+#  function modifies 'cluster_list' to replace NAs present in the meta-gene
+#  columns with gene names for spots belonging to the given domain.
+def fill_meta_column(adata, meta_name, cluster_list, target, NUM_META_COLUMNS, cluster_col):
+    #  Form a list of meta genes
+    meta_list = parse_metaname(adata, meta_name, convert=False)
+      
+    if (meta_list[0] == ' '): # really asking if the first meta gene is subtracted
+        meta_list = meta_list[1:]
+        assert meta_list[0] == '-'
+    else:
+        meta_list = '+' + meta_list
+    
+    meta_list = meta_list.replace(' + ', ' +').replace(' - ', ' -').split(' ')
+    assert all([x[0] in ['+', '-'] for x in meta_list])
+    
+    if len(meta_list) > NUM_META_COLUMNS:
+        print('Warning: dropping one or more meta genes for this domain when forming CSV, since we are only taking the first ' + str(NUM_META_COLUMNS) + '.')
+
+    #  Populate each meta gene column for rows associated with this
+    #  cluster
+    for i in range(min(NUM_META_COLUMNS, len(meta_list))):
+        cluster_list['meta_gene_' + str(i + 1)][cluster_list[cluster_col] == target] = meta_list[i]
+
+#  Given an AnnData and Ensembl ID, return the gene symbol
+def get_symbol(anndata, ens_id):
+    return anndata.var.gene_name[anndata.var.gene_id == ens_id][0]
+
 ###############################################################################
 #   Main analysis
 ###############################################################################
@@ -248,34 +308,30 @@ for k in N_CLUSTERS:
         filtered_info=filtered_info.sort_values(by="in_group_fraction", ascending=False)
         start_gene = filtered_info.genes.values[0]
         
-        meta_name, meta_exp=spg.find_meta_gene(input_adata=raw,
-                            pred=raw.obs["pred"].tolist(),
-                            target_domain=target,
-                            start_gene=start_gene,
-                            mean_diff=0,
-                            early_stop=True,
-                            max_iter=3,
-                            use_raw=False)
+        meta_name, meta_exp=spg.find_meta_gene(
+            input_adata=raw, pred=raw.obs["cluster"].tolist(),
+            target_domain=target, start_gene=start_gene,
+            mean_diff=0, early_stop=True, max_iter=3, use_raw=False
+        )
         
         raw.obs["meta"]=meta_exp
         
-        #  Fill in meta-gene columns in 'cluster_list' that are associated with
+        #  Fill in meta-gene columns in 'clusters' that are associated with
         #  domain 'target'
-        fill_meta_column(raw, meta_name, cluster_list, target, NUM_META_COLUMNS)
-        
-        color_self = clr.LinearSegmentedColormap.from_list('pink_green', ['#3AB370',"#EAE7CC","#FD1593"], N=256)
+        fill_meta_column(raw, meta_name, clusters, target, NUM_META_COLUMNS, "cluster")
         
         #  Plot "start gene" in meta gene set
         title = get_symbol(raw, start_gene) + ' (marker for domain ' + str(target) + ')'
         out_file = pyhere.here(this_out_dir_plots, "start_meta_gene_domain_" + str(target) + ".png")
         raw.obs["exp"]=raw.X[:,raw.var.index==start_gene]
-        plot_adata(raw, "exp", title, color_self, out_file)
+        plot_adata(raw, "exp", title, plot_color=None, out_file=out_file)
         
         #  Plot entire meta gene set
         raw.obs["exp"]=raw.obs["meta"]
         out_file = pyhere.here(this_out_dir_plots, "all_meta_genes_domain_" + str(target) + ".png")
-        plot_adata(raw, "exp", parse_metaname(raw, meta_name), color_self, out_file)
+        plot_adata(raw, "exp", parse_metaname(raw, meta_name), plot_color=None, out_file=out_file)
 
-
-out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
-cluster_list.to_csv(out_file)
+    #   Write the 'clusters.csv' file, where really the focus is the meta-gene
+    #   columns (since we already found clusters with BayesSpace)
+    out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
+    cluster_list.to_csv(out_file)
