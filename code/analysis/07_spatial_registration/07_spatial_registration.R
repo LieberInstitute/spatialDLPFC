@@ -27,15 +27,15 @@ spe <- cluster_import(
 
 #pseudobulk my data based on bayesSpace clustering and sample
 spe$PseudoSample = paste0(spe$sample_id, ":",colData(spe)[[paste0("bayesSpace_harmony_",k)]])
-cIndexes = splitit(spe$PseudoSample) # gives you the index for each cluster 
+cIndexes = splitit(spe$PseudoSample) # gives you the index for each cluster:sample
 
 #sum umis for each pseudobulked group (cluster). produces a data frame where the rows are genes and the columns are the pseudobulked samples:clusters
 # and the values are the total number of counts for each gene in each sample:cluster
 umiComb <- sapply(cIndexes, function(ii)
-  rowSums(assays(spe)$counts[, ii, drop = FALSE])) #
+  rowSums(assays(spe)$counts[, ii, drop = FALSE])) #makes data frame of count sums where gene is row and sample:cluster is column
 
 phenoComb = colData(spe)[!duplicated(spe$PseudoSample),] #creates new colData dataframe with pseudobulked colData
-rownames(phenoComb) = phenoComb$PseudoSample #renames rows of new colData frame to be the clusters
+rownames(phenoComb) = phenoComb$PseudoSample #renames rows of new colData frame to be the cluster:samples
 phenoComb = phenoComb[colnames(umiComb), ]
 phenoComb = DataFrame(phenoComb)
 
@@ -50,7 +50,7 @@ save(sce_pseudobulk_bayesSpace, file = here::here("processed-data","rdata","spe"
 
 ###############################
 ##### get mean expression  ####
-mat <- assays(sce_pseudobulk_bayesSpace)$logcounts
+mat <- assays(sce_pseudobulk_bayesSpace)$logcounts #make matrix of just the log normalized counts
 
 ## filter
 gIndex = rowMeans(mat) > 0.2 # find the genes for which the mean expression is greater than 0.2
@@ -67,12 +67,13 @@ colData(sce_pseudobulk_bayesSpace)$sex <- as.factor(colData(sce_pseudobulk_bayes
 colData(sce_pseudobulk_bayesSpace)$diagnosis <- as.factor(colData(sce_pseudobulk_bayesSpace)$diagnosis)
 colData(sce_pseudobulk_bayesSpace)$subject <- as.factor(colData(sce_pseudobulk_bayesSpace)$subject)
 
-
+#create matrix where the rownames are the sample:clusters and the columns are the other variales (spatial.cluster + region + age + sex)
 mod <- with(colData(sce_pseudobulk_bayesSpace),
             model.matrix(~ 0 + spatial.cluster + region + age + sex)) #removed diagnosis cuz it only has 1 level 
-colnames(mod) <- gsub('cluster', '', colnames(mod)) #not neccesary 
+colnames(mod) <- gsub('cluster', '', colnames(mod)) 
+#why is regtionanterior missing in the colnames(mod)?
 
-## get duplicate correlation
+## get duplicate correlation #http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/dupcor.html
 corfit <- duplicateCorrelation(mat_filter, mod,
                                block = sce_pseudobulk_bayesSpace$subject)
 save(corfit, file = here::here("processed-data","rdata","spe","07_spatial_registration",paste0("dlpfc_pseudobulked_bayesSpace_dupCor_k",k,".Rdata")))
@@ -149,7 +150,7 @@ t0_contrasts <- sapply(eb0_list, function(x) {
 rownames(t0_contrasts) = rownames(eb_contrasts)
 
 ############
-# line up ##
+# line up ## ##from here to line 175 I supposed to use the function leo created for spatialLIBD called layer_stat_cor()
 
 mm = match(rownames(pvals0_contrasts), rownames(pvals0_contrasts_cell))
 
@@ -185,7 +186,7 @@ cor_t_layer = cor(t0_contrasts_cell[layer_ind, ],
                   t0_contrasts[layer_ind, ])
 signif(cor_t_layer, 3)
 
-### heatmap
+### heatmap ### here can also use layer_stat_cor_plot() from spatialLIBD
 theSeq = seq(-.85, .85, by = 0.01)
 my.col <- colorRampPalette(brewer.pal(7, "PRGn"))(length(theSeq))
 
