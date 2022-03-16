@@ -48,6 +48,97 @@ def plot_adata(adata, colname, title, plot_color, out_file):
     plt.savefig(out_file, dpi=600)
     plt.close()
 
+#  Given a raw Anndata, processed AnnData, X and Y array coordinates, a
+#  target spatial domain, and a string specifying column name for cluster calls,
+#  return a DataFrame of info about SVGs. Under special conditions, None may be
+#  returned instead of a DataFrame, if no valid SVGs can be found.
+def get_svgs(raw, adata, x_array, y_array, target, cluster_col):
+    #Set filtering criterials
+    min_in_group_fraction=0.8
+    min_in_out_group_ratio=1
+    min_fold_change=1.5
+    
+    #Search radius such that each spot in the target domain has approximately 10 neighbors on average
+    adj_2d=spg.calculate_adj_matrix(x=x_array, y=y_array, histology=False)
+    start, end= np.quantile(adj_2d[adj_2d!=0],q=0.001), np.quantile(adj_2d[adj_2d!=0],q=0.1)
+    r=spg.search_radius(
+        target_cluster=target, cell_id=adata.obs.index.tolist(), x=x_array,
+        y=y_array, pred=adata.obs[cluster_col].tolist(), start=start, end=end,
+        num_min=10, num_max=14,  max_run=100
+    )
+    
+    #Detect neighboring domains
+    nbr_domians=spg.find_neighbor_clusters(
+        target_cluster=target,
+        cell_id=raw.obs.index.tolist(), 
+        x=raw.obs[array_names[0]].tolist(), 
+        y=raw.obs[array_names[1]].tolist(), 
+        pred=raw.obs[cluster_col].tolist(),
+        radius=r,
+        ratio=1/2
+    )
+    
+    #  I've observed that domains where no neighbors are found are spatially
+    #  scattered and are likely not biologically meaningful or interpretable.
+    #  Stop here in that case, and don't find SVGs                               
+    if nbr_domians is None:
+        print('Found no neighbors for domain', target, '. No SVGs will be found for this domain.')
+        return None
+    
+    nbr_domians=nbr_domians[0:3]
+    de_genes_info=spg.rank_genes_groups(
+        input_adata=raw,
+        target_cluster=target,
+        nbr_list=nbr_domians, 
+        label_col=cluster_col, 
+        adj_nbr=True, 
+        log=True
+    )
+    
+    #  Take significant genes only                                
+    de_genes_info=de_genes_info[(de_genes_info["pvals_adj"]<0.05)]
+    if de_genes_info.shape[0] == 0:
+        print("No significant SVGs found for domain " + str(target) + "!")
+        return None
+    
+    filtered_info=de_genes_info
+    
+    #  Take genes that exceed the expression seen in neighboring domains
+    if np.count_nonzero(filtered_info["in_out_group_ratio"] > min_in_out_group_ratio) == 0:
+        print("Can't find any genes such that more spots in domain " + str(target) + " express the gene than its neighbors!")
+        return None
+        
+    filtered_info = filtered_info[filtered_info["in_out_group_ratio"] > min_in_out_group_ratio]
+    
+    #  Relax filtering criteria if required to find at least one SVG
+    while np.count_nonzero(
+        (filtered_info["in_group_fraction"] > min_in_group_fraction) &
+        (filtered_info["fold_change"] > min_fold_change)
+        ) == 0:
+        #  Relax both parameters simultaneously
+        min_in_group_fraction -= 0.1
+        min_fold_change = (min_fold_change + 1) / 2
+        
+        if min_in_group_fraction <= 0:
+            print('No "min_in_group_fraction" exists that finds any SVGs for domain ' + str(target) + "!")
+            return None
+        
+        if min_fold_change <= 1.01:
+            print('No "fold_change" > 1.01 exists that finds any SVGs for domain ' + str(target) + "!")
+            return None
+        
+        print('Warning: lowering "min_in_group_fraction" to ', min_in_group_fraction, 'and "min_fold_change" to ', min_fold_change, 'for domain', target, 'to find at least 1 SVG.')
+    
+    #  Filter significant genes
+    filtered_info=filtered_info[(filtered_info["in_group_fraction"] > min_in_group_fraction) &
+                                (filtered_info["fold_change"] > min_fold_change)]
+    
+    filtered_info=filtered_info.sort_values(by="in_group_fraction", ascending=False)
+    filtered_info["target_dmain"]=target
+    filtered_info["neighbors"]=str(nbr_domians)
+    
+    return filtered_info
+
 ###############################################################################
 #   Main analysis
 ###############################################################################
@@ -146,7 +237,7 @@ for k in N_CLUSTERS:
     #  Find meta genes for each domain found
     for target in clusters.cluster.unique():
         #  Determine SVGs
-        filtered_info = get_svgs(raw, adata, x_array, y_array, target)
+        filtered_info = get_svgs(raw, adata, x_array, y_array, target, "cluster")
         if filtered_info is None:
             continue
         
