@@ -178,3 +178,363 @@ Error in session_info() : could not find function "session_info"
 Execution halted
 **** Job ends ****
 Tue Mar 15 10:12:18 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Wed Mar 16 11:42:41 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9581123
+Job name: spatial_registration
+Hostname: compute-126.cm.cluster
+Task id: 19
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading objects:
+  spe
+Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
+   FDRsig Pval10.6sig Pval10.8sig
+1     168          26          13
+2   14366         873         320
+3   15564        2110         327
+4   13981         339         122
+5   13886         434          90
+6     344          52           9
+7   16527        8103        1481
+8       0           0           0
+9       9           3           3
+10      0           0           0
+11      1           0           0
+12     11           0           0
+13      0           0           0
+14    158           9           1
+15    156          15           7
+16    832         265         160
+17    559          40          17
+18     12           2           0
+19    253          57          42
+       WM Layer1 Layer2 Layer3 Layer4 Layer5  Layer6
+1   0.150  0.450 -0.045 -0.120 -0.250 -0.280 -0.1600
+2  -0.380 -0.093  0.580  0.370  0.094 -0.027 -0.0530
+3  -0.440 -0.240  0.380  0.410  0.330  0.150 -0.0096
+4  -0.360 -0.430  0.023  0.100  0.380  0.580  0.1800
+5  -0.420 -0.350  0.150  0.340  0.510  0.310  0.0130
+6   0.710  0.160 -0.410 -0.460 -0.420 -0.350 -0.1000
+7  -0.180 -0.400  0.110 -0.054  0.120  0.250  0.4500
+8  -0.140  0.170 -0.042  0.200  0.022  0.039 -0.1100
+9  -0.068  0.380  0.230  0.032 -0.140 -0.220 -0.1800
+10 -0.470 -0.180  0.200  0.520  0.370  0.230 -0.0940
+11 -0.330 -0.180  0.260  0.250  0.210  0.170  0.0730
+12  0.340  0.039 -0.240 -0.240 -0.230 -0.120  0.0500
+13  0.160 -0.260 -0.170 -0.220 -0.065  0.110  0.3300
+14  0.460 -0.076 -0.230 -0.480 -0.290 -0.140  0.2400
+15  0.230  0.600 -0.065 -0.160 -0.350 -0.370 -0.2500
+16  0.650  0.011 -0.350 -0.560 -0.350 -0.260  0.0790
+17 -0.340 -0.400 -0.021  0.096  0.420  0.570  0.1300
+18 -0.500 -0.360  0.048  0.480  0.560  0.400 -0.0190
+19  0.160  0.460 -0.140 -0.034 -0.240 -0.270 -0.2100
+        WM  Layer1   Layer2  Layer3  Layer4  Layer5  Layer6
+1   0.0994  0.7760  0.13600 -0.0406 -0.3470 -0.4230 -0.3050
+2  -0.5140  0.1050  0.81100  0.6780 -0.0152 -0.3410 -0.3180
+3  -0.6170 -0.0510  0.53800  0.8210  0.3690 -0.1650 -0.4030
+4  -0.3120 -0.5260 -0.28000 -0.1510  0.3880  0.8360  0.2360
+5  -0.5740 -0.2810  0.13300  0.6450  0.7540  0.1470 -0.3610
+6   0.9040  0.0125 -0.43300 -0.5740 -0.3910 -0.2180  0.0896
+7  -0.0523 -0.4250 -0.11200 -0.3250 -0.1450  0.2570  0.7880
+8  -0.3450 -0.0461 -0.12700  0.0897  0.2080  0.3320  0.0847
+9  -0.2250  0.7160  0.50800  0.2510 -0.2670 -0.4490 -0.3960
+10 -0.6890 -0.3320  0.26100  0.7140  0.6200  0.1970 -0.2510
+11 -0.5560 -0.0221  0.46600  0.5260  0.2320 -0.0219 -0.2090
+12  0.7370 -0.1470 -0.41400 -0.6180 -0.3980 -0.0423  0.3650
+13  0.5100 -0.4530 -0.45400 -0.6500 -0.2580  0.2260  0.7010
+14  0.7180 -0.1390 -0.37200 -0.6890 -0.4800 -0.0987  0.5290
+15  0.1440  0.8390  0.15400 -0.0795 -0.4290 -0.4650 -0.3120
+16  0.8820 -0.0488 -0.44400 -0.6790 -0.4120 -0.1510  0.2440
+17 -0.2830 -0.5150 -0.35000 -0.1560  0.4980  0.8280  0.1600
+18 -0.6030 -0.4630 -0.00429  0.5250  0.7990  0.3900 -0.1790
+19  0.0239  0.5220  0.01520  0.0135 -0.2060 -0.2170 -0.2080
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2022-03-16 11:50:25 EDT"
+   user  system elapsed 
+452.589   5.736 463.151 
+Error in session_info() : could not find function "session_info"
+Execution halted
+**** Job ends ****
+Wed Mar 16 11:50:26 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Wed Mar 16 15:41:45 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9584827
+Job name: spatial_registration
+Hostname: compute-126.cm.cluster
+Task id: 19
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading objects:
+  spe
+Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
+   FDRsig Pval10.6sig Pval10.8sig
+1     168          27          13
+2   14381         882         323
+3   15571        2161         338
+4   13986         342         124
+5   13896         442          92
+6     345          52           9
+7   16532        8150        1514
+8       0           0           0
+9       9           3           3
+10      0           0           0
+11      1           0           0
+12     11           0           0
+13      0           0           0
+14    164           9           1
+15    157          15           8
+16    838         265         160
+17    582          41          17
+18     12           2           0
+19    254          57          42
+       WM Layer1 Layer2 Layer3 Layer4 Layer5 Layer6
+1   0.150  0.450 -0.045 -0.120 -0.250 -0.280 -0.160
+2  -0.380 -0.093  0.580  0.370  0.094 -0.027 -0.054
+3  -0.440 -0.240  0.380  0.410  0.330  0.140 -0.010
+4  -0.360 -0.430  0.022  0.100  0.380  0.580  0.180
+5  -0.420 -0.350  0.150  0.340  0.510  0.310  0.012
+6   0.710  0.160 -0.410 -0.460 -0.420 -0.350 -0.100
+7  -0.180 -0.400  0.110 -0.054  0.120  0.250  0.450
+8  -0.140  0.170 -0.042  0.200  0.022  0.039 -0.110
+9  -0.068  0.380  0.230  0.031 -0.140 -0.220 -0.180
+10 -0.470 -0.180  0.200  0.520  0.370  0.230 -0.094
+11 -0.330 -0.180  0.260  0.250  0.210  0.170  0.073
+12  0.340  0.039 -0.240 -0.240 -0.230 -0.120  0.050
+13  0.160 -0.260 -0.170 -0.220 -0.065  0.110  0.330
+14  0.460 -0.076 -0.230 -0.480 -0.290 -0.140  0.240
+15  0.230  0.600 -0.065 -0.160 -0.350 -0.370 -0.250
+16  0.650  0.011 -0.350 -0.560 -0.350 -0.260  0.079
+17 -0.340 -0.400 -0.021  0.096  0.420  0.570  0.130
+18 -0.500 -0.360  0.048  0.480  0.560  0.400 -0.018
+19  0.160  0.460 -0.140 -0.035 -0.240 -0.270 -0.210
+        WM  Layer1   Layer2  Layer3  Layer4  Layer5  Layer6
+1   0.0996  0.7750  0.13600 -0.0410 -0.3470 -0.4230 -0.3050
+2  -0.5140  0.1060  0.81100  0.6790 -0.0153 -0.3420 -0.3180
+3  -0.6170 -0.0499  0.53800  0.8210  0.3690 -0.1660 -0.4030
+4  -0.3130 -0.5260 -0.28000 -0.1510  0.3880  0.8360  0.2350
+5  -0.5740 -0.2800  0.13300  0.6450  0.7540  0.1470 -0.3610
+6   0.9040  0.0117 -0.43300 -0.5740 -0.3910 -0.2180  0.0901
+7  -0.0525 -0.4240 -0.11200 -0.3250 -0.1450  0.2570  0.7880
+8  -0.3440 -0.0476 -0.12600  0.0897  0.2080  0.3320  0.0853
+9  -0.2240  0.7160  0.50800  0.2500 -0.2670 -0.4490 -0.3950
+10 -0.6880 -0.3330  0.26000  0.7140  0.6200  0.1980 -0.2510
+11 -0.5550 -0.0232  0.46600  0.5260  0.2320 -0.0216 -0.2090
+12  0.7370 -0.1480 -0.41300 -0.6180 -0.3980 -0.0420  0.3660
+13  0.5100 -0.4540 -0.45300 -0.6490 -0.2580  0.2260  0.7010
+14  0.7180 -0.1390 -0.37200 -0.6890 -0.4800 -0.0988  0.5290
+15  0.1440  0.8390  0.15400 -0.0799 -0.4290 -0.4650 -0.3120
+16  0.8820 -0.0485 -0.44400 -0.6790 -0.4120 -0.1510  0.2440
+17 -0.2830 -0.5150 -0.35000 -0.1560  0.4980  0.8280  0.1600
+18 -0.6020 -0.4640 -0.00421  0.5250  0.7990  0.3900 -0.1790
+19  0.0242  0.5210  0.01540  0.0133 -0.2060 -0.2170 -0.2070
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2022-03-16 15:52:47 EDT"
+   user  system elapsed 
+621.002   7.576 656.431 
+Error in session_info() : could not find function "session_info"
+Execution halted
+**** Job ends ****
+Wed Mar 16 15:52:48 EDT 2022

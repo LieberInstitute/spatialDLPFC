@@ -1,11 +1,11 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=50G,h_vmem=50G,h_fsize=100G
+#$ -l caracol,mem_free=20G,h_vmem=20G,h_fsize=100G
 #$ -N spatial_registration
 #$ -o logs/spatial_registration.$TASK_ID.txt
 #$ -e logs/spatial_registration.$TASK_ID.txt
 #$ -m e
-#$ -t 2-15
+#$ -t 2-28
 #$ -tc 4
 
 USAGE_CUTOFF=10

@@ -75,7 +75,7 @@ colnames(mod) <- gsub('cluster', '', colnames(mod))
 
 ## get duplicate correlation #http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/dupcor.html
 corfit <- duplicateCorrelation(mat_filter, mod,
-                               block = sce_pseudobulk_bayesSpace$subject)
+                               block = sce_pseudobulk_bayesSpace$sample_id)
 save(corfit, file = here::here("processed-data","rdata","spe","07_spatial_registration",paste0("dlpfc_pseudobulked_bayesSpace_dupCor_k",k,".Rdata")))
 
 ## Next for each layer test that layer vs the rest
@@ -187,7 +187,7 @@ cor_t_layer = cor(t0_contrasts_cell[layer_ind, ],
 signif(cor_t_layer, 3)
 
 ### heatmap ### here can also use layer_stat_cor_plot() from spatialLIBD
-theSeq = seq(-.85, .85, by = 0.01)
+theSeq = seq(-1.0, 1.0, by = 0.01)
 my.col <- colorRampPalette(brewer.pal(7, "PRGn"))(length(theSeq))
 
 dd = dist(1-cor_t_layer)
