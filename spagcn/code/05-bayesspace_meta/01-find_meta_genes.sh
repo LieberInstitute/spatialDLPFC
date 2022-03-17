@@ -3,7 +3,7 @@
 #$ -N "find_meta_genes_01"
 #$ -o ../../processed-data/05-bayesspace_meta/01-find_meta_genes_$TASK_ID.log
 #$ -e ../../processed-data/05-bayesspace_meta/01-find_meta_genes_$TASK_ID.log
-#$ -l bluejay,mf=10G,h_vmem=10G
+#$ -l bluejay,mf=20G,h_vmem=20G
 #$ -t 1
 #$ -tc 1
 

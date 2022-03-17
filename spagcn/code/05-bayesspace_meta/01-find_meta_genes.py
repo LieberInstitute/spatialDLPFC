@@ -25,7 +25,7 @@ input_adata_path = pyhere.here(
 )
 cluster_dir = '/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/clustering_results'
 N_CLUSTERS = list(range(2, 16))
-NUM_META_COLUMNS = 5
+NUM_META_COLUMNS = 10
 
 #  Column names expected to be present in adata.obs for X and Y array and pixel
 #  coordinates, respectively
@@ -207,7 +207,7 @@ def get_symbol(anndata, ens_id):
 adata_orig = sc.read_h5ad(input_adata_path)
 
 #  Subset to just this sample
-sample_name = adata_orig.obs.sample_id.unique()[os.environ['SGE_TASK_ID'] - 1]
+sample_name = adata_orig.obs.sample_id.unique()[int(os.environ['SGE_TASK_ID']) - 1]
 adata_orig = adata_orig[adata_orig.obs.sample_id == sample_name, :]
 print('Continuing with sample ' + sample_name + '...')
 
@@ -255,6 +255,7 @@ for k in N_CLUSTERS:
     adata = adata_orig[adata_orig.obs.key.isin(clusters.key), :]
     clusters.key.index = [x.split('_')[0] for x in clusters.key]
     clusters.cluster.index = [x.split('_')[0] for x in clusters.key]
+    clusters.index = clusters.cluster.index
 
     #   Now cluster calls and the AnnData should line up by key, so we add a
     #   cluster column
@@ -334,4 +335,4 @@ for k in N_CLUSTERS:
     #   Write the 'clusters.csv' file, where really the focus is the meta-gene
     #   columns (since we already found clusters with BayesSpace)
     out_file = pyhere.here(this_out_dir_processed, 'clusters.csv')
-    cluster_list.to_csv(out_file)
+    clusters.to_csv(out_file)
