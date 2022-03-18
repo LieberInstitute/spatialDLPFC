@@ -64,8 +64,9 @@ def get_svgs(raw, adata, x_array, y_array, target, cluster_col):
     r=spg.search_radius(
         target_cluster=target, cell_id=adata.obs.index.tolist(), x=x_array,
         y=y_array, pred=adata.obs[cluster_col].tolist(), start=start, end=end,
-        num_min=10, num_max=14,  max_run=100
+        max_run=100
     )
+    assert not (r is None), "No radius found. Need to adjust spg.search_radius params."
     
     #Detect neighboring domains
     nbr_domians=spg.find_neighbor_clusters(
