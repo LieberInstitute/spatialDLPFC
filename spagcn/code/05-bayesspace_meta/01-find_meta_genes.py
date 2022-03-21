@@ -86,6 +86,19 @@ def get_svgs(raw, adata, x_array, y_array, target, cluster_col):
         print('Found no neighbors for domain', target, '. No SVGs will be found for this domain.')
         return None
     
+    #   Verify that we have more than 1 spot in target domain and across
+    #   neighboring domains
+    num_nbr_spots = sum(
+        [np.sum(raw.obs[cluster_col] == x) for x in nbr_domians]
+    )
+    if num_nbr_spots <= 1:
+        print("Not enough neighboring spots to find SVGs.")
+        return None
+
+    if np.sum(raw.obs[cluster_col] == target) <= 1:
+        print("Not enough target spots to find SVGs.")
+        return None
+    
     nbr_domians=nbr_domians[0:3]
     de_genes_info=spg.rank_genes_groups(
         input_adata=raw,
