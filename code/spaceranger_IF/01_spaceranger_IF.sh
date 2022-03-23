@@ -2,7 +2,7 @@
 #$ -cwd
 #$ -l mem_free=12G,h_vmem=12G,h_fsize=100G
 #$ -pe local 4
-#$ -N spatial_DG_lifespan_spaceranger
+#$ -N spatialDLFPC_spaceranger_IF
 #$ -o logs/spaceranger_IF.$TASK_ID.txt
 #$ -e logs/spaceranger_IF.$TASK_ID.txt
 #$ -m e
