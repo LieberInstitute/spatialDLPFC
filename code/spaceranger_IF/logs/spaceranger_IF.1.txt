@@ -1,0 +1,116 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Wed Mar 23 11:48:02 EDT 2022
+**** JHPCE info ****
+User: hdivecha
+Job id: 9678181
+Job name: spatialDLFPC_spaceranger_IF
+Hostname: compute-122.cm.cluster
+Task id: 1
+Loading LIBD module for spaceranger/1.3.1
+Reference files, for use with the '--transcriptome' argument, can be accessed
+or downloaded into /dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x. 
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0                  15) spaceranger/1.3.1
+
+ 
+
+Processing sample Br2720_Ant_IF from slide V10B01-087 and capture area A1 with image /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/Images/loupe_alignment_IF/V10B01-087_A1.tif and aligned with /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/Images/loupe_alignment_IF/V10B01-087-A1.json with FASTQs: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/FASTQ/Visium_IF/Br2720_Ant_IF
+Wed Mar 23 11:48:02 EDT 2022
+-rw-rw-r-- 1 hdivecha lieber_jaffe 662M Mar  9 15:07 /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/Images/loupe_alignment_IF/V10B01-087_A1.tif
+-rw-rw-r-- 1 hdivecha lieber_jaffe 541K Mar  9 15:14 /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/Images/loupe_alignment_IF/V10B01-087-A1.json
+Martian Runtime - v4.0.5
+2022-03-23 11:48:03 [jobmngr] WARNING: The current virtual address space size
+                              limit is too low.
+	Limiting virtual address space size interferes with the operation of many
+	common libraries and programs, and is not recommended.
+	Contact your system administrator to remove this limit.
+Serving UI at http://compute-122.cm.cluster:46155?auth=pEDGiPa7MFYzZQ1HTG-dTcJMdxNrUGwMAtgDISBE85Q
+
+Running preflight checks (please wait)...
+Checking sample info...
+Checking FASTQ folder...
+Checking reference...
+Checking reference_path (/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A) on compute-122.cm.cluster...
+Checking optional arguments...
+mrc: v4.0.5
+
+mrp: v4.0.5
+
+Anaconda: Python 3.7.7
+
+numpy: 1.19.2
+
+scipy: 1.2.1
+
+pysam: 0.16.0.1
+
+h5py: 2.10.0
+
+pandas: 1.2.4
+
+STAR: 2.7.2a
+
+samtools: samtools 1.10
+Using htslib 1.10.2
+Copyright (C) 2019 Genome Research Ltd.
+
+2022-03-23 11:48:21 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.CHEMISTRY_DETECTOR
+2022-03-23 11:48:21 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.CHEMISTRY_DETECTOR.fork0.chnk0.main
+2022-03-23 11:48:21 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX
+2022-03-23 11:48:21 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX.fork0.chnk0.main
+2022-03-23 11:48:21 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.DISABLE_BAMS
+2022-03-23 11:48:21 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.DISABLE_BAMS.fork0.chnk0.main
+2022-03-23 11:48:21 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2022-03-23 11:48:21 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES.fork0.split
+2022-03-23 11:48:21 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION
+2022-03-23 11:48:21 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION.fork0.chnk0.main
+2022-03-23 11:48:21 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES
+2022-03-23 11:48:21 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES.fork0.split
+2022-03-23 11:48:27 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER.DISABLE_BAMS
+2022-03-23 11:48:28 [runtime] (split_complete)  ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2022-03-23 11:48:36 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES.fork0.join
+2022-03-23 11:48:36 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.SPATIAL_RNA_ANALYZER.CHOOSE_DIMENSION_REDUCTION
+2022-03-23 11:48:37 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.CHEMISTRY_DETECTOR
+2022-03-23 11:48:40 [runtime] (split_complete)  ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES
+2022-03-23 11:48:41 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES.fork0.join
+2022-03-23 11:48:41 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS
+2022-03-23 11:48:41 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS.fork0.chnk0.main
+2022-03-23 11:48:42 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER_PREP.MULTI_SETUP_CHUNKS
+2022-03-23 11:48:42 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.GPR_READER
+2022-03-23 11:48:42 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.GPR_READER.fork0.chnk0.main
+2022-03-23 11:48:43 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.GPR_READER
+2022-03-23 11:49:16 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.WRITE_GENE_INDEX
+2022-03-23 11:49:16 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES
+2022-03-23 11:49:16 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES.fork0.chnk0.main
+2022-03-23 11:49:24 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER.PARSE_TARGET_FEATURES
+2022-03-23 11:49:24 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2022-03-23 11:49:24 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.split
+2022-03-23 11:49:49 [runtime] (join_complete)   ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.STANDARDIZE_IMAGES
+2022-03-23 11:49:49 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.ALIGN_FIDUCIALS
+2022-03-23 11:49:49 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.ALIGN_FIDUCIALS.fork0.chnk0.main
+2022-03-23 11:54:49 [runtime] (update)          ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES.fork0 join_running
+2022-03-23 12:00:54 [runtime] (update)          ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES.fork0 join_running
+2022-03-23 12:04:24 [runtime] (join_complete)   ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.CLOUPE_TILE_IMAGES
+2022-03-23 12:04:28 [runtime] (update)          ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0 split_running
+2022-03-23 12:04:31 [runtime] (split_complete)  ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD
+2022-03-23 12:04:31 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk0.main
+2022-03-23 12:04:31 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk1.main
+2022-03-23 12:04:31 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk2.main
+2022-03-23 12:04:31 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk3.main
+2022-03-23 12:04:31 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk4.main
+2022-03-23 12:04:31 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_RNA_COUNTER._BASIC_SPATIAL_RNA_COUNTER._MATRIX_COMPUTER.MAKE_SHARD.fork0.chnk5.main
+2022-03-23 12:04:32 [runtime] (chunks_complete) ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.ALIGN_FIDUCIALS
+2022-03-23 12:04:33 [runtime] (ready)           ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETECT_TISSUE
+2022-03-23 12:04:33 [runtime] (run:local)       ID.Br2720_Ant_IF.SPATIAL_RNA_COUNTER_CS.SPATIAL_IMAGING_CS.DETECT_TISSUE.fork0.chnk0.main
