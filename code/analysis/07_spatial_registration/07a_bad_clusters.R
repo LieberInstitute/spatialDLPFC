@@ -15,3 +15,25 @@ spe <- cluster_import(
 
 #make table of bayesSpace k = 9 vs k = 28
 my.table <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_28))
+
+pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28.pdf"))
+pheatmap(
+  my.table,
+  show_rownames = TRUE,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE
+)
+dev.off()
+
+my.table.log <- with(colData(spe), log10(table(bayesSpace_harmony_9, bayesSpace_harmony_28)+1))
+
+pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28_log.pdf"))
+pheatmap(
+  my.table.log,
+  show_rownames = TRUE,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE
+)
+dev.off()
+
+
