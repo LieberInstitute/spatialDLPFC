@@ -144,9 +144,10 @@ f_merge <- function(p, fdr, t) {
   res <- as.data.frame(cbind(t, p, fdr))
   res$ensembl <- rownames(res)
   ## Check it's all in order
-  stopifnot(identical(rownames(res), rownames(spe_pseudo)))
-  res$gene <- rowData(spe_pseudo)$gene_name
-  rownames(res) <- NULL
+  res <-merge(x=res,y=rowData(spe_pseudo)[, c("gene_id", "gene_name")],by.x = "ensembl",
+            by.y = "gene_id")
+  colnames(res)[11] <- "gene"
+  rownames(res) <- res$ensembl
   return(res)
 }
 
@@ -154,6 +155,15 @@ results_specificity <-
   f_merge(p = pvals0_contrasts_cluster, fdr = fdrs0_contrasts_cluster, t = t0_contrasts_cluster)
 head(results_specificity)
 
+modeling_results = fetch_data(type = "modeling_results")
+
+cor <- layer_stat_cor(
+  results_specificity,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
 
 ###################
 #load modeling outputs from manual annotations???
