@@ -59,7 +59,7 @@ with open(sample_path, 'r') as f:
     sample_names = f.read().splitlines()
 
 #  Determine this particular sample name
-sample_name = sample_names[str(os.environ['SGE_TASK_ID']) - 1]
+sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
 
 #  Load AnnDatas and list of marker genes
 ad_sp = sc.read_h5ad(sp_path)
@@ -91,11 +91,12 @@ for i in range(len(select_genes)):
 tg.pp_adatas(ad_sc, ad_sp, genes=markers)
 
 #  Mapping step using GPU
+gpu_index = os.environ['CUDA_VISIBLE_DEVICES']
 ad_map = tg.map_cells_to_space(ad_sc, ad_sp,
     mode="cells",
     density_prior='rna_count_based',
     num_epochs=500,
-    device="cuda:0"
+    device = "cuda:" + gpu_index
 )
 
 tg.project_cell_annotations(ad_map, ad_sp, annotation="cellType")
