@@ -1,8 +1,8 @@
 **** Job starts ****
-Tue Oct 26 13:22:38 EDT 2021
+Tue Mar 29 14:13:27 EDT 2022
 **** JHPCE info ****
 User: neagles
-Job id: 7389959
+Job id: 9742192
 Job name: sce_to_anndata_pan_01
 Hostname: compute-098.cm.cluster
 Task id: undefined
@@ -21,16 +21,413 @@ Currently Loaded Modules:
 Loading objects:
   sce_pan
 snapshotDate(): 2021-05-18
-2021-10-26 13:28:30 loading file /users/neagles/.cache/R/BiocFileCache/59127d2bcb5_Human_DLPFC_Visium_processedData_sce_scran_spatialLIBD.Rdata%3Fdl%3D1
-Warning message:
-DEPRECATION: As of ExperimentHub (>1.17.2), default caching location has changed.
-  Problematic cache: /users/neagles/.cache/ExperimentHub
-  See https://bioconductor.org/packages/devel/bioc/vignettes/ExperimentHub/inst/doc/ExperimentHub.html#default-caching-location-update
- 
+2022-03-29 14:15:14 loading file /users/neagles/.cache/R/BiocFileCache/4b405c7bd8e_Human_DLPFC_Visium_processedData_sce_scran_spatialLIBD.Rdata%3Fdl%3D1
              used   (Mb) gc trigger    (Mb)   max used   (Mb)
-Ncells    9243416  493.7   16404015   876.1   15997154  854.4
-Vcells 1133528914 8648.2 1634494512 12470.3 1146100565 8744.1
+Ncells    9248257  494.0   16432627   877.6   16432627  877.6
+Vcells 1133522961 8648.1 1634481036 12470.2 1146059172 8743.8
 [1] "Writing AnnDatas..."
+PREFIX=/users/neagles/.cache/R/basilisk/1.4.0/0
+Unpacking payload ...
+  0%|          | 0/35 [00:00<?, ?it/s]Extracting : libffi-3.3-he6710b0_1.conda:   0%|          | 0/35 [00:01<?, ?it/s]Extracting : libffi-3.3-he6710b0_1.conda:   3%|▎         | 1/35 [00:01<00:44,  1.30s/it]Extracting : libgcc-ng-9.1.0-hdf63c60_0.conda:   3%|▎         | 1/35 [00:02<00:44,  1.30s/it]Extracting : libgcc-ng-9.1.0-hdf63c60_0.conda:   6%|▌         | 2/35 [00:02<00:41,  1.26s/it]Extracting : six-1.14.0-py37_0.conda:   6%|▌         | 2/35 [00:02<00:41,  1.26s/it]         Extracting : ca-certificates-2020.1.1-0.conda:   9%|▊         | 3/35 [00:02<00:40,  1.26s/it]Extracting : pip-20.0.2-py37_3.conda:  11%|█▏        | 4/35 [00:08<00:38,  1.26s/it]         Extracting : pip-20.0.2-py37_3.conda:  14%|█▍        | 5/35 [00:08<00:43,  1.45s/it]Extracting : conda-package-handling-1.6.1-py37h7b6447c_0.conda:  14%|█▍        | 5/35 [00:08<00:43,  1.45s/it]Extracting : tk-8.6.8-hbc83047_0.conda:  17%|█▋        | 6/35 [00:08<00:42,  1.45s/it]                        Extracting : pyopenssl-19.1.0-py37_0.conda:  20%|██        | 7/35 [00:08<00:40,  1.45s/it]Extracting : certifi-2020.4.5.1-py37_0.conda:  23%|██▎       | 8/35 [00:08<00:39,  1.45s/it]Extracting : xz-5.2.5-h7b6447c_0.conda:  26%|██▌       | 9/35 [00:08<00:37,  1.45s/it]      Extracting : pycosat-0.6.3-py37h7b6447c_0.conda:  29%|██▊       | 10/35 [00:08<00:36,  1.45s/it]Extracting : wheel-0.34.2-py37_0.conda:  31%|███▏      | 11/35 [00:08<00:34,  1.45s/it]         Extracting : zlib-1.2.11-h7b6447c_3.conda:  34%|███▍      | 12/35 [00:08<00:33,  1.45s/it]Extracting : ld_impl_linux-64-2.33.1-h53a641e_7.conda:  37%|███▋      | 13/35 [00:08<00:31,  1.45s/it]Extracting : urllib3-1.25.8-py37_0.conda:  40%|████      | 14/35 [00:08<00:30,  1.45s/it]             Extracting : python-3.7.7-hcff3b4d_5.conda:  43%|████▎     | 15/35 [00:14<00:28,  1.45s/it]Extracting : python-3.7.7-hcff3b4d_5.conda:  46%|████▌     | 16/35 [00:14<00:22,  1.19s/it]Extracting : requests-2.23.0-py37_0.conda:  46%|████▌     | 16/35 [00:14<00:22,  1.19s/it] Extracting : yaml-0.1.7-had09818_2.conda:  49%|████▊     | 17/35 [00:14<00:21,  1.19s/it] Extracting : setuptools-46.4.0-py37_0.conda:  51%|█████▏    | 18/35 [00:14<00:20,  1.19s/it]Extracting : libstdcxx-ng-9.1.0-hdf63c60_0.conda:  54%|█████▍    | 19/35 [00:14<00:19,  1.19s/it]Extracting : cffi-1.14.0-py37he30daa8_1.conda:  57%|█████▋    | 20/35 [00:14<00:17,  1.19s/it]   Extracting : ruamel_yaml-0.15.87-py37h7b6447c_0.conda:  60%|██████    | 21/35 [00:14<00:16,  1.19s/it]Extracting : ncurses-6.2-he6710b0_1.conda:  63%|██████▎   | 22/35 [00:14<00:15,  1.19s/it]            Extracting : readline-8.0-h7b6447c_0.conda:  66%|██████▌   | 23/35 [00:14<00:14,  1.19s/it]Extracting : idna-2.9-py_1.conda:  69%|██████▊   | 24/35 [00:14<00:13,  1.19s/it]          Extracting : tqdm-4.46.0-py_0.conda:  71%|███████▏  | 25/35 [00:14<00:11,  1.19s/it]Extracting : pycparser-2.20-py_0.conda:  74%|███████▍  | 26/35 [00:14<00:10,  1.19s/it]Extracting : libedit-3.1.20181209-hc058e9b_0.conda:  77%|███████▋  | 27/35 [00:14<00:09,  1.19s/it]Extracting : pysocks-1.7.1-py37_0.conda:  80%|████████  | 28/35 [00:14<00:08,  1.19s/it]           Extracting : openssl-1.1.1g-h7b6447c_0.conda:  83%|████████▎ | 29/35 [00:14<00:07,  1.19s/it]Extracting : sqlite-3.31.1-h62c20be_1.conda:  86%|████████▌ | 30/35 [00:14<00:05,  1.19s/it] Extracting : cryptography-2.9.2-py37h1ba5d50_0.conda:  89%|████████▊ | 31/35 [00:14<00:04,  1.19s/it]Extracting : chardet-3.0.4-py37_1003.conda:  91%|█████████▏| 32/35 [00:14<00:03,  1.19s/it]          Extracting : _libgcc_mutex-0.1-main.conda:  94%|█████████▍| 33/35 [00:14<00:02,  1.19s/it] Extracting : conda-4.8.3-py37_0.tar.bz2:  97%|█████████▋| 34/35 [00:14<00:01,  1.19s/it]                                                                                          Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /users/neagles/.cache/R/basilisk/1.4.0/0
+
+  added / updated specs:
+    - _libgcc_mutex==0.1=main
+    - ca-certificates==2020.1.1=0
+    - certifi==2020.4.5.1=py37_0
+    - cffi==1.14.0=py37he30daa8_1
+    - chardet==3.0.4=py37_1003
+    - conda-package-handling==1.6.1=py37h7b6447c_0
+    - conda==4.8.3=py37_0
+    - cryptography==2.9.2=py37h1ba5d50_0
+    - idna==2.9=py_1
+    - ld_impl_linux-64==2.33.1=h53a641e_7
+    - libedit==3.1.20181209=hc058e9b_0
+    - libffi==3.3=he6710b0_1
+    - libgcc-ng==9.1.0=hdf63c60_0
+    - libstdcxx-ng==9.1.0=hdf63c60_0
+    - ncurses==6.2=he6710b0_1
+    - openssl==1.1.1g=h7b6447c_0
+    - pip==20.0.2=py37_3
+    - pycosat==0.6.3=py37h7b6447c_0
+    - pycparser==2.20=py_0
+    - pyopenssl==19.1.0=py37_0
+    - pysocks==1.7.1=py37_0
+    - python==3.7.7=hcff3b4d_5
+    - readline==8.0=h7b6447c_0
+    - requests==2.23.0=py37_0
+    - ruamel_yaml==0.15.87=py37h7b6447c_0
+    - setuptools==46.4.0=py37_0
+    - six==1.14.0=py37_0
+    - sqlite==3.31.1=h62c20be_1
+    - tk==8.6.8=hbc83047_0
+    - tqdm==4.46.0=py_0
+    - urllib3==1.25.8=py37_0
+    - wheel==0.34.2=py37_0
+    - xz==5.2.5=h7b6447c_0
+    - yaml==0.1.7=had09818_2
+    - zlib==1.2.11=h7b6447c_3
+
+
+The following NEW packages will be INSTALLED:
+
+  _libgcc_mutex      pkgs/main/linux-64::_libgcc_mutex-0.1-main
+  ca-certificates    pkgs/main/linux-64::ca-certificates-2020.1.1-0
+  certifi            pkgs/main/linux-64::certifi-2020.4.5.1-py37_0
+  cffi               pkgs/main/linux-64::cffi-1.14.0-py37he30daa8_1
+  chardet            pkgs/main/linux-64::chardet-3.0.4-py37_1003
+  conda              pkgs/main/linux-64::conda-4.8.3-py37_0
+  conda-package-han~ pkgs/main/linux-64::conda-package-handling-1.6.1-py37h7b6447c_0
+  cryptography       pkgs/main/linux-64::cryptography-2.9.2-py37h1ba5d50_0
+  idna               pkgs/main/noarch::idna-2.9-py_1
+  ld_impl_linux-64   pkgs/main/linux-64::ld_impl_linux-64-2.33.1-h53a641e_7
+  libedit            pkgs/main/linux-64::libedit-3.1.20181209-hc058e9b_0
+  libffi             pkgs/main/linux-64::libffi-3.3-he6710b0_1
+  libgcc-ng          pkgs/main/linux-64::libgcc-ng-9.1.0-hdf63c60_0
+  libstdcxx-ng       pkgs/main/linux-64::libstdcxx-ng-9.1.0-hdf63c60_0
+  ncurses            pkgs/main/linux-64::ncurses-6.2-he6710b0_1
+  openssl            pkgs/main/linux-64::openssl-1.1.1g-h7b6447c_0
+  pip                pkgs/main/linux-64::pip-20.0.2-py37_3
+  pycosat            pkgs/main/linux-64::pycosat-0.6.3-py37h7b6447c_0
+  pycparser          pkgs/main/noarch::pycparser-2.20-py_0
+  pyopenssl          pkgs/main/linux-64::pyopenssl-19.1.0-py37_0
+  pysocks            pkgs/main/linux-64::pysocks-1.7.1-py37_0
+  python             pkgs/main/linux-64::python-3.7.7-hcff3b4d_5
+  readline           pkgs/main/linux-64::readline-8.0-h7b6447c_0
+  requests           pkgs/main/linux-64::requests-2.23.0-py37_0
+  ruamel_yaml        pkgs/main/linux-64::ruamel_yaml-0.15.87-py37h7b6447c_0
+  setuptools         pkgs/main/linux-64::setuptools-46.4.0-py37_0
+  six                pkgs/main/linux-64::six-1.14.0-py37_0
+  sqlite             pkgs/main/linux-64::sqlite-3.31.1-h62c20be_1
+  tk                 pkgs/main/linux-64::tk-8.6.8-hbc83047_0
+  tqdm               pkgs/main/noarch::tqdm-4.46.0-py_0
+  urllib3            pkgs/main/linux-64::urllib3-1.25.8-py37_0
+  wheel              pkgs/main/linux-64::wheel-0.34.2-py37_0
+  xz                 pkgs/main/linux-64::xz-5.2.5-h7b6447c_0
+  yaml               pkgs/main/linux-64::yaml-0.1.7-had09818_2
+  zlib               pkgs/main/linux-64::zlib-1.2.11-h7b6447c_3
+
+
+Preparing transaction: ...working... done
+Executing transaction: ...working... done
+installation finished.
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... failed with repodata from current_repodata.json, will retry with next repodata source.
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv
+
+  added / updated specs:
+    - python=3.7.7
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    _libgcc_mutex-0.1          |      conda_forge           3 KB  conda-forge
+    _openmp_mutex-4.5          |            1_gnu          22 KB  conda-forge
+    ca-certificates-2021.10.8  |       ha878542_0         139 KB  conda-forge
+    ld_impl_linux-64-2.36.1    |       hea4e1c9_2         667 KB  conda-forge
+    libffi-3.3                 |       h58526e2_2          51 KB  conda-forge
+    libgcc-ng-11.2.0           |      h1d223b6_14         906 KB  conda-forge
+    libgomp-11.2.0             |      h1d223b6_14         429 KB  conda-forge
+    libstdcxx-ng-11.2.0        |      he4da1e4_14         4.2 MB  conda-forge
+    libzlib-1.2.11             |    h166bdaf_1014          60 KB  conda-forge
+    ncurses-6.3                |       h9c3ff4c_0        1012 KB  conda-forge
+    openssl-1.1.1n             |       h166bdaf_0         2.1 MB  conda-forge
+    pip-22.0.4                 |     pyhd8ed1ab_0         1.5 MB  conda-forge
+    python_abi-3.7             |          2_cp37m           4 KB  conda-forge
+    readline-8.1               |       h46c0cb4_0         295 KB  conda-forge
+    setuptools-61.2.0          |   py37h89c1867_1         1.3 MB  conda-forge
+    sqlite-3.37.1              |       h4ff8645_0         1.5 MB  conda-forge
+    tk-8.6.12                  |       h27826a3_0         3.3 MB  conda-forge
+    wheel-0.37.1               |     pyhd8ed1ab_0          31 KB  conda-forge
+    xz-5.2.5                   |       h516909a_1         343 KB  conda-forge
+    zlib-1.2.11                |    h166bdaf_1014          88 KB  conda-forge
+    ------------------------------------------------------------
+                                           Total:        17.9 MB
+
+The following NEW packages will be INSTALLED:
+
+  _libgcc_mutex      conda-forge/linux-64::_libgcc_mutex-0.1-conda_forge
+  _openmp_mutex      conda-forge/linux-64::_openmp_mutex-4.5-1_gnu
+  ca-certificates    conda-forge/linux-64::ca-certificates-2021.10.8-ha878542_0
+  ld_impl_linux-64   conda-forge/linux-64::ld_impl_linux-64-2.36.1-hea4e1c9_2
+  libffi             conda-forge/linux-64::libffi-3.3-h58526e2_2
+  libgcc-ng          conda-forge/linux-64::libgcc-ng-11.2.0-h1d223b6_14
+  libgomp            conda-forge/linux-64::libgomp-11.2.0-h1d223b6_14
+  libstdcxx-ng       conda-forge/linux-64::libstdcxx-ng-11.2.0-he4da1e4_14
+  libzlib            conda-forge/linux-64::libzlib-1.2.11-h166bdaf_1014
+  ncurses            conda-forge/linux-64::ncurses-6.3-h9c3ff4c_0
+  openssl            conda-forge/linux-64::openssl-1.1.1n-h166bdaf_0
+  pip                conda-forge/noarch::pip-22.0.4-pyhd8ed1ab_0
+  python             pkgs/main/linux-64::python-3.7.7-hcff3b4d_5
+  python_abi         conda-forge/linux-64::python_abi-3.7-2_cp37m
+  readline           conda-forge/linux-64::readline-8.1-h46c0cb4_0
+  setuptools         conda-forge/linux-64::setuptools-61.2.0-py37h89c1867_1
+  sqlite             conda-forge/linux-64::sqlite-3.37.1-h4ff8645_0
+  tk                 conda-forge/linux-64::tk-8.6.12-h27826a3_0
+  wheel              conda-forge/noarch::wheel-0.37.1-pyhd8ed1ab_0
+  xz                 conda-forge/linux-64::xz-5.2.5-h516909a_1
+  zlib               conda-forge/linux-64::zlib-1.2.11-h166bdaf_1014
+
+
+
+Downloading and Extracting Packages
+sqlite-3.37.1        | 1.5 MB    |            |   0% sqlite-3.37.1        | 1.5 MB    | 1          |   1% sqlite-3.37.1        | 1.5 MB    | ########## | 100% 
+ncurses-6.3          | 1012 KB   |            |   0% ncurses-6.3          | 1012 KB   | ########## | 100% 
+libgcc-ng-11.2.0     | 906 KB    |            |   0% libgcc-ng-11.2.0     | 906 KB    | ########## | 100% 
+zlib-1.2.11          | 88 KB     |            |   0% zlib-1.2.11          | 88 KB     | ########## | 100% 
+openssl-1.1.1n       | 2.1 MB    |            |   0% openssl-1.1.1n       | 2.1 MB    | ########## | 100% 
+libzlib-1.2.11       | 60 KB     |            |   0% libzlib-1.2.11       | 60 KB     | ########## | 100% 
+xz-5.2.5             | 343 KB    |            |   0% xz-5.2.5             | 343 KB    | ########## | 100% 
+wheel-0.37.1         | 31 KB     |            |   0% wheel-0.37.1         | 31 KB     | ########## | 100% 
+tk-8.6.12            | 3.3 MB    |            |   0% tk-8.6.12            | 3.3 MB    | ########## | 100% 
+libstdcxx-ng-11.2.0  | 4.2 MB    |            |   0% libstdcxx-ng-11.2.0  | 4.2 MB    | ######9    |  69% libstdcxx-ng-11.2.0  | 4.2 MB    | ########## | 100% 
+pip-22.0.4           | 1.5 MB    |            |   0% pip-22.0.4           | 1.5 MB    | ########## | 100% 
+readline-8.1         | 295 KB    |            |   0% readline-8.1         | 295 KB    | ########## | 100% 
+libgomp-11.2.0       | 429 KB    |            |   0% libgomp-11.2.0       | 429 KB    | ########## | 100% 
+ca-certificates-2021 | 139 KB    |            |   0% ca-certificates-2021 | 139 KB    | ########## | 100% 
+ld_impl_linux-64-2.3 | 667 KB    |            |   0% ld_impl_linux-64-2.3 | 667 KB    | ########## | 100% 
+_openmp_mutex-4.5    | 22 KB     |            |   0% _openmp_mutex-4.5    | 22 KB     | ########## | 100% 
+libffi-3.3           | 51 KB     |            |   0% libffi-3.3           | 51 KB     | ########## | 100% 
+_libgcc_mutex-0.1    | 3 KB      |            |   0% _libgcc_mutex-0.1    | 3 KB      | ########## | 100% 
+python_abi-3.7       | 4 KB      |            |   0% python_abi-3.7       | 4 KB      | ########## | 100% 
+setuptools-61.2.0    | 1.3 MB    |            |   0% setuptools-61.2.0    | 1.3 MB    | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 4.8.3
+  latest version: 4.12.0
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+#
+# To activate this environment, use
+#
+#     $ conda activate /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv
+
+  added / updated specs:
+    - python=3.7.7
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    ca-certificates-2022.3.18  |       h06a4308_0         121 KB
+    openssl-1.1.1n             |       h7f8727e_0         2.5 MB
+    ------------------------------------------------------------
+                                           Total:         2.6 MB
+
+The following packages will be UPDATED:
+
+  ca-certificates    conda-forge::ca-certificates-2021.10.~ --> pkgs/main::ca-certificates-2022.3.18-h06a4308_0
+
+The following packages will be SUPERSEDED by a higher-priority channel:
+
+  openssl            conda-forge::openssl-1.1.1n-h166bdaf_0 --> pkgs/main::openssl-1.1.1n-h7f8727e_0
+
+
+
+Downloading and Extracting Packages
+openssl-1.1.1n       | 2.5 MB    |            |   0% openssl-1.1.1n       | 2.5 MB    | ####7      |  48% openssl-1.1.1n       | 2.5 MB    | ########## | 100% 
+ca-certificates-2022 | 121 KB    |            |   0% ca-certificates-2022 | 121 KB    | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 4.8.3
+  latest version: 4.12.0
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... failed with initial frozen solve. Retrying with flexible solve.
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv
+
+  added / updated specs:
+    - anndata=0.7.6
+    - h5py=3.2.1
+    - hdf5=1.10.6
+    - natsort=7.1.1
+    - numpy=1.20.2
+    - packaging=20.9
+    - pandas=1.2.4
+    - python=3.7.7
+    - scipy=1.6.3
+    - sqlite=3.35.5
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    anndata-0.7.6              |   py37h89c1867_0         118 KB  conda-forge
+    c-ares-1.18.1              |       h7f98852_0         113 KB  conda-forge
+    cached-property-1.5.2      |       hd8ed1ab_1           4 KB  conda-forge
+    cached_property-1.5.2      |     pyha770c72_1          11 KB  conda-forge
+    h5py-3.2.1                 |nompi_py37ha3df211_100         1.3 MB  conda-forge
+    hdf5-1.10.6                |nompi_h6a2412b_1114         3.1 MB  conda-forge
+    importlib-metadata-4.11.3  |   py37h89c1867_0          33 KB  conda-forge
+    importlib_metadata-4.11.3  |       hd8ed1ab_0           4 KB  conda-forge
+    keyutils-1.6.1             |       h166bdaf_0         115 KB  conda-forge
+    krb5-1.19.3                |       h3790be6_0         1.4 MB  conda-forge
+    libblas-3.9.0              |13_linux64_openblas          12 KB  conda-forge
+    libcblas-3.9.0             |13_linux64_openblas          12 KB  conda-forge
+    libcurl-7.82.0             |       h7bff187_0         341 KB  conda-forge
+    libedit-3.1.20191231       |       he28a2e2_2         121 KB  conda-forge
+    libev-4.33                 |       h516909a_1         104 KB  conda-forge
+    libgfortran-ng-11.2.0      |      h69a702a_14          20 KB  conda-forge
+    libgfortran5-11.2.0        |      h5c6108e_14         1.7 MB  conda-forge
+    liblapack-3.9.0            |13_linux64_openblas          12 KB  conda-forge
+    libnghttp2-1.47.0          |       h727a467_0         808 KB  conda-forge
+    libopenblas-0.3.18         |pthreads_h8fe5266_0         9.6 MB  conda-forge
+    libssh2-1.10.0             |       ha56f1ee_2         233 KB  conda-forge
+    natsort-7.1.1              |     pyhd8ed1ab_0          33 KB  conda-forge
+    numpy-1.20.2               |   py37h038b26d_0         5.8 MB  conda-forge
+    packaging-20.9             |     pyh44b312d_0          35 KB  conda-forge
+    pandas-1.2.4               |   py37h2531618_0         8.5 MB
+    pyparsing-3.0.7            |     pyhd8ed1ab_0          79 KB  conda-forge
+    python-dateutil-2.8.2      |     pyhd8ed1ab_0         240 KB  conda-forge
+    pytz-2022.1                |     pyhd8ed1ab_0         242 KB  conda-forge
+    scipy-1.6.3                |   py37h29e03ee_0        20.5 MB  conda-forge
+    six-1.16.0                 |     pyh6c4a22f_0          14 KB  conda-forge
+    sqlite-3.35.5              |       h74cdb3f_0         1.4 MB  conda-forge
+    typing_extensions-4.1.1    |     pyha770c72_0          29 KB  conda-forge
+    zipp-3.7.0                 |     pyhd8ed1ab_1          12 KB  conda-forge
+    ------------------------------------------------------------
+                                           Total:        56.0 MB
+
+The following NEW packages will be INSTALLED:
+
+  anndata            conda-forge/linux-64::anndata-0.7.6-py37h89c1867_0
+  c-ares             conda-forge/linux-64::c-ares-1.18.1-h7f98852_0
+  cached-property    conda-forge/noarch::cached-property-1.5.2-hd8ed1ab_1
+  cached_property    conda-forge/noarch::cached_property-1.5.2-pyha770c72_1
+  h5py               conda-forge/linux-64::h5py-3.2.1-nompi_py37ha3df211_100
+  hdf5               conda-forge/linux-64::hdf5-1.10.6-nompi_h6a2412b_1114
+  importlib-metadata conda-forge/linux-64::importlib-metadata-4.11.3-py37h89c1867_0
+  importlib_metadata conda-forge/noarch::importlib_metadata-4.11.3-hd8ed1ab_0
+  keyutils           conda-forge/linux-64::keyutils-1.6.1-h166bdaf_0
+  krb5               conda-forge/linux-64::krb5-1.19.3-h3790be6_0
+  libblas            conda-forge/linux-64::libblas-3.9.0-13_linux64_openblas
+  libcblas           conda-forge/linux-64::libcblas-3.9.0-13_linux64_openblas
+  libcurl            conda-forge/linux-64::libcurl-7.82.0-h7bff187_0
+  libedit            conda-forge/linux-64::libedit-3.1.20191231-he28a2e2_2
+  libev              conda-forge/linux-64::libev-4.33-h516909a_1
+  libgfortran-ng     conda-forge/linux-64::libgfortran-ng-11.2.0-h69a702a_14
+  libgfortran5       conda-forge/linux-64::libgfortran5-11.2.0-h5c6108e_14
+  liblapack          conda-forge/linux-64::liblapack-3.9.0-13_linux64_openblas
+  libnghttp2         conda-forge/linux-64::libnghttp2-1.47.0-h727a467_0
+  libopenblas        conda-forge/linux-64::libopenblas-0.3.18-pthreads_h8fe5266_0
+  libssh2            conda-forge/linux-64::libssh2-1.10.0-ha56f1ee_2
+  natsort            conda-forge/noarch::natsort-7.1.1-pyhd8ed1ab_0
+  numpy              conda-forge/linux-64::numpy-1.20.2-py37h038b26d_0
+  packaging          conda-forge/noarch::packaging-20.9-pyh44b312d_0
+  pandas             pkgs/main/linux-64::pandas-1.2.4-py37h2531618_0
+  pyparsing          conda-forge/noarch::pyparsing-3.0.7-pyhd8ed1ab_0
+  python-dateutil    conda-forge/noarch::python-dateutil-2.8.2-pyhd8ed1ab_0
+  pytz               conda-forge/noarch::pytz-2022.1-pyhd8ed1ab_0
+  scipy              conda-forge/linux-64::scipy-1.6.3-py37h29e03ee_0
+  six                conda-forge/noarch::six-1.16.0-pyh6c4a22f_0
+  typing_extensions  conda-forge/noarch::typing_extensions-4.1.1-pyha770c72_0
+  zipp               conda-forge/noarch::zipp-3.7.0-pyhd8ed1ab_1
+
+The following packages will be SUPERSEDED by a higher-priority channel:
+
+  ca-certificates    pkgs/main::ca-certificates-2022.3.18-~ --> conda-forge::ca-certificates-2021.10.8-ha878542_0
+  openssl              pkgs/main::openssl-1.1.1n-h7f8727e_0 --> conda-forge::openssl-1.1.1n-h166bdaf_0
+
+The following packages will be DOWNGRADED:
+
+  sqlite                                  3.37.1-h4ff8645_0 --> 3.35.5-h74cdb3f_0
+
+
+
+Downloading and Extracting Packages
+libcurl-7.82.0       | 341 KB    |            |   0% libcurl-7.82.0       | 341 KB    | ########## | 100% 
+libblas-3.9.0        | 12 KB     |            |   0% libblas-3.9.0        | 12 KB     | ########## | 100% 
+zipp-3.7.0           | 12 KB     |            |   0% zipp-3.7.0           | 12 KB     | ########## | 100% 
+hdf5-1.10.6          | 3.1 MB    |            |   0% hdf5-1.10.6          | 3.1 MB    | ########## | 100% 
+python-dateutil-2.8. | 240 KB    |            |   0% python-dateutil-2.8. | 240 KB    | ########## | 100% 
+libedit-3.1.20191231 | 121 KB    |            |   0% libedit-3.1.20191231 | 121 KB    | ########## | 100% 
+scipy-1.6.3          | 20.5 MB   |            |   0% scipy-1.6.3          | 20.5 MB   | #9         |  19% scipy-1.6.3          | 20.5 MB   | ####8      |  49% scipy-1.6.3          | 20.5 MB   | ######8    |  68% scipy-1.6.3          | 20.5 MB   | ########## | 100% 
+sqlite-3.35.5        | 1.4 MB    |            |   0% sqlite-3.35.5        | 1.4 MB    | ########## | 100% 
+c-ares-1.18.1        | 113 KB    |            |   0% c-ares-1.18.1        | 113 KB    | ########## | 100% 
+anndata-0.7.6        | 118 KB    |            |   0% anndata-0.7.6        | 118 KB    | ########## | 100% 
+natsort-7.1.1        | 33 KB     |            |   0% natsort-7.1.1        | 33 KB     | ########## | 100% 
+libev-4.33           | 104 KB    |            |   0% libev-4.33           | 104 KB    | ########## | 100% 
+importlib_metadata-4 | 4 KB      |            |   0% importlib_metadata-4 | 4 KB      | ########## | 100% 
+pandas-1.2.4         | 8.5 MB    |            |   0% pandas-1.2.4         | 8.5 MB    | ####3      |  44% pandas-1.2.4         | 8.5 MB    | ########## | 100% 
+packaging-20.9       | 35 KB     |            |   0% packaging-20.9       | 35 KB     | ########## | 100% 
+libopenblas-0.3.18   | 9.6 MB    |            |   0% libopenblas-0.3.18   | 9.6 MB    | #######    |  70% libopenblas-0.3.18   | 9.6 MB    | ########## | 100% 
+pyparsing-3.0.7      | 79 KB     |            |   0% pyparsing-3.0.7      | 79 KB     | ########## | 100% 
+libnghttp2-1.47.0    | 808 KB    |            |   0% libnghttp2-1.47.0    | 808 KB    | ########## | 100% 
+cached_property-1.5. | 11 KB     |            |   0% cached_property-1.5. | 11 KB     | ########## | 100% 
+libgfortran-ng-11.2. | 20 KB     |            |   0% libgfortran-ng-11.2. | 20 KB     | ########## | 100% 
+numpy-1.20.2         | 5.8 MB    |            |   0% numpy-1.20.2         | 5.8 MB    | #####5     |  55% numpy-1.20.2         | 5.8 MB    | ########## | 100% 
+liblapack-3.9.0      | 12 KB     |            |   0% liblapack-3.9.0      | 12 KB     | ########## | 100% 
+libcblas-3.9.0       | 12 KB     |            |   0% libcblas-3.9.0       | 12 KB     | ########## | 100% 
+keyutils-1.6.1       | 115 KB    |            |   0% keyutils-1.6.1       | 115 KB    | ########## | 100% 
+typing_extensions-4. | 29 KB     |            |   0% typing_extensions-4. | 29 KB     | ########## | 100% 
+importlib-metadata-4 | 33 KB     |            |   0% importlib-metadata-4 | 33 KB     | ########## | 100% 
+libssh2-1.10.0       | 233 KB    |            |   0% libssh2-1.10.0       | 233 KB    | ########## | 100% 
+pytz-2022.1          | 242 KB    |            |   0% pytz-2022.1          | 242 KB    | ########## | 100% 
+krb5-1.19.3          | 1.4 MB    |            |   0% krb5-1.19.3          | 1.4 MB    | #######    |  70% krb5-1.19.3          | 1.4 MB    | ########## | 100% 
+libgfortran5-11.2.0  | 1.7 MB    |            |   0% libgfortran5-11.2.0  | 1.7 MB    | ########## | 100% 
+cached-property-1.5. | 4 KB      |            |   0% cached-property-1.5. | 4 KB      | ########## | 100% 
+six-1.16.0           | 14 KB     |            |   0% six-1.16.0           | 14 KB     | ########## | 100% 
+h5py-3.2.1           | 1.3 MB    |            |   0% h5py-3.2.1           | 1.3 MB    | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 4.8.3
+  latest version: 4.12.0
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
 Note: using the 'counts' assay as the X matrix
 ... storing 'Sample' as categorical
 ... storing 'Barcode' as categorical
@@ -57,413 +454,237 @@ Note: using the 'counts' assay as the X matrix
 ... storing 'gene_source' as categorical
 ... storing 'gene_biotype' as categorical
              used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    9270573  495.2   16404015   876.1   15997154   854.4
-Vcells 1136616606 8671.7 2051818586 15654.2 2037169075 15542.4
+Ncells    9278134  495.6   16432627   877.6   16432627   877.6
+Vcells 1136616657 8671.7 2051818808 15654.2 2037168616 15542.4
 Loading objects:
   marker_stats
 [1] "Determining and writing markers..."
 [1] TRUE
-2021-10-26 14:59:43 the suggested expression cutoff is 0.36
+2022-03-29 14:32:23 the suggested expression cutoff is 0.36
 [1] "Writing sample names for use in python..."
 [1] "Done."
-─ Session info ───────────────────────────────────────────────────────────────
- setting  value                                      
+─ Session info  ──────────────────────────────────────────────────────────────
+ hash: winking face, flag: Somalia, woman scientist: medium-dark skin tone
+
+ setting  value
  version  R version 4.1.0 Patched (2021-05-18 r80330)
- os       CentOS Linux 7 (Core)                      
- system   x86_64, linux-gnu                          
- ui       X11                                        
- language (EN)                                       
- collate  en_US.UTF-8                                
- ctype    en_US.UTF-8                                
- tz       US/Eastern                                 
- date     2021-10-26                                 
+ os       CentOS Linux 7 (Core)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2022-03-29
+ pandoc   NA
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package                * version  date       lib
- AnnotationDbi            1.54.1   2021-06-08 [2]
- AnnotationHub            3.0.1    2021-06-20 [2]
- assertthat               0.2.1    2019-03-21 [2]
- attempt                  0.3.1    2020-05-03 [1]
- backports                1.2.1    2020-12-09 [2]
- basilisk               * 1.4.0    2021-05-19 [1]
- basilisk.utils           1.4.0    2021-05-19 [1]
- beachmat                 2.8.1    2021-08-12 [2]
- beeswarm                 0.4.0    2021-06-01 [1]
- benchmarkme              1.0.7    2021-03-21 [1]
- benchmarkmeData          1.0.4    2020-04-23 [1]
- Biobase                * 2.52.0   2021-05-19 [2]
- BiocFileCache            2.0.0    2021-05-19 [2]
- BiocGenerics           * 0.38.0   2021-05-19 [2]
- BiocManager              1.30.16  2021-06-15 [2]
- BiocNeighbors            1.10.0   2021-05-19 [1]
- BiocParallel             1.26.1   2021-07-04 [2]
- BiocSingular             1.8.1    2021-06-08 [1]
- BiocVersion              3.13.1   2021-03-19 [2]
- Biostrings               2.60.2   2021-08-05 [2]
- bit                      4.0.4    2020-08-04 [2]
- bit64                    4.0.5    2020-08-30 [2]
- bitops                   1.0-7    2021-04-24 [2]
- blob                     1.2.2    2021-07-23 [2]
- bluster                  1.2.1    2021-05-27 [1]
- broom                    0.7.9    2021-07-27 [2]
- bslib                    0.2.5.1  2021-05-18 [2]
- cachem                   1.0.5    2021-05-15 [2]
- callr                    3.7.0    2021-04-20 [2]
- cellranger               1.1.0    2016-07-27 [2]
- cli                      3.0.1    2021-07-17 [2]
- cluster                  2.1.2    2021-04-17 [3]
- codetools                0.2-18   2020-11-04 [2]
- colorspace               2.0-2    2021-06-24 [2]
- config                   0.3.1    2020-12-17 [1]
- cowplot                  1.1.1    2020-12-30 [1]
- crayon                   1.4.1    2021-02-08 [2]
- curl                     4.3.2    2021-06-23 [2]
- data.table             * 1.14.0   2021-02-21 [2]
- DBI                      1.1.1    2021-01-15 [2]
- dbplyr                   2.1.1    2021-04-06 [2]
- DeconvoBuddies         * 0.99.0   2021-09-29 [1]
- DelayedArray             0.18.0   2021-05-19 [2]
- DelayedMatrixStats       1.14.2   2021-08-08 [2]
- desc                     1.3.0    2021-03-05 [2]
- digest                   0.6.27   2020-10-24 [2]
- dir.expiry               1.0.0    2021-05-19 [1]
- dockerfiler              0.1.4    2021-09-03 [1]
- doParallel               1.0.16   2020-10-16 [2]
- dotCall64                1.0-1    2021-02-11 [2]
- dplyr                  * 1.0.7    2021-06-18 [2]
- dqrng                    0.3.0    2021-05-01 [1]
- DropletUtils             1.12.3   2021-09-19 [1]
- DT                       0.18     2021-04-14 [2]
- edgeR                    3.34.0   2021-05-19 [2]
- ellipsis                 0.3.2    2021-04-29 [2]
- ExperimentHub            2.0.0    2021-05-19 [2]
- fansi                    0.5.0    2021-05-25 [2]
- fastmap                  1.1.0    2021-01-25 [2]
- fields                   12.5     2021-06-25 [2]
- filelock                 1.0.2    2018-10-05 [2]
- forcats                * 0.5.1    2021-01-27 [2]
- foreach                  1.5.1    2020-10-15 [2]
- fs                       1.5.0    2020-07-31 [2]
- gargle                   1.2.0    2021-07-02 [2]
- generics                 0.1.0    2020-10-31 [2]
- GenomeInfoDb           * 1.28.1   2021-07-01 [2]
- GenomeInfoDbData         1.2.6    2021-05-11 [2]
- GenomicRanges          * 1.44.0   2021-05-19 [2]
- ggbeeswarm               0.6.0    2017-08-07 [1]
- ggplot2                * 3.3.5    2021-06-25 [2]
- glue                     1.4.2    2020-08-27 [2]
- golem                    0.3.1    2021-04-17 [1]
- googledrive              2.0.0    2021-07-08 [2]
- gridExtra                2.3      2017-09-09 [2]
- gtable                   0.3.0    2019-03-25 [2]
- haven                    2.4.3    2021-08-04 [2]
- HDF5Array                1.20.0   2021-05-19 [2]
- here                   * 1.0.1    2020-12-13 [1]
- hms                      1.1.0    2021-05-17 [2]
- htmltools                0.5.1.1  2021-01-22 [2]
- htmlwidgets              1.5.3    2020-12-10 [2]
- httpuv                   1.6.1    2021-05-07 [2]
- httr                     1.4.2    2020-07-20 [2]
- igraph                   1.2.6    2020-10-06 [2]
- interactiveDisplayBase   1.30.0   2021-05-19 [2]
- IRanges                * 2.26.0   2021-05-19 [2]
- irlba                    2.3.3    2019-02-05 [2]
- iterators                1.0.13   2020-10-15 [2]
- jaffelab               * 0.99.31  2021-07-27 [1]
- jquerylib                0.1.4    2021-04-26 [2]
- jsonlite                 1.7.2    2020-12-09 [2]
- KEGGREST                 1.32.0   2021-05-19 [2]
- knitr                    1.33     2021-04-24 [2]
- later                    1.2.0    2021-04-23 [2]
- lattice                  0.20-44  2021-05-02 [3]
- lazyeval                 0.2.2    2019-03-15 [2]
- lifecycle                1.0.0    2021-02-15 [2]
- limma                    3.48.3   2021-08-10 [2]
- locfit                   1.5-9.4  2020-03-25 [2]
- lubridate                1.7.10   2021-02-26 [2]
- magick                   2.7.2    2021-05-02 [2]
- magrittr                 2.0.1    2020-11-17 [2]
- maps                     3.3.0    2018-04-03 [2]
- Matrix                   1.3-4    2021-06-01 [3]
- MatrixGenerics         * 1.4.2    2021-08-08 [2]
- matrixStats            * 0.60.0   2021-07-26 [2]
- memoise                  2.0.0    2021-01-26 [2]
- metapod                  1.0.0    2021-05-19 [1]
- mime                     0.11     2021-06-23 [2]
- modelr                   0.1.8    2020-05-19 [2]
- munsell                  0.5.0    2018-06-12 [2]
- pillar                   1.6.2    2021-07-29 [2]
- pkgbuild                 1.2.0    2020-12-15 [2]
- pkgconfig                2.0.3    2019-09-22 [2]
- pkgload                  1.2.1    2021-04-06 [2]
- plotly                   4.9.4.1  2021-06-18 [2]
- png                      0.1-7    2013-12-03 [2]
- Polychrome               1.3.1    2021-07-16 [1]
- prettyunits              1.1.1    2020-01-24 [2]
- processx                 3.5.2    2021-04-30 [2]
- promises                 1.2.0.1  2021-02-11 [2]
- ps                       1.6.0    2021-02-28 [2]
- purrr                  * 0.3.4    2020-04-17 [2]
- R.methodsS3              1.8.1    2020-08-26 [2]
- R.oo                     1.24.0   2020-08-26 [2]
- R.utils                  2.10.1   2020-08-26 [2]
- R6                       2.5.0    2020-10-28 [2]
- rafalib                * 1.0.0    2015-08-09 [1]
- rappdirs                 0.3.3    2021-01-31 [2]
- RColorBrewer             1.1-2    2014-12-07 [2]
- Rcpp                     1.0.7    2021-07-07 [2]
- RCurl                    1.98-1.3 2021-03-16 [2]
- readr                  * 2.0.1    2021-08-10 [2]
- readxl                   1.3.1    2019-03-13 [2]
- remotes                  2.4.0    2021-06-02 [2]
- reprex                   2.0.1    2021-08-05 [2]
- reticulate             * 1.22     2021-09-17 [1]
- rhdf5                    2.36.0   2021-05-19 [2]
- rhdf5filters             1.4.0    2021-05-19 [2]
- Rhdf5lib                 1.14.2   2021-07-06 [2]
- rjson                    0.2.20   2018-06-08 [2]
- rlang                    0.4.11   2021-04-30 [2]
- roxygen2                 7.1.1    2020-06-27 [2]
- rprojroot                2.0.2    2020-11-15 [2]
- RSQLite                  2.2.7    2021-04-22 [2]
- rstudioapi               0.13     2020-11-12 [2]
- rsvd                     1.0.5    2021-04-16 [1]
- rvest                    1.0.1    2021-07-26 [2]
- S4Vectors              * 0.30.0   2021-05-19 [2]
- sass                     0.4.0    2021-05-12 [2]
- ScaledMatrix             1.0.0    2021-05-19 [1]
- scales                   1.1.1    2020-05-11 [2]
- scater                   1.20.1   2021-06-15 [1]
- scatterplot3d            0.3-41   2018-03-14 [1]
- scran                    1.20.1   2021-05-24 [1]
- scuttle                  1.2.1    2021-08-05 [1]
- segmented                1.3-4    2021-04-22 [1]
- sessioninfo            * 1.1.1    2018-11-05 [2]
- shiny                    1.6.0    2021-01-25 [2]
- shinyWidgets             0.6.2    2021-09-17 [1]
- SingleCellExperiment   * 1.14.1   2021-05-21 [2]
- spam                     2.7-0    2021-06-25 [2]
- sparseMatrixStats        1.4.2    2021-08-08 [2]
- SpatialExperiment      * 1.2.1    2021-06-10 [1]
- spatialLIBD            * 1.4.0    2021-05-20 [1]
- statmod                  1.4.36   2021-05-10 [2]
- stringi                  1.7.3    2021-07-16 [2]
- stringr                * 1.4.0    2019-02-10 [2]
- SummarizedExperiment   * 1.22.0   2021-05-19 [2]
- testthat                 3.0.4    2021-07-01 [2]
- tibble                 * 3.1.3    2021-07-23 [2]
- tidyr                  * 1.1.3    2021-03-03 [2]
- tidyselect               1.1.1    2021-04-30 [2]
- tidyverse              * 1.3.1    2021-04-15 [2]
- tzdb                     0.1.2    2021-07-20 [2]
- usethis                  2.0.1    2021-02-10 [2]
- utf8                     1.2.2    2021-07-24 [2]
- vctrs                    0.3.8    2021-04-29 [2]
- vipor                    0.4.5    2017-03-22 [1]
- viridis                  0.6.1    2021-05-11 [2]
- viridisLite              0.4.0    2021-04-13 [2]
- withr                    2.4.2    2021-04-18 [2]
- xfun                     0.25     2021-08-06 [2]
- xml2                     1.3.2    2020-04-23 [2]
- xtable                   1.8-4    2019-04-21 [2]
- XVector                  0.32.0   2021-05-19 [2]
- yaml                     2.2.1    2020-02-01 [2]
- zellkonverter          * 1.2.1    2021-06-22 [1]
- zlibbioc                 1.38.0   2021-05-19 [2]
- source                                         
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Github (LieberInstitute/DeconvoBuddies@f4f174d)
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Github (LieberInstitute/jaffelab@2cbd55a)      
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- CRAN (R 4.1.0)                                 
- Bioconductor                                   
- Bioconductor                                   
+ package                * version  date (UTC) lib source
+ AnnotationDbi            1.54.1   2021-06-08 [2] Bioconductor
+ AnnotationHub            3.0.2    2021-10-14 [2] Bioconductor
+ assertthat               0.2.1    2019-03-21 [2] CRAN (R 4.1.0)
+ attempt                  0.3.1    2020-05-03 [1] CRAN (R 4.1.0)
+ backports                1.3.0    2021-10-27 [2] CRAN (R 4.1.0)
+ basilisk               * 1.4.0    2021-05-19 [1] Bioconductor
+ basilisk.utils           1.4.0    2021-05-19 [1] Bioconductor
+ beachmat                 2.8.1    2021-08-12 [2] Bioconductor
+ beeswarm                 0.4.0    2021-06-01 [1] CRAN (R 4.1.0)
+ benchmarkme              1.0.7    2021-03-21 [1] CRAN (R 4.1.0)
+ benchmarkmeData          1.0.4    2020-04-23 [1] CRAN (R 4.1.0)
+ Biobase                * 2.52.0   2021-05-19 [2] Bioconductor
+ BiocFileCache            2.0.0    2021-05-19 [2] Bioconductor
+ BiocGenerics           * 0.38.0   2021-05-19 [2] Bioconductor
+ BiocManager              1.30.16  2021-06-15 [2] CRAN (R 4.1.0)
+ BiocNeighbors            1.10.0   2021-05-19 [1] Bioconductor
+ BiocParallel             1.26.2   2021-08-22 [2] Bioconductor
+ BiocSingular             1.8.1    2021-06-08 [1] Bioconductor
+ BiocVersion              3.13.1   2021-03-19 [2] Bioconductor
+ Biostrings               2.60.2   2021-08-05 [2] Bioconductor
+ bit                      4.0.4    2020-08-04 [2] CRAN (R 4.1.0)
+ bit64                    4.0.5    2020-08-30 [2] CRAN (R 4.1.0)
+ bitops                   1.0-7    2021-04-24 [2] CRAN (R 4.1.0)
+ blob                     1.2.2    2021-07-23 [2] CRAN (R 4.1.0)
+ bluster                  1.2.1    2021-05-27 [1] Bioconductor
+ broom                    0.7.10   2021-10-31 [2] CRAN (R 4.1.0)
+ bslib                    0.3.1    2021-10-06 [2] CRAN (R 4.1.0)
+ cachem                   1.0.6    2021-08-19 [2] CRAN (R 4.1.0)
+ callr                    3.7.0    2021-04-20 [2] CRAN (R 4.1.0)
+ cellranger               1.1.0    2016-07-27 [2] CRAN (R 4.1.0)
+ cli                      3.1.0    2021-10-27 [2] CRAN (R 4.1.0)
+ cluster                  2.1.2    2021-04-17 [3] CRAN (R 4.1.0)
+ codetools                0.2-18   2020-11-04 [2] CRAN (R 4.1.0)
+ colorspace               2.0-2    2021-06-24 [2] CRAN (R 4.1.0)
+ config                   0.3.1    2020-12-17 [1] CRAN (R 4.1.0)
+ cowplot                  1.1.1    2020-12-30 [1] CRAN (R 4.1.0)
+ crayon                   1.4.2    2021-10-29 [2] CRAN (R 4.1.0)
+ curl                     4.3.2    2021-06-23 [2] CRAN (R 4.1.0)
+ data.table             * 1.14.2   2021-09-27 [2] CRAN (R 4.1.0)
+ DBI                      1.1.1    2021-01-15 [2] CRAN (R 4.1.0)
+ dbplyr                   2.1.1    2021-04-06 [2] CRAN (R 4.1.0)
+ DeconvoBuddies         * 0.99.0   2021-09-29 [1] Github (LieberInstitute/DeconvoBuddies@f4f174d)
+ DelayedArray             0.18.0   2021-05-19 [2] Bioconductor
+ DelayedMatrixStats       1.14.3   2021-08-26 [2] Bioconductor
+ desc                     1.4.0    2021-09-28 [2] CRAN (R 4.1.0)
+ digest                   0.6.28   2021-09-23 [2] CRAN (R 4.1.0)
+ dir.expiry               1.0.0    2021-05-19 [1] Bioconductor
+ dockerfiler              0.1.4    2021-09-03 [1] CRAN (R 4.1.0)
+ doParallel               1.0.16   2020-10-16 [2] CRAN (R 4.1.0)
+ dotCall64                1.0-1    2021-02-11 [2] CRAN (R 4.1.0)
+ dplyr                  * 1.0.7    2021-06-18 [2] CRAN (R 4.1.0)
+ dqrng                    0.3.0    2021-05-01 [1] CRAN (R 4.1.0)
+ DropletUtils             1.12.3   2021-09-19 [1] Bioconductor
+ DT                       0.19     2021-09-02 [2] CRAN (R 4.1.0)
+ edgeR                    3.34.1   2021-09-05 [2] Bioconductor
+ ellipsis                 0.3.2    2021-04-29 [2] CRAN (R 4.1.0)
+ ExperimentHub            2.0.0    2021-05-19 [2] Bioconductor
+ fansi                    0.5.0    2021-05-25 [2] CRAN (R 4.1.0)
+ fastmap                  1.1.0    2021-01-25 [2] CRAN (R 4.1.0)
+ fields                   13.3     2021-10-30 [2] CRAN (R 4.1.0)
+ filelock                 1.0.2    2018-10-05 [2] CRAN (R 4.1.0)
+ forcats                * 0.5.1    2021-01-27 [2] CRAN (R 4.1.0)
+ foreach                  1.5.1    2020-10-15 [2] CRAN (R 4.1.0)
+ fs                       1.5.0    2020-07-31 [2] CRAN (R 4.1.0)
+ gargle                   1.2.0    2021-07-02 [2] CRAN (R 4.1.0)
+ generics                 0.1.1    2021-10-25 [2] CRAN (R 4.1.0)
+ GenomeInfoDb           * 1.28.4   2021-09-05 [2] Bioconductor
+ GenomeInfoDbData         1.2.6    2021-05-11 [2] Bioconductor
+ GenomicRanges          * 1.44.0   2021-05-19 [2] Bioconductor
+ ggbeeswarm               0.6.0    2017-08-07 [1] CRAN (R 4.1.0)
+ ggplot2                * 3.3.5    2021-06-25 [2] CRAN (R 4.1.0)
+ glue                     1.4.2    2020-08-27 [2] CRAN (R 4.1.0)
+ golem                    0.3.1    2021-04-17 [1] CRAN (R 4.1.0)
+ googledrive              2.0.0    2021-07-08 [2] CRAN (R 4.1.0)
+ gridExtra                2.3      2017-09-09 [2] CRAN (R 4.1.0)
+ gtable                   0.3.0    2019-03-25 [2] CRAN (R 4.1.0)
+ haven                    2.4.3    2021-08-04 [2] CRAN (R 4.1.0)
+ HDF5Array                1.20.0   2021-05-19 [2] Bioconductor
+ here                   * 1.0.1    2020-12-13 [1] CRAN (R 4.1.0)
+ hms                      1.1.1    2021-09-26 [2] CRAN (R 4.1.0)
+ htmltools                0.5.2    2021-08-25 [2] CRAN (R 4.1.0)
+ htmlwidgets              1.5.4    2021-09-08 [2] CRAN (R 4.1.0)
+ httpuv                   1.6.3    2021-09-09 [2] CRAN (R 4.1.0)
+ httr                     1.4.2    2020-07-20 [2] CRAN (R 4.1.0)
+ igraph                   1.2.7    2021-10-15 [2] CRAN (R 4.1.0)
+ interactiveDisplayBase   1.30.0   2021-05-19 [2] Bioconductor
+ IRanges                * 2.26.0   2021-05-19 [2] Bioconductor
+ irlba                    2.3.3    2019-02-05 [2] CRAN (R 4.1.0)
+ iterators                1.0.13   2020-10-15 [2] CRAN (R 4.1.0)
+ jaffelab               * 0.99.32  2021-12-13 [1] Github (LieberInstitute/jaffelab@7b7afe3)
+ jquerylib                0.1.4    2021-04-26 [2] CRAN (R 4.1.0)
+ jsonlite                 1.7.2    2020-12-09 [2] CRAN (R 4.1.0)
+ KEGGREST                 1.32.0   2021-05-19 [2] Bioconductor
+ knitr                    1.36     2021-09-29 [2] CRAN (R 4.1.0)
+ later                    1.3.0    2021-08-18 [2] CRAN (R 4.1.0)
+ lattice                  0.20-45  2021-09-22 [3] CRAN (R 4.1.0)
+ lazyeval                 0.2.2    2019-03-15 [2] CRAN (R 4.1.0)
+ lifecycle                1.0.1    2021-09-24 [2] CRAN (R 4.1.0)
+ limma                    3.48.3   2021-08-10 [2] Bioconductor
+ locfit                   1.5-9.4  2020-03-25 [2] CRAN (R 4.1.0)
+ lubridate                1.8.0    2021-10-07 [2] CRAN (R 4.1.0)
+ magick                   2.7.3    2021-08-18 [2] CRAN (R 4.1.0)
+ magrittr                 2.0.1    2020-11-17 [2] CRAN (R 4.1.0)
+ maps                     3.4.0    2021-09-25 [2] CRAN (R 4.1.0)
+ Matrix                   1.3-4    2021-06-01 [3] CRAN (R 4.1.0)
+ MatrixGenerics         * 1.4.3    2021-08-26 [2] Bioconductor
+ matrixStats            * 0.61.0   2021-09-17 [2] CRAN (R 4.1.0)
+ memoise                  2.0.0    2021-01-26 [2] CRAN (R 4.1.0)
+ metapod                  1.0.0    2021-05-19 [1] Bioconductor
+ mime                     0.12     2021-09-28 [2] CRAN (R 4.1.0)
+ modelr                   0.1.8    2020-05-19 [2] CRAN (R 4.1.0)
+ munsell                  0.5.0    2018-06-12 [2] CRAN (R 4.1.0)
+ pillar                   1.6.4    2021-10-18 [2] CRAN (R 4.1.0)
+ pkgbuild                 1.2.0    2020-12-15 [2] CRAN (R 4.1.0)
+ pkgconfig                2.0.3    2019-09-22 [2] CRAN (R 4.1.0)
+ pkgload                  1.2.3    2021-10-13 [2] CRAN (R 4.1.0)
+ plotly                   4.10.0   2021-10-09 [2] CRAN (R 4.1.0)
+ png                      0.1-7    2013-12-03 [2] CRAN (R 4.1.0)
+ Polychrome               1.3.1    2021-07-16 [1] CRAN (R 4.1.0)
+ prettyunits              1.1.1    2020-01-24 [2] CRAN (R 4.1.0)
+ processx                 3.5.2    2021-04-30 [2] CRAN (R 4.1.0)
+ promises                 1.2.0.1  2021-02-11 [2] CRAN (R 4.1.0)
+ ps                       1.6.0    2021-02-28 [2] CRAN (R 4.1.0)
+ purrr                  * 0.3.4    2020-04-17 [2] CRAN (R 4.1.0)
+ R.methodsS3              1.8.1    2020-08-26 [2] CRAN (R 4.1.0)
+ R.oo                     1.24.0   2020-08-26 [2] CRAN (R 4.1.0)
+ R.utils                  2.11.0   2021-09-26 [2] CRAN (R 4.1.0)
+ R6                       2.5.1    2021-08-19 [2] CRAN (R 4.1.0)
+ rafalib                * 1.0.0    2015-08-09 [1] CRAN (R 4.1.0)
+ rappdirs                 0.3.3    2021-01-31 [2] CRAN (R 4.1.0)
+ RColorBrewer             1.1-2    2014-12-07 [2] CRAN (R 4.1.0)
+ Rcpp                     1.0.7    2021-07-07 [2] CRAN (R 4.1.0)
+ RCurl                    1.98-1.5 2021-09-17 [2] CRAN (R 4.1.0)
+ readr                  * 2.0.2    2021-09-27 [2] CRAN (R 4.1.0)
+ readxl                   1.3.1    2019-03-13 [2] CRAN (R 4.1.0)
+ remotes                  2.4.1    2021-09-29 [2] CRAN (R 4.1.0)
+ reprex                   2.0.1    2021-08-05 [2] CRAN (R 4.1.0)
+ reticulate             * 1.22     2021-09-17 [1] CRAN (R 4.1.0)
+ rhdf5                    2.36.0   2021-05-19 [2] Bioconductor
+ rhdf5filters             1.4.0    2021-05-19 [2] Bioconductor
+ Rhdf5lib                 1.14.2   2021-07-06 [2] Bioconductor
+ rjson                    0.2.20   2018-06-08 [2] CRAN (R 4.1.0)
+ rlang                    0.4.12   2021-10-18 [2] CRAN (R 4.1.0)
+ roxygen2                 7.1.2    2021-09-08 [2] CRAN (R 4.1.0)
+ rprojroot                2.0.2    2020-11-15 [2] CRAN (R 4.1.0)
+ RSQLite                  2.2.8    2021-08-21 [2] CRAN (R 4.1.0)
+ rstudioapi               0.13     2020-11-12 [2] CRAN (R 4.1.0)
+ rsvd                     1.0.5    2021-04-16 [1] CRAN (R 4.1.0)
+ rvest                    1.0.2    2021-10-16 [2] CRAN (R 4.1.0)
+ S4Vectors              * 0.30.2   2021-10-03 [2] Bioconductor
+ sass                     0.4.0    2021-05-12 [2] CRAN (R 4.1.0)
+ ScaledMatrix             1.0.0    2021-05-19 [1] Bioconductor
+ scales                   1.1.1    2020-05-11 [2] CRAN (R 4.1.0)
+ scater                   1.20.1   2021-06-15 [1] Bioconductor
+ scatterplot3d            0.3-41   2018-03-14 [1] CRAN (R 4.1.0)
+ scran                    1.20.1   2021-05-24 [1] Bioconductor
+ scuttle                  1.2.1    2021-08-05 [1] Bioconductor
+ segmented                1.3-4    2021-04-22 [1] CRAN (R 4.1.0)
+ sessioninfo            * 1.2.1    2021-11-02 [2] CRAN (R 4.1.0)
+ shiny                    1.7.1    2021-10-02 [2] CRAN (R 4.1.0)
+ shinyWidgets             0.6.2    2021-09-17 [1] CRAN (R 4.1.0)
+ SingleCellExperiment   * 1.14.1   2021-05-21 [2] Bioconductor
+ spam                     2.7-0    2021-06-25 [2] CRAN (R 4.1.0)
+ sparseMatrixStats        1.4.2    2021-08-08 [2] Bioconductor
+ SpatialExperiment      * 1.2.1    2021-06-10 [1] Bioconductor
+ spatialLIBD            * 1.4.0    2021-05-20 [1] Bioconductor
+ statmod                  1.4.36   2021-05-10 [2] CRAN (R 4.1.0)
+ stringi                  1.7.5    2021-10-04 [2] CRAN (R 4.1.0)
+ stringr                * 1.4.0    2019-02-10 [2] CRAN (R 4.1.0)
+ SummarizedExperiment   * 1.22.0   2021-05-19 [2] Bioconductor
+ testthat                 3.1.0    2021-10-04 [2] CRAN (R 4.1.0)
+ tibble                 * 3.1.5    2021-09-30 [2] CRAN (R 4.1.0)
+ tidyr                  * 1.1.4    2021-09-27 [2] CRAN (R 4.1.0)
+ tidyselect               1.1.1    2021-04-30 [2] CRAN (R 4.1.0)
+ tidyverse              * 1.3.1    2021-04-15 [2] CRAN (R 4.1.0)
+ tzdb                     0.2.0    2021-10-27 [2] CRAN (R 4.1.0)
+ usethis                  2.1.3    2021-10-27 [2] CRAN (R 4.1.0)
+ utf8                     1.2.2    2021-07-24 [2] CRAN (R 4.1.0)
+ vctrs                    0.3.8    2021-04-29 [2] CRAN (R 4.1.0)
+ vipor                    0.4.5    2017-03-22 [1] CRAN (R 4.1.0)
+ viridis                  0.6.2    2021-10-13 [2] CRAN (R 4.1.0)
+ viridisLite              0.4.0    2021-04-13 [2] CRAN (R 4.1.0)
+ withr                    2.4.2    2021-04-18 [2] CRAN (R 4.1.0)
+ xfun                     0.27     2021-10-18 [2] CRAN (R 4.1.0)
+ xml2                     1.3.2    2020-04-23 [2] CRAN (R 4.1.0)
+ xtable                   1.8-4    2019-04-21 [2] CRAN (R 4.1.0)
+ XVector                  0.32.0   2021-05-19 [2] Bioconductor
+ yaml                     2.2.1    2020-02-01 [2] CRAN (R 4.1.0)
+ zellkonverter          * 1.2.1    2021-06-22 [1] Bioconductor
+ zlibbioc                 1.38.0   2021-05-19 [2] Bioconductor
 
-[1] /users/neagles/R/4.1
-[2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.1/R/4.1/lib64/R/site-library
-[3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.1/R/4.1/lib64/R/library
+ [1] /users/neagles/R/4.1
+ [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.1/R/4.1/lib64/R/site-library
+ [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-4.1/R/4.1/lib64/R/library
+
+─ Python configuration ───────────────────────────────────────────────────────
+ python:         /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv/bin/python
+ libpython:      /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv/lib/libpython3.7m.so
+ pythonhome:     /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv:/users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv
+ version:        3.7.7 (default, May  7 2020, 21:25:33)  [GCC 7.3.0]
+ numpy:          /users/neagles/.cache/R/basilisk/1.4.0/zellkonverter/1.2.1/zellkonverterAnnDataEnv/lib/python3.7/site-packages/numpy
+ numpy_version:  1.20.2
+ 
+ NOTE: Python version was forced by use_python function
+
+──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Oct 26 15:11:00 EDT 2021
+Tue Mar 29 14:33:17 EDT 2022
