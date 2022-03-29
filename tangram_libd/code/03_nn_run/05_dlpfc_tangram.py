@@ -58,20 +58,8 @@ print('Using tangram version:', tg.__version__)
 with open(sample_path, 'r') as f:
     sample_names = f.read().splitlines()
 
-#  Recieve the '-i' argument, an integer in [1, 12] corresponding to the index
-#  in the sample_names list
-try:
-    opts, args = getopt.getopt(sys.argv[1:], "i:", ["index="])
-except getopt.GetoptError:
-    print('test.py -i <sample index in 1-12>')
-    sys.exit(2)
-
-for opt, arg in opts:
-    assert opt in ('-i', '--index='), opt
-    sample_index = int(arg)
-
 #  Determine this particular sample name
-sample_name = sample_names[sample_index - 1]
+sample_name = sample_names[os.environ['SGE_TASK_ID'] - 1]
 
 #  Load AnnDatas and list of marker genes
 ad_sp = sc.read_h5ad(sp_path)
@@ -211,22 +199,27 @@ sq.im.segment(
 # inset_sy = 400
 # inset_sx = 500
 
-# fig, axs = plt.subplots(1, 3, figsize=(30, 10))
-# sc.pl.spatial(
-#     adata_st, color="cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], title=""
-# )
-# axs[0].set_title("Clusters", fontdict={"fontsize": 20})
-# sf = adata_st.uns["spatial"]["V1_Adult_Mouse_Brain_Coronal_Section_2"]["scalefactors"][
-#     "tissue_hires_scalef"
-# ]
-# rect = mpl.patches.Rectangle(
-#     (inset_y * sf, inset_x * sf),
-#     width=inset_sx * sf,
-#     height=inset_sy * sf,
-#     ec="yellow",
-#     lw=4,
-#     fill=False,
-# )
+inset_y = 1000
+inset_x = 1000
+inset_sy = 400
+inset_sx = 500
+
+fig, axs = plt.subplots(1, 3, figsize=(30, 10))
+sc.pl.spatial(
+    ad_sp, color="Cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], title=""
+)
+axs[0].set_title("Clusters", fontdict={"fontsize": 20})
+sf = adata_st.uns["spatial"]["V1_Adult_Mouse_Brain_Coronal_Section_2"]["scalefactors"][
+    "tissue_hires_scalef"
+]
+rect = mpl.patches.Rectangle(
+    (inset_y * sf, inset_x * sf),
+    width=inset_sx * sf,
+    height=inset_sy * sf,
+    ec="yellow",
+    lw=4,
+    fill=False,
+)
 # axs[0].add_patch(rect)
 
 # axs[0].axes.xaxis.label.set_visible(False)
