@@ -59,7 +59,7 @@ with open(sample_path, 'r') as f:
     sample_names = f.read().splitlines()
 
 #  Determine this particular sample name
-sample_name = sample_names[os.environ['SGE_TASK_ID'] - 1]
+sample_name = sample_names[str(os.environ['SGE_TASK_ID']) - 1]
 
 #  Load AnnDatas and list of marker genes
 ad_sp = sc.read_h5ad(sp_path)
@@ -163,6 +163,10 @@ f.savefig(
     bbox_inches='tight'
 )
 
+#   Save the spatial AnnData, which was modified to include additional data in
+#   the above steps
+ad_sp.write_h5ad(os.path.join(out_dir, 'ad_sp_' + sample_name + '.h5ad'))
+
 ################################################################################
 #   Deconvolution
 ################################################################################
@@ -177,6 +181,8 @@ img_arr = np.array(
         )
     )
 )
+
+img_arr = img_arr[:1000, :1000, :]
 
 #   Convert to squidpy ImageContainer
 img = sq.im.ImageContainer(img_arr)
@@ -199,6 +205,8 @@ sq.im.segment(
 # inset_sy = 400
 # inset_sx = 500
 
+sf = ad_sp.uns['scaleFactor'][0]
+
 inset_y = 1000
 inset_x = 1000
 inset_sy = 400
@@ -206,12 +214,11 @@ inset_sx = 500
 
 fig, axs = plt.subplots(1, 3, figsize=(30, 10))
 sc.pl.spatial(
-    ad_sp, color="Cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], title=""
+    ad_sp, color="Cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], 
+    title="", spot_size = 50, scale_factor = sf, img = img
 )
 axs[0].set_title("Clusters", fontdict={"fontsize": 20})
-sf = adata_st.uns["spatial"]["V1_Adult_Mouse_Brain_Coronal_Section_2"]["scalefactors"][
-    "tissue_hires_scalef"
-]
+
 rect = mpl.patches.Rectangle(
     (inset_y * sf, inset_x * sf),
     width=inset_sx * sf,
@@ -220,29 +227,29 @@ rect = mpl.patches.Rectangle(
     lw=4,
     fill=False,
 )
-# axs[0].add_patch(rect)
+axs[0].add_patch(rect)
 
-# axs[0].axes.xaxis.label.set_visible(False)
-# axs[0].axes.yaxis.label.set_visible(False)
+axs[0].axes.xaxis.label.set_visible(False)
+axs[0].axes.yaxis.label.set_visible(False)
 
-# axs[1].imshow(
-#     img["image"][inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx, 0, 0]
-#     / 65536,
-#     interpolation="none",
-# )
-# axs[1].grid(False)
-# axs[1].set_xticks([])
-# axs[1].set_yticks([])
-# axs[1].set_title("DAPI", fontdict={"fontsize": 20})
+axs[1].imshow(
+    img["image"][inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx, 0, 0]
+    / 65536,
+    interpolation="none",
+)
+axs[1].grid(False)
+axs[1].set_xticks([])
+axs[1].set_yticks([])
+axs[1].set_title("DAPI", fontdict={"fontsize": 20})
 
-# crop = img["segmented_watershed"][
-#     inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx
-# ].values.squeeze(-1)
-# crop = skimage.segmentation.relabel_sequential(crop)[0]
-# cmap = plt.cm.plasma
-# cmap.set_under(color="black")
-# axs[2].imshow(crop, interpolation="none", cmap=cmap, vmin=0.001)
-# axs[2].grid(False)
-# axs[2].set_xticks([])
-# axs[2].set_yticks([])
-# axs[2].set_title("Nucleous segmentation", fontdict={"fontsize": 20});
+crop = img["segmented_watershed"][
+    inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx
+].values.squeeze(-1)
+crop = skimage.segmentation.relabel_sequential(crop)[0]
+cmap = plt.cm.plasma
+cmap.set_under(color="black")
+axs[2].imshow(crop, interpolation="none", cmap=cmap, vmin=0.001)
+axs[2].grid(False)
+axs[2].set_xticks([])
+axs[2].set_yticks([])
+axs[2].set_title("Nucleous segmentation", fontdict={"fontsize": 20});
