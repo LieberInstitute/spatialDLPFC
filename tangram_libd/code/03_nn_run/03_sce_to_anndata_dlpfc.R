@@ -1,5 +1,6 @@
 #  In 01_sce_to_anndata_pan.R, we converted the spatial/Visium
-#  spatialExperiment to a python AnnData, so here we only need to
+#  spatialExperiment to a python AnnData; however, the imgData slot was not
+#  successfully converted and so we re-convert the spatial object here. We also
 #  convert the snRNA-seq singleCellExperiment to an AnnData.
 #
 #  As before, we use marker genes from Louise, without doing additional
@@ -27,6 +28,7 @@ sce_in = here("tangram_libd", "raw-data", "03_nn_run", "SCE_DLPFC-n3_tran-etal.r
 
 sce_out = file.path(out_dir_processed, "sce_DLPFC.h5ad")
 expr_plot_out = file.path(out_dir_plots, "expression_cutoffs_DLPFC.pdf")
+visium_out = here("tangram_libd", "processed-data", "03_nn_run", "visium_DLPFC.h5ad")
 
 #  Make sure output directories exist
 dir.create(out_dir_processed, showWarnings = FALSE)
@@ -64,9 +66,19 @@ write_anndata = function(sce, out_path) {
 ###############################################################################
 
 load(sce_in, verbose=TRUE)
+visium_DLPFC = spatialLIBD::fetch_data("spe")
 
-print('Converting snRNAseq object to AnnData...')
+#   Save imgData without actual images to the metadata slot, which is converted
+#   successfully (unlike imgData as-is)
+metadata(visium_DLPFC) = list(
+    sample_id = imgData(visium_DLPFC)$sample_id,
+    image_id = imgData(visium_DLPFC)$image_id,
+    scaleFactor = imgData(visium_DLPFC)$scaleFactor
+)
+
+print('Converting both objects to AnnDatas...')
 write_anndata(sce.dlpfc.tran, sce_out)
+write_anndata(visium_DLPFC , visium_out)
 gc()
 
 ###############################################################################
