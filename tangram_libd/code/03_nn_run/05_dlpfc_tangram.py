@@ -60,9 +60,11 @@ with open(sample_path, 'r') as f:
 
 #  Determine this particular sample name
 sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
+print('Subsetting to just sample {}.'.format(sample_name))
 
 #  Load AnnDatas and list of marker genes
 ad_sp = sc.read_h5ad(sp_path)
+ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :]
 ad_sc = sc.read_h5ad(sc_path)
 
 with open(marker_path, 'r') as f:
