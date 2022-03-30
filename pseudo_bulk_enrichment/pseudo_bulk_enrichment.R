@@ -61,20 +61,23 @@ mat_filter = mat[gIndex, ] #subset matrix on just those genes.  want to remove l
 #convert variables to factors 
 colData(spe_pseudo)$spatial.cluster <- as.factor(colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]])
 colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
-colData(spe_pseudo)$age <- as.integer(colData(spe_pseudo)$age)
+colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
 colData(spe_pseudo)$sex <- as.factor(colData(spe_pseudo)$sex)
 colData(spe_pseudo)$diagnosis <- as.factor(colData(spe_pseudo)$diagnosis)
 colData(spe_pseudo)$subject <- as.factor(colData(spe_pseudo)$subject)
 
 ### access different elements of formula and check to see if they're in colData(spe_pseudo)
-for(i in seq_along(attributes(terms(formula))$term.labels)){
-  if(!(attributes(terms(formula))$term.labels[i] %in% colnames(colData(spe_pseudo)))){
-    stop("Warning: formula term not contained in data")
+mat_formula = ~ 0 + spatial.cluster + region + age + sex
+terms <- attributes(terms(mat_formula))$term.labels
+terms <- terms[!grepl(":", terms)]
+for(i in seq_along(terms)){
+  if(!terms[i] %in% colnames(colData(spe_pseudo))){
+    stop("Error: formula term ",terms[i], " is not contained in colData()")
   }
 }
 
 #create matrix where the rownames are the sample:clusters and the columns are the other variables (spatial.cluster + region + age + sex)
-mat_formula = ~ 0 + spatial.cluster + region + age + sex
+
 mod<- model.matrix(mat_formula,
                    data = colData(spe_pseudo)) #binarizes factors 
 colnames(mod) <- gsub('cluster', '', colnames(mod)) 
@@ -98,7 +101,7 @@ eb0_list_cluster <- lapply(cluster_idx, function(x) {
     lmFit(
       mat_filter,
       design = m,
-      block = spe_pseudo$subject,
+      block = spe_pseudo$sample_id,
       correlation = corfit$consensus.correlation
     )
   )
@@ -137,7 +140,7 @@ data.frame(
 # 7     61           9           3
 
 
-f_merge <- function(p, fdr, t) {
+f_merge <- function(p, fdr, t) { #josh suggestd using top table to do this. also look into purrr to replace sapply and lappy
   colnames(p) <- paste0('p_value_', colnames(p))
   colnames(fdr) <- paste0('fdr_', colnames(fdr))
   colnames(t) <- paste0('t_stat_', colnames(t))
