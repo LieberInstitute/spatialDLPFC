@@ -76,6 +76,11 @@ metadata(visium_DLPFC) = list(
     scaleFactor = imgData(visium_DLPFC)$scaleFactor
 )
 
+#   Add spatialData to colData, since only colData is converted
+colData(visium_DLPFC) = cbind(
+    colData(visium_DLPFC), spatialCoords(visium_DLPFC)
+)
+
 print('Converting both objects to AnnDatas...')
 write_anndata(sce.dlpfc.tran, sce_out)
 write_anndata(visium_DLPFC , visium_out)
