@@ -1,13 +1,13 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=12G,h_vmem=12G,h_fsize=100G
-#$ -pe local 4
+#$ -l mem_free=8G,h_vmem=8G,h_fsize=100G
+#$ -pe local 8
 #$ -N spatialDLFPC_spaceranger_IF
 #$ -o logs/spaceranger_IF.$TASK_ID.txt
 #$ -e logs/spaceranger_IF.$TASK_ID.txt
 #$ -m e
-#$ -t 1-4
-#$ -tc 10
+#$ -t 1,4
+#$ -tc 2
 
 echo "**** Job starts ****"
 date
@@ -50,8 +50,8 @@ spaceranger count \
     --area=${CAPTUREAREA} \
     --loupe-alignment=${LOUPEPATH} \
     --jobmode=local \
-    --localcores=4 \
-    --localmem=48
+    --localcores=8 \
+    --localmem=64
 
 ## Move output
 echo "Moving results to new location"
