@@ -80,7 +80,7 @@ for(i in seq_along(terms)){
 
 mod<- model.matrix(mat_formula,
                    data = colData(spe_pseudo)) #binarizes factors 
-colnames(mod) <- gsub('cluster', '', colnames(mod)) 
+
 
 
 ## get duplicate correlation #http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/dupcor.html
