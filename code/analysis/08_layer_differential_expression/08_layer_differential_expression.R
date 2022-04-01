@@ -54,3 +54,6 @@ pheatmap(
 )
 dev.off()
 
+#add cluster annotations to rows and columns
+#on the columns you could also add colors for (a) donor, (b) mid/ant/post and (c) sample
+
