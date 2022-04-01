@@ -91,7 +91,7 @@ eb0_list_cell <- lapply(cell_idx, function(x) {
     lmFit(
       mat_filter,
       design = m,
-      block = sce_pseudobulk_bayesSpace$subject,
+      block = sce_pseudobulk_bayesSpace$sample_id,
       correlation = corfit$consensus.correlation
     )
   )
