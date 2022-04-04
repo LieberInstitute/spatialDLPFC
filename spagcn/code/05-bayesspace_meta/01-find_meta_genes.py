@@ -24,7 +24,7 @@ input_adata_path = pyhere.here(
     'spagcn', 'processed-data', '04-spatial_dlpfc', 'spe_anndata.h5ad'
 )
 cluster_dir = '/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/clustering_results'
-N_CLUSTERS = list(range(2, 16))
+N_CLUSTERS = [16, 28] # list(range(2, 16))
 NUM_META_COLUMNS = 10
 
 #  Column names expected to be present in adata.obs for X and Y array and pixel

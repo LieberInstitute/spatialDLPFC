@@ -4,8 +4,8 @@
 #$ -o ../../processed-data/05-bayesspace_meta/01-find_meta_genes_$TASK_ID.log
 #$ -e ../../processed-data/05-bayesspace_meta/01-find_meta_genes_$TASK_ID.log
 #$ -l bluejay,mf=20G,h_vmem=20G
-#$ -t 29
-#$ -tc 1
+#$ -t 1-30
+#$ -tc 8
 
 echo "**** Job starts ****"
 date
