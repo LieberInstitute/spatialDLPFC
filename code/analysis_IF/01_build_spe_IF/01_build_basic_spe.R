@@ -6,22 +6,16 @@ library("lobstr")
 library("sessioninfo")
 
 ## Create output directories
-dir_rdata <- here::here("processed-data", "04_build_spe")
+dir_rdata <- here::here("processed-data", "spe_IF","01_build_spe")
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 
 ## Define some info for the samples
 sample_info <- data.frame(
   sample_id = c(
-    "V10A27004_A1_Br3874",
-    "V10A27004_D1_Br3880",
-    "V10A27106_A1_Br3874",
-    "V10A27106_B1_Br3854",
-    "V10A27106_C1_Br3873",
-    "V10A27106_D1_Br3880",
-    "V10T31036_A1_Br3874",
-    "V10T31036_B1_Br3854",
-    "V10T31036_C1_Br3873",
-    "V10T31036_D1_Br3880"
+    "Br8667_Post_IF",
+    "Br2720_Ant_IF",
+    "Br6522_Ant_IF",
+    "Br6432_Ant_IF",
   )
 )
 sample_info$subject <- gsub(".*_", "", sample_info$sample_id)
