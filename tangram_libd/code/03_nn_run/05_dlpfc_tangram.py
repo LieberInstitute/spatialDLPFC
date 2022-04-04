@@ -52,6 +52,8 @@ select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
 ]
 
+SPOT_SIZE = 100
+
 print('Using tangram version:', tg.__version__)
 
 #  Grab the full list of sample names we will subset from
@@ -107,7 +109,7 @@ annotation_list = list(pd.unique(ad_sc.obs['cellType']))
 #  Plot spatial expression by cell-type label
 tg.plot_cell_annotation_sc(
     ad_sp, annotation_list, x='pxl_row_in_fullres', y='pxl_col_in_fullres',
-    perc=0.02
+    perc=0.02, spot_size = SPOT_SIZE
 )
 f = plt.gcf()
 f.savefig(
@@ -128,9 +130,12 @@ ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
 ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge_' + sample_name + '.h5ad'))
 
 #  Plot 5 lowest-scoring training genes
-genes = ad_map.uns['train_genes_df']['train_score'][-5:]
+genes = ad_map.uns['train_genes_df']['train_score'][-5:].index
 ad_map.uns['train_genes_df'].loc[genes]
-tg.plot_genes_sc(genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02)
+tg.plot_genes_sc(
+    genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
+    spot_size = SPOT_SIZE
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(
@@ -140,8 +145,13 @@ f.savefig(
 )
 
 #  Plot genes not present in spatial data
-genes=['loc102633833', 'gm5700', 'gm8292'] # adjust for our data
-tg.plot_genes_sc(genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02)
+uniq_sc_genes = ad_sc.var['gene_id'][
+    ~ ad_sc.var['gene_id'].isin(ad_sp.var['gene_id'])
+].index
+tg.plot_genes_sc(
+    uniq_sc_genes[:10], adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
+    spot_size = SPOT_SIZE
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(
@@ -218,7 +228,7 @@ inset_sx = 500
 fig, axs = plt.subplots(1, 3, figsize=(30, 10))
 sc.pl.spatial(
     ad_sp, color="Cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], 
-    title="", spot_size = 50, scale_factor = sf, img = img
+    title="", spot_size = SPOT_SIZE, scale_factor = sf, img = img
 )
 axs[0].set_title("Clusters", fontdict={"fontsize": 20})
 
