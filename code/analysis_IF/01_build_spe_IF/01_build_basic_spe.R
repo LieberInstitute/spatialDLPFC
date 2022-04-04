@@ -18,7 +18,7 @@ sample_info <- data.frame(
     "Br6432_Ant_IF",
   )
 )
-sample_info$subject <- gsub(".*_", "", sample_info$sample_id)
+sample_info$sample_id <- gsub(".*_", "", sample_info$sample_id)
 sample_info$sample_path <-
   file.path(
     here::here("processed-data", "spaceranger"),
