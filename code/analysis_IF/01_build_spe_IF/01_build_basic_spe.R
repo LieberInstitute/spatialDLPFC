@@ -28,18 +28,18 @@ sample_info$sample_path <-
 stopifnot(all(file.exists(sample_info$sample_path)))
 
 ## Define the donor info using information from
-## https://github.com/LieberInstitute/Visium_IF_AD/blob/master/raw-data/Visium_IF_AD_ITG_MasterExcelSummarySheet.xlsx
+## https://github.com/LieberInstitute/spatialDLPFC/blob/main/raw-data/sample_info/Visium_IF_DLPFC_MasterExcel_01262022.xlsx
 donor_info <- data.frame(
-  subject = c("Br3854", "Br3873", "Br3880", "Br3874"),
-  age = c(65.75, 88.78, 90.47, 73.05),
+  subject = c("Br8667_Post", "Br2720_Ant", "Br6522_Ant", "Br6432_Ant"),
+  age = c(37.33, 48.22, 33.38, 48.88),
   sex = c("F", "F", "M", "M"),
-  race = "EA/CAUC",
-  pmi = c(31.5, 29, 35, 13.5),
-  diagnosis = c("AD", "AD", "AD", "Control"),
-  rin = c(7, 7.2, 7.1, 7.2),
-  BCrating = c("Def AD", "Def AD", "Prob AD", "No AP"),
-  braak = c("B3", "B3", "B3", "B2"),
-  cerad = c("C3", "C3", "C3", "C0")
+  race = "CAUC",
+  pmi = c(13.5, 25.5, 31.5, 30.5),
+  diagnosis = c("Control", "Control", "Control", "Control"),
+  rin = c(6.9, 7.5, 7.7, 7.4),
+  # BCrating = c("Def AD", "Def AD", "Prob AD", "No AP"),
+  # braak = c("B3", "B3", "B3", "B2"),
+  # cerad = c("C3", "C3", "C3", "C0")
 )
 
 ## Combine sample info with the donor info
