@@ -36,4 +36,58 @@ pheatmap(
 )
 dev.off()
 
+#make orange and gray plots of cluster 1 at k = 9 
+spe$BayesSpace_k9_c1 <- factor(spe$bayesSpace_harmony_9 == 1,
+                                 levels = c("TRUE", "FALSE"))
+vis_grid_clus(
+  spe = spe,
+  clustervar = "BayesSpace_k9_c1",
+  pdf = here("plots","07a_bad_clusters", paste0("vis_clus_BayesSpace_k9_c1.pdf")),
+  sort_clust = FALSE,
+  colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+  point_size = 0.75,
+  height = 24,
+  width = 90
+)
 
+#make orange and gray plots of cluster 2 at k = 9
+spe$BayesSpace_k9_c2 <- factor(spe$bayesSpace_harmony_9 == 2,
+                               levels = c("TRUE", "FALSE"))
+vis_grid_clus(
+  spe = spe,
+  clustervar = "BayesSpace_k9_c2",
+  pdf = here("plots","07a_bad_clusters", paste0("vis_clus_BayesSpace_k9_c2.pdf")),
+  sort_clust = FALSE,
+  colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+  point_size = 0.75,
+  height = 24,
+  width = 90
+)
+
+#make orange and gray plots of cluster 23 at k = 28
+spe$BayesSpace_k28_c23 <- factor(spe$bayesSpace_harmony_28 == 23,
+                               levels = c("TRUE", "FALSE"))
+vis_grid_clus(
+  spe = spe,
+  clustervar = "BayesSpace_k28_c23",
+  pdf = here("plots","07a_bad_clusters", paste0("vis_clus_BayesSpace_k28_c23.pdf")),
+  sort_clust = FALSE,
+  colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+  point_size = 0.75,
+  height = 24,
+  width = 90
+)
+
+#make orange and gray plots of cluster 27 at k = 28
+spe$BayesSpace_k28_c27 <- factor(spe$bayesSpace_harmony_28 == 27,
+                                 levels = c("TRUE", "FALSE"))
+vis_grid_clus(
+  spe = spe,
+  clustervar = "BayesSpace_k28_c27",
+  pdf = here("plots","07a_bad_clusters", paste0("vis_clus_BayesSpace_k28_c27.pdf")),
+  sort_clust = FALSE,
+  colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+  point_size = 0.75,
+  height = 24,
+  width = 90
+)
