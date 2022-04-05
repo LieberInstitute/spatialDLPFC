@@ -1,6 +1,8 @@
 library(SpatialExperiment)
 library(spatialLIBD)
 library(here)
+library(edgeR)
+library(scuttle)
 
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
@@ -24,4 +26,11 @@ spe_pseudo <- aggregateAcrossCells(
 #log normalize the counts
 spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
 
-#find a good expression cutoff using edgeR::
+#find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
+rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo)
+summary(rowData(spe_pseudo)$low_expr)
+# Mode   FALSE    TRUE 
+# logical   21059    7857 
+
+save(sce_pseudobulk_bayesSpace, file = here::here("processed-data","rdata","spe","09_region_differential_expression",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
+
