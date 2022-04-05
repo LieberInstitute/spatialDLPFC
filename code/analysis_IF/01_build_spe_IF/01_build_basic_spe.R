@@ -66,15 +66,6 @@ Sys.time()
 # 2021-12-01 14:10:44 adding information used by spatialLIBD
 # [1] "2021-12-01 14:10:52 EST"
 
-## Check paths to the targeted sequencing data
-stopifnot(all(file.exists(
-  gsub(
-    "spaceranger",
-    "spaceranger_targeted",
-    sample_info$sample_path
-  )
-)))
-
 Sys.time()
 spe_targeted <- read10xVisiumWrapper(
   gsub(
@@ -98,21 +89,21 @@ Sys.time()
 # 2021-12-01 14:13:18 adding information used by spatialLIBD
 # [1] "2021-12-01 14:13:19 EST"
 
-## Add images created by Madhavi Tippani
-image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
+# ## Add images created by Madhavi Tippani
+# image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
+# 
+# for (img in image_types) {
+#   for (res in c("lowres")) {
+#     spe_wholegenome <- add_images(
+#       spe = spe_wholegenome,
+#       image_dir = here("processed-data", "Images", "spatialLIBD_images"),
+#       image_pattern = paste0(img, "_", res),
+#       image_id_current = res
+#     )
+#   }
+# }
 
-for (img in image_types) {
-  for (res in c("lowres")) {
-    spe_wholegenome <- add_images(
-      spe = spe_wholegenome,
-      image_dir = here("processed-data", "Images", "spatialLIBD_images"),
-      image_pattern = paste0(img, "_", res),
-      image_id_current = res
-    )
-  }
-}
-
-## Update the imData in the targeted sequencing
+## Update the imData in the targeted sequencing (do we need this part?)
 imgData(spe_targeted) <- imgData(spe_wholegenome)
 
 ## This is the case since we didn't use the --target-panel option when
@@ -136,7 +127,7 @@ add_design <- function(spe) {
   return(spe)
 }
 spe_wholegenome <- add_design(spe_wholegenome)
-spe_targeted <- add_design(spe_targeted)
+spe_targeted <- add_design(spe_targeted) #Do we need this line?
 
 ## Read in cell counts and segmentation results
 segmentations_list <-
@@ -170,7 +161,7 @@ segmentation_info <-
     colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")
   )]
 colData(spe_wholegenome) <- cbind(colData(spe_wholegenome), segmentation_info)
-colData(spe_targeted) <- cbind(colData(spe_targeted), segmentation_info)
+colData(spe_targeted) <- cbind(colData(spe_targeted), segmentation_info) #Maybe we do not need this line?!
 
 ## Remove genes with no data
 no_expr <- which(rowSums(counts(spe_wholegenome)) == 0)
@@ -187,7 +178,7 @@ length(no_expr) / nrow(spe_targeted) * 100
 # [1] 35.83509
 spe_targeted <- spe_targeted[-no_expr, ]
 
-## For visualizing this later with spatialLIBD
+## For visualizing this later with spatialLIBD (maybe do need this either because it is for targeted sequencing?)
 spe_targeted$overlaps_tissue <-
   spe_wholegenome$overlaps_tissue <-
   factor(ifelse(spe_wholegenome$in_tissue, "in", "out"))
@@ -197,12 +188,12 @@ spe_raw_wholegenome <- spe_wholegenome
 spe_raw_targeted <- spe_targeted
 
 saveRDS(spe_raw_wholegenome, file.path(dir_rdata, "spe_raw_wholegenome.rds"))
-saveRDS(spe_raw_targeted, file = file.path(dir_rdata, "spe_raw_targeted.rds"))
+#saveRDS(spe_raw_targeted, file = file.path(dir_rdata, "spe_raw_targeted.rds"))
 
 ## Size in Gb
 lobstr::obj_size(spe_raw_wholegenome) / 1024^3
 # 1.651702
-lobstr::obj_size(spe_raw_targeted) / 1024^3
+$lobstr::obj_size(spe_raw_targeted) / 1024^3
 # 1.235324
 
 ## Now drop the spots outside the tissue
@@ -216,9 +207,10 @@ if (any(colSums(counts(spe_wholegenome)) == 0)) {
   dim(spe_wholegenome)
 }
 
-spe_targeted <- spe_raw_targeted[, spe_raw_targeted$in_tissue]
-dim(spe_targeted)
+# spe_targeted <- spe_raw_targeted[, spe_raw_targeted$in_tissue]
+# dim(spe_targeted)
 # [1] 23485 38287
+
 ## Remove spots without counts
 if (any(colSums(counts(spe_targeted)) == 0)) {
   message("removing spots without counts for spe_targeted")
@@ -229,11 +221,11 @@ if (any(colSums(counts(spe_targeted)) == 0)) {
 
 lobstr::obj_size(spe_wholegenome) / 1024^3
 # 1.534376
-lobstr::obj_size(spe_targeted) / 1024^3
+#lobstr::obj_size(spe_targeted) / 1024^3
 # 1.198796
 
 saveRDS(spe_wholegenome, file.path(dir_rdata, "spe_wholegenome.rds"))
-saveRDS(spe_targeted, file = file.path(dir_rdata, "spe_targeted.rds"))
+#saveRDS(spe_targeted, file = file.path(dir_rdata, "spe_targeted.rds"))
 
 ## Reproducibility information
 print("Reproducibility information:")
