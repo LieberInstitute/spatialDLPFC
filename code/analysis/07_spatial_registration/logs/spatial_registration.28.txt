@@ -601,3 +601,204 @@ Error in session_info() : could not find function "session_info"
 Execution halted
 **** Job ends ****
 Wed Mar 16 16:33:56 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Thu Mar 31 23:52:17 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9754690
+Job name: spatial_registration
+Hostname: compute-126.cm.cluster
+Task id: 28
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+Loading objects:
+  spe
+Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
+   FDRsig Pval10.6sig Pval10.8sig
+1       0           0           0
+2      25           3           2
+3   14517        1289         188
+4   15361        2425         510
+5   13826         416          91
+6     749         238         127
+7       1           0           0
+8       0           0           0
+9   15708        7297        1990
+10      4           2           0
+11      5           0           0
+12     61           4           1
+13   4551          55          22
+14  16235       11053        6044
+15    573         124          61
+16    931          78          11
+17    638         212         117
+19      0           0           0
+20    668         217         141
+22     30           1           0
+23    107          16          10
+24      0           0           0
+25     20           2           1
+26     11           0           0
+27    336          97          71
+28      9           0           0
+       WM Layer1   Layer2 Layer3  Layer4 Layer5  Layer6
+1  -0.310 -0.240  0.25000  0.210  0.2200  0.190  0.1000
+2  -0.490 -0.190  0.43000  0.570  0.2700  0.110 -0.0730
+3  -0.420 -0.260  0.36000  0.390  0.3400  0.160  0.0013
+4  -0.320 -0.430  0.01200  0.064  0.3600  0.570  0.1900
+5  -0.400 -0.340  0.12000  0.330  0.5100  0.300  0.0040
+6   0.600 -0.024 -0.33000 -0.560 -0.3300 -0.220  0.1400
+7  -0.230 -0.250  0.03900  0.120  0.1200  0.280  0.2300
+8  -0.130  0.240 -0.00085  0.220  0.0066 -0.047 -0.1800
+9  -0.330 -0.076  0.56000  0.330  0.0660 -0.050 -0.0550
+10 -0.530 -0.370  0.19000  0.530  0.5300  0.340 -0.0094
+11 -0.110  0.330  0.23000  0.140 -0.1200 -0.190 -0.1800
+12  0.075  0.370  0.01400 -0.070 -0.2000 -0.210 -0.1200
+13 -0.300 -0.390 -0.04600  0.056  0.4000  0.550  0.1300
+14 -0.170 -0.400  0.10000 -0.052  0.1100  0.250  0.4400
+15  0.280  0.560 -0.07000 -0.250 -0.3600 -0.390 -0.2100
+16  0.330 -0.180 -0.16000 -0.420 -0.2100 -0.041  0.3300
+17  0.650  0.034 -0.36000 -0.550 -0.3600 -0.260  0.0630
+19  0.014 -0.067 -0.19000 -0.068  0.0390  0.160  0.1200
+20  0.760  0.150 -0.43000 -0.540 -0.4400 -0.370 -0.0670
+22 -0.390 -0.260  0.05300  0.320  0.4100  0.390 -0.0400
+23  0.210  0.480 -0.12000 -0.080 -0.2900 -0.300 -0.2100
+24 -0.410 -0.180  0.15000  0.430  0.3100  0.240 -0.0240
+25 -0.480 -0.420  0.02400  0.450  0.5800  0.420  0.0350
+26  0.069  0.530  0.08800 -0.025 -0.2500 -0.300 -0.2600
+27  0.210  0.470 -0.16000 -0.096 -0.2800 -0.300 -0.2000
+28  0.360  0.040 -0.23000 -0.290 -0.2500 -0.120  0.0870
+        WM   Layer1  Layer2  Layer3  Layer4  Layer5  Layer6
+1  -0.4810 -0.15800  0.4210  0.4620  0.2430  0.0258 -0.1290
+2  -0.6650 -0.17800  0.6010  0.8230  0.3040 -0.0873 -0.2730
+3  -0.6020 -0.05480  0.5100  0.8210  0.3860 -0.1660 -0.4040
+4  -0.2680 -0.51100 -0.3030 -0.1880  0.3540  0.8240  0.2520
+5  -0.5330 -0.27600  0.0790  0.6110  0.7610  0.1580 -0.3590
+6   0.8530 -0.08830 -0.4570 -0.7040 -0.4160 -0.1260  0.3310
+7  -0.1870 -0.59600 -0.1860 -0.2010  0.0789  0.5340  0.6460
+8  -0.3960  0.22100  0.1030  0.3410  0.1960  0.0213 -0.2380
+9  -0.4620  0.13100  0.8060  0.6520 -0.0635 -0.3740 -0.3150
+10 -0.6580 -0.40600  0.1860  0.7070  0.7310  0.2200 -0.2520
+11 -0.2900  0.62300  0.5860  0.3620 -0.2300 -0.4430 -0.4060
+12  0.0990  0.74200  0.1910 -0.0501 -0.3730 -0.4320 -0.2840
+13 -0.2330 -0.50800 -0.3870 -0.2000  0.4800  0.8240  0.1720
+14 -0.0335 -0.40900 -0.1150 -0.3240 -0.1660  0.2310  0.7910
+15  0.2260  0.81800  0.1180 -0.1520 -0.4630 -0.4830 -0.2730
+16  0.6030 -0.21700 -0.3410 -0.6730 -0.4570 -0.0100  0.6330
+17  0.8830  0.00237 -0.4160 -0.6580 -0.4410 -0.1930  0.2060
+19  0.2210 -0.39200 -0.5660 -0.5460  0.0143  0.5150  0.5620
+20  0.9250  0.03420 -0.4370 -0.6160 -0.4150 -0.2330  0.1070
+22 -0.5060 -0.45900 -0.0676  0.2610  0.6600  0.5400 -0.0525
+23  0.1480  0.66600  0.0332 -0.0886 -0.3520 -0.3220 -0.2310
+24 -0.6400 -0.41100  0.1630  0.5720  0.6170  0.3300 -0.1420
+25 -0.5490 -0.48900 -0.0438  0.4750  0.7980  0.3940 -0.1480
+26 -0.0480  0.80400  0.3370  0.1010 -0.3450 -0.4520 -0.4020
+27  0.1220  0.52700 -0.0364 -0.0800 -0.2580 -0.2380 -0.1680
+28  0.7490 -0.13700 -0.4120 -0.6600 -0.4270 -0.0522  0.3990
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2022-04-01 00:09:00 EDT"
+    user   system  elapsed 
+ 986.147    9.306 1001.926 
+Error in session_info() : could not find function "session_info"
+Execution halted
+**** Job ends ****
+Fri Apr  1 00:09:00 EDT 2022
