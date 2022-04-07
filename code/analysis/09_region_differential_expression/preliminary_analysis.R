@@ -3,6 +3,8 @@ library(spatialLIBD)
 library(here)
 library(edgeR)
 library(scuttle)
+library(scRNAseq)
+library(scater)
 
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
@@ -47,6 +49,7 @@ pca_pseudo<- prcomp(t(assays(spe_pseudo)$logcounts))$x[, 1:50]
 reducedDims(spe_pseudo) <- list(PCA=pca_pseudo, test=pca_pseudo) #need to figure out to add just one reduced dim https://bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html
 
 
+# code adapted from: http://bioconductor.org/packages/release/bioc/vignettes/scater/inst/doc/overview.html#2_Diagnostic_plots_for_quality_control
 ###plot PCA###
 pdf(file = here::here("plots","09_region_differential_expression",paste0("sce_pseudobulk_pca_k",k,".pdf")))
 plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12)
@@ -73,21 +76,3 @@ head(vars)
 pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,".pdf")))
 plotExplanatoryVariables(vars)
 dev.off()
-
-########installations###########
-# if (!require("BiocManager", quietly = TRUE))
-#   install.packages("BiocManager")
-# 
-# BiocManager::install("spatialLIBD")
-# 
-# install.packages("here")
-# 
-# if (!require("BiocManager", quietly = TRUE))
-#   install.packages("BiocManager")
-# 
-# BiocManager::install("edgeR")
-# 
-# if (!require("BiocManager", quietly = TRUE))
-#   install.packages("BiocManager")
-# 
-# BiocManager::install("scuttle")
