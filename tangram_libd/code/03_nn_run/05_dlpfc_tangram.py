@@ -28,6 +28,10 @@ import tangram as tg
 from PIL import Image
 import json
 
+################################################################################
+#   Variable definitions
+################################################################################
+
 plot_dir = pyhere.here('tangram_libd', 'plots', '03_nn_run', 'DLPFC')
 out_dir = pyhere.here(
     'tangram_libd', 'processed-data', '03_nn_run', 'tangram_out_DLPFC'
@@ -56,6 +60,10 @@ json_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X'
 select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
 ]
+
+################################################################################
+#   Alignment (spatial registration)
+################################################################################
 
 print('Using tangram version:', tg.__version__)
 
@@ -165,7 +173,9 @@ f.savefig(
 
 #  Compute average cosine similarity for test genes
 df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp, ad_sc)
-test_score = np.mean(df_all_genes.score[np.logical_not(df_all_genes.is_training)])
+test_score = np.mean(
+    df_all_genes.score[np.logical_not(df_all_genes.is_training)]
+)
 print('Average test score:', round(float(test_score), 4))
 
 #  Compute average cosine similarity for training genes
@@ -257,7 +267,9 @@ axs[0].axes.xaxis.label.set_visible(False)
 axs[0].axes.yaxis.label.set_visible(False)
 
 axs[1].imshow(
-    img["image"][inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx, 0, 0]
+    img["image"][
+        inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx, 0, 0
+    ]
     / 65536,
     interpolation="none",
 )
