@@ -185,7 +185,7 @@ print('Average training score:', round(float(train_score), 4))
 tg.plot_auc(df_all_genes)
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'test_auc_' + sample_name + '.png'),
+    os.path.join(plot_dir, 'orig_test_auc_' + sample_name + '.png'),
     bbox_inches='tight'
 )
 
@@ -295,5 +295,96 @@ axs[2].set_title("Nucleous segmentation", fontdict={"fontsize": 20});
 f = plt.gcf()
 f.savefig(
     os.path.join(plot_dir, 'segmentation_test_' + sample_name + '.png'),
+    bbox_inches='tight'
+)
+
+#-------------------------------------------------------------------------------
+#   Extract info about segmented nuclei
+#-------------------------------------------------------------------------------
+
+# define image layer to use for segmentation
+features_kwargs = {
+    "segmentation": {
+        "label_layer": "segmented_watershed",
+        "props": ["label", "centroid"],
+        "channels": [1, 2],
+    }
+}
+
+# calculate segmentation features
+sq.im.calculate_image_features(
+    ad_sp,
+    img,
+    layer="image",
+    key_added="image_features",
+    features_kwargs=features_kwargs,
+    features="segmentation",
+    mask_circle=True,
+)
+
+ad_sp.obs["cell_count"] = ad_sp.obsm["image_features"]["segmentation_label"]
+sc.pl.spatial(ad_sp, color=["Cluster", "cell_count"], frameon=False)
+
+#-------------------------------------------------------------------------------
+#   Re-align in "deconvolution mode"
+#-------------------------------------------------------------------------------
+
+ad_map = tg.map_cells_to_space(
+    ad_sc,
+    ad_sp,
+    mode = "constrained",
+    target_count = ad_sp.obs.cell_count.sum(),
+    density_prior = np.array(ad_sp.obs.cell_count) / ad_sp.obs.cell_count.sum(),
+    num_epochs = 1000,
+    device = "cuda:" + gpu_index
+)
+
+
+tg.project_cell_annotations(ad_map, ad_sp, annotation="cell_subclass")
+annotation_list = list(pd.unique(ad_sc.obs['cell_subclass']))
+tg.plot_cell_annotation_sc(ad_sp, annotation_list, perc=0.02)
+
+ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
+df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp, ad_sc)
+tg.plot_auc(df_all_genes)
+f = plt.gcf()
+f.savefig(
+    os.path.join(plot_dir, 'deconvo_test_auc_' + sample_name + '.png'),
+    bbox_inches='tight'
+)
+
+#-------------------------------------------------------------------------------
+#   Format segmentation results, form new AnnData, and plot
+#-------------------------------------------------------------------------------
+
+tg.create_segment_cell_df(ad_sp)
+
+tg.count_cell_annotations(
+    ad_map,
+    ad_sc,
+    ad_sp,
+    annotation="cell_subclass",
+)
+
+ad_segment = tg.deconvolve_cell_annotations(ad_sp)
+ad_segment.write_h5ad(
+    os.path.join(out_dir, 'ad_segment_' + sample_name + '.h5ad')
+)
+
+#   Produce the main deconvolution plot of interest
+fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+sc.pl.spatial(
+    ad_segment,
+    color="cluster",
+    size=0.4,
+    show=False,
+    frameon=False,
+    alpha_img=0.2,
+    legend_fontsize=20,
+    ax=ax,
+)
+f = plt.gcf()
+f.savefig(
+    os.path.join(plot_dir, 'deconvo_cells_' + sample_name + '.png'),
     bbox_inches='tight'
 )
