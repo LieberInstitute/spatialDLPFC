@@ -51,7 +51,7 @@ spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
 dim(spe_pseudo)
 #[1] 21059    90
 
-save(spe_pseudo, file = here::here("processed-data","rdata","spe","09_region_differential_expression",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
+save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
 
 #run PCA
 pca <- prcomp(t(assays(spe_pseudo)$logcounts))
@@ -65,12 +65,11 @@ pca_pseudo<- pca$x[, seq_len(50)]
 
 
 
-reducedDims(spe_pseudo) <- list(PCA=pca_pseudo) #need to figure out to add just one reduced dim https://bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html
-
+reducedDims(spe_pseudo) <- list(PCA=pca_pseudo) 
 
 # code adapted from: http://bioconductor.org/packages/release/bioc/vignettes/scater/inst/doc/overview.html#2_Diagnostic_plots_for_quality_control
 ###plot PCA###
-pdf(file = here::here("plots","09_region_differential_expression",paste0("sce_pseudobulk_pca_k",k,"_testLeo.pdf")), width = 14, height = 14)
+pdf(file = here::here("plots","09_region_differential_expression",paste0("sce_pseudobulk_pca_k",k,".pdf")), width = 14, height = 14)
 plotPCA(spe_pseudo, colour_by = "subject", ncomponents = 12, point_size = 1) 
 plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12, point_size = 1) 
 plotPCA(spe_pseudo, colour_by = "sex", ncomponents = 12, point_size = 1) 
@@ -81,13 +80,9 @@ dev.off()
 
 ####plot explanatory variables ####
 
-# pdf(file = here::here("plots","09_region_differential_expression","test_plot_high_genes.pdf"))
-# plotHighestExprs(spe_pseudo, exprs_values = "counts")
-# dev.off()
-
 #uses linear regression model
 vars <- getVarianceExplained(spe_pseudo, 
-                             variables=c("subject", "region", "sex", "age", "BayesSpace","sample_id")) #added cluster to see how much variance it explains 
+                             variables=c("subject", "region", "sex", "age", "BayesSpace","sample_id")) 
 head(vars)
 
 # subject    region       sex         age
@@ -98,6 +93,6 @@ head(vars)
 # ENSG00000229905 10.113068 0.5911937 1.0110245 0.266643458
 # ENSG00000237491 17.499031 9.9500577 0.2762791 0.570564318
 
-pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,"_testLeo.pdf")))
+pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,".pdf")))
 plotExplanatoryVariables(vars)
 dev.off()
