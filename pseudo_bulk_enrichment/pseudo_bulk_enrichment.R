@@ -12,20 +12,19 @@ library(limma)
 library(RColorBrewer)
 library(lattice)
 
-k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
-#load spe object
-load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
+# #load spe object
+# load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
+# 
+# #load clusters
+# spe <- cluster_import(
+#   spe,
+#   cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"), 
+#   prefix = ""
+# )
 
-#load clusters
-spe <- cluster_import(
-  spe,
-  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"), 
-  prefix = ""
-)
-
-
-# foo <- function(sce, mat_formula, block_var = NULL) {
+# mat_formula = ~ 0 + spatial.cluster + region + age + sex 
+# foo <- function(sce, mat_formula, block_var = NULL) { #must specify in documentation that the second element of the formula is the cluster label, and the first element is zero
 #   
 #   terms <- attributes(terms(fo))$term.labels
 #   pd <- colData(sce)[ , c(terms[!grepl(":", terms)], block_var) ]
@@ -36,11 +35,15 @@ spe <- cluster_import(
 #   
 #   ## then re-arrange results
 # }
+
+cluster <-  attributes(terms(mat_formula))$term.labels[1]
+
+
 ## Pseudo-bulk for our current BayesSpace cluster results
 spe_pseudo <- aggregateAcrossCells(
   spe,
   DataFrame(
-    BayesSpace = colData(spe)[[paste0("bayesSpace_harmony_",k)]],
+    BayesSpace = colData(spe)[,cluster],
     sample_id = spe$sample_id
   )
 )
@@ -58,16 +61,17 @@ mat_filter = mat[gIndex, ] #subset matrix on just those genes.  want to remove l
 #####################
 ## Build a group model
 
+
+#tell user in documentation to make sure their columns are converted to either factors or numerics as appropriate
 #convert variables to factors 
-colData(spe_pseudo)$spatial.cluster <- as.factor(colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]])
-colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
-colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
-colData(spe_pseudo)$sex <- as.factor(colData(spe_pseudo)$sex)
-colData(spe_pseudo)$diagnosis <- as.factor(colData(spe_pseudo)$diagnosis)
-colData(spe_pseudo)$subject <- as.factor(colData(spe_pseudo)$subject)
+# colData(spe_pseudo)$spatial.cluster <- as.factor(colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]])
+# colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
+# colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
+# colData(spe_pseudo)$sex <- as.factor(colData(spe_pseudo)$sex)
+# colData(spe_pseudo)$diagnosis <- as.factor(colData(spe_pseudo)$diagnosis)
+# colData(spe_pseudo)$subject <- as.factor(colData(spe_pseudo)$subject)
 
 ### access different elements of formula and check to see if they're in colData(spe_pseudo)
-mat_formula = ~ 0 + spatial.cluster + region + age + sex
 terms <- attributes(terms(mat_formula))$term.labels
 terms <- terms[!grepl(":", terms)]
 for(i in seq_along(terms)){
@@ -84,19 +88,22 @@ mod<- model.matrix(mat_formula,
 
 
 ## get duplicate correlation #http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/dupcor.html
-# this is where you use stat_cor_layer() from spatialLIBD
 corfit <- duplicateCorrelation(mat_filter, mod,
                                block = spe_pseudo$sample_id)
 
 ## Next for each layer test that layer vs the rest
-cluster_idx <- splitit(spe_pseudo$spatial.cluster)
+cluster_idx <- splitit(colData(spe)[,cluster]) 
 
 eb0_list_cluster <- lapply(cluster_idx, function(x) {
   res <- rep(0, ncol(spe_pseudo))
   res[x] <- 1
+  #new_formula <-substitute(mat_forumula, x=quote(x_part1 + x_part2))
+  #attributes(terms(mat_formula))$term.labels[1]<- res #use the original mat_forumala provided by user and replace the first term with res ~ res +region + age + sex
   m <- with(colData(spe_pseudo),
-            model.matrix(~ res +
-                           region + age + sex))
+            model.matrix(~ res +region + age + sex)) 
+  
+  #josh suggested use top table as a wrapper because it makes the output of eBayes nicer
+  
   eBayes(
     lmFit(
       mat_filter,
@@ -140,7 +147,7 @@ data.frame(
 # 7     61           9           3
 
 
-f_merge <- function(p, fdr, t) { #josh suggestd using top table to do this. also look into purrr to replace sapply and lappy
+f_merge <- function(p, fdr, t) { 
   colnames(p) <- paste0('p_value_', colnames(p))
   colnames(fdr) <- paste0('fdr_', colnames(fdr))
   colnames(t) <- paste0('t_stat_', colnames(t))
@@ -168,60 +175,6 @@ cor <- layer_stat_cor(
   top_n = NULL
 )
 
-###################
-#load modeling outputs from manual annotations???
-load("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/rda/eb_contrasts.Rdata")
-load("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/rda/eb0_list.Rdata")
-
-## Extract the p-values
-pvals0_contrasts <- sapply(eb0_list, function(x) {
-  x$p.value[, 2, drop = FALSE]
-})
-rownames(pvals0_contrasts) = rownames(eb_contrasts)
-fdrs0_contrasts = apply(pvals0_contrasts, 2, p.adjust, "fdr")
-
-## Extract the t-stats
-t0_contrasts <- sapply(eb0_list, function(x) {
-  x$t[, 2, drop = FALSE]
-})
-rownames(t0_contrasts) = rownames(eb_contrasts)
-
-############
-# line up ## ##from here to line 175 I supposed to use the function leo created for spatialLIBD called layer_stat_cor()
-
-mm = match(rownames(pvals0_contrasts), rownames(pvals0_contrasts_cluster))
-
-pvals0_contrasts = pvals0_contrasts[!is.na(mm), ]
-t0_contrasts = t0_contrasts[!is.na(mm), ]
-fdrs0_contrasts = fdrs0_contrasts[!is.na(mm), ]
-
-pvals0_contrasts_cluster = pvals0_contrasts_cluster[mm[!is.na(mm)], ]
-t0_contrasts_cluster = t0_contrasts_cluster[mm[!is.na(mm)], ]
-fdrs0_contrasts_cluster = fdrs0_contrasts_cluster[mm[!is.na(mm)], ]
-
-cor_t = cor(t0_contrasts_cluster, t0_contrasts)
-signif(cor_t, 2)
-
-# WM Layer1  Layer2 Layer3 Layer4 Layer5 Layer6
-# 1 -0.420 -0.150  0.5000  0.420   0.21  0.046 -0.071
-# 2  0.630 -0.031 -0.3600 -0.530  -0.32 -0.230  0.096
-# 3  0.099  0.370 -0.1400  0.059  -0.18 -0.190 -0.200
-# 4 -0.340 -0.350  0.0760  0.180   0.43  0.390  0.047
-# 5 -0.150 -0.380  0.0360 -0.081   0.14  0.290  0.390
-# 6 -0.095 -0.200  0.0480  0.056   0.12  0.130  0.110
-# 7  0.140  0.520 -0.0019 -0.093  -0.26 -0.310 -0.240
-
-### just layer specific genes from ones left
-layer_specific_indices = mapply(function(t, p) {
-  oo = order(t, decreasing = TRUE)[1:100]
-},
-as.data.frame(t0_contrasts),
-as.data.frame(pvals0_contrasts))
-layer_ind = unique(as.numeric(layer_specific_indices))
-
-cor_t_layer = cor(t0_contrasts_cluster[layer_ind, ],
-                  t0_contrasts[layer_ind, ])
-signif(cor_t_layer, 3)
 
 ### heatmap ### here can also use layer_stat_cor_plot() from spatialLIBD
 theSeq = seq(-1.0, 1.0, by = 0.01)
@@ -233,6 +186,8 @@ cor_t_layer_toPlot = cor_t_layer[hc$order, c(1, 7:2)]
 colnames(cor_t_layer_toPlot) = gsub("ayer", "", colnames(cor_t_layer_toPlot))
 rownames(cor_t_layer_toPlot)[rownames(cor_t_layer_toPlot) == "Oligodendrocytes"] = "OLIGO" # does thismatter? 
 
+
+#implement layer_stat_cor_plot
 pdf(file = here::here("plots","07_spatial_registration",paste0("dlpfc_pseudobulked_bayesSpace_vs_mannual_annotations_k",k,".pdf")), width = 8)
 print(
   levelplot(
