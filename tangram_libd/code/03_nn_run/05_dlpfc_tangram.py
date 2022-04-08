@@ -26,6 +26,7 @@ import skimage
 import seaborn as sns
 import tangram as tg
 from PIL import Image
+import json
 
 plot_dir = pyhere.here('tangram_libd', 'plots', '03_nn_run', 'DLPFC')
 out_dir = pyhere.here(
@@ -47,12 +48,14 @@ sample_path = pyhere.here(
     'tangram_libd', 'processed-data', '03_nn_run', 'brain_samples.txt'
 )
 
+#   Parent directory whose subdirectories include JSON files with spot sizes
+#   for each sample
+json_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X'
+
 #  Genes we want to plot predicted vs. actual expression for
 select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
 ]
-
-SPOT_SIZE = 100
 
 print('Using tangram version:', tg.__version__)
 
@@ -184,16 +187,26 @@ ad_sp.write_h5ad(os.path.join(out_dir, 'ad_sp_' + sample_name + '.h5ad'))
 #   Deconvolution
 ################################################################################
 
-#   Read histology image in as numpy array
-img_arr = np.array(
-    Image.open(
-        str(
-            pyhere.here(
-                "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
-            )
-        )
+#   Path to JSON (from spaceranger?) including spot size for this sample
+json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
+
+with open(json_path) as f: 
+    json_data = json.load(f)
+
+#   Spot size and scale factor
+SPOT_SIZE = json_data["spot_diameter_fullres"]
+sf = 1
+
+#   Read in full-resolution histology image
+img_path = str(
+    pyhere.here(
+        "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
     )
 )
+
+#   Read histology image in as numpy array
+img_arr = np.array(Image.open(img_path))
+assert img_arr.shape == (13332, 13332, 3), img_arr.shape
 
 img_arr = img_arr[:3500, :3500, :]
 
@@ -213,18 +226,21 @@ sq.im.segment(
 #   Visualize segmentation results
 #-------------------------------------------------------------------------------
 
-inset_y = 1500
-inset_x = 1700
+# inset_y = 1500
+# inset_x = 1700
+# inset_sy = 400
+# inset_sx = 500
+inset_y = 6000
+inset_x = 6000
 inset_sy = 400
 inset_sx = 500
-
-sf = ad_sp.uns['scaleFactor'][0]
 
 fig, axs = plt.subplots(1, 3, figsize=(30, 10))
 sc.pl.spatial(
     ad_sp, color="Cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], 
-    title="", spot_size = SPOT_SIZE, scale_factor = sf
-) #, img = img
+    title="", spot_size = SPOT_SIZE, scale_factor = sf,
+    img = img['image'][:, : ,0]
+)
 axs[0].set_title("Clusters", fontdict={"fontsize": 20})
 
 rect = mpl.patches.Rectangle(
@@ -258,7 +274,7 @@ cmap = plt.cm.plasma
 cmap.set_under(color="black")
 
 #   Why did we need to change this line?
-axs[2].imshow(crop[:, :, 0], interpolation="none", cmap=cmap, vmin=0.001)
+axs[2].imshow(crop[:, : ,0], interpolation="none", cmap=cmap, vmin=0.001)
 
 axs[2].grid(False)
 axs[2].set_xticks([])
@@ -266,6 +282,6 @@ axs[2].set_yticks([])
 axs[2].set_title("Nucleous segmentation", fontdict={"fontsize": 20});
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'segmentation_' + sample_name + '.png'),
+    os.path.join(plot_dir, 'segmentation_test_' + sample_name + '.png'),
     bbox_inches='tight'
 )
