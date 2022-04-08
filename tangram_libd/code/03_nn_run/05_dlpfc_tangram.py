@@ -92,6 +92,7 @@ sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
 print('Subsetting to just sample {}.'.format(sample_name))
 
 #  Load AnnDatas and list of marker genes
+print('Loading AnnDatas...')
 ad_sp = sc.read_h5ad(sp_path)
 ad_sp = ad_sp[ad_sp.obs['sample_id'] == sample_name, :]
 ad_sc = sc.read_h5ad(sc_path)
@@ -122,6 +123,7 @@ for i in range(len(select_genes)):
 tg.pp_adatas(ad_sc, ad_sp, genes=markers)
 
 #  Mapping step using GPU
+print('About to perform alignment...')
 gpu_index = os.environ['CUDA_VISIBLE_DEVICES']
 ad_map = tg.map_cells_to_space(ad_sc, ad_sp,
     mode="cells",
@@ -130,6 +132,7 @@ ad_map = tg.map_cells_to_space(ad_sc, ad_sp,
     device = "cuda:" + gpu_index
 )
 
+print('Producing exploratory plots...')
 tg.project_cell_annotations(ad_map, ad_sp, annotation=cell_type_var)
 annotation_list = list(pd.unique(ad_sc.obs[cell_type_var]))
 
@@ -213,6 +216,8 @@ ad_sp.write_h5ad(os.path.join(out_dir, 'ad_sp_' + sample_name + '.h5ad'))
 #   Deconvolution
 ################################################################################
 
+print('Beginning deconvolution section...')
+
 #   Path to JSON (from spaceranger?) including spot size for this sample
 json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
 
@@ -240,6 +245,7 @@ assert img_arr.shape == (13332, 13332, 3), img_arr.shape
 img = sq.im.ImageContainer(img_arr)
 
 #   Apply smoothing and compute segmentation masks
+print('Smoothing and segmenting image...')
 sq.im.process(img=img, layer="image", method="smooth")
 sq.im.segment(
     img=img,
@@ -251,6 +257,8 @@ sq.im.segment(
 #-------------------------------------------------------------------------------
 #   Visualize segmentation results
 #-------------------------------------------------------------------------------
+
+print('About to plot segmentation masks...')
 
 inset_y = 6000
 inset_x = 6000
@@ -314,6 +322,8 @@ f.savefig(
 #   Extract info about segmented nuclei
 #-------------------------------------------------------------------------------
 
+print('Extracting info about segmented nuclei...')
+
 # define image layer to use for segmentation
 features_kwargs = {
     "segmentation": {
@@ -341,6 +351,7 @@ sc.pl.spatial(ad_sp, color=[cluster_var_plots, "cell_count"], frameon=False)
 #   Re-align in "deconvolution mode"
 #-------------------------------------------------------------------------------
 
+print('Re-aligning in "deconvolution mode"...')
 ad_map = tg.map_cells_to_space(
     ad_sc,
     ad_sp,
@@ -351,7 +362,7 @@ ad_map = tg.map_cells_to_space(
     device = "cuda:" + gpu_index
 )
 
-
+print('Projecting annotation and plotting AUC...')
 tg.project_cell_annotations(ad_map, ad_sp, annotation="cell_subclass")
 annotation_list = list(pd.unique(ad_sc.obs['cell_subclass']))
 tg.plot_cell_annotation_sc(ad_sp, annotation_list, perc=0.02)
@@ -369,6 +380,7 @@ f.savefig(
 #   Format segmentation results, form new AnnData, and plot
 #-------------------------------------------------------------------------------
 
+print('Formatting segmentation results...')
 tg.create_segment_cell_df(ad_sp)
 
 tg.count_cell_annotations(
@@ -384,6 +396,7 @@ ad_segment.write_h5ad(
 )
 
 #   Produce the main deconvolution plot of interest
+print('Producing main deconvolution plot...')
 fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 sc.pl.spatial(
     ad_segment,
