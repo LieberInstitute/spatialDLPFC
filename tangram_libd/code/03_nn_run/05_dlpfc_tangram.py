@@ -91,6 +91,16 @@ with open(sample_path, 'r') as f:
 sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
 print('Subsetting to just sample {}.'.format(sample_name))
 
+#   Path to JSON (from spaceranger?) including spot size for this sample
+json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
+
+with open(json_path) as f: 
+    json_data = json.load(f)
+
+#   Spot size and scale factor
+SPOT_SIZE = json_data["spot_diameter_fullres"]
+SCALE_FACTOR = 1
+
 #  Load AnnDatas and list of marker genes
 print('Loading AnnDatas...')
 ad_sp = sc.read_h5ad(sp_path)
@@ -218,16 +228,6 @@ ad_sp.write_h5ad(os.path.join(out_dir, 'ad_sp_' + sample_name + '.h5ad'))
 
 print('Beginning deconvolution section...')
 
-#   Path to JSON (from spaceranger?) including spot size for this sample
-json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
-
-with open(json_path) as f: 
-    json_data = json.load(f)
-
-#   Spot size and scale factor
-SPOT_SIZE = json_data["spot_diameter_fullres"]
-sf = 1
-
 #   Read in full-resolution histology image
 img_path = str(
     pyhere.here(
@@ -268,15 +268,15 @@ inset_sx = 500
 fig, axs = plt.subplots(1, 3, figsize=(30, 10))
 sc.pl.spatial(
     ad_sp, color=cluster_var_plots, alpha=0.7, frameon=False, show=False,
-    ax=axs[0], title="", spot_size = SPOT_SIZE, scale_factor = sf,
+    ax=axs[0], title="", spot_size = SPOT_SIZE, scale_factor = SCALE_FACTOR,
     img = img['image'][:, : ,0]
 )
 axs[0].set_title("Clusters", fontdict={"fontsize": 20})
 
 rect = mpl.patches.Rectangle(
-    (inset_y * sf, inset_x * sf),
-    width=inset_sx * sf,
-    height=inset_sy * sf,
+    (inset_y * SCALE_FACTOR, inset_x * SCALE_FACTOR),
+    width=inset_sx * SCALE_FACTOR,
+    height=inset_sy * SCALE_FACTOR,
     ec="yellow",
     lw=4,
     fill=False,
