@@ -52,7 +52,7 @@ reducedDims(spe_pseudo) <- list(PCA=pca_pseudo, test=pca_pseudo) #need to figure
 # code adapted from: http://bioconductor.org/packages/release/bioc/vignettes/scater/inst/doc/overview.html#2_Diagnostic_plots_for_quality_control
 ###plot PCA###
 pdf(file = here::here("plots","09_region_differential_expression",paste0("sce_pseudobulk_pca_k",k,".pdf")))
-plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12)
+plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12) #reduced point size, can color by other variables 
 dev.off()
 
 ####plot explanatory variables ####
@@ -61,8 +61,9 @@ dev.off()
 # plotHighestExprs(spe_pseudo, exprs_values = "counts")
 # dev.off()
 
+#uses linear regression model
 vars <- getVarianceExplained(spe_pseudo, 
-                             variables=c("subject", "region", "sex", "age"))
+                             variables=c("subject", "region", "sex", "age", "BayesSpace","sample_id")) #added cluster to see how much variance it explains 
 head(vars)
 
 # subject    region       sex         age
