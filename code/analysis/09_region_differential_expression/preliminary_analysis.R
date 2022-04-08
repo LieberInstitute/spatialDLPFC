@@ -3,7 +3,7 @@ library(spatialLIBD)
 library(here)
 library(edgeR)
 library(scuttle)
-library(scRNAseq)
+#library(scRNAseq)
 library(scater)
 
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
@@ -24,9 +24,19 @@ spe_pseudo <- aggregateAcrossCells(
     sample_id = spe$sample_id
   )
 )
+spe_pseudo$BayesSpace <- factor(spe_pseudo$BayesSpace)
 
 #log normalize the counts
-spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
+# spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
+x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo), log = TRUE, prior.count = 1)
+## Verify that the gene order hasn't changed
+stopifnot(identical(rownames(x), rownames(spe_pseudo)))
+## Fix the column names. DGEList will have samples names as Sample1 Sample2 etc
+dimnames(x) <- dimnames(spe_pseudo)
+## Store the log normalized counts on the SingleCellExperiment object
+logcounts(spe_pseudo) <- x
+## We don't need this 'x' object anymore
+rm(x)
 
 dim(spe_pseudo)
 #[1] 28916    90
@@ -37,22 +47,36 @@ summary(rowData(spe_pseudo)$low_expr)
 # Mode   FALSE    TRUE 
 # logical   21059    7857 
 
-spe_pseudo <- spe_pseudo[-which(rowData(spe_pseudo)$low_expr == TRUE),]
+spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
 dim(spe_pseudo)
 #[1] 21059    90
 
 save(spe_pseudo, file = here::here("processed-data","rdata","spe","09_region_differential_expression",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
 
 #run PCA
-pca_pseudo<- prcomp(t(assays(spe_pseudo)$logcounts))$x[, 1:50]
+pca <- prcomp(t(assays(spe_pseudo)$logcounts))
+jaffelab::getPcaVars(pca)[seq_len(50)]
+#  [1] 14.600  4.520  3.150  1.390  1.220  1.080  0.942  0.929  0.889  0.873
+# [11]  0.858  0.855  0.845  0.831  0.818  0.810  0.800  0.796  0.787  0.785
+# [21]  0.774  0.768  0.765  0.754  0.748  0.742  0.737  0.725  0.720  0.716
+# [31]  0.706  0.704  0.695  0.691  0.682  0.671  0.670  0.666  0.657  0.647
+# [41]  0.641  0.628  0.625  0.615  0.606  0.605  0.595  0.584  0.578  0.575
+pca_pseudo<- pca$x[, seq_len(50)]
 
-reducedDims(spe_pseudo) <- list(PCA=pca_pseudo, test=pca_pseudo) #need to figure out to add just one reduced dim https://bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html
+
+
+reducedDims(spe_pseudo) <- list(PCA=pca_pseudo) #need to figure out to add just one reduced dim https://bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html
 
 
 # code adapted from: http://bioconductor.org/packages/release/bioc/vignettes/scater/inst/doc/overview.html#2_Diagnostic_plots_for_quality_control
 ###plot PCA###
-pdf(file = here::here("plots","09_region_differential_expression",paste0("sce_pseudobulk_pca_k",k,".pdf")))
-plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12) #reduced point size, can color by other variables 
+pdf(file = here::here("plots","09_region_differential_expression",paste0("sce_pseudobulk_pca_k",k,"_testLeo.pdf")), width = 14, height = 14)
+plotPCA(spe_pseudo, colour_by = "subject", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo, colour_by = "sex", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo, colour_by = "age", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo, colour_by = "BayesSpace", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo, colour_by = "sample_id", ncomponents = 12, point_size = 1)
 dev.off()
 
 ####plot explanatory variables ####
@@ -74,6 +98,6 @@ head(vars)
 # ENSG00000229905 10.113068 0.5911937 1.0110245 0.266643458
 # ENSG00000237491 17.499031 9.9500577 0.2762791 0.570564318
 
-pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,".pdf")))
+pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,"_testLeo.pdf")))
 plotExplanatoryVariables(vars)
 dev.off()
