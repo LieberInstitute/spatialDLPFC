@@ -32,6 +32,10 @@ import json
 #   Variable definitions
 ################################################################################
 
+#-------------------------------------------------------------------------------
+#   Paths
+#-------------------------------------------------------------------------------
+
 plot_dir = pyhere.here('tangram_libd', 'plots', '03_nn_run', 'DLPFC')
 out_dir = pyhere.here(
     'tangram_libd', 'processed-data', '03_nn_run', 'tangram_out_DLPFC'
@@ -56,10 +60,22 @@ sample_path = pyhere.here(
 #   for each sample
 json_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X'
 
+#-------------------------------------------------------------------------------
+#   Dataset-specific variables
+#-------------------------------------------------------------------------------
+
 #  Genes we want to plot predicted vs. actual expression for
 select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
 ]
+
+#   Variable name in ad_sp.obs to color by in deconvolution-related plots
+cluster_var_plots = 'Cluster'
+
+#   Variable name in ad_sc.obs representing cell type
+cell_type_var = 'cellType'
+
+spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 ################################################################################
 #   Alignment (spatial registration)
@@ -114,13 +130,13 @@ ad_map = tg.map_cells_to_space(ad_sc, ad_sp,
     device = "cuda:" + gpu_index
 )
 
-tg.project_cell_annotations(ad_map, ad_sp, annotation="cellType")
-annotation_list = list(pd.unique(ad_sc.obs['cellType']))
+tg.project_cell_annotations(ad_map, ad_sp, annotation=cell_type_var)
+annotation_list = list(pd.unique(ad_sc.obs[cell_type_var]))
 
 #  Plot spatial expression by cell-type label
 tg.plot_cell_annotation_sc(
-    ad_sp, annotation_list, x='pxl_row_in_fullres', y='pxl_col_in_fullres',
-    perc=0.02, spot_size = SPOT_SIZE
+    ad_sp, annotation_list, x = spatial_coords_names[0],
+    y = spatial_coords_names[1], perc = 0.02, spot_size = SPOT_SIZE
 )
 f = plt.gcf()
 f.savefig(
@@ -218,7 +234,7 @@ img_path = str(
 img_arr = np.array(Image.open(img_path))
 assert img_arr.shape == (13332, 13332, 3), img_arr.shape
 
-img_arr = img_arr[:3500, :3500, :]
+#img_arr = img_arr[:3500, :3500, :]
 
 #   Convert to squidpy ImageContainer
 img = sq.im.ImageContainer(img_arr)
@@ -236,10 +252,6 @@ sq.im.segment(
 #   Visualize segmentation results
 #-------------------------------------------------------------------------------
 
-# inset_y = 1500
-# inset_x = 1700
-# inset_sy = 400
-# inset_sx = 500
 inset_y = 6000
 inset_x = 6000
 inset_sy = 400
@@ -247,8 +259,8 @@ inset_sx = 500
 
 fig, axs = plt.subplots(1, 3, figsize=(30, 10))
 sc.pl.spatial(
-    ad_sp, color="Cluster", alpha=0.7, frameon=False, show=False, ax=axs[0], 
-    title="", spot_size = SPOT_SIZE, scale_factor = sf,
+    ad_sp, color=cluster_var_plots, alpha=0.7, frameon=False, show=False,
+    ax=axs[0], title="", spot_size = SPOT_SIZE, scale_factor = sf,
     img = img['image'][:, : ,0]
 )
 axs[0].set_title("Clusters", fontdict={"fontsize": 20})
@@ -323,7 +335,7 @@ sq.im.calculate_image_features(
 )
 
 ad_sp.obs["cell_count"] = ad_sp.obsm["image_features"]["segmentation_label"]
-sc.pl.spatial(ad_sp, color=["Cluster", "cell_count"], frameon=False)
+sc.pl.spatial(ad_sp, color=[cluster_var_plots, "cell_count"], frameon=False)
 
 #-------------------------------------------------------------------------------
 #   Re-align in "deconvolution mode"
@@ -375,7 +387,7 @@ ad_segment.write_h5ad(
 fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 sc.pl.spatial(
     ad_segment,
-    color="cluster",
+    color=cluster_var_plots,
     size=0.4,
     show=False,
     frameon=False,
