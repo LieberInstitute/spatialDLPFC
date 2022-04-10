@@ -16,7 +16,9 @@ library(edgeR)
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 #load pseudo bulked spe object. made in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/analysis/09_region_differential_expression/09_region_differential_expression.R
-load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe","spe_filtered_final.Rdata",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")),verbose = TRUE)
+load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")),verbose = TRUE)
+sce_pseudobulk_bayesSpace <- spe_pseudo
+
 
 ###############################
 ##### get mean expression  ####
@@ -126,7 +128,7 @@ pdf(
     "07_spatial_registration",
     paste0(
       "dlpfc_pseudobulked_bayesSpace_vs_mannual_annotations_k",
-      k_nice,
+      k,
       ".pdf"
     )
   ),
