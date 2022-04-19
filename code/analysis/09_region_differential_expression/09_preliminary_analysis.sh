@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -cwd
 #$ -l caracol,mem_free=20G,h_vmem=20G,h_fsize=100G
-#$ -N region_differential_expression
+#$ -N preliminary_analysis
 #$ -o logs/preliminary_analysis.$TASK_ID.txt
 #$ -e logs/preliminary_analysis.$TASK_ID.txt
 #$ -m e
