@@ -1,0 +1,465 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Thu Apr  7 17:12:47 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9852200
+Job name: region_differential_expression
+Hostname: compute-126.cm.cluster
+Task id: 26
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+
+Attaching package: ‘edgeR’
+
+The following object is masked from ‘package:SingleCellExperiment’:
+
+    cpm
+
+Loading required package: ggplot2
+
+Attaching package: 'scater'
+
+The following object is masked from 'package:limma':
+
+    plotMDS
+
+Loading objects:
+  spe
+Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
+[1] 28916   749
+Warning message:
+In filterByExpr.DGEList(y, design = design, group = group, lib.size = lib.size,  :
+  All samples appear to belong to the same group.
+   Mode   FALSE    TRUE 
+logical   25968    2948 
+[1] 25968   749
+null device 
+          1 
+                 subject     region        sex         age BayesSpace sample_id
+ENSG00000243485 1.093978 0.09547729 0.03323264 0.116474409 0.04784954  4.228690
+ENSG00000238009 4.138464 0.24241380 0.79271225 0.090482692 0.39299155  7.119970
+ENSG00000239945 2.112799 0.47209577 0.15708487 0.001357394 0.01384800  6.808603
+ENSG00000241860 6.390894 2.00350507 0.68338926 0.035947491 0.60284124 10.638408
+ENSG00000229905 1.107892 0.21374260 0.26520762 0.099371577 0.03532503  3.773600
+ENSG00000237491 4.371753 2.49982036 0.21220925 0.111012638 0.38117616  9.836885
+Warning message:
+Removed 564 rows containing non-finite values (stat_density). 
+null device 
+          1 
+**** Job ends ****
+Thu Apr  7 17:20:56 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Fri Apr  8 18:42:34 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9857693
+Job name: region_differential_expression
+Hostname: compute-126.cm.cluster
+Task id: 26
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+
+Attaching package: ‘edgeR’
+
+The following object is masked from ‘package:SingleCellExperiment’:
+
+    cpm
+
+Loading required package: ggplot2
+
+Attaching package: ‘scater’
+
+The following object is masked from ‘package:limma’:
+
+    plotMDS
+
+Loading objects:
+  spe
+Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
+[1] 28916   749
+Warning message:
+In filterByExpr.DGEList(y, design = design, group = group, lib.size = lib.size,  :
+  All samples appear to belong to the same group.
+   Mode   FALSE    TRUE 
+logical   25968    2948 
+[1] 25968   749
+ [1] 21.600  3.020  1.560  0.795  0.773  0.657  0.556  0.417  0.379  0.349
+[11]  0.337  0.325  0.306  0.290  0.289  0.284  0.282  0.281  0.278  0.277
+[21]  0.276  0.275  0.274  0.272  0.270  0.269  0.269  0.266  0.265  0.264
+[31]  0.264  0.264  0.261  0.260  0.259  0.258  0.258  0.257  0.255  0.254
+[41]  0.253  0.253  0.251  0.251  0.250  0.250  0.249  0.248  0.247  0.246
+null device 
+          1 
+                 subject     region        sex         age BayesSpace sample_id
+ENSG00000243485 1.062987 0.08882391 0.02873723 0.134996150   2.855279  4.178040
+ENSG00000238009 4.185461 0.28187867 0.77903497 0.134686220   9.453053  7.123464
+ENSG00000239945 2.115170 0.47262572 0.15726121 0.001358918   3.105811  6.816246
+ENSG00000241860 6.264093 1.91552617 0.58365286 0.102342290  10.919288 10.694811
+ENSG00000229905 1.099043 0.20883938 0.26273545 0.088909235   3.092752  3.761078
+ENSG00000237491 4.018521 2.24130625 0.14499428 0.041986950  13.127851  9.463370
+Warning messages:
+1: In self$trans$transform(x) : NaNs produced
+2: Transformation introduced infinite values in continuous x-axis 
+3: Removed 470 rows containing non-finite values (stat_density). 
+null device 
+          1 
+**** Job ends ****
+Fri Apr  8 18:51:13 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Mon Apr 18 21:26:45 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9899721
+Job name: region_differential_expression
+Hostname: compute-126.cm.cluster
+Task id: 26
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+
+Attaching package: ‘edgeR’
+
+The following object is masked from ‘package:SingleCellExperiment’:
+
+    cpm
+
+Loading required package: ggplot2
+
+Attaching package: ‘scater’
+
+The following object is masked from ‘package:limma’:
+
+    plotMDS
+
+Loading objects:
+  spe
+Overwriting 'spe$key'. Set 'overwrite = FALSE' if you do not want to overwrite it.
+[1] 28916   749
+Warning message:
+In filterByExpr.DGEList(y, design = design, group = group, lib.size = lib.size,  :
+  All samples appear to belong to the same group.
+   Mode   FALSE    TRUE 
+logical   25968    2948 
+[1] 25968   749
+ [1] 21.600  3.020  1.560  0.795  0.773  0.657  0.556  0.417  0.379  0.349
+[11]  0.337  0.325  0.306  0.290  0.289  0.284  0.282  0.281  0.278  0.277
+[21]  0.276  0.275  0.274  0.272  0.270  0.269  0.269  0.266  0.265  0.264
+[31]  0.264  0.264  0.261  0.260  0.259  0.258  0.258  0.257  0.255  0.254
+[41]  0.253  0.253  0.251  0.251  0.250  0.250  0.249  0.248  0.247  0.246
+null device 
+          1 
+                 subject     region        sex         age BayesSpace sample_id
+ENSG00000243485 1.062987 0.08882391 0.02873723 0.134996150   2.855279  4.178040
+ENSG00000238009 4.185461 0.28187867 0.77903497 0.134686220   9.453053  7.123464
+ENSG00000239945 2.115170 0.47262572 0.15726121 0.001358918   3.105811  6.816246
+ENSG00000241860 6.264093 1.91552617 0.58365286 0.102342290  10.919288 10.694811
+ENSG00000229905 1.099043 0.20883938 0.26273545 0.088909235   3.092752  3.761078
+ENSG00000237491 4.018521 2.24130625 0.14499428 0.041986950  13.127851  9.463370
+Warning messages:
+1: In self$trans$transform(x) : NaNs produced
+2: Transformation introduced infinite values in continuous x-axis 
+3: Removed 470 rows containing non-finite values (stat_density). 
+null device 
+          1 
+**** Job ends ****
+Mon Apr 18 21:37:39 EDT 2022

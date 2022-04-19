@@ -1,0 +1,207 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Mon Apr 18 21:43:14 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9899743
+Job name: region_differential_expression
+Hostname: compute-126.cm.cluster
+Task id: 6
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: limma
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:limma’:
+
+    plotMA
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘SingleCellExperiment’
+
+The following object is masked from ‘package:edgeR’:
+
+    cpm
+
+Loading required package: scuttle
+Loading required package: ggplot2
+
+Attaching package: ‘scater’
+
+The following object is masked from ‘package:limma’:
+
+    plotMDS
+
+Loading required package: SpatialExperiment
+[1] 28916   180
+[1] 28916   180
+  (Intercept) factor(region)middle factor(region)posterior
+1           1                    0                       0
+2           1                    1                       0
+3           1                    0                       1
+4           1                    0                       0
+5           1                    1                       0
+6           1                    0                       1
+  factor(subject)Br2743 factor(subject)Br3942 factor(subject)Br6423
+1                     0                     0                     0
+2                     0                     0                     0
+3                     0                     0                     0
+4                     1                     0                     0
+5                     1                     0                     0
+6                     1                     0                     0
+  factor(subject)Br6432 factor(subject)Br6471 factor(subject)Br6522
+1                     0                     0                     0
+2                     0                     0                     0
+3                     0                     0                     0
+4                     0                     0                     0
+5                     0                     0                     0
+6                     0                     0                     0
+  factor(subject)Br8325 factor(subject)Br8492 factor(subject)Br8667
+1                     0                     0                     0
+2                     0                     0                     0
+3                     0                     0                     0
+4                     0                     0                     0
+5                     0                     0                     0
+6                     0                     0                     0
+DataFrame with 6 rows and 5 columns
+                    logFC    logCPM         F    PValue       FDR
+                <numeric> <numeric> <numeric> <numeric> <numeric>
+ENSG00000243485        NA        NA        NA        NA        NA
+ENSG00000238009        NA        NA        NA        NA        NA
+ENSG00000239945        NA        NA        NA        NA        NA
+ENSG00000241860        NA        NA        NA        NA        NA
+ENSG00000229905        NA        NA        NA        NA        NA
+ENSG00000237491        NA        NA        NA        NA        NA
+[1] 28916     5
+
+FALSE  TRUE 
+ 8360    38 
+DataFrame with 38 rows and 7 columns
+                  source     type         gene_id gene_version   gene_name
+                <factor> <factor>     <character>  <character> <character>
+ENSG00000215788   HAVANA     gene ENSG00000215788           10    TNFRSF25
+ENSG00000126709   HAVANA     gene ENSG00000126709           15        IFI6
+ENSG00000059588   HAVANA     gene ENSG00000059588           10      TARBP1
+ENSG00000270188   HAVANA     gene ENSG00000270188            1   MTRNR2L11
+ENSG00000198399   HAVANA     gene ENSG00000198399           14       ITSN2
+...                  ...      ...             ...          ...         ...
+ENSG00000179820   HAVANA     gene ENSG00000179820           16       MYADM
+ENSG00000101150   HAVANA     gene ENSG00000101150           17     TPD52L2
+ENSG00000154734   HAVANA     gene ENSG00000154734           15     ADAMTS1
+ENSG00000160299   HAVANA     gene ENSG00000160299           17        PCNT
+ENSG00000183741   HAVANA     gene ENSG00000183741           12        CBX6
+                     gene_type            gene_search
+                   <character>            <character>
+ENSG00000215788 protein_coding TNFRSF25; ENSG000002..
+ENSG00000126709 protein_coding  IFI6; ENSG00000126709
+ENSG00000059588 protein_coding TARBP1; ENSG00000059..
+ENSG00000270188 protein_coding MTRNR2L11; ENSG00000..
+ENSG00000198399 protein_coding ITSN2; ENSG00000198399
+...                        ...                    ...
+ENSG00000179820 protein_coding MYADM; ENSG00000179820
+ENSG00000101150 protein_coding TPD52L2; ENSG0000010..
+ENSG00000154734 protein_coding ADAMTS1; ENSG0000015..
+ENSG00000160299 protein_coding  PCNT; ENSG00000160299
+ENSG00000183741 protein_coding  CBX6; ENSG00000183741
+DataFrame with 38 rows and 5 columns
+                    logFC    logCPM         F      PValue        FDR
+                <numeric> <numeric> <numeric>   <numeric>  <numeric>
+ENSG00000215788  1.172881   5.03130   17.2741 7.58886e-05 0.03034823
+ENSG00000126709 -0.636407   7.50685   25.2285 2.71311e-06 0.00379745
+ENSG00000059588  1.059100   5.43798   16.3257 1.20305e-04 0.03817501
+ENSG00000270188 -1.617211   4.96775   18.8956 1.70444e-04 0.04473078
+ENSG00000198399 -1.007737   5.14979   16.7296 9.64187e-05 0.03627293
+...                   ...       ...       ...         ...        ...
+ENSG00000179820 -1.022029   5.40473   21.8578 1.07400e-05 0.00901947
+ENSG00000101150  0.847719   5.72362   16.6041 1.01910e-04 0.03627293
+ENSG00000154734 -1.155044   5.68425   19.6107 5.28427e-05 0.02335649
+ENSG00000160299  1.046906   5.29105   17.5633 6.68714e-05 0.02807932
+ENSG00000183741 -0.611218   7.78148   22.6542 7.72473e-06 0.00720804
+**** Job ends ****
+Mon Apr 18 21:45:43 EDT 2022
