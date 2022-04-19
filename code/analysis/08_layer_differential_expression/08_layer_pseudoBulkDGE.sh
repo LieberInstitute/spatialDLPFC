@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
 #$ -l caracol,mem_free=50G,h_vmem=50G,h_fsize=100G
-#$ -N cluster_enrichment
-#$ -o logs/cluster_enrichment.$TASK_ID.txt
-#$ -e logs/cluster_enrichment.$TASK_ID.txt
+#$ -N layer_DE
+#$ -o logs/layer_DE.$TASK_ID.txt
+#$ -e logs/layer_DE.$TASK_ID.txt
 #$ -m e
 #$ -t 2-28
 #$ -tc 4
@@ -39,7 +39,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript 08_layer_differential_expression.R
+Rscript 08_layer_pseudoBulkDGE.R
 
 echo "**** Job ends ****"
 date
