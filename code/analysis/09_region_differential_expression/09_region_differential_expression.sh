@@ -2,8 +2,8 @@
 #$ -cwd
 #$ -l caracol,mem_free=20G,h_vmem=20G,h_fsize=100G
 #$ -N region_differential_expression
-#$ -o logs/preliminary_analysis.$TASK_ID.txt
-#$ -e logs/preliminary_analysis.$TASK_ID.txt
+#$ -o logs/region_DE.$TASK_ID.txt
+#$ -e logs/region_DE.$TASK_ID.txt
 #$ -m e
 #$ -t 2-28
 #$ -tc 4

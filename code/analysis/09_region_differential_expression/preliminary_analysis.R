@@ -25,6 +25,9 @@ spe_pseudo <- aggregateAcrossCells(
   )
 )
 spe_pseudo$BayesSpace <- factor(spe_pseudo$BayesSpace)
+#save here for differential expression analysis
+save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
+
 
 #log normalize the counts
 # spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
@@ -42,7 +45,7 @@ dim(spe_pseudo)
 #[1] 28916    90
 
 #find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
-rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo)
+rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo) #add group by region keep <- filterByExpr(y, group=current$tomato)
 summary(rowData(spe_pseudo)$low_expr)
 # Mode   FALSE    TRUE 
 # logical   21059    7857 
@@ -51,7 +54,8 @@ spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
 dim(spe_pseudo)
 #[1] 21059    90
 
-save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
+#update this to indicate this version of the object is normalized and filtered
+save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
 
 #run PCA
 pca <- prcomp(t(assays(spe_pseudo)$logcounts))
@@ -93,6 +97,6 @@ head(vars)
 # ENSG00000229905 10.113068 0.5911937 1.0110245 0.266643458
 # ENSG00000237491 17.499031 9.9500577 0.2762791 0.570564318
 
-pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,".pdf")))
+pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,"_testLeo.pdf")))
 plotExplanatoryVariables(vars)
 dev.off()
