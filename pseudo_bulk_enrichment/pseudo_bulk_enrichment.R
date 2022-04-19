@@ -11,7 +11,7 @@ library(scuttle)
 library(limma)
 library(RColorBrewer)
 library(lattice)
-
+library(edgeR)
 
 # #load spe object
 # load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
@@ -23,7 +23,7 @@ library(lattice)
 #   prefix = ""
 # )
 
-# mat_formula = ~ 0 + spatial.cluster + region + age + sex 
+# mat_formula = ~ 0 + bayesSpace_harmony_9 + region + age + sex 
 # foo <- function(sce, mat_formula, block_var = NULL) { #must specify in documentation that the second element of the formula is the cluster label, and the first element is zero
 #   
 #   terms <- attributes(terms(fo))$term.labels
@@ -43,20 +43,35 @@ cluster <-  attributes(terms(mat_formula))$term.labels[1]
 spe_pseudo <- aggregateAcrossCells(
   spe,
   DataFrame(
-    BayesSpace = colData(spe)[,cluster],
+    BayesSpace = colData(spe)[[cluster]],
     sample_id = spe$sample_id
   )
 )
 
-spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
+#spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL) #change this to use calcNormFactors from edgeR
+x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo), log = TRUE, prior.count = 1)
+## Verify that the gene order hasn't changed
+stopifnot(identical(rownames(x), rownames(spe_pseudo)))
+## Fix the column names. DGEList will have samples names as Sample1 Sample2 etc
+dimnames(x) <- dimnames(spe_pseudo)
+## Store the log normalized counts on the SingleCellExperiment object
+logcounts(spe_pseudo) <- x
+## We don't need this 'x' object anymore
+rm(x)
 
 ###############################
-##### get mean expression  ####
-mat <- assays(spe_pseudo)$logcounts #make matrix of just the log normalized counts
 
-## filter
-gIndex = rowMeans(mat) > 0.2 # find the genes for which the mean expression is greater than 0.2
-mat_filter = mat[gIndex, ] #subset matrix on just those genes.  want to remove lowly expressed genes. 
+#find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
+rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo)
+summary(rowData(spe_pseudo)$low_expr)
+# Mode   FALSE    TRUE 
+# logical   21059    7857 
+
+spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
+
+##### get mean expression  ####
+mat_filter <- assays(spe_pseudo)$logcounts #make matrix of filtered just the log normalized counts
+
 
 #####################
 ## Build a group model
@@ -64,7 +79,7 @@ mat_filter = mat[gIndex, ] #subset matrix on just those genes.  want to remove l
 
 #tell user in documentation to make sure their columns are converted to either factors or numerics as appropriate
 #convert variables to factors 
-# colData(spe_pseudo)$spatial.cluster <- as.factor(colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]])
+# colData(spe_pseudo)[[cluster]] <- as.factor(colData(spe_pseudo)[[cluster]])
 # colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
 # colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
 # colData(spe_pseudo)$sex <- as.factor(colData(spe_pseudo)$sex)
@@ -92,7 +107,7 @@ corfit <- duplicateCorrelation(mat_filter, mod,
                                block = spe_pseudo$sample_id)
 
 ## Next for each layer test that layer vs the rest
-cluster_idx <- splitit(colData(spe)[,cluster]) 
+cluster_idx <- splitit(colData(spe_pseudo)[,cluster]) 
 
 eb0_list_cluster <- lapply(cluster_idx, function(x) {
   res <- rep(0, ncol(spe_pseudo))
@@ -100,11 +115,11 @@ eb0_list_cluster <- lapply(cluster_idx, function(x) {
   #new_formula <-substitute(mat_forumula, x=quote(x_part1 + x_part2))
   #attributes(terms(mat_formula))$term.labels[1]<- res #use the original mat_forumala provided by user and replace the first term with res ~ res +region + age + sex
   m <- with(colData(spe_pseudo),
-            model.matrix(~ res +region + age + sex)) 
+            model.matrix(~ res +region + age + sex)) #will have to change so the formula isn't hard coded 
   
   #josh suggested use top table as a wrapper because it makes the output of eBayes nicer
-  
-  eBayes(
+
+    eBayes(
     lmFit(
       mat_filter,
       design = m,
@@ -155,7 +170,7 @@ f_merge <- function(p, fdr, t) {
   res$ensembl <- rownames(res)
   ## Check it's all in order
   res <-merge(x=res,y=rowData(spe_pseudo)[, c("gene_id", "gene_name")],by.x = "ensembl",
-            by.y = "gene_id")
+              by.y = "gene_id")
   colnames(res)[11] <- "gene"
   rownames(res) <- res$ensembl
   return(res)
