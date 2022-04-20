@@ -19,8 +19,8 @@ dim(spe_pseudo)
 head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_pseudo)))) #;ppl at rclub session on model matrix
 #possibly have to loop through other coefficients other than region such as subject, age, 
 de.results <- pseudoBulkDGE(spe_pseudo,  #tells it to do it one cluster at a time. to do it globally, don't need label.
-                            label=spe_pseudo$BayesSpace, 
-                            design=~factor(BayesSpace),
+                            label=spe_pseudo$subject, 
+                            design=~factor(BayesSpace) + factor(subject),
                             coef = "factor(BayesSpace)1" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
 )
 #this is pairwise comparison. can see how they did it before with limma for the pilot study. 
