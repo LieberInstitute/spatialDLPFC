@@ -1,0 +1,1836 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Wed Apr 20 17:19:09 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 9917350
+Job name: layer_DE_manual
+Hostname: compute-126.cm.cluster
+Task id: 6
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: limma
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following object is masked from ‘package:limma’:
+
+    plotMA
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+
+Attaching package: ‘SingleCellExperiment’
+
+The following object is masked from ‘package:edgeR’:
+
+    cpm
+
+Loading required package: scuttle
+Loading required package: ggplot2
+
+Attaching package: ‘scater’
+
+The following object is masked from ‘package:limma’:
+
+    plotMDS
+
+Loading required package: SpatialExperiment
+An object of class "DGEList"
+$counts
+                Sample1 Sample2 Sample3 Sample4 Sample5 Sample6 Sample7 Sample8
+ENSG00000243485       0       0       0       0       0       0       0       0
+ENSG00000238009       0       0       0       0       1       0       1       0
+ENSG00000239945       0       0       0       0       0       0       0       0
+ENSG00000241860       0       0       3       2       0       0       1       0
+ENSG00000229905       0       0       0       0       0       0       0       0
+                Sample9 Sample10 Sample11 Sample12 Sample13 Sample14 Sample15
+ENSG00000243485       0        0        0        0        0        0        0
+ENSG00000238009       1        0        0        0        1        1        0
+ENSG00000239945       0        0        0        0        0        0        0
+ENSG00000241860       0        0        1        0        3        5        2
+ENSG00000229905       0        0        0        0        0        0        0
+                Sample16 Sample17 Sample18 Sample19 Sample20 Sample21 Sample22
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        0        0        0        0        0        1        0
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860        1        2        3        0        2        1        0
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample23 Sample24 Sample25 Sample26 Sample27 Sample28 Sample29
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        0        0        0        0        0        0        0
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860        0        0        0        0        2        1        1
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample30 Sample31 Sample32 Sample33 Sample34 Sample35 Sample36
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        0        0        0        2        0        0        1
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860        0        0        0        3        2       10        5
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample37 Sample38 Sample39 Sample40 Sample41 Sample42 Sample43
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        1        1        1        1        2        0        2
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860        4        2        0        2       17        2       15
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample44 Sample45 Sample46 Sample47 Sample48 Sample49 Sample50
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        7        0        0        5        1        3        3
+ENSG00000239945        0        1        0        0        0        0        0
+ENSG00000241860       18        6        0        6        7       10       14
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample51 Sample52 Sample53 Sample54 Sample55 Sample56 Sample57
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        2        0        1        4        0        2        0
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860       10        1        4        3        1        6        5
+ENSG00000229905        0        0        0        0        0        0        1
+                Sample58 Sample59 Sample60 Sample61 Sample62 Sample63 Sample64
+ENSG00000243485        0        1        0        0        0        1        0
+ENSG00000238009        1        2        1        0        1        3        6
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860       10       17       17        1        0       10        5
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample65 Sample66 Sample67 Sample68 Sample69 Sample70 Sample71
+ENSG00000243485        0        0        0        0        1        0        0
+ENSG00000238009        4        2        2        0        4        0        4
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860       18       17        6        6        6        9       24
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample72 Sample73 Sample74 Sample75 Sample76 Sample77 Sample78
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        3        1        5        4        1        3        0
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860       18        8       24       19        0        9        7
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample79 Sample80 Sample81 Sample82 Sample83 Sample84 Sample85
+ENSG00000243485        1        0        0        0        0        0        0
+ENSG00000238009        6       10        5        0        2        3        1
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860        8       14        5        3        9       13       12
+ENSG00000229905        0        0        0        0        1        0        0
+                Sample86 Sample87 Sample88 Sample89 Sample90 Sample91 Sample92
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        6        1        5        3        1        0        1
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860        9        5        6       19       12        0        1
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample93 Sample94 Sample95 Sample96 Sample97 Sample98 Sample99
+ENSG00000243485        0        0        0        0        0        0        0
+ENSG00000238009        0        2        0        0        1        0        2
+ENSG00000239945        0        0        0        0        0        0        0
+ENSG00000241860        5        1        0        2        0        0        2
+ENSG00000229905        0        0        0        0        0        0        0
+                Sample100 Sample101 Sample102 Sample103 Sample104 Sample105
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         0         0         1         1         0         0
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         2         1         2         0         3         4
+ENSG00000229905         0         0         0         0         0         0
+                Sample106 Sample107 Sample108 Sample109 Sample110 Sample111
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         0         0         0         0         1         0
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         1         1         0         1         1         4
+ENSG00000229905         0         0         0         0         0         0
+                Sample112 Sample113 Sample114 Sample115 Sample116 Sample117
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         0         0         0         0         0         0
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         0         2         0         0         0         0
+ENSG00000229905         0         0         0         0         0         0
+                Sample118 Sample119 Sample120 Sample121 Sample122 Sample123
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         0         0         1         2         2         4
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         1         2         1         1         1        16
+ENSG00000229905         0         0         0         0         0         0
+                Sample124 Sample125 Sample126 Sample127 Sample128 Sample129
+ENSG00000243485         0         0         0         0         0         1
+ENSG00000238009         4        10         1         6         6         4
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         9        27        19         5        15        22
+ENSG00000229905         0         0         0         0         0         0
+                Sample130 Sample131 Sample132 Sample133 Sample134 Sample135
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         3         2         5         1         9         6
+ENSG00000239945         0         0         0         0         0         1
+ENSG00000241860        15         8        37        11        26        17
+ENSG00000229905         0         0         0         0         0         0
+                Sample136 Sample137 Sample138 Sample139 Sample140 Sample141
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         2         0         1         4         5         6
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         5         7         5        12        23        10
+ENSG00000229905         0         0         0         1         1         0
+                Sample142 Sample143 Sample144 Sample145 Sample146 Sample147
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         0         8         0        11         4         3
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         7         8        10         8        12        13
+ENSG00000229905         0         0         0         0         0         0
+                Sample148 Sample149 Sample150 Sample151 Sample152 Sample153
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         1         4         2         0         0         2
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860        15        18         8         2         0         6
+ENSG00000229905         0         0         0         0         0         0
+                Sample154 Sample155 Sample156 Sample157 Sample158 Sample159
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         2         0         2         0         0         2
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         1         2         0         1         3         6
+ENSG00000229905         0         0         0         0         0         0
+                Sample160 Sample161 Sample162 Sample163 Sample164 Sample165
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         0         0         0         1         1         0
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         0         2         7         1         5         4
+ENSG00000229905         0         0         0         0         0         0
+                Sample166 Sample167 Sample168 Sample169 Sample170 Sample171
+ENSG00000243485         0         0         0         0         0         0
+ENSG00000238009         0         0         0         0         1         2
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         0         0         1         0         2         5
+ENSG00000229905         0         0         0         0         0         0
+                Sample172 Sample173 Sample174 Sample175 Sample176 Sample177
+ENSG00000243485         0         1         0         0         0         0
+ENSG00000238009         0         0         0         0         0         0
+ENSG00000239945         0         0         0         0         0         0
+ENSG00000241860         1         1         2         0         0         0
+ENSG00000229905         0         0         0         0         0         0
+                Sample178 Sample179 Sample180
+ENSG00000243485         0         0         0
+ENSG00000238009         0         1         0
+ENSG00000239945         0         0         0
+ENSG00000241860         0         6         2
+ENSG00000229905         0         0         0
+28911 more rows ...
+
+$samples
+        group lib.size norm.factors  key    sample_id in_tissue array_row
+Sample1     1    49695            1 <NA> Br2720_ant_2      TRUE        NA
+Sample2     1    91692            1 <NA>   Br2720_mid      TRUE        NA
+Sample3     1   588584            1 <NA>  Br2720_post      TRUE        NA
+Sample4     1   269147            1 <NA>   Br2743_ant      TRUE        NA
+Sample5     1   279793            1 <NA>   Br2743_mid      TRUE        NA
+        array_col X10x_graphclust X10x_kmeans_10_clusters
+Sample1        NA              NA                      NA
+Sample2        NA              NA                      NA
+Sample3        NA              NA                      NA
+Sample4        NA              NA                      NA
+Sample5        NA              NA                      NA
+        X10x_kmeans_2_clusters X10x_kmeans_3_clusters X10x_kmeans_4_clusters
+Sample1                     NA                     NA                     NA
+Sample2                     NA                     NA                     NA
+Sample3                     NA                     NA                     NA
+Sample4                     NA                     NA                     NA
+Sample5                     NA                     NA                     NA
+        X10x_kmeans_5_clusters X10x_kmeans_6_clusters X10x_kmeans_7_clusters
+Sample1                     NA                     NA                     NA
+Sample2                     NA                     NA                     NA
+Sample3                     NA                     NA                     NA
+Sample4                     NA                     NA                     NA
+Sample5                     NA                     NA                     NA
+        X10x_kmeans_8_clusters X10x_kmeans_9_clusters sum_umi sum_gene
+Sample1                     NA                     NA      NA       NA
+Sample2                     NA                     NA      NA       NA
+Sample3                     NA                     NA      NA       NA
+Sample4                     NA                     NA      NA       NA
+Sample5                     NA                     NA      NA       NA
+        expr_chrM expr_chrM_ratio ManualAnnotation subject    region sex   age
+Sample1        NA              NA               NA  Br2720  anterior   F 48.22
+Sample2        NA              NA               NA  Br2720    middle   F 48.22
+Sample3        NA              NA               NA  Br2720 posterior   F 48.22
+Sample4        NA              NA               NA  Br2743  anterior   M 61.54
+Sample5        NA              NA               NA  Br2743    middle   M 61.54
+        diagnosis count scran_discard scran_low_lib_size scran_low_n_features
+Sample1   Control    NA          <NA>              FALSE                 <NA>
+Sample2   Control    NA          <NA>              FALSE                 <NA>
+Sample3   Control    NA          <NA>              FALSE                FALSE
+Sample4   Control    NA          <NA>              FALSE                 <NA>
+Sample5   Control    NA         FALSE              FALSE                FALSE
+        scran_high_subsets_Mito_percent scran_quick_cluster sizeFactor row col
+Sample1                            <NA>                <NA>         NA  NA  NA
+Sample2                            <NA>                <NA>         NA  NA  NA
+Sample3                            <NA>                <NA>         NA  NA  NA
+Sample4                            <NA>                <NA>         NA  NA  NA
+Sample5                           FALSE                <NA>         NA  NA  NA
+        bayesSpace_harmony_10 bayesSpace_harmony_11 bayesSpace_harmony_12
+Sample1                    NA                    NA                    NA
+Sample2                    NA                    NA                    NA
+Sample3                    NA                    NA                    NA
+Sample4                    NA                    NA                    NA
+Sample5                    NA                    NA                    NA
+        bayesSpace_harmony_13 bayesSpace_harmony_14 bayesSpace_harmony_15
+Sample1                    NA                    NA                    NA
+Sample2                    NA                    NA                    NA
+Sample3                    NA                    NA                    NA
+Sample4                    NA                    NA                    NA
+Sample5                    NA                    NA                    NA
+        bayesSpace_harmony_16 bayesSpace_harmony_17 bayesSpace_harmony_18
+Sample1                    NA                    NA                    NA
+Sample2                    NA                    NA                    NA
+Sample3                    NA                    NA                    NA
+Sample4                    NA                    NA                    NA
+Sample5                    NA                    NA                    NA
+        bayesSpace_harmony_19 bayesSpace_harmony_2 bayesSpace_harmony_20
+Sample1                    NA                   NA                    NA
+Sample2                    NA                   NA                    NA
+Sample3                    NA                   NA                    NA
+Sample4                    NA                   NA                    NA
+Sample5                    NA                    2                    NA
+        bayesSpace_harmony_21 bayesSpace_harmony_22 bayesSpace_harmony_23
+Sample1                    NA                    NA                    NA
+Sample2                    NA                    NA                    NA
+Sample3                    NA                    NA                    NA
+Sample4                    NA                    NA                    NA
+Sample5                    NA                    NA                    NA
+        bayesSpace_harmony_24 bayesSpace_harmony_25 bayesSpace_harmony_26
+Sample1                    NA                    NA                    NA
+Sample2                    NA                    NA                    NA
+Sample3                    NA                    NA                    NA
+Sample4                    NA                    NA                    NA
+Sample5                    NA                    NA                    NA
+        bayesSpace_harmony_27 bayesSpace_harmony_28 bayesSpace_harmony_3
+Sample1                    NA                    NA                   NA
+Sample2                    NA                    NA                   NA
+Sample3                    NA                    NA                    3
+Sample4                    NA                    NA                   NA
+Sample5                    NA                    NA                   NA
+        bayesSpace_harmony_4 bayesSpace_harmony_5 bayesSpace_harmony_6
+Sample1                   NA                   NA                    1
+Sample2                   NA                   NA                    1
+Sample3                   NA                   NA                    1
+Sample4                   NA                   NA                    1
+Sample5                   NA                   NA                    1
+        bayesSpace_harmony_7 bayesSpace_harmony_8 bayesSpace_harmony_9
+Sample1                   NA                   NA                   NA
+Sample2                   NA                   NA                   NA
+Sample3                   NA                   NA                   NA
+Sample4                   NA                   NA                   NA
+Sample5                   NA                   NA                   NA
+        bayesSpace_pca_10 bayesSpace_pca_11 bayesSpace_pca_12 bayesSpace_pca_13
+Sample1                NA                 4                NA                NA
+Sample2                NA                NA                NA                NA
+Sample3                NA                NA                NA                NA
+Sample4                NA                NA                NA                NA
+Sample5                NA                NA                NA                NA
+        bayesSpace_pca_14 bayesSpace_pca_15 bayesSpace_pca_16 bayesSpace_pca_17
+Sample1                NA                NA                NA                NA
+Sample2                NA                NA                NA                NA
+Sample3                NA                NA                NA                NA
+Sample4                NA                NA                NA                NA
+Sample5                NA                NA                NA                NA
+        bayesSpace_pca_18 bayesSpace_pca_19 bayesSpace_pca_2 bayesSpace_pca_20
+Sample1                 7                NA               NA                NA
+Sample2                NA                NA               NA                NA
+Sample3                NA                NA               NA                NA
+Sample4                NA                NA               NA                NA
+Sample5                NA                NA               NA                NA
+        bayesSpace_pca_21 bayesSpace_pca_22 bayesSpace_pca_23 bayesSpace_pca_24
+Sample1                NA                NA                NA                 4
+Sample2                NA                NA                NA                NA
+Sample3                NA                NA                NA                NA
+Sample4                NA                NA                NA                NA
+Sample5                NA                NA                NA                NA
+        bayesSpace_pca_25 bayesSpace_pca_26 bayesSpace_pca_27 bayesSpace_pca_28
+Sample1                 8                12                 2                NA
+Sample2                NA                NA                NA                NA
+Sample3                NA                NA                NA                NA
+Sample4                NA                NA                NA                NA
+Sample5                NA                NA                NA                NA
+        bayesSpace_pca_3 bayesSpace_pca_4 bayesSpace_pca_5 bayesSpace_pca_6
+Sample1               NA               NA               NA               NA
+Sample2               NA               NA               NA               NA
+Sample3               NA               NA               NA               NA
+Sample4               NA               NA               NA               NA
+Sample5               NA               NA               NA               NA
+        bayesSpace_pca_7 bayesSpace_pca_8 bayesSpace_pca_9
+Sample1               NA               NA               NA
+Sample2               NA               NA               NA
+Sample3               NA               NA               NA
+Sample4               NA               NA               NA
+Sample5               NA               NA               NA
+        graph_based_PCA_within Harmony_SNN_k10_k7 PCA_SNN_k10_k7 BayesSpace
+Sample1                     NA                 NA             NA          1
+Sample2                     NA                 NA             NA          1
+Sample3                     NA                 NA             NA          1
+Sample4                     NA                 NA             NA          1
+Sample5                     NA                 NA             NA          1
+         sample_id.1 ncells
+Sample1 Br2720_ant_2    343
+Sample2   Br2720_mid     71
+Sample3  Br2720_post    337
+Sample4   Br2743_ant    296
+Sample5   Br2743_mid    192
+175 more rows ...
+
+   Mode   FALSE 
+logical     180 
+   Mode   FALSE    TRUE 
+logical   17401   11515 
+         group lib.size norm.factors  key    sample_id in_tissue array_row
+Sample1      1    49695    1.0412473 <NA> Br2720_ant_2      TRUE        NA
+Sample2      1    91692    0.9040053 <NA>   Br2720_mid      TRUE        NA
+Sample3      1   588584    0.8167776 <NA>  Br2720_post      TRUE        NA
+Sample4      1   269147    0.9091242 <NA>   Br2743_ant      TRUE        NA
+Sample5      1   279793    0.8949896 <NA>   Br2743_mid      TRUE        NA
+Sample6      1    80872    1.0713461 <NA>  Br2743_post      TRUE        NA
+Sample7      1   315424    0.9825037 <NA>   Br3942_ant      TRUE        NA
+Sample8      1   136129    0.8732113 <NA>   Br3942_mid      TRUE        NA
+Sample9      1    77954    1.1448152 <NA>  Br3942_post      TRUE        NA
+Sample10     1   109262    1.0618922 <NA>   Br6423_ant      TRUE        NA
+Sample11     1   273862    0.8959852 <NA>   Br6423_mid      TRUE        NA
+Sample12     1    49721    1.2440442 <NA>  Br6423_post      TRUE        NA
+Sample13     1   456694    0.9836957 <NA> Br6432_ant_2      TRUE        NA
+Sample14     1   997193    0.9328791 <NA>   Br6432_mid      TRUE        NA
+Sample15     1   546800    0.9634479 <NA>  Br6432_post      TRUE        NA
+         array_col X10x_graphclust X10x_kmeans_10_clusters
+Sample1         NA              NA                      NA
+Sample2         NA              NA                      NA
+Sample3         NA              NA                      NA
+Sample4         NA              NA                      NA
+Sample5         NA              NA                      NA
+Sample6         NA              NA                      NA
+Sample7         NA              NA                      NA
+Sample8         NA              NA                      NA
+Sample9         NA              NA                      NA
+Sample10        NA              NA                      NA
+Sample11        NA              NA                      NA
+Sample12        NA              NA                      NA
+Sample13        NA              NA                      NA
+Sample14        NA              NA                      NA
+Sample15        NA              NA                      NA
+         X10x_kmeans_2_clusters X10x_kmeans_3_clusters X10x_kmeans_4_clusters
+Sample1                      NA                     NA                     NA
+Sample2                      NA                     NA                     NA
+Sample3                      NA                     NA                     NA
+Sample4                      NA                     NA                     NA
+Sample5                      NA                     NA                     NA
+Sample6                      NA                      2                     NA
+Sample7                      NA                     NA                     NA
+Sample8                      NA                     NA                     NA
+Sample9                      NA                     NA                     NA
+Sample10                     NA                     NA                     NA
+Sample11                     NA                     NA                     NA
+Sample12                     NA                     NA                     NA
+Sample13                     NA                     NA                     NA
+Sample14                     NA                     NA                     NA
+Sample15                     NA                     NA                     NA
+         X10x_kmeans_5_clusters X10x_kmeans_6_clusters X10x_kmeans_7_clusters
+Sample1                      NA                     NA                     NA
+Sample2                      NA                     NA                     NA
+Sample3                      NA                     NA                     NA
+Sample4                      NA                     NA                     NA
+Sample5                      NA                     NA                     NA
+Sample6                      NA                     NA                     NA
+Sample7                      NA                     NA                     NA
+Sample8                      NA                     NA                     NA
+Sample9                      NA                     NA                     NA
+Sample10                     NA                     NA                     NA
+Sample11                     NA                     NA                     NA
+Sample12                     NA                     NA                     NA
+Sample13                     NA                     NA                     NA
+Sample14                     NA                     NA                     NA
+Sample15                     NA                     NA                     NA
+         X10x_kmeans_8_clusters X10x_kmeans_9_clusters sum_umi sum_gene
+Sample1                      NA                     NA      NA       NA
+Sample2                      NA                     NA      NA       NA
+Sample3                      NA                     NA      NA       NA
+Sample4                      NA                     NA      NA       NA
+Sample5                      NA                     NA      NA       NA
+Sample6                      NA                     NA      NA       NA
+Sample7                      NA                     NA      NA       NA
+Sample8                      NA                     NA      NA       NA
+Sample9                      NA                     NA      NA       NA
+Sample10                     NA                     NA      NA       NA
+Sample11                     NA                     NA      NA       NA
+Sample12                     NA                     NA      NA       NA
+Sample13                     NA                     NA      NA       NA
+Sample14                     NA                     NA      NA       NA
+Sample15                     NA                     NA      NA       NA
+         expr_chrM expr_chrM_ratio ManualAnnotation subject    region sex   age
+Sample1         NA              NA               NA  Br2720  anterior   F 48.22
+Sample2         NA              NA               NA  Br2720    middle   F 48.22
+Sample3         NA              NA               NA  Br2720 posterior   F 48.22
+Sample4         NA              NA               NA  Br2743  anterior   M 61.54
+Sample5         NA              NA               NA  Br2743    middle   M 61.54
+Sample6         NA              NA               NA  Br2743 posterior   M 61.54
+Sample7         NA              NA               NA  Br3942  anterior   M 47.53
+Sample8         NA              NA               NA  Br3942    middle   M 47.53
+Sample9         NA              NA               NA  Br3942 posterior   M 47.53
+Sample10        NA              NA               NA  Br6423  anterior   M 51.73
+Sample11        NA              NA               NA  Br6423    middle   M 51.73
+Sample12        NA              NA               NA  Br6423 posterior   M 51.73
+Sample13        NA              NA               NA  Br6432  anterior   M 48.88
+Sample14        NA              NA               NA  Br6432    middle   M 48.88
+Sample15        NA              NA               NA  Br6432 posterior   M 48.88
+         diagnosis count scran_discard scran_low_lib_size scran_low_n_features
+Sample1    Control    NA          <NA>              FALSE                 <NA>
+Sample2    Control    NA          <NA>              FALSE                 <NA>
+Sample3    Control    NA          <NA>              FALSE                FALSE
+Sample4    Control    NA          <NA>              FALSE                 <NA>
+Sample5    Control    NA         FALSE              FALSE                FALSE
+Sample6    Control    NA         FALSE              FALSE                FALSE
+Sample7    Control    NA          <NA>              FALSE                FALSE
+Sample8    Control    NA          <NA>              FALSE                 <NA>
+Sample9    Control    NA         FALSE              FALSE                FALSE
+Sample10   Control    NA          <NA>              FALSE                 <NA>
+Sample11   Control    NA          <NA>              FALSE                FALSE
+Sample12   Control    NA         FALSE              FALSE                FALSE
+Sample13   Control    NA          <NA>              FALSE                 <NA>
+Sample14   Control    NA          <NA>              FALSE                FALSE
+Sample15   Control    NA         FALSE              FALSE                FALSE
+         scran_high_subsets_Mito_percent scran_quick_cluster sizeFactor row col
+Sample1                             <NA>                <NA>         NA  NA  NA
+Sample2                             <NA>                <NA>         NA  NA  NA
+Sample3                             <NA>                <NA>         NA  NA  NA
+Sample4                             <NA>                <NA>         NA  NA  NA
+Sample5                            FALSE                <NA>         NA  NA  NA
+Sample6                            FALSE                <NA>         NA  NA  NA
+Sample7                             <NA>                <NA>         NA  NA  NA
+Sample8                             <NA>                <NA>         NA  NA  NA
+Sample9                            FALSE                <NA>         NA  NA  NA
+Sample10                           FALSE                <NA>         NA  NA  NA
+Sample11                            <NA>                <NA>         NA  NA  NA
+Sample12                           FALSE                <NA>         NA  NA  NA
+Sample13                            <NA>                <NA>         NA  NA  NA
+Sample14                            <NA>                <NA>         NA  NA  NA
+Sample15                           FALSE                <NA>         NA  NA  NA
+         bayesSpace_harmony_10 bayesSpace_harmony_11 bayesSpace_harmony_12
+Sample1                     NA                    NA                    NA
+Sample2                     NA                    NA                    NA
+Sample3                     NA                    NA                    NA
+Sample4                     NA                    NA                    NA
+Sample5                     NA                    NA                    NA
+Sample6                     NA                    NA                    NA
+Sample7                     NA                    NA                    NA
+Sample8                     NA                    NA                    NA
+Sample9                     NA                    NA                    NA
+Sample10                    NA                    NA                    NA
+Sample11                    NA                    NA                    NA
+Sample12                    NA                    NA                    NA
+Sample13                    NA                    NA                    NA
+Sample14                    NA                    NA                    NA
+Sample15                    NA                    NA                    NA
+         bayesSpace_harmony_13 bayesSpace_harmony_14 bayesSpace_harmony_15
+Sample1                     NA                    NA                    NA
+Sample2                     NA                    NA                    NA
+Sample3                     NA                    NA                    NA
+Sample4                     NA                    NA                    NA
+Sample5                     NA                    NA                    NA
+Sample6                     NA                    NA                    NA
+Sample7                     NA                    NA                    NA
+Sample8                     NA                    NA                    NA
+Sample9                     NA                    NA                    NA
+Sample10                    NA                    NA                    NA
+Sample11                    NA                    NA                    NA
+Sample12                    NA                    NA                    NA
+Sample13                    NA                    NA                    NA
+Sample14                    NA                    NA                    NA
+Sample15                    NA                    NA                    NA
+         bayesSpace_harmony_16 bayesSpace_harmony_17 bayesSpace_harmony_18
+Sample1                     NA                    NA                    NA
+Sample2                     NA                    NA                    NA
+Sample3                     NA                    NA                    NA
+Sample4                     NA                    NA                    NA
+Sample5                     NA                    NA                    NA
+Sample6                     NA                    NA                    NA
+Sample7                     NA                    NA                    NA
+Sample8                     NA                    NA                    NA
+Sample9                     NA                    NA                    NA
+Sample10                    NA                    NA                    NA
+Sample11                    NA                    NA                    NA
+Sample12                    NA                    NA                    NA
+Sample13                    NA                    NA                    NA
+Sample14                    NA                    NA                    NA
+Sample15                    NA                    NA                    NA
+         bayesSpace_harmony_19 bayesSpace_harmony_2 bayesSpace_harmony_20
+Sample1                     NA                   NA                    NA
+Sample2                     NA                   NA                    NA
+Sample3                     NA                   NA                    NA
+Sample4                     NA                   NA                    NA
+Sample5                     NA                    2                    NA
+Sample6                     NA                   NA                    NA
+Sample7                     NA                    2                    NA
+Sample8                     NA                   NA                    NA
+Sample9                     NA                   NA                    NA
+Sample10                    NA                   NA                    NA
+Sample11                    NA                   NA                    NA
+Sample12                    NA                   NA                    NA
+Sample13                    NA                    2                    NA
+Sample14                    NA                    2                    NA
+Sample15                    NA                    2                    NA
+         bayesSpace_harmony_21 bayesSpace_harmony_22 bayesSpace_harmony_23
+Sample1                     NA                    NA                    NA
+Sample2                     NA                    NA                    NA
+Sample3                     NA                    NA                    NA
+Sample4                     NA                    NA                    NA
+Sample5                     NA                    NA                    NA
+Sample6                     NA                    NA                    NA
+Sample7                     NA                    NA                    NA
+Sample8                     NA                    NA                    NA
+Sample9                     NA                    NA                    NA
+Sample10                    NA                    NA                    NA
+Sample11                    NA                    NA                    NA
+Sample12                    NA                    NA                    NA
+Sample13                    NA                    NA                    NA
+Sample14                    NA                    NA                    NA
+Sample15                    NA                    NA                    NA
+         bayesSpace_harmony_24 bayesSpace_harmony_25 bayesSpace_harmony_26
+Sample1                     NA                    NA                    NA
+Sample2                     NA                    NA                    NA
+Sample3                     NA                    NA                    NA
+Sample4                     NA                    NA                    NA
+Sample5                     NA                    NA                    NA
+Sample6                     NA                    NA                    NA
+Sample7                     NA                    NA                    NA
+Sample8                     NA                    NA                    NA
+Sample9                     NA                    NA                    NA
+Sample10                    NA                    NA                    NA
+Sample11                    NA                    NA                    NA
+Sample12                    NA                    NA                    NA
+Sample13                    NA                    NA                    NA
+Sample14                    NA                    NA                    NA
+Sample15                    NA                    NA                    NA
+         bayesSpace_harmony_27 bayesSpace_harmony_28 bayesSpace_harmony_3
+Sample1                     NA                    NA                   NA
+Sample2                     NA                    NA                   NA
+Sample3                     NA                    NA                    3
+Sample4                     NA                    NA                   NA
+Sample5                     NA                    NA                   NA
+Sample6                     NA                    NA                   NA
+Sample7                     NA                    NA                   NA
+Sample8                     NA                    NA                   NA
+Sample9                     NA                    NA                   NA
+Sample10                    NA                    NA                   NA
+Sample11                    NA                    NA                   NA
+Sample12                    NA                    NA                   NA
+Sample13                    NA                    NA                   NA
+Sample14                    NA                    NA                   NA
+Sample15                    NA                    NA                   NA
+         bayesSpace_harmony_4 bayesSpace_harmony_5 bayesSpace_harmony_6
+Sample1                    NA                   NA                    1
+Sample2                    NA                   NA                    1
+Sample3                    NA                   NA                    1
+Sample4                    NA                   NA                    1
+Sample5                    NA                   NA                    1
+Sample6                    NA                   NA                    1
+Sample7                    NA                   NA                    1
+Sample8                    NA                    1                    1
+Sample9                    NA                   NA                    1
+Sample10                   NA                   NA                    1
+Sample11                   NA                   NA                    1
+Sample12                   NA                   NA                    1
+Sample13                   NA                   NA                    1
+Sample14                   NA                   NA                    1
+Sample15                   NA                    1                    1
+         bayesSpace_harmony_7 bayesSpace_harmony_8 bayesSpace_harmony_9
+Sample1                    NA                   NA                   NA
+Sample2                    NA                   NA                   NA
+Sample3                    NA                   NA                   NA
+Sample4                    NA                   NA                   NA
+Sample5                    NA                   NA                   NA
+Sample6                    NA                   NA                   NA
+Sample7                    NA                   NA                   NA
+Sample8                     1                   NA                   NA
+Sample9                    NA                   NA                   NA
+Sample10                   NA                   NA                   NA
+Sample11                   NA                   NA                   NA
+Sample12                   NA                   NA                   NA
+Sample13                   NA                   NA                   NA
+Sample14                   NA                   NA                   NA
+Sample15                    1                   NA                   NA
+         bayesSpace_pca_10 bayesSpace_pca_11 bayesSpace_pca_12
+Sample1                 NA                 4                NA
+Sample2                 NA                NA                NA
+Sample3                 NA                NA                NA
+Sample4                 NA                NA                NA
+Sample5                 NA                NA                NA
+Sample6                  4                 5                 6
+Sample7                 NA                NA                NA
+Sample8                 NA                NA                NA
+Sample9                  3                 7                 9
+Sample10                NA                NA                NA
+Sample11                NA                NA                NA
+Sample12                 3                 7                 9
+Sample13                NA                NA                NA
+Sample14                NA                NA                NA
+Sample15                NA                NA                NA
+         bayesSpace_pca_13 bayesSpace_pca_14 bayesSpace_pca_15
+Sample1                 NA                NA                NA
+Sample2                 NA                NA                NA
+Sample3                 NA                NA                NA
+Sample4                 NA                NA                NA
+Sample5                 NA                NA                NA
+Sample6                 12                NA                 6
+Sample7                 NA                NA                NA
+Sample8                 NA                NA                NA
+Sample9                  8                 7                 8
+Sample10                NA                NA                NA
+Sample11                NA                NA                NA
+Sample12                NA                NA                NA
+Sample13                NA                NA                NA
+Sample14                NA                NA                NA
+Sample15                NA                NA                NA
+         bayesSpace_pca_16 bayesSpace_pca_17 bayesSpace_pca_18
+Sample1                 NA                NA                 7
+Sample2                 NA                NA                NA
+Sample3                 NA                NA                NA
+Sample4                 NA                NA                NA
+Sample5                 NA                NA                NA
+Sample6                 16                 9                11
+Sample7                 NA                NA                NA
+Sample8                 NA                NA                NA
+Sample9                  3                 6                15
+Sample10                NA                NA                NA
+Sample11                NA                NA                NA
+Sample12                 3                NA                NA
+Sample13                NA                NA                NA
+Sample14                NA                NA                NA
+Sample15                NA                NA                NA
+         bayesSpace_pca_19 bayesSpace_pca_2 bayesSpace_pca_20 bayesSpace_pca_21
+Sample1                 NA               NA                NA                NA
+Sample2                 NA               NA                NA                NA
+Sample3                 NA               NA                NA                NA
+Sample4                 NA               NA                NA                NA
+Sample5                 NA               NA                NA                NA
+Sample6                  9               NA                12                NA
+Sample7                 NA               NA                NA                NA
+Sample8                 NA               NA                NA                NA
+Sample9                  6               NA                 9                NA
+Sample10                NA               NA                NA                NA
+Sample11                NA               NA                NA                NA
+Sample12                NA               NA                NA                NA
+Sample13                NA               NA                NA                NA
+Sample14                NA               NA                NA                NA
+Sample15                NA               NA                NA                NA
+         bayesSpace_pca_22 bayesSpace_pca_23 bayesSpace_pca_24
+Sample1                 NA                NA                 4
+Sample2                 NA                NA                NA
+Sample3                 NA                NA                NA
+Sample4                 NA                NA                NA
+Sample5                 NA                NA                NA
+Sample6                 NA                NA                18
+Sample7                 NA                NA                NA
+Sample8                 NA                NA                NA
+Sample9                 10                23                 6
+Sample10                NA                NA                NA
+Sample11                NA                NA                NA
+Sample12                NA                NA                NA
+Sample13                NA                NA                NA
+Sample14                NA                NA                NA
+Sample15                NA                NA                NA
+         bayesSpace_pca_25 bayesSpace_pca_26 bayesSpace_pca_27
+Sample1                  8                12                 2
+Sample2                 NA                NA                NA
+Sample3                 NA                NA                NA
+Sample4                 NA                NA                NA
+Sample5                 NA                NA                NA
+Sample6                 12                 7                NA
+Sample7                 NA                NA                NA
+Sample8                 NA                NA                NA
+Sample9                 20                17                 9
+Sample10                NA                NA                NA
+Sample11                NA                NA                NA
+Sample12                NA                NA                NA
+Sample13                NA                NA                NA
+Sample14                NA                NA                NA
+Sample15                NA                NA                NA
+         bayesSpace_pca_28 bayesSpace_pca_3 bayesSpace_pca_4 bayesSpace_pca_5
+Sample1                 NA               NA               NA               NA
+Sample2                 NA               NA               NA               NA
+Sample3                 NA               NA               NA               NA
+Sample4                 NA               NA               NA               NA
+Sample5                 NA               NA               NA               NA
+Sample6                 NA               NA                1                5
+Sample7                 NA               NA               NA               NA
+Sample8                 NA               NA               NA               NA
+Sample9                  6                3                3                1
+Sample10                NA               NA               NA               NA
+Sample11                NA               NA               NA               NA
+Sample12                NA               NA                3                1
+Sample13                NA               NA               NA               NA
+Sample14                NA               NA               NA               NA
+Sample15                NA               NA               NA               NA
+         bayesSpace_pca_6 bayesSpace_pca_7 bayesSpace_pca_8 bayesSpace_pca_9
+Sample1                NA               NA               NA               NA
+Sample2                NA               NA               NA               NA
+Sample3                NA               NA               NA               NA
+Sample4                NA               NA               NA               NA
+Sample5                NA               NA               NA               NA
+Sample6                 4                5                4                2
+Sample7                NA               NA               NA               NA
+Sample8                NA               NA               NA               NA
+Sample9                 5                6                8                6
+Sample10               NA               NA               NA               NA
+Sample11               NA               NA               NA               NA
+Sample12                5                6                8                6
+Sample13               NA               NA               NA               NA
+Sample14               NA               NA               NA               NA
+Sample15               NA               NA               NA               NA
+         graph_based_PCA_within Harmony_SNN_k10_k7 PCA_SNN_k10_k7 BayesSpace
+Sample1                      NA                 NA             NA          1
+Sample2                      NA                 NA             NA          1
+Sample3                      NA                 NA             NA          1
+Sample4                      NA                 NA             NA          1
+Sample5                      NA                 NA             NA          1
+Sample6                      NA                 NA             NA          1
+Sample7                      NA                 NA             NA          1
+Sample8                      NA                 NA             NA          1
+Sample9                      NA                 NA             NA          1
+Sample10                     NA                 NA             NA          1
+Sample11                     NA                 NA             NA          1
+Sample12                     NA                 NA             NA          1
+Sample13                     NA                 NA             NA          1
+Sample14                     NA                 NA             NA          1
+Sample15                     NA                 NA             NA          1
+          sample_id.1 ncells
+Sample1  Br2720_ant_2    343
+Sample2    Br2720_mid     71
+Sample3   Br2720_post    337
+Sample4    Br2743_ant    296
+Sample5    Br2743_mid    192
+Sample6   Br2743_post     86
+Sample7    Br3942_ant    239
+Sample8    Br3942_mid    143
+Sample9   Br3942_post     32
+Sample10   Br6423_ant    118
+Sample11   Br6423_mid    215
+Sample12  Br6423_post     28
+Sample13 Br6432_ant_2    556
+Sample14   Br6432_mid    404
+Sample15  Br6432_post    205
+ [ reached 'max' / getOption("max.print") -- omitted 165 rows ]
+          (Intercept) factor(subject)Br2743 factor(subject)Br3942
+Sample1             1                     0                     0
+Sample2             1                     0                     0
+Sample3             1                     0                     0
+Sample4             1                     1                     0
+Sample5             1                     1                     0
+Sample6             1                     1                     0
+Sample7             1                     0                     1
+Sample8             1                     0                     1
+Sample9             1                     0                     1
+Sample10            1                     0                     0
+Sample11            1                     0                     0
+Sample12            1                     0                     0
+Sample13            1                     0                     0
+Sample14            1                     0                     0
+Sample15            1                     0                     0
+Sample16            1                     0                     0
+Sample17            1                     0                     0
+Sample18            1                     0                     0
+Sample19            1                     0                     0
+Sample20            1                     0                     0
+Sample21            1                     0                     0
+Sample22            1                     0                     0
+Sample23            1                     0                     0
+Sample24            1                     0                     0
+Sample25            1                     0                     0
+Sample26            1                     0                     0
+Sample27            1                     0                     0
+Sample28            1                     0                     0
+Sample29            1                     0                     0
+Sample30            1                     0                     0
+Sample31            1                     0                     0
+Sample32            1                     0                     0
+Sample33            1                     0                     0
+Sample34            1                     1                     0
+Sample35            1                     1                     0
+Sample36            1                     1                     0
+Sample37            1                     0                     1
+Sample38            1                     0                     1
+Sample39            1                     0                     1
+Sample40            1                     0                     0
+Sample41            1                     0                     0
+Sample42            1                     0                     0
+Sample43            1                     0                     0
+Sample44            1                     0                     0
+Sample45            1                     0                     0
+Sample46            1                     0                     0
+Sample47            1                     0                     0
+Sample48            1                     0                     0
+Sample49            1                     0                     0
+Sample50            1                     0                     0
+Sample51            1                     0                     0
+Sample52            1                     0                     0
+Sample53            1                     0                     0
+Sample54            1                     0                     0
+Sample55            1                     0                     0
+Sample56            1                     0                     0
+Sample57            1                     0                     0
+Sample58            1                     0                     0
+Sample59            1                     0                     0
+Sample60            1                     0                     0
+Sample61            1                     0                     0
+Sample62            1                     0                     0
+Sample63            1                     0                     0
+Sample64            1                     1                     0
+Sample65            1                     1                     0
+Sample66            1                     1                     0
+Sample67            1                     0                     1
+Sample68            1                     0                     1
+Sample69            1                     0                     1
+Sample70            1                     0                     0
+Sample71            1                     0                     0
+Sample72            1                     0                     0
+Sample73            1                     0                     0
+Sample74            1                     0                     0
+Sample75            1                     0                     0
+Sample76            1                     0                     0
+Sample77            1                     0                     0
+Sample78            1                     0                     0
+Sample79            1                     0                     0
+Sample80            1                     0                     0
+Sample81            1                     0                     0
+Sample82            1                     0                     0
+Sample83            1                     0                     0
+Sample84            1                     0                     0
+Sample85            1                     0                     0
+Sample86            1                     0                     0
+Sample87            1                     0                     0
+Sample88            1                     0                     0
+Sample89            1                     0                     0
+Sample90            1                     0                     0
+Sample91            1                     0                     0
+Sample92            1                     0                     0
+Sample93            1                     0                     0
+Sample94            1                     1                     0
+Sample95            1                     1                     0
+Sample96            1                     1                     0
+Sample97            1                     0                     1
+Sample98            1                     0                     1
+Sample99            1                     0                     1
+Sample100           1                     0                     0
+          factor(subject)Br6423 factor(subject)Br6432 factor(subject)Br6471
+Sample1                       0                     0                     0
+Sample2                       0                     0                     0
+Sample3                       0                     0                     0
+Sample4                       0                     0                     0
+Sample5                       0                     0                     0
+Sample6                       0                     0                     0
+Sample7                       0                     0                     0
+Sample8                       0                     0                     0
+Sample9                       0                     0                     0
+Sample10                      1                     0                     0
+Sample11                      1                     0                     0
+Sample12                      1                     0                     0
+Sample13                      0                     1                     0
+Sample14                      0                     1                     0
+Sample15                      0                     1                     0
+Sample16                      0                     0                     1
+Sample17                      0                     0                     1
+Sample18                      0                     0                     1
+Sample19                      0                     0                     0
+Sample20                      0                     0                     0
+Sample21                      0                     0                     0
+Sample22                      0                     0                     0
+Sample23                      0                     0                     0
+Sample24                      0                     0                     0
+Sample25                      0                     0                     0
+Sample26                      0                     0                     0
+Sample27                      0                     0                     0
+Sample28                      0                     0                     0
+Sample29                      0                     0                     0
+Sample30                      0                     0                     0
+Sample31                      0                     0                     0
+Sample32                      0                     0                     0
+Sample33                      0                     0                     0
+Sample34                      0                     0                     0
+Sample35                      0                     0                     0
+Sample36                      0                     0                     0
+Sample37                      0                     0                     0
+Sample38                      0                     0                     0
+Sample39                      0                     0                     0
+Sample40                      1                     0                     0
+Sample41                      1                     0                     0
+Sample42                      1                     0                     0
+Sample43                      0                     1                     0
+Sample44                      0                     1                     0
+Sample45                      0                     1                     0
+Sample46                      0                     0                     1
+Sample47                      0                     0                     1
+Sample48                      0                     0                     1
+Sample49                      0                     0                     0
+Sample50                      0                     0                     0
+Sample51                      0                     0                     0
+Sample52                      0                     0                     0
+Sample53                      0                     0                     0
+Sample54                      0                     0                     0
+Sample55                      0                     0                     0
+Sample56                      0                     0                     0
+Sample57                      0                     0                     0
+Sample58                      0                     0                     0
+Sample59                      0                     0                     0
+Sample60                      0                     0                     0
+Sample61                      0                     0                     0
+Sample62                      0                     0                     0
+Sample63                      0                     0                     0
+Sample64                      0                     0                     0
+Sample65                      0                     0                     0
+Sample66                      0                     0                     0
+Sample67                      0                     0                     0
+Sample68                      0                     0                     0
+Sample69                      0                     0                     0
+Sample70                      1                     0                     0
+Sample71                      1                     0                     0
+Sample72                      1                     0                     0
+Sample73                      0                     1                     0
+Sample74                      0                     1                     0
+Sample75                      0                     1                     0
+Sample76                      0                     0                     1
+Sample77                      0                     0                     1
+Sample78                      0                     0                     1
+Sample79                      0                     0                     0
+Sample80                      0                     0                     0
+Sample81                      0                     0                     0
+Sample82                      0                     0                     0
+Sample83                      0                     0                     0
+Sample84                      0                     0                     0
+Sample85                      0                     0                     0
+Sample86                      0                     0                     0
+Sample87                      0                     0                     0
+Sample88                      0                     0                     0
+Sample89                      0                     0                     0
+Sample90                      0                     0                     0
+Sample91                      0                     0                     0
+Sample92                      0                     0                     0
+Sample93                      0                     0                     0
+Sample94                      0                     0                     0
+Sample95                      0                     0                     0
+Sample96                      0                     0                     0
+Sample97                      0                     0                     0
+Sample98                      0                     0                     0
+Sample99                      0                     0                     0
+Sample100                     1                     0                     0
+          factor(subject)Br6522 factor(subject)Br8325 factor(subject)Br8492
+Sample1                       0                     0                     0
+Sample2                       0                     0                     0
+Sample3                       0                     0                     0
+Sample4                       0                     0                     0
+Sample5                       0                     0                     0
+Sample6                       0                     0                     0
+Sample7                       0                     0                     0
+Sample8                       0                     0                     0
+Sample9                       0                     0                     0
+Sample10                      0                     0                     0
+Sample11                      0                     0                     0
+Sample12                      0                     0                     0
+Sample13                      0                     0                     0
+Sample14                      0                     0                     0
+Sample15                      0                     0                     0
+Sample16                      0                     0                     0
+Sample17                      0                     0                     0
+Sample18                      0                     0                     0
+Sample19                      1                     0                     0
+Sample20                      1                     0                     0
+Sample21                      1                     0                     0
+Sample22                      0                     1                     0
+Sample23                      0                     1                     0
+Sample24                      0                     1                     0
+Sample25                      0                     0                     1
+Sample26                      0                     0                     1
+Sample27                      0                     0                     1
+Sample28                      0                     0                     0
+Sample29                      0                     0                     0
+Sample30                      0                     0                     0
+Sample31                      0                     0                     0
+Sample32                      0                     0                     0
+Sample33                      0                     0                     0
+Sample34                      0                     0                     0
+Sample35                      0                     0                     0
+Sample36                      0                     0                     0
+Sample37                      0                     0                     0
+Sample38                      0                     0                     0
+Sample39                      0                     0                     0
+Sample40                      0                     0                     0
+Sample41                      0                     0                     0
+Sample42                      0                     0                     0
+Sample43                      0                     0                     0
+Sample44                      0                     0                     0
+Sample45                      0                     0                     0
+Sample46                      0                     0                     0
+Sample47                      0                     0                     0
+Sample48                      0                     0                     0
+Sample49                      1                     0                     0
+Sample50                      1                     0                     0
+Sample51                      1                     0                     0
+Sample52                      0                     1                     0
+Sample53                      0                     1                     0
+Sample54                      0                     1                     0
+Sample55                      0                     0                     1
+Sample56                      0                     0                     1
+Sample57                      0                     0                     1
+Sample58                      0                     0                     0
+Sample59                      0                     0                     0
+Sample60                      0                     0                     0
+Sample61                      0                     0                     0
+Sample62                      0                     0                     0
+Sample63                      0                     0                     0
+Sample64                      0                     0                     0
+Sample65                      0                     0                     0
+Sample66                      0                     0                     0
+Sample67                      0                     0                     0
+Sample68                      0                     0                     0
+Sample69                      0                     0                     0
+Sample70                      0                     0                     0
+Sample71                      0                     0                     0
+Sample72                      0                     0                     0
+Sample73                      0                     0                     0
+Sample74                      0                     0                     0
+Sample75                      0                     0                     0
+Sample76                      0                     0                     0
+Sample77                      0                     0                     0
+Sample78                      0                     0                     0
+Sample79                      1                     0                     0
+Sample80                      1                     0                     0
+Sample81                      1                     0                     0
+Sample82                      0                     1                     0
+Sample83                      0                     1                     0
+Sample84                      0                     1                     0
+Sample85                      0                     0                     1
+Sample86                      0                     0                     1
+Sample87                      0                     0                     1
+Sample88                      0                     0                     0
+Sample89                      0                     0                     0
+Sample90                      0                     0                     0
+Sample91                      0                     0                     0
+Sample92                      0                     0                     0
+Sample93                      0                     0                     0
+Sample94                      0                     0                     0
+Sample95                      0                     0                     0
+Sample96                      0                     0                     0
+Sample97                      0                     0                     0
+Sample98                      0                     0                     0
+Sample99                      0                     0                     0
+Sample100                     0                     0                     0
+          factor(subject)Br8667
+Sample1                       0
+Sample2                       0
+Sample3                       0
+Sample4                       0
+Sample5                       0
+Sample6                       0
+Sample7                       0
+Sample8                       0
+Sample9                       0
+Sample10                      0
+Sample11                      0
+Sample12                      0
+Sample13                      0
+Sample14                      0
+Sample15                      0
+Sample16                      0
+Sample17                      0
+Sample18                      0
+Sample19                      0
+Sample20                      0
+Sample21                      0
+Sample22                      0
+Sample23                      0
+Sample24                      0
+Sample25                      0
+Sample26                      0
+Sample27                      0
+Sample28                      1
+Sample29                      1
+Sample30                      1
+Sample31                      0
+Sample32                      0
+Sample33                      0
+Sample34                      0
+Sample35                      0
+Sample36                      0
+Sample37                      0
+Sample38                      0
+Sample39                      0
+Sample40                      0
+Sample41                      0
+Sample42                      0
+Sample43                      0
+Sample44                      0
+Sample45                      0
+Sample46                      0
+Sample47                      0
+Sample48                      0
+Sample49                      0
+Sample50                      0
+Sample51                      0
+Sample52                      0
+Sample53                      0
+Sample54                      0
+Sample55                      0
+Sample56                      0
+Sample57                      0
+Sample58                      1
+Sample59                      1
+Sample60                      1
+Sample61                      0
+Sample62                      0
+Sample63                      0
+Sample64                      0
+Sample65                      0
+Sample66                      0
+Sample67                      0
+Sample68                      0
+Sample69                      0
+Sample70                      0
+Sample71                      0
+Sample72                      0
+Sample73                      0
+Sample74                      0
+Sample75                      0
+Sample76                      0
+Sample77                      0
+Sample78                      0
+Sample79                      0
+Sample80                      0
+Sample81                      0
+Sample82                      0
+Sample83                      0
+Sample84                      0
+Sample85                      0
+Sample86                      0
+Sample87                      0
+Sample88                      1
+Sample89                      1
+Sample90                      1
+Sample91                      0
+Sample92                      0
+Sample93                      0
+Sample94                      0
+Sample95                      0
+Sample96                      0
+Sample97                      0
+Sample98                      0
+Sample99                      0
+Sample100                     0
+          factor(y$samples[[paste0("bayesSpace_harmony_", k)]])2
+Sample1                                                        0
+Sample2                                                        0
+Sample3                                                        0
+Sample4                                                        0
+Sample5                                                        0
+Sample6                                                        0
+Sample7                                                        0
+Sample8                                                        0
+Sample9                                                        0
+Sample10                                                       0
+Sample11                                                       0
+Sample12                                                       0
+Sample13                                                       0
+Sample14                                                       0
+Sample15                                                       0
+Sample16                                                       0
+Sample17                                                       0
+Sample18                                                       0
+Sample19                                                       0
+Sample20                                                       0
+Sample21                                                       0
+Sample22                                                       0
+Sample23                                                       0
+Sample24                                                       0
+Sample25                                                       0
+Sample26                                                       0
+Sample27                                                       0
+Sample28                                                       0
+Sample29                                                       0
+Sample30                                                       0
+Sample31                                                       1
+Sample32                                                       1
+Sample33                                                       1
+Sample34                                                       1
+Sample35                                                       1
+Sample36                                                       1
+Sample37                                                       1
+Sample38                                                       1
+Sample39                                                       1
+Sample40                                                       1
+Sample41                                                       1
+Sample42                                                       1
+Sample43                                                       1
+Sample44                                                       1
+Sample45                                                       1
+Sample46                                                       1
+Sample47                                                       1
+Sample48                                                       1
+Sample49                                                       1
+Sample50                                                       1
+Sample51                                                       1
+Sample52                                                       1
+Sample53                                                       1
+Sample54                                                       1
+Sample55                                                       1
+Sample56                                                       1
+Sample57                                                       1
+Sample58                                                       1
+Sample59                                                       1
+Sample60                                                       1
+Sample61                                                       0
+Sample62                                                       0
+Sample63                                                       0
+Sample64                                                       0
+Sample65                                                       0
+Sample66                                                       0
+Sample67                                                       0
+Sample68                                                       0
+Sample69                                                       0
+Sample70                                                       0
+Sample71                                                       0
+Sample72                                                       0
+Sample73                                                       0
+Sample74                                                       0
+Sample75                                                       0
+Sample76                                                       0
+Sample77                                                       0
+Sample78                                                       0
+Sample79                                                       0
+Sample80                                                       0
+Sample81                                                       0
+Sample82                                                       0
+Sample83                                                       0
+Sample84                                                       0
+Sample85                                                       0
+Sample86                                                       0
+Sample87                                                       0
+Sample88                                                       0
+Sample89                                                       0
+Sample90                                                       0
+Sample91                                                       0
+Sample92                                                       0
+Sample93                                                       0
+Sample94                                                       0
+Sample95                                                       0
+Sample96                                                       0
+Sample97                                                       0
+Sample98                                                       0
+Sample99                                                       0
+Sample100                                                      0
+          factor(y$samples[[paste0("bayesSpace_harmony_", k)]])3
+Sample1                                                        0
+Sample2                                                        0
+Sample3                                                        0
+Sample4                                                        0
+Sample5                                                        0
+Sample6                                                        0
+Sample7                                                        0
+Sample8                                                        0
+Sample9                                                        0
+Sample10                                                       0
+Sample11                                                       0
+Sample12                                                       0
+Sample13                                                       0
+Sample14                                                       0
+Sample15                                                       0
+Sample16                                                       0
+Sample17                                                       0
+Sample18                                                       0
+Sample19                                                       0
+Sample20                                                       0
+Sample21                                                       0
+Sample22                                                       0
+Sample23                                                       0
+Sample24                                                       0
+Sample25                                                       0
+Sample26                                                       0
+Sample27                                                       0
+Sample28                                                       0
+Sample29                                                       0
+Sample30                                                       0
+Sample31                                                       0
+Sample32                                                       0
+Sample33                                                       0
+Sample34                                                       0
+Sample35                                                       0
+Sample36                                                       0
+Sample37                                                       0
+Sample38                                                       0
+Sample39                                                       0
+Sample40                                                       0
+Sample41                                                       0
+Sample42                                                       0
+Sample43                                                       0
+Sample44                                                       0
+Sample45                                                       0
+Sample46                                                       0
+Sample47                                                       0
+Sample48                                                       0
+Sample49                                                       0
+Sample50                                                       0
+Sample51                                                       0
+Sample52                                                       0
+Sample53                                                       0
+Sample54                                                       0
+Sample55                                                       0
+Sample56                                                       0
+Sample57                                                       0
+Sample58                                                       0
+Sample59                                                       0
+Sample60                                                       0
+Sample61                                                       1
+Sample62                                                       1
+Sample63                                                       1
+Sample64                                                       1
+Sample65                                                       1
+Sample66                                                       1
+Sample67                                                       1
+Sample68                                                       1
+Sample69                                                       1
+Sample70                                                       1
+Sample71                                                       1
+Sample72                                                       1
+Sample73                                                       1
+Sample74                                                       1
+Sample75                                                       1
+Sample76                                                       1
+Sample77                                                       1
+Sample78                                                       1
+Sample79                                                       1
+Sample80                                                       1
+Sample81                                                       1
+Sample82                                                       1
+Sample83                                                       1
+Sample84                                                       1
+Sample85                                                       1
+Sample86                                                       1
+Sample87                                                       1
+Sample88                                                       1
+Sample89                                                       1
+Sample90                                                       1
+Sample91                                                       0
+Sample92                                                       0
+Sample93                                                       0
+Sample94                                                       0
+Sample95                                                       0
+Sample96                                                       0
+Sample97                                                       0
+Sample98                                                       0
+Sample99                                                       0
+Sample100                                                      0
+          factor(y$samples[[paste0("bayesSpace_harmony_", k)]])4
+Sample1                                                        0
+Sample2                                                        0
+Sample3                                                        0
+Sample4                                                        0
+Sample5                                                        0
+Sample6                                                        0
+Sample7                                                        0
+Sample8                                                        0
+Sample9                                                        0
+Sample10                                                       0
+Sample11                                                       0
+Sample12                                                       0
+Sample13                                                       0
+Sample14                                                       0
+Sample15                                                       0
+Sample16                                                       0
+Sample17                                                       0
+Sample18                                                       0
+Sample19                                                       0
+Sample20                                                       0
+Sample21                                                       0
+Sample22                                                       0
+Sample23                                                       0
+Sample24                                                       0
+Sample25                                                       0
+Sample26                                                       0
+Sample27                                                       0
+Sample28                                                       0
+Sample29                                                       0
+Sample30                                                       0
+Sample31                                                       0
+Sample32                                                       0
+Sample33                                                       0
+Sample34                                                       0
+Sample35                                                       0
+Sample36                                                       0
+Sample37                                                       0
+Sample38                                                       0
+Sample39                                                       0
+Sample40                                                       0
+Sample41                                                       0
+Sample42                                                       0
+Sample43                                                       0
+Sample44                                                       0
+Sample45                                                       0
+Sample46                                                       0
+Sample47                                                       0
+Sample48                                                       0
+Sample49                                                       0
+Sample50                                                       0
+Sample51                                                       0
+Sample52                                                       0
+Sample53                                                       0
+Sample54                                                       0
+Sample55                                                       0
+Sample56                                                       0
+Sample57                                                       0
+Sample58                                                       0
+Sample59                                                       0
+Sample60                                                       0
+Sample61                                                       0
+Sample62                                                       0
+Sample63                                                       0
+Sample64                                                       0
+Sample65                                                       0
+Sample66                                                       0
+Sample67                                                       0
+Sample68                                                       0
+Sample69                                                       0
+Sample70                                                       0
+Sample71                                                       0
+Sample72                                                       0
+Sample73                                                       0
+Sample74                                                       0
+Sample75                                                       0
+Sample76                                                       0
+Sample77                                                       0
+Sample78                                                       0
+Sample79                                                       0
+Sample80                                                       0
+Sample81                                                       0
+Sample82                                                       0
+Sample83                                                       0
+Sample84                                                       0
+Sample85                                                       0
+Sample86                                                       0
+Sample87                                                       0
+Sample88                                                       0
+Sample89                                                       0
+Sample90                                                       0
+Sample91                                                       1
+Sample92                                                       1
+Sample93                                                       1
+Sample94                                                       1
+Sample95                                                       1
+Sample96                                                       1
+Sample97                                                       1
+Sample98                                                       1
+Sample99                                                       1
+Sample100                                                      1
+          factor(y$samples[[paste0("bayesSpace_harmony_", k)]])5
+Sample1                                                        0
+Sample2                                                        0
+Sample3                                                        0
+Sample4                                                        0
+Sample5                                                        0
+Sample6                                                        0
+Sample7                                                        0
+Sample8                                                        0
+Sample9                                                        0
+Sample10                                                       0
+Sample11                                                       0
+Sample12                                                       0
+Sample13                                                       0
+Sample14                                                       0
+Sample15                                                       0
+Sample16                                                       0
+Sample17                                                       0
+Sample18                                                       0
+Sample19                                                       0
+Sample20                                                       0
+Sample21                                                       0
+Sample22                                                       0
+Sample23                                                       0
+Sample24                                                       0
+Sample25                                                       0
+Sample26                                                       0
+Sample27                                                       0
+Sample28                                                       0
+Sample29                                                       0
+Sample30                                                       0
+Sample31                                                       0
+Sample32                                                       0
+Sample33                                                       0
+Sample34                                                       0
+Sample35                                                       0
+Sample36                                                       0
+Sample37                                                       0
+Sample38                                                       0
+Sample39                                                       0
+Sample40                                                       0
+Sample41                                                       0
+Sample42                                                       0
+Sample43                                                       0
+Sample44                                                       0
+Sample45                                                       0
+Sample46                                                       0
+Sample47                                                       0
+Sample48                                                       0
+Sample49                                                       0
+Sample50                                                       0
+Sample51                                                       0
+Sample52                                                       0
+Sample53                                                       0
+Sample54                                                       0
+Sample55                                                       0
+Sample56                                                       0
+Sample57                                                       0
+Sample58                                                       0
+Sample59                                                       0
+Sample60                                                       0
+Sample61                                                       0
+Sample62                                                       0
+Sample63                                                       0
+Sample64                                                       0
+Sample65                                                       0
+Sample66                                                       0
+Sample67                                                       0
+Sample68                                                       0
+Sample69                                                       0
+Sample70                                                       0
+Sample71                                                       0
+Sample72                                                       0
+Sample73                                                       0
+Sample74                                                       0
+Sample75                                                       0
+Sample76                                                       0
+Sample77                                                       0
+Sample78                                                       0
+Sample79                                                       0
+Sample80                                                       0
+Sample81                                                       0
+Sample82                                                       0
+Sample83                                                       0
+Sample84                                                       0
+Sample85                                                       0
+Sample86                                                       0
+Sample87                                                       0
+Sample88                                                       0
+Sample89                                                       0
+Sample90                                                       0
+Sample91                                                       0
+Sample92                                                       0
+Sample93                                                       0
+Sample94                                                       0
+Sample95                                                       0
+Sample96                                                       0
+Sample97                                                       0
+Sample98                                                       0
+Sample99                                                       0
+Sample100                                                      0
+          factor(y$samples[[paste0("bayesSpace_harmony_", k)]])6
+Sample1                                                        0
+Sample2                                                        0
+Sample3                                                        0
+Sample4                                                        0
+Sample5                                                        0
+Sample6                                                        0
+Sample7                                                        0
+Sample8                                                        0
+Sample9                                                        0
+Sample10                                                       0
+Sample11                                                       0
+Sample12                                                       0
+Sample13                                                       0
+Sample14                                                       0
+Sample15                                                       0
+Sample16                                                       0
+Sample17                                                       0
+Sample18                                                       0
+Sample19                                                       0
+Sample20                                                       0
+Sample21                                                       0
+Sample22                                                       0
+Sample23                                                       0
+Sample24                                                       0
+Sample25                                                       0
+Sample26                                                       0
+Sample27                                                       0
+Sample28                                                       0
+Sample29                                                       0
+Sample30                                                       0
+Sample31                                                       0
+Sample32                                                       0
+Sample33                                                       0
+Sample34                                                       0
+Sample35                                                       0
+Sample36                                                       0
+Sample37                                                       0
+Sample38                                                       0
+Sample39                                                       0
+Sample40                                                       0
+Sample41                                                       0
+Sample42                                                       0
+Sample43                                                       0
+Sample44                                                       0
+Sample45                                                       0
+Sample46                                                       0
+Sample47                                                       0
+Sample48                                                       0
+Sample49                                                       0
+Sample50                                                       0
+Sample51                                                       0
+Sample52                                                       0
+Sample53                                                       0
+Sample54                                                       0
+Sample55                                                       0
+Sample56                                                       0
+Sample57                                                       0
+Sample58                                                       0
+Sample59                                                       0
+Sample60                                                       0
+Sample61                                                       0
+Sample62                                                       0
+Sample63                                                       0
+Sample64                                                       0
+Sample65                                                       0
+Sample66                                                       0
+Sample67                                                       0
+Sample68                                                       0
+Sample69                                                       0
+Sample70                                                       0
+Sample71                                                       0
+Sample72                                                       0
+Sample73                                                       0
+Sample74                                                       0
+Sample75                                                       0
+Sample76                                                       0
+Sample77                                                       0
+Sample78                                                       0
+Sample79                                                       0
+Sample80                                                       0
+Sample81                                                       0
+Sample82                                                       0
+Sample83                                                       0
+Sample84                                                       0
+Sample85                                                       0
+Sample86                                                       0
+Sample87                                                       0
+Sample88                                                       0
+Sample89                                                       0
+Sample90                                                       0
+Sample91                                                       0
+Sample92                                                       0
+Sample93                                                       0
+Sample94                                                       0
+Sample95                                                       0
+Sample96                                                       0
+Sample97                                                       0
+Sample98                                                       0
+Sample99                                                       0
+Sample100                                                      0
+ [ reached getOption("max.print") -- omitted 80 rows ]
+attr(,"assign")
+ [1] 0 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+attr(,"contrasts")
+attr(,"contrasts")$`factor(subject)`
+[1] "contr.treatment"
+
+attr(,"contrasts")$`factor(y$samples[[paste0("bayesSpace_harmony_", k)]])`
+[1] "contr.treatment"
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.01625 0.01701 0.01957 0.02052 0.02305 0.03310 
+null device 
+          1 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.8673  0.9283  0.9937  0.9919  1.0456  1.3483 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.3344 31.1233 31.1233 28.6858 31.1233 31.1233 
+null device 
+          1 
+       factor(y$samples[[paste0("bayesSpace_harmony_", k)]])6
+Down                                                     2171
+NotSig                                                   7267
+Up                                                       2077
+Coefficient:  factor(y$samples[[paste0("bayesSpace_harmony_", k)]])6 
+                    logFC   logCPM        F       PValue          FDR
+ENSG00000189056 -4.391901 5.103266 467.8594 4.391621e-50 5.056951e-46
+ENSG00000145824 -3.007620 7.422119 422.7622 2.016376e-47 1.160928e-43
+ENSG00000165023  1.442910 8.299507 369.2584 5.708160e-47 2.190982e-43
+ENSG00000163132 -3.072337 3.018219 309.6222 3.291998e-42 9.476840e-39
+ENSG00000182287 -1.291059 6.401919 287.3025 2.792661e-40 6.431498e-37
+ENSG00000185551 -2.565652 4.018400 283.7290 5.795420e-40 1.112238e-36
+ENSG00000164434 -2.487858 6.101570 304.7100 2.319038e-39 3.814818e-36
+ENSG00000164692 -3.225370 3.704434 269.3406 9.229236e-37 1.328433e-33
+ENSG00000134201 -2.072316 5.111871 262.0266 2.269454e-36 2.681124e-33
+ENSG00000205358 -4.269057 3.175587 264.6325 2.328375e-36 2.681124e-33
+**** Job ends ****
+Wed Apr 20 17:21:40 EDT 2022
