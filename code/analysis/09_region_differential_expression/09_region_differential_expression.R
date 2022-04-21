@@ -37,11 +37,17 @@ head(de.results[[1]])
 # ENSG00000237491  0.267683   7.50472  0.566731  0.452311  0.899136
 
 dim(de.results[[1]])
-table(de.results[[1]]$FDR < 0.05) #shows we 4 differentially expressed genes between middle and anterior in cluster one
 
+
+save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression",paste0("de_results_region_k",k,".Rdata")))
+
+
+
+table(de.results[[1]]$FDR < 0.05) #shows we 4 differentially expressed genes between middle and anterior in cluster one
 rowData(spe_pseudo)[which(de.results[[1]]$FDR < 0.05),]
 de.results[[1]][which(de.results[[1]]$FDR < 0.05),]
 
-save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression",paste0("de_results_region_k",k,".Rdata")))
+### create violin plots of DEGs in 
+
 
 
