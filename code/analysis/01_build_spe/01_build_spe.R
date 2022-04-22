@@ -143,6 +143,10 @@ colData(spe) <- cbind(colData(spe), segmentation_info)
 mean(spe$count)
 # [1] 6.407954
 
+pdf(here::here("plots","01_build_spe","cells_per_spot.pdf"))
+boxplot(spe$count)
+dev.off()
+
 dim(spe)
 # [1]  36601 149757
 
