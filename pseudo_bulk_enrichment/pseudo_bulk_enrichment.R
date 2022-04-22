@@ -13,18 +13,8 @@ library(RColorBrewer)
 library(lattice)
 library(edgeR)
 
-# #load spe object
-# load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
-# 
-# #load clusters
-# spe <- cluster_import(
-#   spe,
-#   cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"), 
-#   prefix = ""
-# )
-
 # mat_formula = ~ 0 + bayesSpace_harmony_9 + region + age + sex 
-# foo <- function(sce, mat_formula, block_var = NULL) { #must specify in documentation that the second element of the formula is the cluster label, and the first element is zero
+# foo <- function(sce, var_oi, covars, block_var = NULL) { #must specify in documentation that the second element of the formula is the cluster label, and the first element is zero
 #   
 #   terms <- attributes(terms(fo))$term.labels
 #   pd <- colData(sce)[ , c(terms[!grepl(":", terms)], block_var) ]
@@ -36,14 +26,18 @@ library(edgeR)
 #   ## then re-arrange results
 # }
 
-cluster <-  attributes(terms(mat_formula))$term.labels[1]
+var_oi = "bayesSpace_harmony_9"
+covars = c("region","age","sex")
+
+#cluster <-  attributes(terms(mat_formula))$term.labels[1]
+mat_formula <- as.formula(paste("~",var_oi,"+",paste(covars, collapse=" + ")))
 
 
 ## Pseudo-bulk for our current BayesSpace cluster results
 spe_pseudo <- aggregateAcrossCells(
   spe,
   DataFrame(
-    BayesSpace = colData(spe)[[cluster]],
+    BayesSpace = colData(spe)[[var_oi]],
     sample_id = spe$sample_id
   )
 )
@@ -107,15 +101,14 @@ corfit <- duplicateCorrelation(mat_filter, mod,
                                block = spe_pseudo$sample_id)
 
 ## Next for each layer test that layer vs the rest
-cluster_idx <- splitit(colData(spe_pseudo)[,cluster]) 
+cluster_idx <- splitit(colData(spe_pseudo)[,var_oi]) 
 
 eb0_list_cluster <- lapply(cluster_idx, function(x) {
   res <- rep(0, ncol(spe_pseudo))
   res[x] <- 1
-  #new_formula <-substitute(mat_forumula, x=quote(x_part1 + x_part2))
-  #attributes(terms(mat_formula))$term.labels[1]<- res #use the original mat_forumala provided by user and replace the first term with res ~ res +region + age + sex
+  res_formula <- as.formula(paste("~","res","+",paste(covars, collapse=" + ")))
   m <- with(colData(spe_pseudo),
-            model.matrix(~ res +region + age + sex)) #will have to change so the formula isn't hard coded 
+            model.matrix(res_formula)) 
   
   #josh suggested use top table as a wrapper because it makes the output of eBayes nicer
 
