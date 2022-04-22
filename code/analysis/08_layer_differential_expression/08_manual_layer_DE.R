@@ -16,12 +16,14 @@ discarded <- spe_pseudo$ncells < 10
 y <- y[,!discarded]
 summary(discarded)
 
+y <- calcNormFactors(y)
+y$samples
+
 keep <- filterByExpr(y, group=spe_pseudo[[paste0("bayesSpace_harmony_",k)]])
 y <- y[keep,]
 summary(keep)
 
-y <- calcNormFactors(y)
-y$samples
+
 
 # pdf(file = here::here("plots","08_layer_differential_expression",paste0("MDS_k",k,".pdf")))
 # plotMDS(cpm(y, log=TRUE), 
