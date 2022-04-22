@@ -140,6 +140,9 @@ segmentation_match <- match(spe$key, segmentations$key)
 segmentation_info <- segmentations[segmentation_match, - which(colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")), drop=FALSE]
 colData(spe) <- cbind(colData(spe), segmentation_info)
 
+mean(spe$count)
+# [1] 6.407954
+
 dim(spe)
 # [1]  36601 149757
 
