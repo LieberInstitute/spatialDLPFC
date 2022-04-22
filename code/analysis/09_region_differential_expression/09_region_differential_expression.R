@@ -40,13 +40,24 @@ head(de.results[[1]])
 dim(de.results[[1]])
 
 
-save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression",paste0("de_results_region_k",k,".Rdata")))
-
-
-
 table(de.results[[1]]$FDR < 0.05) #shows we 4 differentially expressed genes between middle and anterior in cluster one
 rowData(spe_pseudo)[which(de.results[[1]]$FDR < 0.05),]
 de.results[[1]][which(de.results[[1]]$FDR < 0.05),]
+
+save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression_mid",paste0("de_results_region_k",k,".Rdata")))
+
+head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_pseudo)))) #;ppl at rclub session on model matrix
+#possibly have to loop through other coefficients other than region such as subject, age, 
+de.results <- pseudoBulkDGE(spe_pseudo, 
+                            label=spe_pseudo$BayesSpace, #tells it to do it one cluster at a time. to do it globally, don't need label.
+                            design=~factor(region) + factor(subject),
+                            coef = "factor(region)posterior" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
+                            # in order to run anova have to provide more than one coefficient 
+)
+
+save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression_post",paste0("de_results_region_k",k,".Rdata")))
+
+
 
 ### create violin plots of DEGs in 
 
