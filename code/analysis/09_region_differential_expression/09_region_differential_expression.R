@@ -22,6 +22,7 @@ de.results <- pseudoBulkDGE(spe_pseudo,
                             label=spe_pseudo$BayesSpace, #tells it to do it one cluster at a time. to do it globally, don't need label.
                             design=~factor(region) + factor(subject),
                             coef = "factor(region)middle" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
+                            # in order to run anova have to provide more than one coefficient 
 )
 #this is pairwise comparison. can see how they did it before with limma for the pilot study. 
 
