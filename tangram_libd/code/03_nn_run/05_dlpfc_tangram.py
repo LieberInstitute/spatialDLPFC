@@ -77,8 +77,12 @@ cell_type_var = 'cellType'
 
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
+#   "full" or "hi". Hires is used for speedy testing, but fullres is more
+#   appropriate for the actual analysis
+resolution = 'hi'
+
 ################################################################################
-#   Alignment (spatial registration)
+#   Preprocessing
 ################################################################################
 
 print('Using tangram version:', tg.__version__)
@@ -90,16 +94,6 @@ with open(sample_path, 'r') as f:
 #  Determine this particular sample name
 sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
 print('Subsetting to just sample {}.'.format(sample_name))
-
-#   Path to JSON (from spaceranger?) including spot size for this sample
-json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
-
-with open(json_path) as f: 
-    json_data = json.load(f)
-
-#   Spot size and scale factor
-SPOT_SIZE = json_data["spot_diameter_fullres"]
-SCALE_FACTOR = 1
 
 #  Load AnnDatas and list of marker genes
 print('Loading AnnDatas...')
@@ -131,6 +125,50 @@ for i in range(len(select_genes)):
         print('Gene', gene, '(' + gene_name + ') is in the test set.')
 
 tg.pp_adatas(ad_sc, ad_sp, genes=markers)
+
+#-------------------------------------------------------------------------------
+#   Ideally, this would be an unnecessary code segment, as we should enter this
+#   script with our AnnData properly formatted for use with Tangram and squidpy.
+#   However, in practice, there are a few details that need to be prepared and
+#   were not addressed by the "SCE to AnnData" step.
+#-------------------------------------------------------------------------------
+
+#   Path to JSON (from spaceranger?) including spot size for this sample
+json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
+
+with open(json_path) as f: 
+    json_data = json.load(f)
+
+#   Spot size and scale factor. We'll manually supply these to some squidpy
+#   functions, as it appears to possibly infer these values incorrectly
+#   given that we plan to use the full resolution (not hires) images
+SPOT_SIZE = json_data["spot_diameter_fullres"]
+SCALE_FACTOR = 1
+
+#   Store scalefactors in AnnData as squidpy expects
+ad_sp.uns['spatial'] = {
+    sample_name: {
+        'scalefactors': json_data
+    }
+}
+
+#   Squidpy expects spatial coords in a very specific format
+ad_sp.obsm['spatial'] = np.array(
+    list(
+        zip(
+            ad_sp.obs[spatial_coords_names[0]],
+            ad_sp.obs[spatial_coords_names[1]]
+        )
+    )
+)
+
+if resolution == 'hi':
+    SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
+    SPOT_SIZE *= SCALE_FACTOR
+
+################################################################################
+#   Alignment (spatial registration)
+################################################################################
 
 #  Mapping step using GPU
 print('About to perform alignment...')
@@ -228,18 +266,35 @@ ad_sp.write_h5ad(os.path.join(out_dir, 'ad_sp_' + sample_name + '.h5ad'))
 
 print('Beginning deconvolution section...')
 
-#   Read in full-resolution histology image
-img_path = str(
-    pyhere.here(
-        "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
+if resolution == 'full':
+    #   Read in full-resolution histology image
+    img_path = str(
+        pyhere.here(
+            "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
+        )
     )
-)
 
-#   Read histology image in as numpy array
-img_arr = np.array(Image.open(img_path))
-assert img_arr.shape == (13332, 13332, 3), img_arr.shape
+    #   Read histology image in as numpy array
+    img_arr = np.array(Image.open(img_path))
+    assert img_arr.shape == (13332, 13332, 3), img_arr.shape
+elif resolution == 'hi':
+    #   Read in high-resolution histology image
+    img_path = str(
+        pyhere.here(
+            "tangram_libd/raw-data/03_nn_run/hires_histology", sample_name + ".png"
+        )
+    )
 
-#img_arr = img_arr[:3500, :3500, :]
+    #   Read histology image in as numpy array
+    img_arr = np.array(Image.open(img_path))
+    assert img_arr.shape == (2000, 2000, 3), img_arr.shape
+else:
+    print('Resolution', resolution, 'not supported.')
+    sys.exit(1)
+
+ad_sp.uns['spatial'][sample_name]['images'] = {
+    resolution + 'res': img_arr  # / 256 ?
+}
 
 #   Convert to squidpy ImageContainer
 img = sq.im.ImageContainer(img_arr)
@@ -260,10 +315,18 @@ sq.im.segment(
 
 print('About to plot segmentation masks...')
 
-inset_y = 6000
-inset_x = 6000
-inset_sy = 400
-inset_sx = 500
+if resolution == 'full':
+    inset_y = 6000
+    inset_x = 6000
+    inset_sy = 400
+    inset_sx = 500
+else:
+    #   High-res
+    inset_y = 1000
+    inset_x = 1000
+    inset_sy = 400
+    inset_sx = 500
+
 
 fig, axs = plt.subplots(1, 3, figsize=(30, 10))
 sc.pl.spatial(
@@ -342,10 +405,15 @@ sq.im.calculate_image_features(
     features_kwargs=features_kwargs,
     features="segmentation",
     mask_circle=True,
+    scale = SCALE_FACTOR
 )
 
 ad_sp.obs["cell_count"] = ad_sp.obsm["image_features"]["segmentation_label"]
-sc.pl.spatial(ad_sp, color=[cluster_var_plots, "cell_count"], frameon=False)
+os.chdir(plot_dir)
+sc.pl.spatial(
+    ad_sp, color=[cluster_var_plots, "cell_count"], frameon=False,
+    save = 'per_spot_cell_counts_' + sample_name + '.png'
+)
 
 #-------------------------------------------------------------------------------
 #   Re-align in "deconvolution mode"
