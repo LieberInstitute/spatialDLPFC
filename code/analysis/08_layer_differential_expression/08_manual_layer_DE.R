@@ -24,7 +24,6 @@ y <- y[keep,]
 summary(keep)
 
 
-
 # pdf(file = here::here("plots","08_layer_differential_expression",paste0("MDS_k",k,".pdf")))
 # plotMDS(cpm(y, log=TRUE), 
 #         col=ifelse(y$samples[[paste0("bayesSpace_harmony_",k)]]))
