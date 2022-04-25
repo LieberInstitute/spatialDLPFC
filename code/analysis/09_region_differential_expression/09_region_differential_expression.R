@@ -50,9 +50,12 @@ head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_ps
 #possibly have to loop through other coefficients other than region such as subject, age, 
 de.results <- pseudoBulkDGE(spe_pseudo, 
                             label=spe_pseudo$BayesSpace, #tells it to do it one cluster at a time. to do it globally, don't need label.
+                            method = "voom",
                             design=~factor(region) + factor(subject),
                             coef = "factor(region)posterior" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
-                            # in order to run anova have to provide more than one coefficient 
+                            # in order to run anova have to provide more than one coefficient Run 3 times for all comparisons (ant v mid), mid v post, post v ant.  this is pairwise
+                            # give it two coefficients to run it as an ANOVA, more than one coefficient is doing fstatistics 
+                            # 
 )
 
 save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression_post",paste0("de_results_region_k",k,".Rdata")))
