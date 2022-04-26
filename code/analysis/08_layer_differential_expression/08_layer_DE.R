@@ -51,6 +51,13 @@ k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 ## load spe data
 load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
 
+#boxplots of spots per cluster
+pdf(file = here::here("plots","08_layer_differential_expression",paste0("ncells_per_cluster_k",k,".pdf")))
+boxplot(ncells ~ colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]], data = colData(spe_pseudo))
+dev.off()
+
+summary(spe_pseudo$ncells)
+
 
 ## Extract the data
 mat <- assays(spe_pseudo)$logcounts
@@ -82,7 +89,9 @@ message(Sys.time(), " running the enrichment model")
 eb0_list <- lapply(cluster_idx, function(x) {
   res <- rep(0, ncol(spe_pseudo))
   res[x] <- 1
-  m <- model.matrix(~res)
+  mres_formula <- as.formula(paste("~","res","+",paste(covars, collapse=" + ")))
+  m <- with(colData(spe_pseudo),
+            model.matrix(res_formula)) 
   eBayes(
     lmFit(
       mat,
