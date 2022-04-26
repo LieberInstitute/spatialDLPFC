@@ -176,9 +176,10 @@ ad_sp.obsm['spatial'] = np.array(
 
 ad_sp.write_h5ad(
     os.path.join(
-        out_dir, 'ad_sp_orig_{}_{}res.h5ad'.format(sample_name, resolution)
+        processed_dir,
+        'ad_sp_orig_{}_{}res.h5ad'.format(sample_name, resolution)
     )
 )
 
 if int(os.environ['SGE_TASK_ID']) == 1:
-    ad_sc.write_h5ad(os.path.join(out_dir, 'ad_sc.h5ad'))
+    ad_sc.write_h5ad(os.path.join(processed_dir, 'ad_sc.h5ad'))
