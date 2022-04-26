@@ -59,12 +59,10 @@ save(
   de.results.mid,
   de.results.ant,
   de.results.post,
-  file = here::here("processed-data","rdata","spe","09_region_differential_expression_post",paste0("pairwise_de_results_region_k",k,".Rdata"))
+  file = here::here("processed-data","rdata","spe","09_region_differential_expression",paste0("pairwise_de_results_region_k",k,".Rdata"))
 )
 
 
-
 ### ANOVA #####
-
 
 
