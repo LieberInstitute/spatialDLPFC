@@ -62,7 +62,7 @@ spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 #   "full" or "hi". Hires is used for speedy testing, but fullres is more
 #   appropriate for the actual analysis
-resolution = 'hi'
+resolution = 'full'
 
 ################################################################################
 #   Preprocessing
@@ -123,9 +123,6 @@ ad_sp.uns['spatial'] = {
 
 #   Read in image and attach to AnnData object
 if resolution == 'full':
-    SPOT_SIZE = json_data["spot_diameter_fullres"]
-    SCALE_FACTOR = 1
-
     #   Read in full-resolution histology image
     img_path = str(
         pyhere.here(
@@ -138,7 +135,6 @@ if resolution == 'full':
     assert img_arr.shape == (13332, 13332, 3), img_arr.shape
 elif resolution == 'hi':
     SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
-    SPOT_SIZE = json_data["spot_diameter_fullres"] * SCALE_FACTOR
     ad_sp.obs[spatial_coords_names[0]] *= SCALE_FACTOR
     ad_sp.obs[spatial_coords_names[1]] *= SCALE_FACTOR
 
@@ -181,5 +177,15 @@ ad_sp.write_h5ad(
     )
 )
 
-if int(os.environ['SGE_TASK_ID']) == 1:
-    ad_sc.write_h5ad(os.path.join(processed_dir, 'ad_sc.h5ad'))
+#   While the contents of the 'ad_sc' object should be identical regardless of
+#   sample and resolution, it looks like the order of some variables is random,
+#   but alignment and other downstream tasks are dependent on variable
+#   ordering. Therefore, while it's a bit wasteful to save many "copies" of
+#   'ad_sc' as done here, it simplifies code later by avoiding several order-
+#   related complications that would need manual resolution
+ad_sc.write_h5ad(
+    os.path.join(
+        processed_dir,
+        'ad_sc_{}_{}res.h5ad'.format(sample_name, resolution)
+    )
+)
