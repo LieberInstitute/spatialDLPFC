@@ -16,53 +16,55 @@ dim(spe_pseudo)
 spe_pseudo <- spe_pseudo[,spe_pseudo$ncells >= 10]
 dim(spe_pseudo)
 
-head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_pseudo)))) #;ppl at rclub session on model matrix
+###Pair-wise analysis with psedudoBulkDGE######
+
+#head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_pseudo)))) #;ppl at rclub session on model matrix
 #possibly have to loop through other coefficients other than region such as subject, age, 
-de.results <- pseudoBulkDGE(spe_pseudo, 
+de.results.mid <- pseudoBulkDGE(spe_pseudo, 
                             label=spe_pseudo$BayesSpace, #tells it to do it one cluster at a time. to do it globally, don't need label.
-                            design=~factor(region) + factor(subject),
-                            coef = "factor(region)middle" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
+                            design=~factor(region) + factor(sex) +factor(age),
+                            method = "voom",
+                            coef = "factor(region)middle" #comes from topTable from limma, specifies the coefficient you want to do the t-test on, this is pairwise comparison. can see how they did it before with limma for the pilot study. 
                             # in order to run anova have to provide more than one coefficient 
 )
-#this is pairwise comparison. can see how they did it before with limma for the pilot study. 
+
 
 head(de.results[[1]])
-# DataFrame with 6 rows and 5 columns
-# logFC    logCPM         F    PValue       FDR
-# <numeric> <numeric> <numeric> <numeric> <numeric>
-# ENSG00000243485        NA        NA        NA        NA        NA
-# ENSG00000238009        NA        NA        NA        NA        NA
-# ENSG00000239945        NA        NA        NA        NA        NA
-# ENSG00000241860        NA        NA        NA        NA        NA
-# ENSG00000229905        NA        NA        NA        NA        NA
-# ENSG00000237491  0.267683   7.50472  0.566731  0.452311  0.899136
-
-dim(de.results[[1]])
-
-
-table(de.results[[1]]$FDR < 0.05) #shows we 4 differentially expressed genes between middle and anterior in cluster one
+table(de.results[[1]]$FDR < 0.05) #shows how many differentially expressed genes between middle and anterior in cluster one
 rowData(spe_pseudo)[which(de.results[[1]]$FDR < 0.05),]
 de.results[[1]][which(de.results[[1]]$FDR < 0.05),]
 
-save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression_mid",paste0("de_results_region_k",k,".Rdata")))
-
-head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_pseudo)))) #;ppl at rclub session on model matrix
-#possibly have to loop through other coefficients other than region such as subject, age, 
-de.results <- pseudoBulkDGE(spe_pseudo, 
-                            label=spe_pseudo$BayesSpace, #tells it to do it one cluster at a time. to do it globally, don't need label.
+de.results.post <- pseudoBulkDGE(spe_pseudo, 
+                            label=spe_pseudo$BayesSpace, 
                             method = "voom",
-                            design=~factor(region) + factor(subject),
+                            design=~factor(region) + factor(sex) +factor(age),
                             coef = "factor(region)posterior" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
                             # in order to run anova have to provide more than one coefficient Run 3 times for all comparisons (ant v mid), mid v post, post v ant.  this is pairwise
                             # give it two coefficients to run it as an ANOVA, more than one coefficient is doing fstatistics 
-                            # 
+                            
 )
 
-save(de.results, file = here::here("processed-data","rdata","spe","09_region_differential_expression_post",paste0("de_results_region_k",k,".Rdata")))
+de.results.ant <- pseudoBulkDGE(spe_pseudo, 
+                                 label=spe_pseudo$BayesSpace, 
+                                 method = "voom",
+                                 design=~factor(region) + factor(sex) +factor(age),
+                                 coef = "factor(region)anterior" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
+                                 # in order to run anova have to provide more than one coefficient Run 3 times for all comparisons (ant v mid), mid v post, post v ant.  this is pairwise
+                                 # give it two coefficients to run it as an ANOVA, more than one coefficient is doing fstatistics 
+                                 
+)
+
+
+save(
+  de.results.mid,
+  de.results.ant,
+  de.results.post,
+  file = here::here("processed-data","rdata","spe","09_region_differential_expression_post",paste0("pairwise_de_results_region_k",k,".Rdata"))
+)
 
 
 
-### create violin plots of DEGs in 
+### ANOVA #####
 
 
 
