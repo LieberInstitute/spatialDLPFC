@@ -49,7 +49,8 @@ library("limma")
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## load spe data
-load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
+load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
+
 
 ## Extract the data
 mat <- assays(spe_pseudo)$logcounts
