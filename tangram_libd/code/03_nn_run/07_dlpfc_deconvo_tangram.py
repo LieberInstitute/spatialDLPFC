@@ -68,7 +68,7 @@ print('Only using spatial sample {}.'.format(sample_name))
 
 ad_sp = sc.read_h5ad(
     os.path.join(
-        processed_dir, 'ad_sp_{}_{}res.h5ad'.format(sample_name, resolution)
+        processed_dir, 'ad_sp_aligned_{}_{}res.h5ad'.format(sample_name, resolution)
     )
 )
 
