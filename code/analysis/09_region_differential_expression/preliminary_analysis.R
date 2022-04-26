@@ -28,6 +28,15 @@ spe_pseudo$BayesSpace <- factor(spe_pseudo$BayesSpace)
 #save here for differential expression analysis
 save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
 
+#find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
+rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo) #add group by region keep <- filterByExpr(y, group=current$tomato)
+summary(rowData(spe_pseudo)$low_expr)
+# Mode   FALSE    TRUE 
+# logical   21059    7857 
+
+spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
+dim(spe_pseudo)
+#[1] 21059    90
 
 #log normalize the counts
 # spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
@@ -43,16 +52,6 @@ rm(x)
 
 dim(spe_pseudo)
 #[1] 28916    90
-
-#find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
-rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo) #add group by region keep <- filterByExpr(y, group=current$tomato)
-summary(rowData(spe_pseudo)$low_expr)
-# Mode   FALSE    TRUE 
-# logical   21059    7857 
-
-spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
-dim(spe_pseudo)
-#[1] 21059    90
 
 #update this to indicate this version of the object is normalized and filtered
 save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
