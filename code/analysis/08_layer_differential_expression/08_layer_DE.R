@@ -194,7 +194,7 @@ save(
   f_stats,
   eb0_list,
   eb_contrasts,
-  file = here::here("processed-data","rdata","spe","08_layer_differential_expression","cluster_modeling_results_k9.Rdata")
+  file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("cluster_modeling_results_k",k,".Rdata"))
 )
 
 ## Reproducibility information
