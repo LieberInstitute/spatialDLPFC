@@ -152,6 +152,42 @@ ad_sp.uns['spatial'] = {
     }
 }
 
+#   Read in image and attach to AnnData object
+if resolution == 'full':
+    #   Read in full-resolution histology image
+    img_path = str(
+        pyhere.here(
+            "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
+        )
+    )
+
+    #   Read histology image in as numpy array
+    img_arr = np.array(Image.open(img_path))
+    assert img_arr.shape == (13332, 13332, 3), img_arr.shape
+elif resolution == 'hi':
+    SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
+    SPOT_SIZE *= SCALE_FACTOR
+    ad_sp.obs[spatial_coords_names[0]] *= SCALE_FACTOR
+    ad_sp.obs[spatial_coords_names[1]] *= SCALE_FACTOR
+
+    #   Read in high-resolution histology image
+    img_path = str(
+        pyhere.here(
+            "tangram_libd/raw-data/03_nn_run/hires_histology", sample_name + ".png"
+        )
+    )
+
+    #   Read histology image in as numpy array
+    img_arr = np.array(Image.open(img_path))
+    assert img_arr.shape == (2000, 2000, 3), img_arr.shape
+else:
+    print('Resolution', resolution, 'not supported.')
+    sys.exit(1)
+
+ad_sp.uns['spatial'][sample_name]['images'] = {
+    resolution + 'res': img_arr  # / 256 ?
+}
+
 #   Squidpy expects spatial coords in a very specific format
 ad_sp.obsm['spatial'] = np.array(
     list(
@@ -161,10 +197,6 @@ ad_sp.obsm['spatial'] = np.array(
         )
     )
 )
-
-if resolution == 'hi':
-    SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
-    SPOT_SIZE *= SCALE_FACTOR
 
 ################################################################################
 #   Alignment (spatial registration)
@@ -180,6 +212,8 @@ ad_map = tg.map_cells_to_space(ad_sc, ad_sp,
     device = "cuda:" + gpu_index
 )
 
+ad_map.write_h5ad(os.path.join(out_dir, 'ad_map_' + sample_name + '.h5ad'))
+
 print('Producing exploratory plots...')
 tg.project_cell_annotations(ad_map, ad_sp, annotation=cell_type_var)
 annotation_list = list(pd.unique(ad_sc.obs[cell_type_var]))
@@ -187,8 +221,8 @@ annotation_list = list(pd.unique(ad_sc.obs[cell_type_var]))
 #  Plot spatial expression by cell-type label
 tg.plot_cell_annotation_sc(
     ad_sp, annotation_list, x = spatial_coords_names[0],
-    y = spatial_coords_names[1], perc = 0.02, spot_size = SPOT_SIZE
-)
+    y = spatial_coords_names[1], perc = 0.02
+) # , spot_size = SPOT_SIZE
 f = plt.gcf()
 f.savefig(
     os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'),
@@ -211,9 +245,8 @@ ad_ge.write_h5ad(os.path.join(out_dir, 'ad_ge_' + sample_name + '.h5ad'))
 genes = ad_map.uns['train_genes_df']['train_score'][-5:].index
 ad_map.uns['train_genes_df'].loc[genes]
 tg.plot_genes_sc(
-    genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
-    spot_size = SPOT_SIZE
-)
+    genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02
+) # spot_size = SPOT_SIZE
 f = plt.gcf()
 f.savefig(
     os.path.join(
@@ -228,8 +261,7 @@ uniq_sc_genes = ad_sc.var['gene_id'][
 ].index
 tg.plot_genes_sc(
     uniq_sc_genes[:10], adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
-    spot_size = SPOT_SIZE
-)
+) # spot_size = SPOT_SIZE
 f = plt.gcf()
 f.savefig(
     os.path.join(
@@ -266,37 +298,7 @@ ad_sp.write_h5ad(os.path.join(out_dir, 'ad_sp_' + sample_name + '.h5ad'))
 
 print('Beginning deconvolution section...')
 
-if resolution == 'full':
-    #   Read in full-resolution histology image
-    img_path = str(
-        pyhere.here(
-            "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
-        )
-    )
-
-    #   Read histology image in as numpy array
-    img_arr = np.array(Image.open(img_path))
-    assert img_arr.shape == (13332, 13332, 3), img_arr.shape
-elif resolution == 'hi':
-    #   Read in high-resolution histology image
-    img_path = str(
-        pyhere.here(
-            "tangram_libd/raw-data/03_nn_run/hires_histology", sample_name + ".png"
-        )
-    )
-
-    #   Read histology image in as numpy array
-    img_arr = np.array(Image.open(img_path))
-    assert img_arr.shape == (2000, 2000, 3), img_arr.shape
-else:
-    print('Resolution', resolution, 'not supported.')
-    sys.exit(1)
-
-ad_sp.uns['spatial'][sample_name]['images'] = {
-    resolution + 'res': img_arr  # / 256 ?
-}
-
-#   Convert to squidpy ImageContainer
+#   Convert np "image" to squidpy ImageContainer
 img = sq.im.ImageContainer(img_arr)
 
 #   Apply smoothing and compute segmentation masks
