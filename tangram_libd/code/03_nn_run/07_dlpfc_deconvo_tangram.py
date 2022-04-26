@@ -74,6 +74,13 @@ ad_sp = sc.read_h5ad(
 
 ad_sc = sc.read_h5ad(os.path.join(processed_dir, 'ad_sc.h5ad'))
 
+SPOT_SIZE = ad_sp.uns['spatial'][sample_name]['scalefactors']['spot_diameter_fullres']
+if resolution == 'hi':
+    SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
+else:
+    #   Full resolution
+    SCALE_FACTOR = 1
+
 #-------------------------------------------------------------------------------
 #   Preprocess image
 #-------------------------------------------------------------------------------
