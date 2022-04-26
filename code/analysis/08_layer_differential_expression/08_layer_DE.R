@@ -58,6 +58,11 @@ dev.off()
 
 summary(spe_pseudo$ncells)
 
+#drop samples with too few cells 
+dim(spe_pseudo)
+spe_pseudo <- spe_pseudo[,spe_pseudo$ncells >= 10]
+dim(spe_pseudo)
+
 
 ## Extract the data
 mat <- assays(spe_pseudo)$logcounts
