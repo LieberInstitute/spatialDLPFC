@@ -45,6 +45,10 @@ spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 #   appropriate for the actual analysis
 resolution = 'hi'
 
+plot_dir = os.path.join(plot_dir, resolution + 'res')
+if not os.path.isdir(plot_dir):
+    os.mkdir(plot_dir)
+
 ################################################################################
 #   Alignment (spatial registration)
 ################################################################################
