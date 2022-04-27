@@ -21,18 +21,17 @@ dim(spe_pseudo)
 #head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_pseudo)))) #;ppl at rclub session on model matrix
 #possibly have to loop through other coefficients other than region such as subject, age, 
 de.results.mid <- pseudoBulkDGE(spe_pseudo, 
-                            label=spe_pseudo$BayesSpace, #tells it to do it one cluster at a time. to do it globally, don't need label.
+                            label=colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]], #tells it to do it one cluster at a time. to do it globally, don't need label.
                             design=~factor(region) + factor(sex) +factor(age),
                             method = "voom",
                             coef = "factor(region)middle" #comes from topTable from limma, specifies the coefficient you want to do the t-test on, this is pairwise comparison. can see how they did it before with limma for the pilot study. 
                             # in order to run anova have to provide more than one coefficient 
 )
 
-
-head(de.results[[1]])
-table(de.results[[1]]$FDR < 0.05) #shows how many differentially expressed genes between middle and anterior in cluster one
-rowData(spe_pseudo)[which(de.results[[1]]$FDR < 0.05),]
-de.results[[1]][which(de.results[[1]]$FDR < 0.05),]
+head(de.results.mid[[1]])
+table(de.results.mid[[1]]$FDR < 0.05) #shows how many differentially expressed genes between middle and anterior in cluster one
+rowData(spe_pseudo)[which(de.results.mid[[1]]$FDR < 0.05),]
+de.results[[1]][which(de.results.mid[[1]]$FDR < 0.05),]
 
 de.results.post <- pseudoBulkDGE(spe_pseudo, 
                             label=spe_pseudo$BayesSpace, 
@@ -53,7 +52,6 @@ de.results.ant <- pseudoBulkDGE(spe_pseudo,
                                  # give it two coefficients to run it as an ANOVA, more than one coefficient is doing fstatistics 
                                  
 )
-
 
 save(
   de.results.mid,
