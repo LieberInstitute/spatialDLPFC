@@ -129,7 +129,7 @@ img_path = str(
 img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
 assert img_arr.shape == (2000, 2000, 3), img_arr.shape
 
-ad_sp.uns['spatial'][sample_name]['images']['hires'] = img_arr
+ad_sp.uns['spatial'][sample_name]['images'] = { 'hires': img_arr }
 
 #   Squidpy expects spatial coords in a very specific format
 ad_sp.obsm['spatial'] = np.array(
