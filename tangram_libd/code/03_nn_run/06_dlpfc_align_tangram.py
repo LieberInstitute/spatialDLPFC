@@ -43,7 +43,7 @@ spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 #   "full" or "hi". Hires is used for speedy testing, but fullres is more
 #   appropriate for the actual analysis
-resolution = 'hi'
+resolution = 'full'
 
 plot_dir = os.path.join(plot_dir, resolution + 'res')
 if not os.path.isdir(plot_dir):
@@ -73,7 +73,23 @@ ad_sp = sc.read_h5ad(
     )
 )
 
-ad_sc = sc.read_h5ad(os.path.join(processed_dir, 'ad_sc.h5ad'))
+ad_sc = sc.read_h5ad(
+    os.path.join(
+        processed_dir,
+        'ad_sc_{}_{}res.h5ad'.format(sample_name, resolution)
+    )
+)
+
+#   There appear to be bugs with how tangram plots spatial coords and image
+#   data simultaneously. For now, simply remove the image data and plot only
+#   the spatial coords
+SPOT_SIZE = ad_sp.uns['spatial'][sample_name]['scalefactors']['spot_diameter_fullres']
+uns_spatial = ad_sp.uns.pop('spatial')
+
+#   Internal functions by tangram know what a 'hires' image is but not a
+#   'fullres' image. Use a workaround for now
+# if resolution == 'full':
+#     ad_sp.uns['spatial'][sample_name]['images']['hires'] = ad_sp.uns['spatial'][sample_name]['images']['fullres']
 
 #-------------------------------------------------------------------------------
 #   Align
@@ -95,8 +111,8 @@ annotation_list = list(pd.unique(ad_sc.obs[cell_type_var]))
 #  Plot spatial expression by cell-type label
 tg.plot_cell_annotation_sc(
     ad_sp, annotation_list, x = spatial_coords_names[0],
-    y = spatial_coords_names[1], perc = 0.02
-) # , spot_size = SPOT_SIZE
+    y = spatial_coords_names[1], perc = 0.02, spot_size = SPOT_SIZE
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'),
@@ -118,8 +134,9 @@ ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
 genes = ad_map.uns['train_genes_df']['train_score'][-5:].index
 ad_map.uns['train_genes_df'].loc[genes]
 tg.plot_genes_sc(
-    genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02
-) # spot_size = SPOT_SIZE
+    genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
+    spot_size = SPOT_SIZE
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(
@@ -134,7 +151,8 @@ uniq_sc_genes = ad_sc.var['gene_id'][
 ].index
 tg.plot_genes_sc(
     uniq_sc_genes[:10], adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
-) # spot_size = SPOT_SIZE
+    spot_size = SPOT_SIZE
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(
@@ -160,6 +178,8 @@ f.savefig(
     os.path.join(plot_dir, 'orig_test_auc_' + sample_name + '.png'),
     bbox_inches='tight'
 )
+
+ad_sp.uns['spatial'] = uns_spatial
 
 #   Save all AnnDatas that were produced or modified
 ad_map.write_h5ad(
