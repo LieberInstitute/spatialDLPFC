@@ -30,7 +30,7 @@ var_oi = "bayesSpace_harmony_9"
 covars = c("region","age","sex")
 
 #cluster <-  attributes(terms(mat_formula))$term.labels[1]
-mat_formula <- as.formula(paste("~",var_oi,"+",paste(covars, collapse=" + ")))
+mat_formula <- eval(str2expression(paste("~","0","+",var_oi,"+",paste(covars, collapse=" + "))))
 
 
 ## Pseudo-bulk for our current BayesSpace cluster results
@@ -106,9 +106,9 @@ cluster_idx <- splitit(colData(spe_pseudo)[,var_oi])
 eb0_list_cluster <- lapply(cluster_idx, function(x) {
   res <- rep(0, ncol(spe_pseudo))
   res[x] <- 1
-  res_formula <- as.formula(paste("~","res","+",paste(covars, collapse=" + ")))
+  res_formula <- paste("~","res","+",paste(covars, collapse=" + "))
   m <- with(colData(spe_pseudo),
-            model.matrix(res_formula)) 
+            model.matrix(eval(str2expression(res_formula)))) 
   
   #josh suggested use top table as a wrapper because it makes the output of eBayes nicer
 
