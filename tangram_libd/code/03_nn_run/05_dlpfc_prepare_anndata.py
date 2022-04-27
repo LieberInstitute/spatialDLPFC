@@ -60,10 +60,6 @@ select_genes_names = [
 
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
-#   "full" or "hi". Hires is used for speedy testing, but fullres is more
-#   appropriate for the actual analysis
-resolution = 'hi'
-
 ################################################################################
 #   Preprocessing
 ################################################################################
@@ -121,38 +117,19 @@ ad_sp.uns['spatial'] = {
     }
 }
 
-#   Read in image and attach to AnnData object
-if resolution == 'full':
-    #   Read in full-resolution histology image
-    img_path = str(
-        pyhere.here(
-            "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
-        )
+#   Read in high-res image as numpy array with values in [0, 1] rather than
+#   [0, 255] (note that it isn't verified the original range is [0, 255]!). 
+#   Then attach to AnnData object
+img_path = str(
+    pyhere.here(
+        "tangram_libd/raw-data/03_nn_run/hires_histology", sample_name + ".png"
     )
+)
 
-    #   Read histology image in as numpy array
-    img_arr = np.array(Image.open(img_path))
-    assert img_arr.shape == (13332, 13332, 3), img_arr.shape
-elif resolution == 'hi':
-    #   Read in high-resolution histology image
-    img_path = str(
-        pyhere.here(
-            "tangram_libd/raw-data/03_nn_run/hires_histology", sample_name + ".png"
-        )
-    )
+img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
+assert img_arr.shape == (2000, 2000, 3), img_arr.shape
 
-    #   Read histology image in as numpy array
-    img_arr = np.array(Image.open(img_path))
-    assert img_arr.shape == (2000, 2000, 3), img_arr.shape
-else:
-    print('Resolution', resolution, 'not supported.')
-    sys.exit(1)
-
-#   Convert from np.uint8 in [0, 255] to np.float32 in [0, 1]
-assert img_arr.dtype == np.uint8, img_arr.dtype
-ad_sp.uns['spatial'][sample_name]['images'] = {
-    resolution + 'res': img_arr.astype(np.float32) / 256
-}
+ad_sp.uns['spatial'][sample_name]['images']['hires'] = img_arr
 
 #   Squidpy expects spatial coords in a very specific format
 ad_sp.obsm['spatial'] = np.array(
@@ -169,21 +146,15 @@ ad_sp.obsm['spatial'] = np.array(
 #-------------------------------------------------------------------------------
 
 ad_sp.write_h5ad(
-    os.path.join(
-        processed_dir,
-        'ad_sp_orig_{}_{}res.h5ad'.format(sample_name, resolution)
-    )
+    os.path.join(processed_dir, 'ad_sp_orig_{}.h5ad'.format(sample_name))
 )
 
 #   While the contents of the 'ad_sc' object should be identical regardless of
-#   sample and resolution, it looks like the order of some variables is random,
+#   sample, it looks like the order of some variables is random,
 #   but alignment and other downstream tasks are dependent on variable
 #   ordering. Therefore, while it's a bit wasteful to save many "copies" of
 #   'ad_sc' as done here, it simplifies code later by avoiding several order-
 #   related complications that would need manual resolution
 ad_sc.write_h5ad(
-    os.path.join(
-        processed_dir,
-        'ad_sc_{}_{}res.h5ad'.format(sample_name, resolution)
-    )
+    os.path.join(processed_dir, 'ad_sc_{}.h5ad'.format(sample_name))
 )

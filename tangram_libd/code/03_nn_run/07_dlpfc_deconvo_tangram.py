@@ -42,12 +42,6 @@ cell_type_var = 'cellType'
 
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
-#   "full" or "hi". Hires is used for speedy testing, but fullres is more
-#   appropriate for the actual analysis
-resolution = 'full'
-
-plot_dir = os.path.join(plot_dir, resolution + 'res')
-
 ################################################################################
 #   Deconvolution
 ################################################################################
@@ -67,32 +61,29 @@ sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
 print('Only using spatial sample {}.'.format(sample_name))
 
 ad_sp = sc.read_h5ad(
-    os.path.join(
-        processed_dir, 'ad_sp_aligned_{}_{}res.h5ad'.format(sample_name, resolution)
-    )
+    os.path.join(processed_dir, 'ad_sp_aligned_{}.h5ad'.format(sample_name))
 )
 
 ad_sc = sc.read_h5ad(
-    os.path.join(
-        processed_dir,
-        'ad_sc_{}_{}res.h5ad'.format(sample_name, resolution)
+    os.path.join(processed_dir, 'ad_sc_{}.h5ad'.format(sample_name))
+)
+
+SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
+
+#-------------------------------------------------------------------------------
+#   Load and preprocess full-res image
+#-------------------------------------------------------------------------------
+
+#   Read in full-resolution histology image
+img_path = str(
+    pyhere.here(
+        "spagcn/raw-data/02-our_data_tutorial/" + sample_name + ".tif"
     )
 )
 
-SPOT_SIZE = ad_sp.uns['spatial'][sample_name]['scalefactors']['spot_diameter_fullres']
-if resolution == 'hi':
-    SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
-    SPOT_SIZE *= SCALE_FACTOR
-else:
-    #   Full resolution
-    SCALE_FACTOR = 1
-
-#-------------------------------------------------------------------------------
-#   Preprocess image
-#-------------------------------------------------------------------------------
-
-#   Grab numpy array representing image and convert to squidpy ImageContainer
-img_arr = ad_sp.uns['spatial'][sample_name]['images'][resolution + 'res']
+#   Read histology image in as numpy array with values in [0, 65536], and
+#   convert to squidpy ImageContainer
+img_arr = np.array(Image.open(img_path), dtype = np.uint16) * (2 ** 8)
 img = sq.im.ImageContainer(img_arr)
 
 #   Apply smoothing and compute segmentation masks
@@ -111,24 +102,15 @@ sq.im.segment(
 
 print('About to plot segmentation masks...')
 
-if resolution == 'full':
-    inset_y = 6000
-    inset_x = 6000
-    inset_sy = 400
-    inset_sx = 500
-else:
-    #   High-res
-    inset_y = 1000
-    inset_x = 1000
-    inset_sy = 400
-    inset_sx = 500
-
+inset_y = 6000
+inset_x = 6000
+inset_sy = 400
+inset_sx = 500
 
 fig, axs = plt.subplots(1, 3, figsize=(30, 10))
 sc.pl.spatial(
     ad_sp, color=cluster_var_plots, alpha=0.7, frameon=False, show=False,
-    ax=axs[0], title="", spot_size = SPOT_SIZE, scale_factor = SCALE_FACTOR,
-    img = img['image'][:, : ,0]
+    ax=axs[0], title = ""
 )
 axs[0].set_title("Clusters", fontdict={"fontsize": 20})
 
@@ -166,6 +148,7 @@ cmap.set_under(color="black")
 
 #   Why did we need to change this line?
 axs[2].imshow(crop[:, : ,0], interpolation="none", cmap=cmap, vmin=0.001)
+# axs[2].imshow(crop, interpolation="none", cmap=cmap, vmin=0.001)
 
 axs[2].grid(False)
 axs[2].set_xticks([])
@@ -200,8 +183,7 @@ sq.im.calculate_image_features(
     key_added="image_features",
     features_kwargs=features_kwargs,
     features="segmentation",
-    mask_circle=True,
-    scale = SCALE_FACTOR
+    mask_circle=True
 )
 
 ad_sp.obs["cell_count"] = ad_sp.obsm["image_features"]["segmentation_label"]
@@ -276,9 +258,7 @@ sc.pl.spatial(
     frameon=False,
     alpha_img=0.2,
     legend_fontsize=20,
-    ax=ax,
-    spot_size = SPOT_SIZE,
-    scale_factor = SCALE_FACTOR
+    ax=ax
 )
 f = plt.gcf()
 f.savefig(
