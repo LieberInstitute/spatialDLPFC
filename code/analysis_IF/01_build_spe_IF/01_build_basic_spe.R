@@ -36,7 +36,7 @@ donor_info <- data.frame(
   race = "CAUC",
   pmi = c(13.5, 25.5, 31.5, 30.5),
   diagnosis = c("Control", "Control", "Control", "Control"),
-  rin = c(6.9, 7.5, 7.7, 7.4),
+  rin = c(6.9, 7.5, 7.7, 7.4)
   # BCrating = c("Def AD", "Def AD", "Prob AD", "No AP"),
   # braak = c("B3", "B3", "B3", "B2"),
   # cerad = c("C3", "C3", "C3", "C0")
