@@ -35,8 +35,9 @@
 library("here")
 library("sessioninfo")
 library("SingleCellExperiment")
-library("rafalib")
+library(rafalib)
 library("limma")
+
 
 
 ## output directory
@@ -70,7 +71,15 @@ mat <- assays(spe_pseudo)$logcounts
 #make mat_formula
 var_oi = paste0("bayesSpace_harmony_",k)
 covars = c("region","age","sex")
-mat_formula <- as.formula(paste("~","0","+",var_oi,"+",paste(covars, collapse=" + ")))
+mat_formula <- eval(str2expression(paste("~","0","+",var_oi,"+",paste(covars, collapse=" + "))))
+
+
+colData(spe_pseudo)[[var_oi]] <- as.factor(colData(spe_pseudo)[[var_oi]])
+colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
+colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
+colData(spe_pseudo)$sex <- as.factor(colData(spe_pseudo)$sex)
+colData(spe_pseudo)$diagnosis <- as.factor(colData(spe_pseudo)$diagnosis)
+colData(spe_pseudo)$subject <- as.factor(colData(spe_pseudo)$subject)
 
 ## Compute correlation
 ## Adapted from https://github.com/LieberInstitute/Visium_IF_AD/blob/7973fcebb7c4b17cc3e23be2c31ac324d1cc099b/code/10_spatial_registration/01_spatial_registration.R#L134-L150
@@ -94,9 +103,9 @@ message(Sys.time(), " running the enrichment model")
 eb0_list <- lapply(cluster_idx, function(x) {
   res <- rep(0, ncol(spe_pseudo))
   res[x] <- 1
-  mres_formula <- as.formula(paste("~","res","+",paste(covars, collapse=" + ")))
+  res_formula <- paste("~","res","+",paste(covars, collapse=" + "))
   m <- with(colData(spe_pseudo),
-            model.matrix(res_formula)) 
+            model.matrix(eval(str2expression(res_formula)))) 
   eBayes(
     lmFit(
       mat,
@@ -154,9 +163,8 @@ fit_f_model <- function(sce) {  #will want to do this with and without white mat
   colData(sce)[[var_oi]] <- as.factor(colData(sce)[[var_oi]])
   
   ## Build a group model
-  #mod <- with(colData(sce), model.matrix(~ 0 + bayesSpace_harmony_9 + region + age + sex)) #remember to adjust for age or sex 
-  #colnames(mod) <- gsub("bayesSpace_harmony_9", "", colnames(mod))
-  #colnames(mod) <- gsub("\\+", "pos", colnames(mod))
+  #already made in beginning of script #remember to adjust for age or sex 
+
   
   ## Takes like 2 min to run
   corfit <-
@@ -182,7 +190,8 @@ f_stats <- do.call(cbind, lapply(names(ebF_list), function(i) {
   top <-
     topTable(
       x,
-      coef = 2:ncol(x$coefficients), # CAREFUL make sure you pick columns from mod that are for your coefiicients of interest
+      coef = 2:9,
+      #coef = 2:ncol(x$coefficients), # CAREFUL make sure you pick columns from mod that are for your coefiicients of interest. will have 8
       sort.by = "none",
       number = length(x$F)
     )
