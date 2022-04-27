@@ -45,6 +45,8 @@ library("SingleCellExperiment")
 # dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 # stopifnot(file.exists(dir_plots))
 
+k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
+
 ## Load the modeling results
 load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("cluster_modeling_results_k",k,".Rdata")),verbose = TRUE)
 #load(file = "processed-data/rdata/spe/08_layer_differential_expression/cluster_modeling_results_k9.Rdata", verbose = TRUE)

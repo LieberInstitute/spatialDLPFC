@@ -187,7 +187,7 @@ ebF_list <-
 ## Extract F-statistics
 f_stats <- do.call(cbind, lapply(names(ebF_list), function(i) {
   x <- ebF_list[[i]]
-  y = ncol(x$coefficients)-4
+  y <- ncol(x$coefficients)-4
   top <-
     topTable(
       x,
