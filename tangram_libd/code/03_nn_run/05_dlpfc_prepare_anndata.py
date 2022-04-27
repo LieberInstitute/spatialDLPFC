@@ -62,7 +62,7 @@ spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 #   "full" or "hi". Hires is used for speedy testing, but fullres is more
 #   appropriate for the actual analysis
-resolution = 'full'
+resolution = 'hi'
 
 ################################################################################
 #   Preprocessing
@@ -134,10 +134,6 @@ if resolution == 'full':
     img_arr = np.array(Image.open(img_path))
     assert img_arr.shape == (13332, 13332, 3), img_arr.shape
 elif resolution == 'hi':
-    SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
-    ad_sp.obs[spatial_coords_names[0]] *= SCALE_FACTOR
-    ad_sp.obs[spatial_coords_names[1]] *= SCALE_FACTOR
-
     #   Read in high-resolution histology image
     img_path = str(
         pyhere.here(
@@ -152,8 +148,10 @@ else:
     print('Resolution', resolution, 'not supported.')
     sys.exit(1)
 
+#   Convert from np.uint8 in [0, 255] to np.float32 in [0, 1]
+assert img_arr.dtype == np.uint8, img_arr.dtype
 ad_sp.uns['spatial'][sample_name]['images'] = {
-    resolution + 'res': img_arr  # / 256 ?
+    resolution + 'res': img_arr.astype(np.float32) / 256
 }
 
 #   Squidpy expects spatial coords in a very specific format
