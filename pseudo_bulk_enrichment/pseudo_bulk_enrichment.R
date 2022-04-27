@@ -173,10 +173,15 @@ results_specificity <-
   f_merge(p = pvals0_contrasts_cluster, fdr = fdrs0_contrasts_cluster, t = t0_contrasts_cluster)
 head(results_specificity)
 
+#object to return
+as.data.frame(results_specificity@listData)
+
+#stop here
+
 modeling_results = fetch_data(type = "modeling_results")
 
 cor <- layer_stat_cor(
-  results_specificity,
+  test.df,
   modeling_results,
   model_type = names(modeling_results)[2],
   reverse = FALSE,
