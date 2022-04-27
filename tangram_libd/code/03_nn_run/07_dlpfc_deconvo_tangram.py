@@ -44,7 +44,7 @@ spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 #   "full" or "hi". Hires is used for speedy testing, but fullres is more
 #   appropriate for the actual analysis
-resolution = 'hi'
+resolution = 'full'
 
 plot_dir = os.path.join(plot_dir, resolution + 'res')
 
@@ -72,7 +72,12 @@ ad_sp = sc.read_h5ad(
     )
 )
 
-ad_sc = sc.read_h5ad(os.path.join(processed_dir, 'ad_sc.h5ad'))
+ad_sc = sc.read_h5ad(
+    os.path.join(
+        processed_dir,
+        'ad_sc_{}_{}res.h5ad'.format(sample_name, resolution)
+    )
+)
 
 SPOT_SIZE = ad_sp.uns['spatial'][sample_name]['scalefactors']['spot_diameter_fullres']
 if resolution == 'hi':
