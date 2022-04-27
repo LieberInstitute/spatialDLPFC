@@ -26,7 +26,7 @@ spe_pseudo <- aggregateAcrossCells(
 )
 spe_pseudo$BayesSpace <- factor(spe_pseudo$BayesSpace)
 #save here for differential expression analysis
-save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
+save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("spe_pseudobulk_bayesSpace_k",k,".Rdata")))
 
 #find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
 rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo) #add group by region keep <- filterByExpr(y, group=current$tomato)
@@ -75,7 +75,7 @@ dim(spe_pseudo)
 #[1] 28916    90
 
 #update this to indicate this version of the object is normalized and filtered
-save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
+save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("spe_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
 
 #run PCA
 pca <- prcomp(t(assays(spe_pseudo)$logcounts))
@@ -93,7 +93,7 @@ reducedDims(spe_pseudo) <- list(PCA=pca_pseudo)
 
 # code adapted from: http://bioconductor.org/packages/release/bioc/vignettes/scater/inst/doc/overview.html#2_Diagnostic_plots_for_quality_control
 ###plot PCA###
-pdf(file = here::here("plots","09_region_differential_expression",paste0("sce_pseudobulk_pca_k",k,".pdf")), width = 14, height = 14)
+pdf(file = here::here("plots","09_region_differential_expression",paste0("spe_pseudobulk_pca_k",k,".pdf")), width = 14, height = 14)
 plotPCA(spe_pseudo, colour_by = "subject", ncomponents = 12, point_size = 1) 
 plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12, point_size = 1) 
 plotPCA(spe_pseudo, colour_by = "sex", ncomponents = 12, point_size = 1) 
@@ -120,3 +120,43 @@ head(vars)
 pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,"_testLeo.pdf")))
 plotExplanatoryVariables(vars)
 dev.off()
+
+## For the spatialLIBD shiny app
+rowData(spe_pseudo)$gene_search <-
+  paste0(
+    rowData(spe_pseudo)$gene_name,
+    "; ",
+    rowData(spe_pseudo)$gene_id
+  )
+
+## Drop things we don't need
+spatialCoords(spe_pseudo) <- NULL
+imgData(spe_pseudo) <- NULL
+
+## Simplify the colData()  for the pseudo-bulked data
+colData(spe_pseudo) <- colData(spe_pseudo)[, sort(c(
+  "age",
+  "sample_id",
+  "bayesSpace_harmony_9",
+  "subject",
+  "sex",
+  "diagnosis"
+))]
+
+# ## Load pathology colors
+# ## This info is used by spatialLIBD v1.7.18 or newer
+# source(here("code", "colors_pathology.R"), echo = TRUE, max.deparse.length = 500)
+# spe_pseudo$path_groups_colors <- colors_pathology[as.character(spe_pseudo$path_groups)]
+
+## save RDS file
+saveRDS(
+  spe_pseudo,
+  file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,"_shiny.Rdata"))
+)
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
