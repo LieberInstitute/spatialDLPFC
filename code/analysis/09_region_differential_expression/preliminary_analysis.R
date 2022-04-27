@@ -32,11 +32,32 @@ save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked
 rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo) #add group by region keep <- filterByExpr(y, group=current$tomato)
 summary(rowData(spe_pseudo)$low_expr)
 # Mode   FALSE    TRUE 
-# logical   21059    7857 
+# logical   20406    8510 
+
+rowData(spe_pseudo)$low_expr_group_sample_id <- filterByExpr(spe_pseudo, group = spe_pseudo$sample_id)
+summary(rowData(spe_pseudo)$low_expr_group_sample_id )
+# Mode   FALSE    TRUE 
+# logical   15196   13720 
+
+rowData(spe_pseudo)$low_expr_group_cluster <- filterByExpr(spe_pseudo, group = colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]])
+summary(rowData(spe_pseudo)$low_expr_group_cluster )
+# Mode   FALSE    TRUE 
+# logical   16762   12154 
+
+with(rowData(spe_pseudo), table(low_expr, low_expr_group_cluster))
+# low_expr_group_cluster
+# low_expr FALSE  TRUE
+# FALSE 16762  3644
+# TRUE      0  8510
+with(rowData(spe_pseudo), table(low_expr_group_sample_id, low_expr_group_cluster))
+# low_expr_group_cluster
+# low_expr_group_sample_id FALSE  TRUE
+# FALSE 15196     0
+# TRUE   1566 12154
 
 spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
 dim(spe_pseudo)
-#[1] 21059    90
+
 
 #log normalize the counts
 # spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
