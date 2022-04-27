@@ -124,7 +124,7 @@ eb0_list <- lapply(cluster_idx, function(x) {
 #colnames(mod) <- gsub("bayesSpace_harmony_9", "", colnames(mod))
 #colnames(mod) <- gsub("\\+", "pos", colnames(mod)) #can remove this
 
-message(Sys.time(), " runnign the baseline pairwise model")
+message(Sys.time(), " running the baseline pairwise model")
 fit <-
   lmFit(
     mat,
@@ -187,10 +187,11 @@ ebF_list <-
 ## Extract F-statistics
 f_stats <- do.call(cbind, lapply(names(ebF_list), function(i) {
   x <- ebF_list[[i]]
+  y = ncol(x$coefficients)-4
   top <-
     topTable(
       x,
-      coef = 2:9,
+      coef = 2:y,
       #coef = 2:ncol(x$coefficients), # CAREFUL make sure you pick columns from mod that are for your coefiicients of interest. will have 8
       sort.by = "none",
       number = length(x$F)
