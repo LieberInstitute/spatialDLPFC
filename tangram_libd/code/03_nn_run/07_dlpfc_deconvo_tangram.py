@@ -96,6 +96,8 @@ sq.im.segment(
     channel=0,
 )
 
+img.save(os.path.join(processed_dir, sample_name + "_img.zarr"))
+
 #-------------------------------------------------------------------------------
 #   Visualize segmentation results
 #-------------------------------------------------------------------------------
@@ -243,9 +245,6 @@ tg.count_cell_annotations(
 )
 
 ad_segment = tg.deconvolve_cell_annotations(ad_sp)
-# ad_segment.write_h5ad(
-#     os.path.join(processed_dir, 'ad_segment_' + sample_name + '.h5ad')
-# )
 
 #   Produce the main deconvolution plot of interest
 print('Producing main deconvolution plot...')
@@ -264,6 +263,11 @@ f = plt.gcf()
 f.savefig(
     os.path.join(plot_dir, 'deconvo_cells_' + sample_name + '.png'),
     bbox_inches='tight'
+)
+
+print('Attempting to save segmented AnnData...')
+ad_segment.write_h5ad(
+    os.path.join(processed_dir, 'ad_segment_' + sample_name + '.h5ad')
 )
 
 print('Done all tasks.')
