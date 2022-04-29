@@ -67,6 +67,8 @@ ad_sc = sc.read_h5ad(
     os.path.join(processed_dir, 'ad_sc_{}.h5ad'.format(sample_name))
 )
 
+SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
+
 #-------------------------------------------------------------------------------
 #   Align
 #-------------------------------------------------------------------------------
@@ -85,7 +87,9 @@ tg.project_cell_annotations(ad_map, ad_sp, annotation=cell_type_var)
 annotation_list = list(pd.unique(ad_sc.obs[cell_type_var]))
 
 #  Plot spatial expression by cell-type label
-tg.plot_cell_annotation_sc(ad_sp, annotation_list, perc = 0.02)
+tg.plot_cell_annotation_sc(
+    ad_sp, annotation_list, perc = 0.02, scale_factor = SCALE_FACTOR
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'),
@@ -107,7 +111,8 @@ ad_ge = tg.project_genes(adata_map=ad_map, adata_sc=ad_sc)
 genes = ad_map.uns['train_genes_df']['train_score'][-5:].index
 ad_map.uns['train_genes_df'].loc[genes]
 tg.plot_genes_sc(
-    genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02
+    genes, adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
+    scale_factor = SCALE_FACTOR
 )
 f = plt.gcf()
 f.savefig(
@@ -122,7 +127,8 @@ uniq_sc_genes = ad_sc.var['gene_id'][
     ~ ad_sc.var['gene_id'].isin(ad_sp.var['gene_id'])
 ].index
 tg.plot_genes_sc(
-    uniq_sc_genes[:10], adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02
+    uniq_sc_genes[:10], adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
+    scale_factor = SCALE_FACTOR
 )
 f = plt.gcf()
 f.savefig(
