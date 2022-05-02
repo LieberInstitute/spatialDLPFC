@@ -16,13 +16,15 @@ library(edgeR)
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 #load pseudo bulked spe object. made in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/analysis/09_region_differential_expression/09_region_differential_expression.R
-load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")),verbose = TRUE)
+load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")),verbose = TRUE)
 sce_pseudobulk_bayesSpace <- spe_pseudo
 
 
 ###############################
 ##### get mean expression  ####
 mat <- assays(sce_pseudobulk_bayesSpace)$logcounts #make matrix of just the log normalized counts
+save(mat, file = here::here("processed-data","rdata","spe","07_spatial_registration",paste0("dlpfc_pseudobulked_mat_k",k,".Rdata")))
+
 
 #####################
 ## Build a group model
