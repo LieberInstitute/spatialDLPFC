@@ -94,6 +94,7 @@ stopifnot(all(file.exists(sample_info$sample_path)))
 #clean up sample_id
 sample_info$sample_id <- gsub("_all|_extra_reads|DLPFC_|_manual_alignment", "", basename(sample_info$sample_id))
 
+
 ## Build SPE object
 Sys.time()
 spe <- read10xVisiumWrapper(
@@ -116,6 +117,8 @@ spe$region <- sample_info$regions[match(spe$sample_id, sample_info$sample_id)]
 spe$sex <- sample_info$sex[match(spe$sample_id, sample_info$sample_id)]
 spe$age <- sample_info$age[match(spe$sample_id, sample_info$sample_id)]
 spe$diagnosis <- sample_info$diagnosis[match(spe$sample_id, sample_info$sample_id)]
+spe$sample_id_complete <- spe$sample_id
+spe$sample_id <- gsub("_2", "", spe$sample_id)
 
 
 ## Add information used by spatialLIBD
