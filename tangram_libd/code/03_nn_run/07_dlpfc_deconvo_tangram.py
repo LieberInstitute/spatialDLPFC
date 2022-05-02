@@ -61,7 +61,7 @@ sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
 print('Only using spatial sample {}.'.format(sample_name))
 
 ad_sp = sc.read_h5ad(
-    os.path.join(processed_dir, 'ad_sp_aligned_{}.h5ad'.format(sample_name))
+    os.path.join(processed_dir, 'ad_sp_orig_{}.h5ad'.format(sample_name))
 )
 
 ad_sc = sc.read_h5ad(
