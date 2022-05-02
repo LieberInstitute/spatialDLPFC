@@ -138,7 +138,8 @@ pdf(
 )
 layer_stat_cor_plot(
   cor_stats_layer,
-  max = 1
+  max = 1,
+  cex = 2.5
 )
 dev.off()
 
