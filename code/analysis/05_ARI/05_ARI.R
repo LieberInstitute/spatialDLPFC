@@ -94,6 +94,13 @@ ari.df.long <- rbind(ari.df.long,ari.df.long.2)
 dim(ari.df.long)
 #60  3
 
+levels(ari.df.long$method) <-c(levels(ari.df.long$method),"Graph-Based","Batch-corrected graph-based","BayesSpace","Batch-corrected bayesSpace","SpaGCN")
+ari.df.long$method[ari.df.long$method == "SNN_k10_k7"] <- "Graph-Based"
+ari.df.long$method[ari.df.long$method == "batch_corr_SNN_k10_k7"] <- "Batch-corrected graph-based"
+ari.df.long$method[ari.df.long$method == "bayesSpace_pc"] <- "BayesSpace"
+ari.df.long$method[ari.df.long$method == "bayesSpace"] <- "Batch-corrected bayesSpace"
+ari.df.long$method[ari.df.long$method == "spaGCN_refined_cluster"] <- "SpaGCN"
+
 save(ari.df.long,file = here::here("processed-data", "rdata", "pilot_dlpfc_data","05_ARI", "pilot_ari_clustering_across.Rdata"))
 
 pdf(here::here("plots","05_ARI","pilot_data_ARI_clustering_across.pdf"))
