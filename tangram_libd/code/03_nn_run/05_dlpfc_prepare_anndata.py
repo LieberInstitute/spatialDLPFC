@@ -56,8 +56,10 @@ json_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X'
 #   Variable name in ad_sp.obs to color by in deconvolution-related plots
 cluster_var_plots = 'Cluster'
 
-#   Variable name in ad_sc.obs representing cell type
+#   Variable name in ad_sc.obs representing cell type;
+#   names of cell types in ad_sc to drop altogether
 cell_type_var = 'cellType'
+cell_types_to_drop = ['Macrophage', 'Mural', 'Tcell']
 
 #  Genes we want to plot predicted vs. actual expression for
 select_genes_names = [
@@ -113,6 +115,9 @@ tg.pp_adatas(ad_sc, ad_sp, genes=markers)
 #   some later plots
 ad_sc.obs[cell_type_var] = ad_sc.obs[cell_type_var].astype('category')
 ad_sp.obs[cluster_var_plots] = ad_sp.obs[cluster_var_plots].astype('category')
+
+#   Drop rare cell types from single-cell data
+ad_sc = ad_sc[~ ad_sc.obs[cell_type_var].isin(cell_types_to_drop), :]
 
 #   Path to JSON (from spaceranger?) including spot size for this sample
 json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
