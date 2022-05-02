@@ -112,7 +112,7 @@ ggplot(ari.df.long, aes(x = method, y=ari)) +
   theme_bw()+
   geom_jitter(color="black", size=1.0, alpha=0.9)+
   ylim(0,0.6)+
-  theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1),text = element_text(size = 30),axis.title = element_text(size = 30))+
+  theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1, colour = c("blue","blue","red","red","green")),text = element_text(size = 30),axis.title = element_text(size = 30))+
   ylab("Adjusted Rand Index")+
   xlab("Clustering Method")
 dev.off()
