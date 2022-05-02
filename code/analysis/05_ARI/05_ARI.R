@@ -101,13 +101,13 @@ ari.df.long$method[ari.df.long$method == "bayesSpace_pc"] <- "BayesSpace"
 ari.df.long$method[ari.df.long$method == "bayesSpace"] <- "Batch-corrected bayesSpace"
 ari.df.long$method[ari.df.long$method == "spaGCN_refined_cluster"] <- "SpaGCN"
 
-# ari.df.long$method[is.na(ari.df.long$method)] <- "Graph-based (BC)"
-# ari.df.long$method[ari.df.long$method == "Batch-corrected bayesSpace"] <- "BayesSpace (BC)"
+#ari.df.long$method[ari.df.long$method == "Batch-corrected bayesSpace"] <- "BayesSpace (BC)"
 
 save(ari.df.long,file = here::here("processed-data", "rdata", "pilot_dlpfc_data","05_ARI", "pilot_ari_clustering_across.Rdata"))
 
+level_order <- c("Graph-Based","Graph-based (BC)","BayesSpace","BayesSpace (BC)","SpaGCN")
 pdf(here::here("plots","05_ARI","pilot_data_ARI_clustering_across.pdf"))
-ggplot(ari.df.long, aes(x = method, y=ari)) + 
+ggplot(ari.df.long, aes(x = factor(method,level =  level_order), y=ari)) + 
   geom_boxplot(outlier.shape = NA)+
   theme_bw()+
   geom_jitter(color="black", size=1.0, alpha=0.9)+
