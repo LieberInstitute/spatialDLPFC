@@ -94,12 +94,15 @@ ari.df.long <- rbind(ari.df.long,ari.df.long.2)
 dim(ari.df.long)
 #60  3
 
-levels(ari.df.long$method) <-c(levels(ari.df.long$method),"Graph-Based","Batch-corrected graph-based","BayesSpace","Batch-corrected bayesSpace","SpaGCN")
+levels(ari.df.long$method) <-c(levels(ari.df.long$method),"Graph-Based","Graph-based (BC)","BayesSpace","BayesSpace (BC)","SpaGCN")
 ari.df.long$method[ari.df.long$method == "SNN_k10_k7"] <- "Graph-Based"
-ari.df.long$method[ari.df.long$method == "batch_corr_SNN_k10_k7"] <- "Batch-corrected graph-based"
+ari.df.long$method[ari.df.long$method == "batch_corr_SNN_k10_k7"] <- "Graph-based (BC)"
 ari.df.long$method[ari.df.long$method == "bayesSpace_pc"] <- "BayesSpace"
 ari.df.long$method[ari.df.long$method == "bayesSpace"] <- "Batch-corrected bayesSpace"
 ari.df.long$method[ari.df.long$method == "spaGCN_refined_cluster"] <- "SpaGCN"
+
+# ari.df.long$method[is.na(ari.df.long$method)] <- "Graph-based (BC)"
+# ari.df.long$method[ari.df.long$method == "Batch-corrected bayesSpace"] <- "BayesSpace (BC)"
 
 save(ari.df.long,file = here::here("processed-data", "rdata", "pilot_dlpfc_data","05_ARI", "pilot_ari_clustering_across.Rdata"))
 
@@ -109,6 +112,6 @@ ggplot(ari.df.long, aes(x = method, y=ari)) +
   theme_bw()+
   geom_jitter(color="black", size=0.4, alpha=0.9)+
   ylim(0,0.6)+
-  theme(text = element_text(size = 40)) 
+  theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1),text = element_text(size = 40)) 
 dev.off()
 
