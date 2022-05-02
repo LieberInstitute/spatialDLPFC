@@ -105,7 +105,7 @@ save(ari.df.long,file = here::here("processed-data", "rdata", "pilot_dlpfc_data"
 
 pdf(here::here("plots","05_ARI","pilot_data_ARI_clustering_across.pdf"))
 ggplot(ari.df.long, aes(x = method, y=ari)) + 
-  geom_boxplot()+
+  geom_boxplot(outlier.shape = NA)+
   theme_bw()+
   geom_jitter(color="black", size=0.4, alpha=0.9)+
   ylim(0,0.6)+
