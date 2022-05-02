@@ -214,6 +214,31 @@ modeling_results <- list(
 
 save(modeling_results,file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
 
+which(modeling_results$anova$fdr_noWM < 0.05)
+summary(modeling_results$anova$fdr_noWM)
+
+which(modeling_results$enrichment$p_value_1 < 0.05)
+summary(modeling_results$enrichment$fdr_1)
+
+library(vioplot)
+pdf(file = here::here("plots","08_layer_differential_expression","boxplot_num_enrichment_DEGs.pdf"))
+x1 <- modeling_results$enrichment$fdr_1
+x2 <- modeling_results$enrichment$fdr_2
+x3 <- modeling_results$enrichment$fdr_3
+x4 <- modeling_results$enrichment$fdr_4
+x5 <- modeling_results$enrichment$fdr_5
+x6 <- modeling_results$enrichment$fdr_6
+x7 <- modeling_results$enrichment$fdr_7
+x8 <- modeling_results$enrichment$fdr_8
+x9 <- modeling_results$enrichment$fdr_9
+
+vioplot(x1,x2,x3,x4,x5,x6,x7,x8,x9)
+dev.off()
+
+
+which(modeling_results$enrichment$p_value_1 < 0.05)
+summary(modeling_results$pa$fdr_1)
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
