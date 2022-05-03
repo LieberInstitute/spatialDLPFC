@@ -217,8 +217,23 @@ save(modeling_results,file = here::here("processed-data","rdata","spe","08_layer
 which(modeling_results$anova$fdr_noWM < 0.05)
 summary(modeling_results$anova$fdr_noWM)
 
-which(modeling_results$enrichment$p_value_1 < 0.05)
-summary(modeling_results$enrichment$fdr_1)
+length(which(modeling_results$enrichment$fdr_1 < 0.05))
+length(which(modeling_results$enrichment$fdr_2 < 0.05))
+length(which(modeling_results$enrichment$fdr_3 < 0.05))
+length(which(modeling_results$enrichment$fdr_4 < 0.05))
+length(which(modeling_results$enrichment$fdr_5 < 0.05))
+length(which(modeling_results$enrichment$fdr_6 < 0.05))
+length(which(modeling_results$enrichment$fdr_7 < 0.05))
+length(which(modeling_results$enrichment$fdr_8 < 0.05))
+length(which(modeling_results$enrichment$fdr_9 < 0.05))
+
+cluster <- c(1:9)
+genes <- c(9255,4051,1293,4739,2615,4422,3250,3332,417)
+df <- data.frame(cluster, genes)
+pdf(file = here::here("plots","08_layer_differential_expression","plot_enrichment_DEGs.pdf"))
+plot(df$genes~df$cluster)
+dev.off()
+
 
 library(vioplot)
 pdf(file = here::here("plots","08_layer_differential_expression","boxplot_num_enrichment_DEGs.pdf"))
