@@ -124,6 +124,8 @@ dir.create(dir_plots, showWarnings = FALSE)
 
 #http://research.libd.org/spatialLIBD/reference/layer_stat_cor_plot.html newer function for plotting
 
+
+
 pdf(
   file = here::here(
     "plots",
@@ -136,11 +138,12 @@ pdf(
   ),
   width = 8
 )
-layer_stat_cor_plot(
+layer_stat_cor_plot_AS(
   cor_stats_layer,
   max = 1,
   cex = 2.5
 )
+
 dev.off()
 
 ## Reproducibility information
