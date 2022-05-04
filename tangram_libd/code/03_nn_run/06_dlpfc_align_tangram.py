@@ -41,6 +41,8 @@ cell_type_var = 'cellType'
 
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
+plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+
 ################################################################################
 #   Alignment (spatial registration)
 ################################################################################
@@ -92,7 +94,9 @@ tg.plot_cell_annotation_sc(
 )
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'cell_annotation_' + sample_name + '.png'),
+    os.path.join(
+        plot_dir, 'cell_annotation_{}.{}'.format(sample_name, plot_file_type)
+    ),
     bbox_inches='tight'
 )
 
@@ -117,7 +121,10 @@ tg.plot_genes_sc(
 f = plt.gcf()
 f.savefig(
     os.path.join(
-        plot_dir, 'mapped_low_scoring_train_genes_' + sample_name + '.png'
+        plot_dir,
+        'mapped_low_scoring_train_genes_{}.{}'.format(
+            sample_name, plot_file_type
+        )
     ),
     bbox_inches='tight'
 )
@@ -133,7 +140,8 @@ tg.plot_genes_sc(
 f = plt.gcf()
 f.savefig(
     os.path.join(
-        plot_dir, 'mapped_missing_visium_genes_' + sample_name + '.png'
+        plot_dir,
+        'mapped_missing_visium_genes_{}.{}'.format(sample_name, plot_file_type)
     ),
     bbox_inches='tight'
 )
@@ -152,7 +160,9 @@ print('Average training score:', round(float(train_score), 4))
 tg.plot_auc(df_all_genes)
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'orig_test_auc_' + sample_name + '.png'),
+    os.path.join(
+        plot_dir, 'orig_test_auc_{}.{}'.format(sample_name, plot_file_type)
+    ),
     bbox_inches='tight'
 )
 

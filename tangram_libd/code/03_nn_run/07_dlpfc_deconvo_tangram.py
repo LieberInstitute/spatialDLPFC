@@ -42,6 +42,8 @@ cell_type_var = 'cellType'
 
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
+plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+
 ################################################################################
 #   Deconvolution
 ################################################################################
@@ -158,7 +160,9 @@ axs[2].set_yticks([])
 axs[2].set_title("Nucleous segmentation", fontdict={"fontsize": 20});
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'segmentation_test_' + sample_name + '.png'),
+    os.path.join(
+        plot_dir, 'segmentation_test_{}.{}'.format(sample_name, plot_file_type)
+    ),
     bbox_inches='tight'
 )
 
@@ -192,7 +196,7 @@ ad_sp.obs["cell_count"] = ad_sp.obsm["image_features"]["segmentation_label"]
 os.chdir(plot_dir)
 sc.pl.spatial(
     ad_sp, color=[cluster_var_plots, "cell_count"], frameon=False,
-    save = 'per_spot_cell_counts_' + sample_name + '.png'
+    save = 'per_spot_cell_counts_{}.{}'.format(sample_name, plot_file_type)
 )
 
 #-------------------------------------------------------------------------------
@@ -219,7 +223,10 @@ tg.plot_cell_annotation_sc(
 )
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'cell_annotation_deconvo_' + sample_name + '.png'),
+    os.path.join(
+        plot_dir,
+        'cell_annotation_deconvo_{}.{}'.format(sample_name, plot_file_type)
+    ),
     bbox_inches='tight'
 )
 
@@ -228,7 +235,9 @@ df_all_genes = tg.compare_spatial_geneexp(ad_ge, ad_sp, ad_sc)
 tg.plot_auc(df_all_genes)
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'deconvo_test_auc_' + sample_name + '.png'),
+    os.path.join(
+        plot_dir, 'deconvo_test_auc_{}.{}'.format(sample_name, plot_file_type)
+    ),
     bbox_inches='tight'
 )
 
@@ -263,7 +272,9 @@ sc.pl.spatial(
 )
 f = plt.gcf()
 f.savefig(
-    os.path.join(plot_dir, 'deconvo_cells_' + sample_name + '.png'),
+    os.path.join(
+        plot_dir, 'deconvo_cells_{}.{}'.format(sample_name, plot_file_type)
+    ),
     bbox_inches='tight'
 )
 
