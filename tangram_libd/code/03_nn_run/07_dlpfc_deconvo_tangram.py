@@ -141,7 +141,7 @@ axs[1].imshow(
 axs[1].grid(False)
 axs[1].set_xticks([])
 axs[1].set_yticks([])
-axs[1].set_title("DAPI", fontdict={"fontsize": 20})
+axs[1].set_title("Image", fontdict={"fontsize": 20})
 
 crop = img["segmented_watershed"][
     inset_y : inset_y + inset_sy, inset_x : inset_x + inset_sx
@@ -157,7 +157,7 @@ axs[2].imshow(crop[:, : ,0], interpolation="none", cmap=cmap, vmin=0.001)
 axs[2].grid(False)
 axs[2].set_xticks([])
 axs[2].set_yticks([])
-axs[2].set_title("Nucleous segmentation", fontdict={"fontsize": 20});
+axs[2].set_title("Nucleus Segmentation", fontdict={"fontsize": 20});
 f = plt.gcf()
 f.savefig(
     os.path.join(
