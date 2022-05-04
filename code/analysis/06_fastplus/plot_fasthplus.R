@@ -26,5 +26,12 @@ df <- read.csv(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDL
 pdf(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/06_fasthplus/fasthplus_no_WM.pdf")
 ggplot(data=df, aes(x=k, y=X1.h, group=1)) +
   geom_line()+
-  geom_point()
+  geom_point()+
+  ylab(expression(1-H^{"+"}))+
+  theme_bw(base_size = 20)+
+  geom_vline(xintercept = 16.296,color = "red",size = 0.75)+
+  annotate(geom = "text", label = "k = 16.296", x = 18.7, y = 0.624, color = "red", size = 5)+
+  geom_vline(xintercept = 4.497,color = "gray",size = 0.75,linetype = "dotted")+
+  annotate(geom = "text", label = "k = 4.497", x = 6.9, y = 0.624, color = "gray", size = 5)
 dev.off()
+
