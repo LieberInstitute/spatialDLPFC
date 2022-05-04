@@ -254,10 +254,10 @@ fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 sc.pl.spatial(
     ad_segment,
     color="cluster",
-    size=0.4,
+    size=0.6,
     show=False,
     frameon=False,
-    alpha_img=0.2,
+    alpha_img=0.5,
     legend_fontsize=20,
     ax=ax
 )
