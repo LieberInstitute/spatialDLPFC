@@ -322,6 +322,9 @@ spe$scran_low_n_features <-
   factor(qcfilter$low_n_features, levels = c("TRUE", "FALSE"))
 spe$scran_high_subsets_Mito_percent <-
   factor(qcfilter$high_subsets_Mito_percent, levels = c("TRUE", "FALSE"))
+#save
+save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_final.Rdata"))
+
 
 for(i in colnames(qcfilter)) {
   vis_grid_clus(
@@ -346,8 +349,32 @@ vis_grid_clus(
   width = 90
 )
 
-#save
-save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_final.Rdata"))
+#edit low library size plot 
+spe.test <-spe
+spe.test$scran_low_lib_size[spe.test$scran_low_lib_size] <- NA
+
+p <-vis_grid_clus(
+  spe = spe.test,
+  clustervar = "scran_low_lib_size",
+  sort_clust = FALSE,
+  colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+  spatial = FALSE,
+  point_size = 2,
+  height = 24,
+  width = 90, 
+  return_plots = TRUE,
+  image_id = "lowres"
+)
+
+for(i in 1:length(p)){
+  p[i] <- p[i]+theme(legend.position = "none")
+}
+
+pdf(file = here::here("plots", "01_build_spe",paste0("vis_clus_sample_aware_low_lib_size_sfigur.pdf")), height = 24, width = 36)
+print(cowplot::plot_grid(plotlist = p))
+dev.off()
+
+
 
 #discard low library size and save spe
 dim(spe)
