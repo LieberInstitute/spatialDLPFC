@@ -144,7 +144,7 @@ segmentation_info <- segmentations[segmentation_match, - which(colnames(segmenta
 colData(spe) <- cbind(colData(spe), segmentation_info)
 
 mean(spe$count)
-# [1] 6.407954
+# [1] 5.092243
 
 pdf(here::here("plots","01_build_spe","cells_per_spot.pdf"))
 boxplot(spe$count)
