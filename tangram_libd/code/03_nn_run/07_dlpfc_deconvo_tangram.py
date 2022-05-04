@@ -214,7 +214,9 @@ ad_map = tg.map_cells_to_space(
 print('Projecting annotation and plotting AUC...')
 tg.project_cell_annotations(ad_map, ad_sp, annotation=cell_type_var)
 annotation_list = list(pd.unique(ad_sc.obs[cell_type_var]))
-tg.plot_cell_annotation_sc(ad_sp, annotation_list, perc=0.02)
+tg.plot_cell_annotation_sc(
+    ad_sp, annotation_list, perc=0.02, scale_factor = SCALE_FACTOR
+)
 f = plt.gcf()
 f.savefig(
     os.path.join(plot_dir, 'cell_annotation_deconvo_' + sample_name + '.png'),
