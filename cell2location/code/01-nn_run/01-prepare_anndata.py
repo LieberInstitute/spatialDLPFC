@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 import cell2location
+from cell2location.utils.filtering import filter_genes
+from cell2location.models import RegressionModel
 import scvi
 
 from matplotlib import rcParams
@@ -43,9 +45,10 @@ ref_run_name = f'{processed_dir}/reference_signatures'
 run_name = f'{processed_dir}/cell2location_map'
 
 #   Naming conventions used for different columns in the spatial AnnData
-sample_id_var = 'sample_id'
-ensembl_id_var = 'gene_id'    # in both spatial and single-cell objects!
-gene_symbol_var = 'gene_name' # in both spatial and single-cell objects!
+sample_id_var = 'sample_id'   # in spatial object only
+ensembl_id_var = 'gene_id'    # in both spatial and single-cell objects
+gene_symbol_var = 'gene_name' # in both spatial and single-cell objects
+cell_type_var = '' # in single-cell only
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 ################################################################################
@@ -83,3 +86,34 @@ adata_ref.var.index.name = None
 adata_ref.raw.var['SYMBOL'] = adata_ref.obs[gene_symbol_var]
 adata_ref.raw.var.index = adata_ref.var[ensembl_id_var]
 adata_ref.raw.var.index.name = None
+
+#   Subset to specific genes
+selected = filter_genes(
+    adata_ref, cell_count_cutoff=5, cell_percentage_cutoff2=0.03,
+    nonz_mean_cutoff=1.12
+)
+adata_ref = adata_ref[:, selected].copy()
+
+################################################################################
+#   Perform regression
+################################################################################
+
+# prepare anndata for the regression model
+scvi.data.setup_anndata(
+    adata=adata_ref,
+    # 10X reaction / sample / batch
+    batch_key='Sample',
+    labels_key=cell_type_var,
+    # multiplicative technical effects (platform, 3' vs 5', donor effect)
+    categorical_covariate_keys=['Method'] # probably remove this
+)
+scvi.data.view_anndata_setup(adata_ref)
+
+# create and train the regression model
+mod = RegressionModel(adata_ref)
+
+# Use all data for training (validation not implemented yet, train_size=1)
+mod.train(max_epochs=250, batch_size=2500, train_size=1, lr=0.002, use_gpu=True)
+
+# plot ELBO loss history during training, removing first 20 epochs from the plot
+mod.plot_history(20)
