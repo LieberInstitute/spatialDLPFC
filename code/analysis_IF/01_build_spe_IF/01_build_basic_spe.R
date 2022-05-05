@@ -15,10 +15,10 @@ sample_info <- data.frame(
     "Br2720_Ant_IF",
     "Br6432_Ant_IF",
     "Br6522_Ant_IF",
-    "Br8667_Post_IF",
+    "Br8667_Post_IF"
   )
 )
-sample_info$sample_id <- sample_info$sample_id
+sample_info$subject <- sample_info$sample_id
 sample_info$sample_path <-
   file.path(
     here::here("processed-data", "01_spaceranger_IF"),
@@ -30,7 +30,7 @@ stopifnot(all(file.exists(sample_info$sample_path)))
 ## Define the donor info using information from
 ## https://github.com/LieberInstitute/spatialDLPFC/blob/main/raw-data/sample_info/Visium_IF_DLPFC_MasterExcel_01262022.xlsx
 donor_info <- data.frame(
-  subject = c("Br2720_Ant", "Br6432_Ant", "Br6522_Ant", "Br8667_Post"),
+  subject = c("Br2720_Ant_IF", "Br6432_Ant_IF", "Br6522_Ant_IF", "Br8667_Post_IF"),
   age = c(48.22, 48.88, 33.38, 37.33),
   sex = c("F", "M", "M", "F"),
   race = "CAUC",
@@ -45,7 +45,7 @@ sample_info <- merge(sample_info, donor_info)
 
 ## Build basic SPE
 Sys.time()
-spe_wholegenome <- read10xVisiumWrapper(
+spe <- read10xVisiumWrapper(
   sample_info$sample_path,
   sample_info$sample_id,
   type = "sparse",
@@ -65,19 +65,19 @@ Sys.time()
 
 Sys.time()
 
-## Add segmentation images created by Madhavi Tippani
-image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
-
-for (img in image_types) {
-  for (res in c("lowres")) {
-    spe_wholegenome <- add_images(
-      spe = spe_wholegenome,
-      image_dir = here("processed-data", "Images", "spatialLIBD_images"),
-      image_pattern = paste0(img, "_", res),
-      image_id_current = res
-    )
-  }
-}
+# ## Add segmentation images created by Madhavi Tippani
+# image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
+# 
+# for (img in image_types) {
+#   for (res in c("lowres")) {
+#     spe <- add_images(
+#       spe = spe,
+#       image_dir = here("processed-data", "Images", "spatialLIBD_images"),
+#       image_pattern = paste0(img, "_", res),
+#       image_id_current = res
+#     )
+#   }
+# }
 
 ## Add the study design info
 add_design <- function(spe) {
@@ -90,62 +90,61 @@ add_design <- function(spe) {
     new_col[, -which(colnames(new_col) == "sample_path")]
   return(spe)
 }
-spe_wholegenome <- add_design(spe_wholegenome)
+spe <- add_design(spe)
 
-## Read in cell counts and segmentation results
-segmentations_list <-
-  lapply(sample_info$sample_id, function(sampleid) {
-    file <-
-      here(
-        "processed-data",
-        "01_spaceranger_IF",
-        sampleid,
-        "outs",
-        "spatial",
-        "tissue_spot_counts.csv"
-      )
-    if (!file.exists(file)) {
-      return(NULL)
-    }
-    x <- read.csv(file)
-    x$key <- paste0(x$barcode, "_", sampleid)
-    return(x)
-  })
-## Merge them (once the these files are done, this could be replaced by an rbind)
-segmentations <-
-  Reduce(function(...) {
-    merge(..., all = TRUE)
-  }, segmentations_list[lengths(segmentations_list) > 0])
-
-## Add the information
-segmentation_match <- match(spe_wholegenome$key, segmentations$key)
-segmentation_info <-
-  segmentations[segmentation_match, -which(
-    colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")
-  )]
-colData(spe_wholegenome) <- cbind(colData(spe_wholegenome), segmentation_info)
+# ## Read in cell counts and segmentation results
+# segmentations_list <-
+#   lapply(sample_info$sample_id, function(sampleid) {
+#     file <-
+#       here(
+#         "processed-data",
+#         "01_spaceranger_IF",
+#         sampleid,
+#         "outs",
+#         "spatial",
+#         "tissue_spot_counts.csv"
+#       )
+#     if (!file.exists(file)) {
+#       return(NULL)
+#     }
+#     x <- read.csv(file)
+#     x$key <- paste0(x$barcode, "_", sampleid)
+#     return(x)
+#   })
+# ## Merge them (once the these files are done, this could be replaced by an rbind)
+# segmentations <-
+#   Reduce(function(...) {
+#     merge(..., all = TRUE)
+#   }, segmentations_list[lengths(segmentations_list) > 0])
+# 
+# ## Add the information
+# segmentation_match <- match(spe$key, segmentations$key)
+# segmentation_info <-
+#   segmentations[segmentation_match, -which(
+#     colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")
+#   )]
+# colData(spe) <- cbind(colData(spe), segmentation_info)
 
 ## Remove genes with no data
-no_expr <- which(rowSums(counts(spe_wholegenome)) == 0)
+no_expr <- which(rowSums(counts(spe)) == 0)
 length(no_expr)
 # [1] 8748
-length(no_expr) / nrow(spe_wholegenome) * 100
+length(no_expr) / nrow(spe) * 100
 # [1] 23.90099
-spe_wholegenome <- spe_wholegenome[-no_expr, ]
+spe <- spe[-no_expr, ]
 
 ## For visualizing this later with spatialLIBD
-spe_targeted$overlaps_tissue <-
-  spe_wholegenome$overlaps_tissue <-
-  factor(ifelse(spe_wholegenome$in_tissue, "in", "out"))
+spe$overlaps_tissue <-
+  factor(ifelse(spe$in_tissue, "in", "out"))
 
 ## Save with and without dropping spots outside of the tissue
-spe_raw_wholegenome <- spe_wholegenome
+spe_raw <- spe
 saveRDS(spe_raw, file.path(dir_rdata, "spe_raw.rds"))
 
-saveRDS(spe_raw_wholegenome, file.path(dir_rdata, "spe_raw_wholegenome.rds"))
+saveRDS(spe_raw, file.path(dir_rdata, "spe_raw.rds"))
 
 ## Size in Gb
-lobstr::obj_size(spe_raw_wholegenome) / 1024^3
+lobstr::obj_size(spe_raw) / 1024^3
 # 1.651702
 
 ## Now drop the spots outside the tissue
@@ -154,20 +153,20 @@ dim(spe)
 # [1] 27853 38287
 
 ## Now drop the spots outside the tissue
-spe_wholegenome <- spe_raw_wholegenome[, spe_raw_wholegenome$in_tissue]
-dim(spe_wholegenome)
+spe <- spe_raw[, spe_raw$in_tissue]
+dim(spe)
 # [1] 27853 38287
 ## Remove spots without counts
-if (any(colSums(counts(spe_wholegenome)) == 0)) {
-  message("removing spots without counts for spe_wholegenome")
-  spe_wholegenome <- spe_wholegenome[, -which(colSums(counts(spe_wholegenome)) == 0)]
-  dim(spe_wholegenome)
+if (any(colSums(counts(spe)) == 0)) {
+  message("removing spots without counts for spe")
+  spe <- spe[, -which(colSums(counts(spe)) == 0)]
+  dim(spe)
 }
 
-lobstr::obj_size(spe_wholegenome) / 1024^3
+lobstr::obj_size(spe) / 1024^3
 # 1.534376
 
-saveRDS(spe_wholegenome, file.path(dir_rdata, "spe_wholegenome.rds"))
+saveRDS(spe, file.path(dir_rdata, "spe.rds"))
 
 ## Reproducibility information
 print("Reproducibility information:")
