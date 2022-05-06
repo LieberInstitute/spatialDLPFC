@@ -61,6 +61,11 @@ cluster_var_plots = 'Cluster'
 cell_type_var = 'cellType'
 cell_types_to_drop = ['Macrophage', 'Mural', 'Tcell']
 
+#   Variable name in both ad_sc.var and ad_sp.var containing Ensembl gene ID and
+#   variable name in ad_sp.var containing gene symbol
+ensembl_id_var = 'gene_id'
+gene_symbol_var = 'gene_name'
+
 #  Genes we want to plot predicted vs. actual expression for
 select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
@@ -90,10 +95,10 @@ with open(marker_path, 'r') as f:
     markers = f.read().splitlines()
 
 #  Use Ensembl IDs as gene names for both AnnDatas
-ad_sc.var.index = ad_sc.var.gene_id
+ad_sc.var.index = ad_sc.var[ensembl_id_var]
     
 #  Note when genes of interest are present in the training set  
-select_genes = ad_sp.var.gene_id[ad_sp.var.gene_name.isin(select_genes_names)]
+select_genes = ad_sp.var[ensembl_id_var][ad_sp.var[gene_symbol_var].isin(select_genes_names)]
 assert len(select_genes_names) == len(select_genes)
 
 for i in range(len(select_genes)):
@@ -101,8 +106,8 @@ for i in range(len(select_genes)):
     gene_name = select_genes_names[i]
     
     #  Verify genes of interest were measured in the experiment
-    assert gene in ad_sp.var.gene_id.values
-    assert gene in ad_sc.var.gene_id.values
+    assert gene in ad_sp.var[ensembl_id_var].values
+    assert gene in ad_sc.var[ensembl_id_var].values
     
     if gene in markers:
         print('Gene', gene, '(' + gene_name + ') is in the training set.')

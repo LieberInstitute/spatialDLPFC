@@ -39,6 +39,9 @@ cluster_var_plots = 'Cluster'
 #   Variable name in ad_sc.obs representing cell type
 cell_type_var = 'cellType'
 
+#   Variable name in both ad_sc.var and ad_sp.var containing Ensembl gene ID
+ensembl_id_var = 'gene_id'
+
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
@@ -130,8 +133,8 @@ f.savefig(
 )
 
 #  Plot genes not present in spatial data
-uniq_sc_genes = ad_sc.var['gene_id'][
-    ~ ad_sc.var['gene_id'].isin(ad_sp.var['gene_id'])
+uniq_sc_genes = ad_sc.var[ensembl_id_var][
+    ~ ad_sc.var[ensembl_id_var].isin(ad_sp.var[ensembl_id_var])
 ].index
 tg.plot_genes_sc(
     uniq_sc_genes[:10], adata_measured=ad_sp, adata_predicted=ad_ge, perc=0.02,
