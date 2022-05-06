@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
-#$ -N "dlpfc_deconvo_tangram"
-#$ -o ../../processed-data/03_nn_run/logs/07_dlpfc_deconvo_tangram_$TASK_ID.log
-#$ -e ../../processed-data/03_nn_run/logs/07_dlpfc_deconvo_tangram_$TASK_ID.log
+#$ -N "dlpfc_deconvo_align_tangram"
+#$ -o ../../processed-data/03_nn_run/logs/08_dlpfc_deconvo_align_tangram_$TASK_ID.log
+#$ -e ../../processed-data/03_nn_run/logs/08_dlpfc_deconvo_align_tangram_$TASK_ID.log
 #$ -l caracol,mf=64G,h_vmem=64G
 #$ -t 1
 #$ -tc 1
@@ -44,7 +44,7 @@ export CUDA_VISIBLE_DEVICES=$(
 
 module load tangram/1.0.2
 
-python 07_dlpfc_deconvo_tangram.py
+python 08_dlpfc_deconvo_align_tangram.py
 
 echo "**** Job ends ****"
 date
