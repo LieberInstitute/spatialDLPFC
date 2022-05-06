@@ -278,9 +278,19 @@ f.savefig(
     bbox_inches='tight'
 )
 
-print('Attempting to save segmented AnnData...')
+#   Save all AnnDatas that were produced or modified
+print('Saving AnnDatas...')
+ad_map.write_h5ad(
+    os.path.join(processed_dir, 'ad_map_deconvo_{}.h5ad'.format(sample_name))
+)
+ad_ge.write_h5ad(
+    os.path.join(processed_dir, 'ad_ge_deconvo_{}.h5ad'.format(sample_name))
+)
+ad_sp.write_h5ad(
+    os.path.join(processed_dir, 'ad_sp_aligned_deconvo_{}.h5ad'.format(sample_name))
+)
 ad_segment.write_h5ad(
-    os.path.join(processed_dir, 'ad_segment_' + sample_name + '.h5ad')
+    os.path.join(processed_dir, 'ad_segment_{}.h5ad'.format(sample_name))
 )
 
 print('Done all tasks.')
