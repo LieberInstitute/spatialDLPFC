@@ -391,6 +391,23 @@ spe <- spe[,-low_lib_remove]
 
 save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
 
+#look at spots with large cell counts
+## Let's look at cluster 12 from BayesSpace k = 15
+spe$large_cell_count <- factor(spe$count > 50,
+                                 levels = c("TRUE", "FALSE"))
+vis_grid_clus(
+  spe = spe,
+  clustervar = "large_cell_count",
+  pdf = here("plots", paste0("vis_clus_large_cell_count.pdf")),
+  sort_clust = FALSE,
+  colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+  spatial = FALSE,
+  point_size = 2,
+  height = 24,
+  width = 90
+)
+
+
 ##stopping here
 ## Find quick clusters
 set.seed(030122)
