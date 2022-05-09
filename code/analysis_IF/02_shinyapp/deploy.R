@@ -1,7 +1,7 @@
 library("rsconnect")
 
 ## Locate app_dir. Edit as needed
-app_dir <- here::here("code","03_shinyapp")
+app_dir <- here::here("code","analysis_IF", "02_shinyapp")
 
 ## Or you can go to your shinyapps.io account and copy this
 ## Here we do this to keep our information hidden.
@@ -22,7 +22,7 @@ rsconnect::deployApp(
         "app.R",
         "spe.rds"
     ),
-    appName = "lifespanDG_Ramnauth_2022",
+    appName = "spatialDLPFC_IF_2022",
     account = "libd",
     server = "shinyapps.io"
 )
