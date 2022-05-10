@@ -389,7 +389,6 @@ length(low_lib_remove)
 #remove remove spots that have low lib size
 spe <- spe[,-low_lib_remove]
 
-save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
 
 #look at spots with large cell counts
 ## Let's look at cluster 12 from BayesSpace k = 15
@@ -398,7 +397,7 @@ spe$large_cell_count <- factor(spe$count > 50,
 vis_grid_clus(
   spe = spe,
   clustervar = "large_cell_count",
-  pdf = here("plots", paste0("vis_clus_large_cell_count.pdf")),
+  pdf = here("plots",  "01_build_spe",paste0("vis_clus_large_cell_count.pdf")),
   sort_clust = FALSE,
   colors = c("FALSE" = "grey90", "TRUE" = "orange"),
   spatial = FALSE,
@@ -407,6 +406,18 @@ vis_grid_clus(
   width = 90
 )
 
+vis_grid_gene(
+  spe = spe,
+  geneid = "count",
+  assayname = "counts",
+  pdf = here("plots", "01_build_spe", paste0("vis_clus_cell_count.pdf")),
+  point_size = 2,
+  height = 48,
+  width = 90
+)
+
+
+save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
 
 ##stopping here
 ## Find quick clusters

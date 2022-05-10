@@ -82,7 +82,8 @@ plots_histology <-
         y = 0.5
       ) +
       xlab("")+
-      ylab("")
+      ylab("")#+
+      #labs(title = sampleid,caption = NULL)
   })
 names(plots_histology) <- sample_order
 
@@ -102,7 +103,8 @@ plots_mobp <-vis_grid_gene(
 )
 plots_mobp <- lapply(sample_order, function(sampleid){
   p <- plots_mobp[[sampleid]]
-  p + labs(title = sampleid,caption = NULL)
+  #p + labs(title = sampleid,caption = NULL)
+  p + labs(title = NULL,caption = NULL)
 })
 names(plots_mobp) <- sample_order
 
@@ -122,7 +124,8 @@ plots_snap25 <-vis_grid_gene(
 )
 plots_snap25 <- lapply(sample_order, function(sampleid){
   p <- plots_snap25[[sampleid]]
-  p + labs(title = sampleid,caption = NULL)
+  #p + labs(title = sampleid,caption = NULL)
+  p + labs(title = NULL,caption = NULL)
 })
 names(plots_snap25) <- sample_order
 
@@ -142,7 +145,8 @@ plots_pcp4 <-vis_grid_gene(
 )
 plots_pcp4 <- lapply(sample_order, function(sampleid){
   p <- plots_pcp4[[sampleid]]
-  p + labs(title = sampleid,caption = NULL)
+  #p + labs(title = sampleid,caption = NULL)
+  p + labs(title = NULL,caption = NULL)
 })
 names(plots_pcp4) <- sample_order
 
