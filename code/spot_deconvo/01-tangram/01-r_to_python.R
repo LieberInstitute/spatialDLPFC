@@ -17,9 +17,9 @@ spe_in = here(
     "processed-data","rdata", "spe", "01_build_spe", "spe_final.Rdata"
 )
 
-sce_out = here("processed-data", "01-tangram", "spe.h5ad")
-spe_out = here("processed-data", "01-tangram", "spe.h5ad")
-marker_out = here("processed-data", "01-tangram", "markers.txt")
+sce_out = here("processed-data", "spot_deconvo", "01-tangram", "spe.h5ad")
+spe_out = here("processed-data", "spot_deconvo", "01-tangram", "spe.h5ad")
+marker_out = here("processed-data", "spot_deconvo", "01-tangram", "markers.txt")
 
 #  Make sure output directories exist
 dir.create(dirname(sce_out), showWarnings = FALSE)
