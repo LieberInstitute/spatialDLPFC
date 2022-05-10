@@ -21,8 +21,8 @@ load("spe_filtered_final_with_clusters.Rdata", verbose = TRUE)
 spe$scran_quick_cluster <- NULL
 
 ## Rename 'count' to make it more intuitive
-spe$cell_count <- spe$count
-spe$count <- NULL
+#spe$cell_count <- spe$count
+#spe$count <- NULL
 
 #load spe_pseudo
 load("sce_pseudobulk_bayesSpace_normalized_filtered_k9.Rdata",verbose = TRUE)
@@ -31,12 +31,12 @@ load("sce_pseudobulk_bayesSpace_normalized_filtered_k9.Rdata",verbose = TRUE)
 load("parsed_modeling_results_k9.Rdata",verbose = TRUE)
 
 ## For sig_genes_extract_all() to work
-spe_pseudo$spatialLIBD <- spe_pseudo$bayesSpace_harmony_k9
-sig_genes <- sig_genes_extract_all(
-  n = nrow(spe_pseudo),
-  modeling_results = modeling_results,
-  sce_layer = spe_pseudo
-)
+spe_pseudo$spatialLIBD <- spe_pseudo$bayesSpace_harmony_9
+# sig_genes <- sig_genes_extract_all(
+#   n = nrow(spe_pseudo),
+#   modeling_results = modeling_results,
+#   sce_layer = spe_pseudo
+# )
 
 vars <- colnames(colData(spe))
 
@@ -45,20 +45,21 @@ spatialLIBD::run_app(
     spe,
     sce_layer = spe_pseudo,
     modeling_results = modeling_results,
-    sig_genes = sig_genes,
+    sig_genes = NULL,
     title = "spatialDLPFC, Spangler et al, 2021",
     spe_discrete_vars = c(
         vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
-        "bayesSpace_harmony_k9",
-        "BayesSpace_cluster.init"
+        "bayesSpace_harmony_9",
+        "bayesSpace_harmony_16",
+        "bayesSpace_harmony_28"
     ),
     spe_continuous_vars = c(
         "sum_umi",
         "sum_gene",
         "expr_chrM",
         "expr_chrM_ratio",
-        "cell_count"
+        "count"
     ),
-    default_cluster = "bayesSpace_harmony_k9"
+    default_cluster = "bayesSpace_harmony_9"
 )
