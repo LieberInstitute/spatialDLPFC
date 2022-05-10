@@ -67,7 +67,6 @@ SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_s
 #-------------------------------------------------------------------------------
 
 print('Re-aligning in "deconvolution mode"...')
-gpu_index = os.environ['CUDA_VISIBLE_DEVICES']
 ad_map = tg.map_cells_to_space(
     ad_sc,
     ad_sp,
@@ -75,7 +74,7 @@ ad_map = tg.map_cells_to_space(
     target_count = ad_sp.obs[cell_count_var].sum(),
     density_prior = np.array(ad_sp.obs[cell_count_var]) / ad_sp.obs[cell_count_var].sum(),
     num_epochs = 1000,
-    device = "cuda:" + gpu_index
+    device = "cuda:0"
 )
 
 print('Projecting annotation and plotting AUC...')
