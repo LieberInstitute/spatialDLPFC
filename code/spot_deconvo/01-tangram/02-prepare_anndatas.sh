@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "prepare_anndatas"
-#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas.log
-#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas.log
+#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_$TASK_ID.log
 #$ -l bluejay,mf=10G,h_vmem=10G
 #$ -t 1
 #$ -tc 1
