@@ -18,7 +18,10 @@ rsconnect::deployApp(
     appDir = here("code", "deploy_app"),
     appFiles = c(
         "app.R",
-        "spe_merged_final_nocounts.Rdata"
+        "spe_filtered_final_with_clusters.Rdata",
+        "sce_pseudobulk_bayesSpace_normalized_filtered_k9.Rdata",
+        "parsed_modeling_results_k9.Rdata"
+        #"spe_merged_final_nocounts.Rdata"
     ),
     appName = 'spatialDLPFC_Spangler2021',
     account = 'libd',
