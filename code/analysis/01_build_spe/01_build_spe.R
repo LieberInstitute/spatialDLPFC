@@ -601,6 +601,16 @@ Sys.time()
 save(spe, file = here::here("processed-data","rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
 Sys.time()
 
+# library(spatialLIBD)
+# load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/01_build_spe/spe_filtered_final.Rdata")
+# spe <- cluster_import(
+#   spe,
+#   cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"), 
+#   prefix = ""
+# )
+# save(spe, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/01_build_spe/spe_filtered_final_with_clusters.Rdata")
+
+
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
