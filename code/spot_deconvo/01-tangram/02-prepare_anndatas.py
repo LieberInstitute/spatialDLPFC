@@ -35,6 +35,7 @@ sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
 sc_path_out = pyhere.here(processed_dir, 'ad_sc_{}.h5ad')
 sp_path_out = pyhere.here(processed_dir, 'ad_sp_orig_{}.h5ad')
 marker_path = pyhere.here(processed_dir, 'markers.txt')
+id_path_out = pyhere.here(processed_dir, 'sample_ids.txt')
 
 #   Directory containing hires image and a JSON containing scale factors and
 #   spot size for a given sample. Here '{}' will be replaced by a single
@@ -77,6 +78,13 @@ print('Loading AnnDatas...')
 ad_sp = sc.read_h5ad(sp_path_in)
 
 ad_sp.obs[sample_id_var] = ad_sp.obs[sample_id_var].astype('category')
+
+#   Write sample IDs to a file so we don't have to load the entire spatial
+#   AnnData into memory to see all IDs
+with open(id_path_out, 'w') as f:
+    for id in ad_sp.obs[sample_id_var].categories:
+        f.writelines(id + '\n')
+
 sample_name = ad_sp.obs[sample_id_var].categories[
     int(os.environ['SGE_TASK_ID']) - 1
 ]
