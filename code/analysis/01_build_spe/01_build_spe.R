@@ -19,6 +19,7 @@ library("rtracklayer")
 ## vis
 library("spatialLIBD")
 library("RColorBrewer")
+library(ggplot2)
 
 ## analysis
 library("scran") ## requires uwot for UMAP
@@ -350,11 +351,10 @@ vis_grid_clus(
 )
 
 #edit low library size plot 
-spe.test <-spe
-spe.test$scran_low_lib_size[spe.test$scran_low_lib_size] <- NA
+sample_order = unique(spe$sample_id)
 
-p <-vis_grid_clus(
-  spe = spe.test,
+p_scran <-vis_grid_clus(
+  spe = spe,
   clustervar = "scran_low_lib_size",
   sort_clust = FALSE,
   colors = c("FALSE" = "grey90", "TRUE" = "orange"),
@@ -366,14 +366,15 @@ p <-vis_grid_clus(
   image_id = "lowres"
 )
 
-for(i in 1:length(p)){
-  p[i] <- p[i]+theme(legend.position = "none")
-}
+p_scran <- lapply(sample_order, function(sampleid){
+  p <- p_scran[[sampleid]]
+  p + theme(legend.position = "none")
+})
+names(p_scran) <- sample_order
 
 pdf(file = here::here("plots", "01_build_spe",paste0("vis_clus_sample_aware_low_lib_size_sfigur.pdf")), height = 24, width = 36)
-print(cowplot::plot_grid(plotlist = p))
+print(cowplot::plot_grid(plotlist = p_scran))
 dev.off()
-
 
 
 #discard low library size and save spe
