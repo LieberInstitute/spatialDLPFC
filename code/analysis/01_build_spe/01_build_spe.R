@@ -407,16 +407,24 @@ vis_grid_clus(
   width = 90
 )
 
-vis_grid_gene(
+p_count <- vis_grid_gene(
   spe = spe,
   geneid = "count",
   assayname = "counts",
-  pdf = here("plots", "01_build_spe", paste0("vis_clus_cell_count.pdf")),
   point_size = 2,
   height = 48,
-  width = 90
+  width = 90,
+  return_plots = TRUE
 )
+# p_count <- lapply(sample_order, function(sampleid){
+#   p <- p_count[[sampleid]]
+#   p + scale_color_gradientn(colors = viridisLite::viridis(21),limits=c(0,300))
+# })
+names(p_count) <- sample_order
 
+pdf(file = here::here("plots", "01_build_spe", paste0("vis_clus_cell_count.pdf")), height = 24, width = 36)
+print(cowplot::plot_grid(plotlist = p_count))
+dev.off()
 
 save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe","spe_filtered_final.Rdata"))
 
