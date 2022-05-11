@@ -28,8 +28,8 @@ import custom_tg_code as ctg
 
 plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram")
 processed_dir = pyhere.here("processed_data", "spot_deconvo", "01-tangram")
-sc_path_in = pyhere.here(processed_dir, 'ad_sc_{}.h5ad')
-sp_path_in = pyhere.here(processed_dir, 'ad_sp_orig_{}.h5ad')
+sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
+sp_path_in = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 id_path = pyhere.here(processed_dir, 'sample_ids.txt')
 
 #-------------------------------------------------------------------------------
@@ -91,8 +91,8 @@ tg.plot_cell_annotation_sc(
 f = plt.gcf()
 f.savefig(
     os.path.join(
-        plot_dir,
-        'cell_annotation_deconvo_{}.{}'.format(sample_name, plot_file_type)
+        plot_dir, sample_name,
+        'cell_annotation_deconvo.{}'.format(plot_file_type)
     ),
     bbox_inches='tight'
 )
@@ -103,13 +103,13 @@ tg.plot_auc(df_all_genes)
 f = plt.gcf()
 f.savefig(
     os.path.join(
-        plot_dir, 'deconvo_test_auc_{}.{}'.format(sample_name, plot_file_type)
+        plot_dir, sample_name, 'deconvo_test_auc.{}'.format(plot_file_type)
     ),
     bbox_inches='tight'
 )
 
 #-------------------------------------------------------------------------------
-#   Format segmentation results, form new AnnData, and plot
+#   Write 'clusters.csv' file containing counts of each cell type per spot
 #-------------------------------------------------------------------------------
 
 ctg.custom_count_cell_annotations(
@@ -119,6 +119,12 @@ ctg.custom_count_cell_annotations(
     annotation=cell_type_var,
     cell_count_var=cell_count_var
 )
+
+clusters = ad_sp.obsm['tangram_ct_count'].iloc[:, 2:]
+clusters.index += '_' + sample_name
+clusters.index.name = 'key'
+clusters.rename(columns={'cell_n': cell_count_var}, inplace=True)
+clusters.to_csv(os.path.join(processed_dir, sample_name, 'clusters.csv'))
 
 # ad_segment = tg.deconvolve_cell_annotations(ad_sp)
 
@@ -146,13 +152,13 @@ ctg.custom_count_cell_annotations(
 #   Save all AnnDatas that were produced or modified
 print('Saving AnnDatas...')
 ad_map.write_h5ad(
-    os.path.join(processed_dir, 'ad_map_{}.h5ad'.format(sample_name))
+    os.path.join(processed_dir, sample_name, 'ad_map.h5ad')
 )
 ad_ge.write_h5ad(
-    os.path.join(processed_dir, 'ad_ge_{}.h5ad'.format(sample_name))
+    os.path.join(processed_dir, sample_name, 'ad_ge.h5ad')
 )
 ad_sp.write_h5ad(
-    os.path.join(processed_dir, 'ad_sp_aligned_{}.h5ad'.format(sample_name))
+    os.path.join(processed_dir, sample_name, 'ad_sp_aligned.h5ad')
 )
 # ad_segment.write_h5ad(
 #     os.path.join(processed_dir, 'ad_segment_{}.h5ad'.format(sample_name))

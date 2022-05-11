@@ -27,13 +27,11 @@ import json
 
 plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram")
 processed_dir = pyhere.here("processed_data", "spot_deconvo", "01-tangram")
-Path(plot_dir).mkdir(parents=True, exist_ok=True)
-Path(processed_dir).mkdir(parents=True, exist_ok=True)
 
 sc_path_in = pyhere.here(processed_dir, 'sce.h5ad')
 sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
-sc_path_out = pyhere.here(processed_dir, 'ad_sc_{}.h5ad')
-sp_path_out = pyhere.here(processed_dir, 'ad_sp_orig_{}.h5ad')
+sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
+sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 marker_path = pyhere.here(processed_dir, 'markers.txt')
 id_path_out = pyhere.here(processed_dir, 'sample_ids.txt')
 
@@ -165,6 +163,12 @@ ad_sp.obsm['spatial'] = np.array(
 #-------------------------------------------------------------------------------
 #   Save AnnDatas
 #-------------------------------------------------------------------------------
+
+#   Ensure output directories exist
+Path(os.path.join(plot_dir, sample_name)).mkdir(parents=True, exist_ok=True)
+Path(os.path.join(processed_dir, sample_name)).mkdir(
+    parents=True, exist_ok=True
+)
 
 #   While the contents of the 'ad_sc' object should be identical regardless of
 #   sample, it looks like the order of some variables is random,
