@@ -104,7 +104,10 @@ plots_mobp <-vis_grid_gene(
 plots_mobp <- lapply(sample_order, function(sampleid){
   p <- plots_mobp[[sampleid]]
   #p + labs(title = sampleid,caption = NULL)
-  p + labs(title = NULL,caption = NULL)
+  p + 
+    labs(title = NULL,caption = NULL) +
+    theme(legend.key.size = unit(1.5, 'cm'),legend.text = element_text(size=30)) 
+  
 })
 names(plots_mobp) <- sample_order
 
@@ -125,7 +128,9 @@ plots_snap25 <-vis_grid_gene(
 plots_snap25 <- lapply(sample_order, function(sampleid){
   p <- plots_snap25[[sampleid]]
   #p + labs(title = sampleid,caption = NULL)
-  p + labs(title = NULL,caption = NULL)
+  p + 
+    labs(title = NULL,caption = NULL) +
+    theme(legend.key.size = unit(1.5, 'cm'),legend.text = element_text(size=30))
 })
 names(plots_snap25) <- sample_order
 
@@ -146,7 +151,9 @@ plots_pcp4 <-vis_grid_gene(
 plots_pcp4 <- lapply(sample_order, function(sampleid){
   p <- plots_pcp4[[sampleid]]
   #p + labs(title = sampleid,caption = NULL)
-  p + labs(title = NULL,caption = NULL)
+  p + 
+    labs(title = NULL,caption = NULL) +
+    theme(legend.key.size = unit(1.5, 'cm'),legend.text = element_text(size=30))
 })
 names(plots_pcp4) <- sample_order
 
@@ -214,8 +221,8 @@ lapply(unique(sample_info$regions),function(region){
   i <- match(donor_order,region_subset$subjects)  
   plots_list <- c(
     plots_histology[region_subset$row[i]],
-    plots_mobp[region_subset$row[i]],
     plots_snap25[region_subset$row[i]],
+    plots_mobp[region_subset$row[i]],
     plots_pcp4[region_subset$row[i]]
   )
   pdf(file = here::here("plots", "01a_marker_genes",paste0("vis_genes_known_markers_sfig_",region,".pdf")), height = 8*10, width = 8*4)
