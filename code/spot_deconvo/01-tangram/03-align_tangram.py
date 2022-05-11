@@ -13,6 +13,11 @@ import seaborn as sns
 import tangram as tg
 from PIL import Image
 
+#   We use some modified tangram code to circumvent the need for image
+#   segmentation, instead just relying on per-spot cell counts
+os.chdir(pyhere("code", "spot_deconvo", "01-tangram"))
+import custom_tg_code as ctg
+
 ################################################################################
 #   Variable definitions
 ################################################################################
@@ -107,38 +112,36 @@ f.savefig(
 #   Format segmentation results, form new AnnData, and plot
 #-------------------------------------------------------------------------------
 
-print('Formatting segmentation results...')
-tg.create_segment_cell_df(ad_sp)
-
-tg.count_cell_annotations(
+ctg.custom_count_cell_annotations(
     ad_map,
     ad_sc,
     ad_sp,
     annotation=cell_type_var,
+    cell_count_var=cell_count_var
 )
 
-ad_segment = tg.deconvolve_cell_annotations(ad_sp)
+# ad_segment = tg.deconvolve_cell_annotations(ad_sp)
 
-#   Produce the main deconvolution plot of interest
-print('Producing main deconvolution plot...')
-fig, ax = plt.subplots(1, 1, figsize=(20, 20))
-sc.pl.spatial(
-    ad_segment,
-    color="cluster",
-    size=0.6,
-    show=False,
-    frameon=False,
-    alpha_img=0.5,
-    legend_fontsize=20,
-    ax=ax
-)
-f = plt.gcf()
-f.savefig(
-    os.path.join(
-        plot_dir, 'deconvo_cells_{}.{}'.format(sample_name, plot_file_type)
-    ),
-    bbox_inches='tight'
-)
+# #   Produce the main deconvolution plot of interest
+# print('Producing main deconvolution plot...')
+# fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+# sc.pl.spatial(
+#     ad_segment,
+#     color="cluster",
+#     size=0.6,
+#     show=False,
+#     frameon=False,
+#     alpha_img=0.5,
+#     legend_fontsize=20,
+#     ax=ax
+# )
+# f = plt.gcf()
+# f.savefig(
+#     os.path.join(
+#         plot_dir, 'deconvo_cells_{}.{}'.format(sample_name, plot_file_type)
+#     ),
+#     bbox_inches='tight'
+# )
 
 #   Save all AnnDatas that were produced or modified
 print('Saving AnnDatas...')
@@ -151,8 +154,8 @@ ad_ge.write_h5ad(
 ad_sp.write_h5ad(
     os.path.join(processed_dir, 'ad_sp_aligned_{}.h5ad'.format(sample_name))
 )
-ad_segment.write_h5ad(
-    os.path.join(processed_dir, 'ad_segment_{}.h5ad'.format(sample_name))
-)
+# ad_segment.write_h5ad(
+#     os.path.join(processed_dir, 'ad_segment_{}.h5ad'.format(sample_name))
+# )
 
 print('Done all tasks.')
