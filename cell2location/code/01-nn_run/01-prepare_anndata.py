@@ -7,12 +7,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from matplotlib.backends.backend_pdf import PdfPages
 
 import cell2location
 from cell2location.utils.filtering import filter_genes
-from cell2location.models import RegressionModel
-import scvi
 
 from matplotlib import rcParams
 rcParams['pdf.fonttype'] = 42 # enables correct plotting of text
@@ -38,10 +35,6 @@ processed_dir = pyhere.here('cell2location', 'processed-data', '01-nn_run')
 plot_dir = pyhere.here('cell2location', 'plots', '01-nn_run')
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(processed_dir).mkdir(parents=True, exist_ok=True)
-
-marker_path = pyhere.here(
-    'tangram_libd', 'processed-data', '03_nn_run', 'pan_markers.txt'
-)
 
 #   Parent directory whose subdirectories include JSON files with spot sizes
 #   and scale factors for each sample
@@ -174,26 +167,5 @@ adata_vis.write_h5ad(
 )
 
 adata_ref.write_h5ad(
-    os.path.join(processed_dir, 'adata_ref.h5ad')
+    os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 )
-
-################################################################################
-#   Perform regression
-################################################################################
-
-# prepare anndata for the regression model
-scvi.data.setup_anndata(
-    adata = adata_ref,
-    batch_key = 'Sample',
-    labels_key = cell_type_var
-)
-scvi.data.view_anndata_setup(adata_ref)
-
-# create and train the regression model
-mod = RegressionModel(adata_ref)
-
-# Use all data for training (validation not implemented yet, train_size=1)
-mod.train(max_epochs=250, batch_size=2500, train_size=1, lr=0.002, use_gpu=True)
-
-# plot ELBO loss history during training, removing first 20 epochs from the plot
-mod.plot_history(20)
