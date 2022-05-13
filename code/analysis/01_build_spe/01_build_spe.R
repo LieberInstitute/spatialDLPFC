@@ -570,7 +570,7 @@ ggplot(data.frame(reducedDim(spe, "UMAP")),
        aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
   geom_point() +
   labs(color = "sample_id") +
-  theme_bw()
+  theme_bw() 
 dev.off()
 
 
