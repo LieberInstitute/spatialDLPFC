@@ -94,6 +94,65 @@ selected = filter_genes(
 )
 adata_ref = adata_ref[:, selected].copy()
 
+#   Path to JSON from spaceranger including spot size for this sample
+json_path = json_dir + '/' + sample_name + '/scalefactors_json.json'
+
+with open(json_path) as f: 
+    json_data = json.load(f)
+
+#   Store scalefactors in AnnData as cell2location expects
+adata_vis.uns['spatial'] = {
+    sample_name: {
+        'scalefactors': json_data
+    }
+}
+
+#-------------------------------------------------------------------------------
+#   Attach hi-res images to spatial AnnData
+#-------------------------------------------------------------------------------
+
+for id in adata_vis.obs['sample'].categories:
+    #   Read in high-res image as numpy array with values in [0, 1] rather than
+    #   [0, 255] (note that it isn't verified the original range is [0, 255]!). 
+    #   Then attach to AnnData object
+    img_path = str(
+        pyhere.here(
+            "tangram_libd/raw-data/03_nn_run/hires_histology",
+            sample_name + ".png"
+        )
+    )
+
+    img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
+    assert img_arr.shape == (2000, 2000, 3), img_arr.shape
+
+    adata_vis.uns['spatial'][sample_name]['images'] = { 'hires': img_arr }
+
+#-------------------------------------------------------------------------------
+#   Attach spatialCoords to spatial AnnData
+#-------------------------------------------------------------------------------
+
+#   Squidpy expects spatial coords in a very specific format
+adata_vis.obsm['spatial'] = np.array(
+    list(
+        zip(
+            adata_vis.obs[spatial_coords_names[0]],
+            adata_vis.obs[spatial_coords_names[1]]
+        )
+    )
+)
+
+#-------------------------------------------------------------------------------
+#   Save AnnDatas
+#-------------------------------------------------------------------------------
+
+adata_vis.write_h5ad(
+    os.path.join(processed_dir, 'adata_vis_orig.h5ad')
+)
+
+adata_ref.write_h5ad(
+    os.path.join(processed_dir, 'adata_ref.h5ad')
+)
+
 ################################################################################
 #   Perform regression
 ################################################################################
