@@ -39,7 +39,7 @@ pheatmap(
   my.table.28,
   show_rownames = TRUE,
   cluster_rows = FALSE,
-  cluster_cols = FALSE
+  cluster_cols = TRUE
 )
 dev.off()
 
@@ -63,7 +63,7 @@ pheatmap(
   my.table.28.percent[c(1:9),c(1:26)],
   show_rownames = TRUE,
   cluster_rows = FALSE,
-  cluster_cols = FALSE
+  cluster_cols = TRUE
 )
 dev.off()
 
@@ -89,7 +89,7 @@ pheatmap(
   my.table.16.percent[c(1:9),c(1:16)],
   show_rownames = TRUE,
   cluster_rows = FALSE,
-  cluster_cols = FALSE
+  cluster_cols = TRUE
 )
 dev.off()
 
