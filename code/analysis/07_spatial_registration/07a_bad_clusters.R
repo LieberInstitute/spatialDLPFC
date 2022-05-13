@@ -3,15 +3,18 @@ library(here)
 library(pheatmap)
 library(spatialLIBD)
 
-#load spe object
-load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
+# #load spe object
+# load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"),verbose = TRUE)
+# 
+# #load clusters
+# spe <- cluster_import(
+#   spe,
+#   cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"), 
+#   prefix = ""
+# )
 
-#load clusters
-spe <- cluster_import(
-  spe,
-  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results"), 
-  prefix = ""
-)
+#loaded this data object to make percent plots
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/01_build_spe/spe_filtered_final_with_clusters.Rdata")
 
 
 table_percent <- function(input.table){
@@ -40,18 +43,7 @@ pheatmap(
 )
 dev.off()
 
-# plot it with percent 
-my.table.28.percent <- table_percent(my.table.28)$percent_row
-
-pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28_percent.pdf"))
-pheatmap(
-  my.table.28.percent,
-  show_rownames = TRUE,
-  cluster_rows = FALSE,
-  cluster_cols = FALSE
-)
-dev.off()
-
+#plot log transformed 
 my.table.log <- with(colData(spe), log10(table(bayesSpace_harmony_9, bayesSpace_harmony_28)+1))
 
 pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28_log.pdf"))
@@ -63,12 +55,38 @@ pheatmap(
 )
 dev.off()
 
+# plot it with percent 
+my.table.28.percent <- table_percent(my.table.28)$percent_row
+
+pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28_percent.pdf"))
+pheatmap(
+  my.table.28.percent[c(1:9),c(1:26)],
+  show_rownames = TRUE,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE
+)
+dev.off()
+
+
+
 #make table of bayesSpace k = 9 vs k = 16
 my.table.16 <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_16))
 
 pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k16.pdf"))
 pheatmap(
   my.table.16,
+  show_rownames = TRUE,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE
+)
+dev.off()
+
+# plot it with percent 
+my.table.16.percent <- table_percent(my.table.16)$percent_row
+
+pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k16_percent.pdf"))
+pheatmap(
+  my.table.16.percent[c(1:9),c(1:16)],
   show_rownames = TRUE,
   cluster_rows = FALSE,
   cluster_cols = FALSE
