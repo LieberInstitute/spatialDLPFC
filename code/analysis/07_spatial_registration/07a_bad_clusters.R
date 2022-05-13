@@ -13,12 +13,39 @@ spe <- cluster_import(
   prefix = ""
 )
 
+
+table_percent <- function(input.table){
+  list(
+    "counts" = addmargins(input.table),
+    
+    "percent_all" = addmargins(round(input.table/sum(input.table)*100,2)), #divide my all spots
+    
+    "percent_col" = addmargins(round(sweep(input.table,2,colSums(input.table),"/")*100,2)), #divide by spots in bayesSpace cluster
+    
+    "percent_row" = addmargins(round(sweep(input.table,1,rowSums(input.table),"/")*100,2)) #divide by spots in Kristen's annotation
+    
+  )
+  
+}
+
 #make table of bayesSpace k = 9 vs k = 28
-my.table <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_28))
+my.table.28 <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_28))
 
 pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28.pdf"))
 pheatmap(
-  my.table,
+  my.table.28,
+  show_rownames = TRUE,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE
+)
+dev.off()
+
+# plot it with percent 
+my.table.28.percent <- table_percent(my.table.28)$percent_row
+
+pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28_percent.pdf"))
+pheatmap(
+  my.table.28.percent,
   show_rownames = TRUE,
   cluster_rows = FALSE,
   cluster_cols = FALSE
@@ -35,6 +62,22 @@ pheatmap(
   cluster_cols = FALSE
 )
 dev.off()
+
+#make table of bayesSpace k = 9 vs k = 16
+my.table.16 <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_16))
+
+pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k16.pdf"))
+pheatmap(
+  my.table.16,
+  show_rownames = TRUE,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE
+)
+dev.off()
+
+
+
+
 
 #make orange and gray plots of cluster 1 at k = 9 
 spe$BayesSpace_k9_c1 <- factor(spe$bayesSpace_harmony_9 == 1,
