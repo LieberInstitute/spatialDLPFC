@@ -1,21 +1,25 @@
 
 #uncorrected umap
-pdf(file=here::here("plots", "01_build_spe","UMAP_sample_id.pdf"))
+pdf(file=here::here("plots", "01_build_spe","sfigu_harmony_UMAP_sample_id.pdf"))
 ggplot(data.frame(reducedDim(spe, "UMAP")), 
        aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
-  geom_point() +
+  geom_point(size = 0.3, alpha = 0.5) +
   labs(color = "sample_id") +
   theme_bw() +
-  ggtitle("UMAP of Uncorrected Data")
+  ggtitle("UMAP of Uncorrected Data") + 
+  guides(colour = guide_legend(override.aes = list(size=3))) +
+  scale_colour_discrete(name = "Sample ID")
 dev.off()
 
 
 #corrected umpas
-pdf(file=here::here("plots", "01_build_spe","UMAP_harmony_sample_id.pdf"))
+pdf(file=here::here("plots", "01_build_spe","sfigu_harmony_UMAP_harmony_sample_id.pdf"))
 ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
        aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
-  geom_point() +
+  geom_point(size = 0.3, alpha = 0.5) +
   labs(color = "sample_id") +
   theme_bw() +
-  ggtitle("UMAP of Batch-Corrected Data")
+  ggtitle("UMAP of Batch-Corrected Data") + 
+  guides(colour = guide_legend(override.aes = list(size=3))) +
+  scale_colour_discrete(name = "Sample ID")
 dev.off()
