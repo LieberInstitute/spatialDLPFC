@@ -48,8 +48,10 @@ run_name = f'{processed_dir}/cell2location_map'
 sample_id_var = 'sample_id'   # in spatial object only
 ensembl_id_var = 'gene_id'    # in both spatial and single-cell objects
 gene_symbol_var = 'gene_name' # in both spatial and single-cell objects
-cell_type_var = '' # in single-cell only
+cell_type_var = 'cellType'    # in single-cell only
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
+
+cell_types_to_drop = ['Macrophage', 'Mural', 'Tcell']
 
 ################################################################################
 #   Preprocessing
@@ -86,6 +88,11 @@ adata_ref.var.index.name = None
 adata_ref.raw.var['SYMBOL'] = adata_ref.obs[gene_symbol_var]
 adata_ref.raw.var.index = adata_ref.var[ensembl_id_var]
 adata_ref.raw.var.index.name = None
+
+#   Drop rare cell types from single-cell data
+adata_ref = adata_ref[
+    ~ adata_ref.obs[cell_type_var].isin(cell_types_to_drop), :
+]
 
 #   Subset to specific genes
 selected = filter_genes(
