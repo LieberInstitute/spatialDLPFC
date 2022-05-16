@@ -19,6 +19,10 @@ fastq_naming_path = here(
     'fastq_renaming_scheme.csv'
 )
 
+write_path = here(
+    'processed-data', 'synapse_upload', '02-metadata_files', 'biospecimen.csv'
+)
+
 ###############################################################################
 #  Load and preprocess phenotype data
 ###############################################################################
