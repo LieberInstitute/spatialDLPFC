@@ -33,6 +33,7 @@ table_percent <- function(input.table){
 
 #make table of bayesSpace k = 9 vs k = 28
 my.table.28 <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_28))
+my.table.28[my.table.28 == 0] <- NA
 
 pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28.pdf"))
 pheatmap(
@@ -56,7 +57,9 @@ pheatmap(
 dev.off()
 
 # plot it with percent 
+my.table.28 <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_28))
 my.table.28.percent <- table_percent(my.table.28)$percent_row
+my.table.28.percent[my.table.28.percent == 0] <- NA
 
 pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k28_percent.pdf"))
 pheatmap(
@@ -71,18 +74,21 @@ dev.off()
 
 #make table of bayesSpace k = 9 vs k = 16
 my.table.16 <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_16))
+my.table.16[my.table.16 == 0] <- NA
 
 pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k16.pdf"))
 pheatmap(
   my.table.16,
   show_rownames = TRUE,
   cluster_rows = FALSE,
-  cluster_cols = FALSE
+  cluster_cols = TRUE
 )
 dev.off()
 
 # plot it with percent 
+my.table.16 <- with(colData(spe), table(bayesSpace_harmony_9, bayesSpace_harmony_16))
 my.table.16.percent <- table_percent(my.table.16)$percent_row
+my.table.16.percent[my.table.16.percent == 0] <- NA
 
 pdf(file = here::here("plots","07a_bad_clusters","clusters_k9_k16_percent.pdf"))
 pheatmap(
