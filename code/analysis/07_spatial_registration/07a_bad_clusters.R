@@ -100,9 +100,6 @@ pheatmap(
 dev.off()
 
 
-
-
-
 #make orange and gray plots of cluster 1 at k = 9 
 spe$BayesSpace_k9_c1 <- factor(spe$bayesSpace_harmony_9 == 1,
                                  levels = c("TRUE", "FALSE"))
