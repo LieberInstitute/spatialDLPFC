@@ -18,6 +18,7 @@ rcParams['pdf.fonttype'] = 42 # enables correct plotting of text
 import seaborn as sns
 
 import pyhere
+import session_info
 
 ################################################################################
 #   Variable definitions
@@ -191,3 +192,5 @@ f.savefig(
     ),
     bbox_inches='tight'
 )
+
+session_info.show(html=False)
