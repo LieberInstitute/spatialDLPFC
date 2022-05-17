@@ -65,19 +65,19 @@ Sys.time()
 
 Sys.time()
 
-# ## Add segmentation images created by Madhavi Tippani
-# image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
-# 
-# for (img in image_types) {
-#   for (res in c("lowres")) {
-#     spe <- add_images(
-#       spe = spe,
-#       image_dir = here("processed-data", "Images", "spatialLIBD_images"),
-#       image_pattern = paste0(img, "_", res),
-#       image_id_current = res
-#     )
-#   }
-# }
+## Add segmentation images created by Madhavi Tippani
+image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
+
+for (img in image_types) {
+  for (res in c("lowres")) {
+    spe <- add_images(
+      spe = spe,
+      image_dir = here("processed-data", "Images", "spatialLIBD_images"),
+      image_pattern = paste0(img, "_", res),
+      image_id_current = res
+    )
+  }
+}
 
 ## Add the study design info
 add_design <- function(spe) {
@@ -92,38 +92,38 @@ add_design <- function(spe) {
 }
 spe <- add_design(spe)
 
-# ## Read in cell counts and segmentation results
-# segmentations_list <-
-#   lapply(sample_info$sample_id, function(sampleid) {
-#     file <-
-#       here(
-#         "processed-data",
-#         "01_spaceranger_IF",
-#         sampleid,
-#         "outs",
-#         "spatial",
-#         "tissue_spot_counts.csv"
-#       )
-#     if (!file.exists(file)) {
-#       return(NULL)
-#     }
-#     x <- read.csv(file)
-#     x$key <- paste0(x$barcode, "_", sampleid)
-#     return(x)
-#   })
-# ## Merge them (once the these files are done, this could be replaced by an rbind)
-# segmentations <-
-#   Reduce(function(...) {
-#     merge(..., all = TRUE)
-#   }, segmentations_list[lengths(segmentations_list) > 0])
-# 
-# ## Add the information
-# segmentation_match <- match(spe$key, segmentations$key)
-# segmentation_info <-
-#   segmentations[segmentation_match, -which(
-#     colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")
-#   )]
-# colData(spe) <- cbind(colData(spe), segmentation_info)
+## Read in cell counts and segmentation results
+segmentations_list <-
+  lapply(sample_info$sample_id, function(sampleid) {
+    file <-
+      here(
+        "processed-data",
+        "01_spaceranger_IF",
+        sampleid,
+        "outs",
+        "spatial",
+        "tissue_spot_counts.csv"
+      )
+    if (!file.exists(file)) {
+      return(NULL)
+    }
+    x <- read.csv(file)
+    x$key <- paste0(x$barcode, "_", sampleid)
+    return(x)
+  })
+## Merge them (once the these files are done, this could be replaced by an rbind)
+segmentations <-
+  Reduce(function(...) {
+    merge(..., all = TRUE)
+  }, segmentations_list[lengths(segmentations_list) > 0])
+
+## Add the information
+segmentation_match <- match(spe$key, segmentations$key)
+segmentation_info <-
+  segmentations[segmentation_match, -which(
+    colnames(segmentations) %in% c("barcode", "tissue", "row", "col", "imagerow", "imagecol", "key")
+  )]
+colData(spe) <- cbind(colData(spe), segmentation_info)
 
 ## Remove genes with no data
 no_expr <- which(rowSums(counts(spe)) == 0)
@@ -171,6 +171,6 @@ saveRDS(spe, file.path(dir_rdata, "spe.rds"))
 ## Reproducibility information
 print("Reproducibility information:")
 Sys.time()
-proc.time()     
+proc.time()
 options(width = 120)
 session_info()
