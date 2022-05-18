@@ -3,6 +3,7 @@ library("mclust")
 library("spatialLIBD")
 library(tidyr)
 library(ggplot2)
+library("ggpubr")
 
 #plot ARI for pilot data comparing different clustering algorithms to Kristen's manual annnotations
 
@@ -115,5 +116,12 @@ ggplot(ari.df.long, aes(x = factor(method,level =  level_order), y=ari)) +
   theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1, colour = c("blue","blue","red","red","green")),text = element_text(size = 30),axis.title = element_text(size = 30))+
   ylab("Adjusted Rand Index")+
   xlab("Clustering Method")
+dev.off()
+
+pdf(here::here("plots","05_ARI","ggboxplot_pilot_data_ARI_clustering_across.pdf"))
+ggboxplot(ari.df.long, x="method",y = "ari", palette = "Dark",add = "jitter", shape = "method",repel = TRUE, font.label = list(size = 5), legend = "none", ggtheme = theme_pubr(base_size = 30))+
+  ylab("Adjusted Rand Index")+
+  xlab("Clustering Method")+
+  theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1, text = element_text(size = 30),axis.title = element_text(size = 30)))
 dev.off()
 
