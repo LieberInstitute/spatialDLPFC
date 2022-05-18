@@ -78,10 +78,15 @@ adata_vis.var['MT_gene'] = [
 ]
 
 # remove MT genes for spatial mapping (keeping their counts in the object).
-#   Actually, we'll probably use Louise's marker genes, in which case we should
-#   just confirm those don't include mitochondrial genes
 adata_vis.obsm['MT'] = adata_vis[:, adata_vis.var['MT_gene'].values].X.toarray()
 adata_vis = adata_vis[:, ~adata_vis.var['MT_gene'].values]
+
+#   Spatial AnnData needs unique indices. Rather than using barcode (repeated
+#   for every sample), use "key" (barcode + sample ID)
+adata_vis.obs.index = [
+    adata_vis.obs.index[i] + '_' + adata_vis.obs['sample_id'][i]
+    for i in range(adata_vis.n_obs)
+]
 
 # Use ENSEMBL as gene IDs to make sure IDs are unique and correctly matched
 adata_ref.var['SYMBOL'] = adata_ref.var[gene_symbol_var]
@@ -117,15 +122,15 @@ adata_ref = adata_ref[:, selected].copy()
 
 adata_vis.uns['spatial'] = {}
 
-for id in adata_vis.obs['sample'].cat.categories:
+for sample_id in adata_vis.obs['sample'].cat.categories:
     #   Path to JSON from spaceranger including spot size for this sample
-    json_path = os.path.join(json_dir, id, 'scalefactors_json.json')
+    json_path = os.path.join(json_dir, sample_id, 'scalefactors_json.json')
 
     with open(json_path) as f: 
         json_data = json.load(f)
 
     #   Store scalefactors in AnnData as cell2location expects
-    adata_vis.uns['spatial'][id] = {
+    adata_vis.uns['spatial'][sample_id] = {
         'scalefactors': json_data
     }
 
@@ -135,14 +140,14 @@ for id in adata_vis.obs['sample'].cat.categories:
     img_path = str(
         pyhere.here(
             "tangram_libd/raw-data/03_nn_run/hires_histology",
-            id + ".png"
+            sample_id + ".png"
         )
     )
 
     img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
     assert img_arr.shape == (2000, 2000, 3), img_arr.shape
 
-    adata_vis.uns['spatial'][id]['images'] = { 'hires': img_arr }
+    adata_vis.uns['spatial'][sample_id]['images'] = { 'hires': img_arr }
 
 #-------------------------------------------------------------------------------
 #   Attach spatialCoords to spatial AnnData
