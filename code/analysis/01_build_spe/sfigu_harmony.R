@@ -8,7 +8,8 @@ ggplot(data.frame(reducedDim(spe, "UMAP")),
   theme_bw() +
   ggtitle("UMAP of Uncorrected Data") + 
   guides(colour = guide_legend(override.aes = list(size=3))) +
-  scale_colour_discrete(name = "Sample ID")
+  scale_colour_discrete(name = "Sample ID")+
+  theme(axis.text = element_text(size = 15),axis.title = element_text(size = 18),plot.title = element_text(size = 20))
 dev.off()
 
 
@@ -21,5 +22,6 @@ ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
   theme_bw() +
   ggtitle("UMAP of Batch-Corrected Data") + 
   guides(colour = guide_legend(override.aes = list(size=3))) +
-  scale_colour_discrete(name = "Sample ID")
+  scale_colour_discrete(name = "Sample ID")+
+  theme(axis.text = element_text(size = 15),axis.title = element_text(size = 18),plot.title = element_text(size = 20))
 dev.off()

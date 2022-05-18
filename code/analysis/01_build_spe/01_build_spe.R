@@ -360,8 +360,8 @@ p_scran <-vis_grid_clus(
   colors = c("FALSE" = "grey90", "TRUE" = "orange"),
   spatial = FALSE,
   point_size = 2,
-  height = 24,
-  width = 90, 
+  # height = 24,
+  # width = 90, 
   return_plots = TRUE,
   image_id = "lowres"
 )
@@ -372,7 +372,7 @@ p_scran <- lapply(sample_order, function(sampleid){
 })
 names(p_scran) <- sample_order
 
-pdf(file = here::here("plots", "01_build_spe",paste0("vis_clus_sample_aware_low_lib_size_sfigur.pdf")), height = 24, width = 36)
+pdf(file = here::here("plots", "01_build_spe",paste0("vis_clus_sample_aware_low_lib_size_sfigur.pdf")), height = 5*8, width = 6*8)
 print(cowplot::plot_grid(plotlist = p_scran))
 dev.off()
 
