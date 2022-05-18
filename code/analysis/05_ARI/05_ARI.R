@@ -95,33 +95,43 @@ ari.df.long <- rbind(ari.df.long,ari.df.long.2)
 dim(ari.df.long)
 #60  3
 
-levels(ari.df.long$method) <-c(levels(ari.df.long$method),"Graph-Based","Graph-based (BC)","BayesSpace","BayesSpace (BC)","SpaGCN")
+levels(ari.df.long$method) <-c(levels(ari.df.long$method),"Graph-Based","Graph-based(BC)","BayesSpace","BayesSpace(BC)","SpaGCN")
 ari.df.long$method[ari.df.long$method == "SNN_k10_k7"] <- "Graph-Based"
 ari.df.long$method[ari.df.long$method == "batch_corr_SNN_k10_k7"] <- "Graph-based (BC)"
 ari.df.long$method[ari.df.long$method == "bayesSpace_pc"] <- "BayesSpace"
 ari.df.long$method[ari.df.long$method == "bayesSpace"] <- "Batch-corrected bayesSpace"
 ari.df.long$method[ari.df.long$method == "spaGCN_refined_cluster"] <- "SpaGCN"
 
-#ari.df.long$method[ari.df.long$method == "Batch-corrected bayesSpace"] <- "BayesSpace (BC)"
+ari.df.long$method[ari.df.long$method == "Batch-corrected graph-based"] <- "Graph-based (BC)"
+ari.df.long$method[ari.df.long$method == "Batch-corrected bayesSpace"] <- "BayesSpace (BC)"
+
+ari.df.long$method[ari.df.long$method == "Graph-based (BC)"] <- "Graph-based(BC)"
+ari.df.long$method[ari.df.long$method == "BayesSpace (BC)"] <- "BayesSpace(BC)"
+
+ari.df.long$general_method[c(1:12)] <- "GB"
+ari.df.long$general_method[c(25:48)] <- "BS"
+ari.df.long$general_method[c(49:60)] <- "SG"
 
 save(ari.df.long,file = here::here("processed-data", "rdata", "pilot_dlpfc_data","05_ARI", "pilot_ari_clustering_across.Rdata"))
 
-level_order <- c("Graph-Based","Graph-based (BC)","BayesSpace","BayesSpace (BC)","SpaGCN")
-pdf(here::here("plots","05_ARI","pilot_data_ARI_clustering_across.pdf"))
-ggplot(ari.df.long, aes(x = factor(method,level =  level_order), y=ari)) + 
-  geom_boxplot(outlier.shape = NA)+
-  theme_bw()+
-  geom_jitter(color="black", size=1.0, alpha=0.9)+
-  ylim(0,0.6)+
-  theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1, colour = c("blue","blue","red","red","green")),text = element_text(size = 30),axis.title = element_text(size = 30))+
-  ylab("Adjusted Rand Index")+
-  xlab("Clustering Method")
-dev.off()
+# level_order <- c("Graph-Based","Graph-based(BC)","BayesSpace","BayesSpace(BC)","SpaGCN")
+# pdf(here::here("plots","05_ARI","pilot_data_ARI_clustering_across.pdf"))
+# ggplot(ari.df.long, aes(x = factor(method,level =  level_order), y=ari)) + 
+#   geom_boxplot(outlier.shape = NA)+
+#   theme_bw()+
+#   geom_jitter(color="black", size=1.0, alpha=0.9)+
+#   ylim(0,0.6)+
+#   theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1, colour = c("blue","blue","red","red","green")),text = element_text(size = 30),axis.title = element_text(size = 30))+
+#   ylab("Adjusted Rand Index")+
+#   xlab("Clustering Method")
+# dev.off()
 
 pdf(here::here("plots","05_ARI","ggboxplot_pilot_data_ARI_clustering_across.pdf"))
-ggboxplot(ari.df.long, x="method",y = "ari", palette = "Dark",add = "jitter", shape = "method",repel = TRUE, font.label = list(size = 5), legend = "none", ggtheme = theme_pubr(base_size = 30))+
-  ylab("Adjusted Rand Index")+
-  xlab("Clustering Method")+
-  theme(axis.text.x = element_text(size = 20,angle = 90, vjust = 0.5, hjust = 1, text = element_text(size = 30),axis.title = element_text(size = 30)))
+ggboxplot(ari.df.long, x="method",y = "ari", color = "general_method",palette = "Dark",add = "jitter", shape = "method",repel = TRUE, font.label = list(size = 5), legend = "none", ggtheme = theme_pubr(base_size = 30),ylab="Adjusted Rand Index",xlab = "Clustering Method")+
+  font("xy.text", size = 9.5)+
+  font("xlab", size = 16)+
+  font("ylab",size = 16)
 dev.off()
+
+
 
