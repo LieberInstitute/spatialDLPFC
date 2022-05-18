@@ -30,7 +30,7 @@ pk <- lapply(sample_order, function(sampleid){
 })
 names(pk) <- sample_order
 
-pdf(file = here::here("plots", "03_BayesSpace", paste0("vis_grid_clus_sfigu_BayesSpace_k",k,".pdf")), height = 5*8, width = 6*8)
+pdf(file = here::here("plots", "03_BayesSpace", paste0("test_vis_grid_clus_sfigu_BayesSpace_k",k,".pdf")), height = 5*8, width = 6*8)
 print(cowplot::plot_grid(plotlist = pk))
 dev.off()
 
