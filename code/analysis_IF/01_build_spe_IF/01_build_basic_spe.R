@@ -65,19 +65,19 @@ Sys.time()
 
 Sys.time()
 
-## Add segmentation images created by Madhavi Tippani
-image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
-
-for (img in image_types) {
-  for (res in c("lowres")) {
-    spe <- add_images(
-      spe = spe,
-      image_dir = here("processed-data", "Images", "spatialLIBD_images"),
-      image_pattern = paste0(img, "_", res),
-      image_id_current = res
-    )
-  }
-}
+# ## Add segmentation images created by Madhavi Tippani
+# image_types <- c("Abeta", "Abeta_seg", "pTau", "pTau_seg", "DAPI", "DAPI_seg", "merge", "merge_seg")
+# 
+# for (img in image_types) {
+#   for (res in c("lowres")) {
+#     spe <- add_images(
+#       spe = spe,
+#       image_dir = here::here("raw-data", "Images", "VisiumIF", "VistoSeg"),
+#       image_pattern = paste0(img, "_", res),
+#       image_id_current = res
+#     )
+#   }
+# }
 
 ## Add the study design info
 add_design <- function(spe) {
