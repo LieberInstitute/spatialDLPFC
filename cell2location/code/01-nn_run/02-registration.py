@@ -7,10 +7,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from matplotlib.backends.backend_pdf import PdfPages
 
 import cell2location
 from cell2location.models import RegressionModel
+from cell2location.utils import select_slide
+from cell2location.plt import plot_spatial
 import scvi
 
 from matplotlib import rcParams
@@ -61,7 +62,7 @@ def perform_regression(
 
     # plot ELBO loss history during training, removing first 10% of epochs from
     # the plot
-    mod.plot_history(int(max_epochs) / 10)
+    mod.plot_history(int(max_epochs / 10))
     f = plt.gcf()
     f.savefig(
         os.path.join(plot_dir, f'{plot_name}.{plot_file_type}'),
@@ -175,6 +176,36 @@ f.savefig(
         plot_dir, f'spatial_qc_across_batches.{plot_file_type}'
     ),
     bbox_inches='tight'
+)
+
+# add 5% quantile, representing confident cell abundance, 'at least this amount
+# is present', to adata.obs with nice names for plotting
+adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
+    'q05_cell_abundance_w_sf'
+]
+
+################################################################################
+#   Visualization
+################################################################################
+
+#   Take the first sample and first 8 cell types
+# slide = select_slide(adata_vis, adata_vis.obs['sample'].cat.categories[0])
+# cell_types = adata_ref.obs[cell_type_var].cat.categories[:8]
+
+#   Manually subset since 'select_slide' is being weird
+sample_id = adata_vis.obs['sample'].cat.categories[0]
+slide = adata_vis[adata_vis.obs['sample'] == sample_id, :].copy()
+slide.uns['spatial'] = { sample_id: slide.uns['spatial'][sample_id] }
+
+
+sc.pl.spatial(
+    slide, cmap='magma',
+    # show first 8 cell types
+    color=cell_types,
+    ncols=4, size=1.3,
+    img_key='hires',
+    # limit color scale at 99.2% quantile of cell abundance
+    vmin=0, vmax='p99.2'
 )
 
 session_info.show(html=False)
