@@ -8,12 +8,14 @@ library("ggpubr")
 #plot ARI for pilot data comparing different clustering algorithms to Kristen's manual annnotations
 
 #load pilot data with non batch-corrected BayesSpace k - 7
-load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_bayesSpace_pcs.Rdata")
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/05_ARI/spe_pilot_bayesSpace_pcs.Rdata")
 spe.bspc <- spe
-spe$spatial.cluster.pcs <- spe.bspc$spatial.cluster
 
 #load pilot data with batch-corrected BayesSpace k - 7
 load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/pilot_dlpfc_data/spe_pilot_bayesSpace_batch_corr_sampleID.Rdata")
+
+spe$spatial.cluster.pcs <- spe.bspc$spatial.cluster
+
 
 sample_ids <- unique(spe$sample_id)
 ari.df <- data.frame(matrix(ncol = 5, nrow = 12))
@@ -35,34 +37,34 @@ save(ari.df.long, file = here::here("processed-data", "rdata", "pilot_dlpfc_data
 
 
 ####make plots for fiure 2a, clustering across pilot data
-pdf(here::here("plots","05_ARI","pilot_data_ARI_clustering_across_2.pdf"))
-ggplot(ari.df.long, aes(x = method, y=ari)) + 
-  geom_boxplot()+
-  theme_bw()+
-  geom_jitter(color="black", size=0.4, alpha=0.9)+
-  ylim(0,0.6)+
-  theme(text = element_text(size = 40)) 
-dev.off()
+# pdf(here::here("plots","05_ARI","pilot_data_ARI_clustering_across_2.pdf"))
+# ggplot(ari.df.long, aes(x = method, y=ari)) + 
+#   geom_boxplot()+
+#   theme_bw()+
+#   geom_jitter(color="black", size=0.4, alpha=0.9)+
+#   ylim(0,0.6)+
+#   theme(text = element_text(size = 40)) 
+# dev.off()
 
 
 
 #### spaGCN ARI for pilot data
 
 #load old ARI results
-load(file = here::here("processed-data", "rdata", "pilot_dlpfc_data","05_ARI", "pilot_ari_clustering_across.Rdata"))
-ari.df.long <-ari.df.long[1:48,]
+# load(file = here::here("processed-data", "rdata", "pilot_dlpfc_data","05_ARI", "pilot_ari_clustering_across.Rdata"))
+# ari.df.long <-ari.df.long[1:48,]
 
 #load pilot data 
-load(file = here::here("processed-data","rdata","pilot_dlpfc_data","spe_pilot_bayesSpace_batch_corr_sampleID.Rdata"))
+# load(file = here::here("processed-data","rdata","pilot_dlpfc_data","spe_pilot_bayesSpace_batch_corr_sampleID.Rdata"))
 
-sample_ids <- unique(spe$sample_id)
-df <- data.frame()
-for(i in seq_along(sample_ids)){
-  x <-read.csv(file = here::here("..","spython","spagcn","processed-data","03-our_data_analysis",sample_ids[i],"7_clusters","clusters.csv"))
-  df <- rbind(df,x)
-}
-
-write.csv(df,file = here::here("processed-data","rdata","pilot_dlpfc_data","clustering_results","spaGCN_k7","clusters.csv"))
+# sample_ids <- unique(spe$sample_id)
+# df <- data.frame()
+# for(i in seq_along(sample_ids)){
+#   x <-read.csv(file = here::here("..","spython","spagcn","processed-data","03-our_data_analysis",sample_ids[i],"7_clusters","clusters.csv"))
+#   df <- rbind(df,x)
+# }
+# 
+# write.csv(df,file = here::here("processed-data","rdata","pilot_dlpfc_data","clustering_results","spaGCN_k7","clusters.csv"))
 
 #import spaGCN clusters
 spe <- cluster_import(
@@ -97,16 +99,10 @@ dim(ari.df.long)
 
 levels(ari.df.long$method) <-c(levels(ari.df.long$method),"Graph-Based","Graph-based(BC)","BayesSpace","BayesSpace(BC)","SpaGCN")
 ari.df.long$method[ari.df.long$method == "SNN_k10_k7"] <- "Graph-Based"
-ari.df.long$method[ari.df.long$method == "batch_corr_SNN_k10_k7"] <- "Graph-based (BC)"
+ari.df.long$method[ari.df.long$method == "batch_corr_SNN_k10_k7"] <- "Graph-based(BC)"
 ari.df.long$method[ari.df.long$method == "bayesSpace_pc"] <- "BayesSpace"
-ari.df.long$method[ari.df.long$method == "bayesSpace"] <- "Batch-corrected bayesSpace"
+ari.df.long$method[ari.df.long$method == "bayesSpace"] <- "BayesSpace(BC)"
 ari.df.long$method[ari.df.long$method == "spaGCN_refined_cluster"] <- "SpaGCN"
-
-ari.df.long$method[ari.df.long$method == "Batch-corrected graph-based"] <- "Graph-based (BC)"
-ari.df.long$method[ari.df.long$method == "Batch-corrected bayesSpace"] <- "BayesSpace (BC)"
-
-ari.df.long$method[ari.df.long$method == "Graph-based (BC)"] <- "Graph-based(BC)"
-ari.df.long$method[ari.df.long$method == "BayesSpace (BC)"] <- "BayesSpace(BC)"
 
 ari.df.long$general_method[c(1:12)] <- "GB"
 ari.df.long$general_method[c(25:48)] <- "BS"
