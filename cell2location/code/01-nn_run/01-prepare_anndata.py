@@ -40,11 +40,6 @@ Path(processed_dir).mkdir(parents=True, exist_ok=True)
 #   and scale factors for each sample
 json_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X'
 
-# create paths and names to results folders for reference regression and
-# cell2location models
-ref_run_name = f'{processed_dir}/reference_signatures'
-run_name = f'{processed_dir}/cell2location_map'
-
 #   Naming conventions used for different columns in the spatial AnnData
 sample_id_var = 'sample_id'   # in spatial object only
 ensembl_id_var = 'gene_id'    # in both spatial and single-cell objects
@@ -83,10 +78,8 @@ adata_vis = adata_vis[:, ~adata_vis.var['MT_gene'].values]
 
 #   Spatial AnnData needs unique indices. Rather than using barcode (repeated
 #   for every sample), use "key" (barcode + sample ID)
-adata_vis.obs.index = [
-    adata_vis.obs.index[i] + '_' + adata_vis.obs['sample_id'][i]
-    for i in range(adata_vis.n_obs)
-]
+adata_vis.obs_names = adata_vis.obs['key']
+adata_vis.obs_names.name = None
 
 # Use ENSEMBL as gene IDs to make sure IDs are unique and correctly matched
 adata_ref.var['SYMBOL'] = adata_ref.var[gene_symbol_var]
