@@ -10,7 +10,7 @@ options(repos = BiocManager::repositories())
 ## Load the data (all paths are relative to this script's location)
 spe <- readRDS("spe.rds")
 #spe <- readRDS(here::here("processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"))
-#spe$CellCount <- spe$segmentation_info
+spe$CellCount <- spe$counts
 vars <- colnames(colData(spe))
 
 ## Deploy the website
@@ -21,6 +21,6 @@ spatialLIBD::run_app(
     sig_genes = NULL,
     title = "spatialDLPFC_IF",
     spe_discrete_vars = c(vars[grep("10x_", vars)], "ManualAnnotation"),
-    spe_continuous_vars = c("sum_umi", "sum_gene", "expr_chrM", "expr_chrM_ratio"),
+    spe_continuous_vars = c("sum_umi", "sum_gene", "expr_chrM", "expr_chrM_ratio","CellCount"),
     default_cluster = "10x_graphclust"
   )
