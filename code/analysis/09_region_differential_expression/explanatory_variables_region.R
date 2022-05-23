@@ -10,6 +10,7 @@ k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("spe_pseudobulk_bayesSpace_normalized_filtered_region_k",k,".Rdata")))
 
+
 #run PCA
 pca <- prcomp(t(assays(spe_pseudo_filter_region)$logcounts))
 jaffelab::getPcaVars(pca)[seq_len(50)]
@@ -26,12 +27,12 @@ reducedDims(spe_pseudo_filter_region) <- list(PCA=pca_pseudo)
 # code adapted from: http://bioconductor.org/packages/release/bioc/vignettes/scater/inst/doc/overview.html#2_Diagnostic_plots_for_quality_control
 ###plot PCA###
 pdf(file = here::here("plots","09_region_differential_expression",paste0("spe_pseudobulk_pca_k",k,".pdf")), width = 14, height = 14)
-plotPCA(spe_pseudo, colour_by = "subject", ncomponents = 12, point_size = 1) 
-plotPCA(spe_pseudo, colour_by = "region", ncomponents = 12, point_size = 1) 
-plotPCA(spe_pseudo, colour_by = "sex", ncomponents = 12, point_size = 1) 
-plotPCA(spe_pseudo, colour_by = "age", ncomponents = 12, point_size = 1) 
-plotPCA(spe_pseudo, colour_by = "BayesSpace", ncomponents = 12, point_size = 1) 
-plotPCA(spe_pseudo, colour_by = "sample_id", ncomponents = 12, point_size = 1)
+plotPCA(spe_pseudo_filter_region, colour_by = "subject", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo_filter_region, colour_by = "region", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo_filter_region, colour_by = "sex", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo_filter_region, colour_by = "age", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo_filter_region, colour_by = "BayesSpace", ncomponents = 12, point_size = 1) 
+plotPCA(spe_pseudo_filter_region, colour_by = "sample_id", ncomponents = 12, point_size = 1)
 dev.off()
 
 ####plot explanatory variables ####
@@ -49,7 +50,7 @@ head(vars)
 # ENSG00000229905 10.113068 0.5911937 1.0110245 0.266643458
 # ENSG00000237491 17.499031 9.9500577 0.2762791 0.570564318
 
-pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_k",k,"_testLeo.pdf")))
+pdf(file = here::here("plots","09_region_differential_expression",paste0("plot_explanatory_vars_region_k",k,".pdf")))
 plotExplanatoryVariables(vars)
 dev.off()
 
