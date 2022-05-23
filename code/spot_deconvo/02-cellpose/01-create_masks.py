@@ -1,8 +1,10 @@
+import os
 import numpy as np
 from cellpose import models
 from cellpose.io import imread
 import pyhere
 import pandas as pd
+from pathlib import Path
 
 model_type='nuclei'
 channel = 1 # DAPI
@@ -14,6 +16,9 @@ sample_info_path = pyhere.here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
 )
 img_dir = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg')
+mask_dir = pyhere.here('processed-data', 'spot_deconvo', '02-cellpose', 'masks')
+
+Path(mask_dir).mkdir(parents=True, exist_ok=True)
 
 #   Determine paths to IF images; read them in
 sample_info = pd.read_excel(sample_info_path, header = 1)[:4]
@@ -26,4 +31,6 @@ imgs = [imread(f)[channel, :, :] for f in img_paths]
 model = models.Cellpose(gpu = True, model_type = model_type)
 masks, flows, styles, diams = model.eval(imgs, diameter=cell_diameter)
 
-#   TODO: save masks
+#   Save masks individually
+for mask, sample_id in zip(masks, sample_ids):
+    np.save(os.path.join(mask_dir, sample_id + '_mask.npy'), mask)
