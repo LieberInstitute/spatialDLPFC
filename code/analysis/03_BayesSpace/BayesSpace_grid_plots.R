@@ -9,8 +9,11 @@ k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 #load spe object and clusters
 load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final_with_clusters.Rdata"),verbose = TRUE)
 
-mycolors <- brewer.pal(8, "Dark2")
+#mycolors <- brewer.pal(8, "Dark2")
+mycolors <- Polychrome::palette36.colors(k)
+names(mycolors) <- sort(unique(colData(spe)[[paste0("bayesSpace_harmony_",k)]]))
 sample_order = unique(spe$sample_id)
+
 
 pk <- vis_grid_clus(
   spe = spe,
@@ -30,7 +33,7 @@ pk <- lapply(sample_order, function(sampleid){
 })
 names(pk) <- sample_order
 
-pdf(file = here::here("plots", "03_BayesSpace", paste0("test_vis_grid_clus_sfigu_BayesSpace_k",k,".pdf")), height = 5*8, width = 6*8)
+pdf(file = here::here("plots", "03_BayesSpace", paste0("polychrome_vis_grid_clus_sfigu_BayesSpace_k",k,".pdf")), height = 5*8, width = 6*8)
 print(cowplot::plot_grid(plotlist = pk))
 dev.off()
 
