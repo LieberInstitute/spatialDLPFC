@@ -10,6 +10,7 @@ k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 load(file = here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final_with_clusters.Rdata"),verbose = TRUE)
 
 mycolors <- Polychrome::palette36.colors(k)
+names(mycolors) <- sort(unique(colData(spe)[[paste0("bayesSpace_harmony_",k)]]))
 bayesSpace_name <- paste0("bayesSpace_harmony_", k)
 sample_ids <- unique(colData(spe)$sample_id)
 
