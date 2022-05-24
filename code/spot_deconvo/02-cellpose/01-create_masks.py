@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from cellpose import models
+from cellpose import models, io
 from cellpose.io import imread
 import pyhere
 import pandas as pd
@@ -30,6 +30,10 @@ imgs = [imread(f)[channel, :, :] for f in img_paths]
 #   Initialize the model and process images using it
 model = models.Cellpose(gpu = True, model_type = model_type)
 masks, flows, styles, diams = model.eval(imgs, diameter=cell_diameter)
+
+#   Save PNG versions of the masks to visually inspect results
+mask_pngs = [str(x) for x in pyhere.here(mask_dir, sample_ids + '_mask.png')]
+io.save_to_png(imgs, masks, flows, mask_pngs)
 
 #   Save masks individually
 for mask, sample_id in zip(masks, sample_ids):
