@@ -7,6 +7,7 @@ import tifffile
 from scipy.spatial import KDTree
 from skimage.measure import regionprops, regionprops_table
 import pyhere
+from pathlib import Path
 
 sns.set()
 
@@ -32,6 +33,9 @@ spot_path = pyhere.here(
     'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
     'tissue_positions_list.csv'
 )
+plot_dir = pyhere.here("plots", "spot_deconvo", "02-cellpose")
+
+Path(plot_dir).mkdir(parents=True, exist_ok=True)
 
 #-------------------------------------------------------------------------------
 #   Dataset-specific variables
@@ -46,6 +50,8 @@ thresholds = {
 m_per_px = 0.497e-6
 spot_radius = 65e-6
 area_threshold = 200
+
+plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 
 ################################################################################
 #   Functions
@@ -148,6 +154,11 @@ pad = 5
 plot_roi(4)
 plt.scatter(raw["x"], raw["y"], 2)
 plt.scatter(df["y"], df["x"], 2)
+f = plt.gcf()
+f.savefig(
+    os.path.join(plot_dir, 'roi_{}.{}'.format(sample_id_img, plot_file_type)),
+    bbox_inches='tight'
+)
 
 # ### Process ROI properties.
 #
@@ -174,7 +185,15 @@ combi = pd.concat([df, dist], axis=1)
 for name, t in thresholds.items():
     combi[f"N_{name}"] = combi[name] > t
 
+#   Plot distribution of cell areas
+plt.clf()
 sns.histplot(data=df, x="area")
+plt.savefig(
+    os.path.join(
+        plot_dir, 'cell_areas_{}.{}'.format(sample_id_img, plot_file_type)
+    ),
+    bbox_inches='tight'
+)
 
 # Filters out masks that are smaller than a threshold and
 # masks whose centroid is farther than the spot radius (aka not inside the
@@ -200,11 +219,17 @@ out = pd.concat(
 out.fillna(0, inplace=True)
 for name in thresholds:
     out[f"N_{name}"] = out[f"N_{name}"].astype(int)
+
 out.counts = out.counts.astype(int)
 
 #   Make compatible with spatialLIBD 'clusters.csv' format
 out.index = out['barcode'] + '_' + sample_id_img
 out.index.name = 'key'
-out.drop('barcode', axis = 1, inplace = True)
+out.drop(['row', 'col', 'x', 'y', 'barcode'], axis = 1, inplace = True)
 
 out.to_csv(out_path, float_format="%.3f")
+
+#   Print some quick stats about the cell counts per spot
+prop_nonzero = round(100 * np.count_nonzero(out['counts']) / out.shape[0], 1)
+print(f"Percentage of spots with at least one cell: {prop_nonzero}%")
+print(f"Mean number of cells per spot: {round(np.mean(out['counts']), 3)}")
