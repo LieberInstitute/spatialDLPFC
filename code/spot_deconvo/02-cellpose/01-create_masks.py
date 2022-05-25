@@ -20,21 +20,20 @@ mask_dir = pyhere.here('processed-data', 'spot_deconvo', '02-cellpose', 'masks')
 
 Path(mask_dir).mkdir(parents=True, exist_ok=True)
 
-#   Determine paths to IF images; read them in
+#   Determine paths to IF images; read in just the one for this sample
 sample_info = pd.read_excel(sample_info_path, header = 1)[:4]
 sample_ids = sample_info['Slide SN #'] + '_' + sample_info['Array #']
+sample_id = sample_ids[int(os.environ['SGE_TASK_ID']) - 1]
 
-img_paths = [str(x) + '.tif' for x in pyhere.here(img_dir, sample_ids)]
-imgs = [imread(f) for f in img_paths]
+img = imread(pyhere.here(img_dir, sample_id + '.tif'))
 
 #   Initialize the model and process images using it
 model = models.Cellpose(gpu = True, model_type = model_type)
-masks, flows, styles, diams = model.eval(imgs, diameter=cell_diameter, channels = channels)
+masks, flows, styles, diams = model.eval(img, diameter=cell_diameter, channels = channels)
 
-#   Save PNG versions of the masks to visually inspect results
-mask_pngs = [str(x) for x in pyhere.here(mask_dir, sample_ids + '_mask.png')]
-io.save_to_png(imgs, masks, flows, mask_pngs)
+#   Save PNG version of the masks to visually inspect results
+mask_png = str(pyhere.here(mask_dir, sample_id + '_mask.png'))
+io.save_to_png(img, masks, flows, mask_png)
 
-#   Save masks individually
-for mask, sample_id in zip(masks, sample_ids):
-    np.save(os.path.join(mask_dir, sample_id + '_mask.npy'), mask)
+#   Save masks
+np.save(os.path.join(mask_dir, sample_id + '_mask.npy'), masks)

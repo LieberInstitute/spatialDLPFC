@@ -1,9 +1,11 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "create_masks"
-#$ -o ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks.log
-#$ -e ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks.log
-#$ -l caracol,mf=64G,h_vmem=64G
+#$ -o ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
+#$ -l caracol,mf=150G,h_vmem=150G
+#$ -t 1-4
+#$ -tc 2
 
 echo "**** Job starts ****"
 date
@@ -12,6 +14,7 @@ echo "User: ${USER}"
 echo "Job id: ${JOB_ID}"
 echo "Job name: ${JOB_NAME}"
 echo "Hostname: ${HOSTNAME}"
+echo "Task id: ${SGE_TASK_ID}"
 
 ###############################################################################
 #   Dynamically select a GPU based on availability
@@ -40,7 +43,6 @@ export CUDA_VISIBLE_DEVICES=$(
 ###############################################################################
 
 module load cellpose/2.0
-
 python 01-create_masks.py
 
 echo "**** Job ends ****"
