@@ -42,6 +42,20 @@ spe_pseudo <- aggregateAcrossCells(
   )
 )
 
+
+###############################
+
+#find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
+rowData(spe_pseudo)$filter_expr <- filterByExpr(spe_pseudo)
+summary(rowData(spe_pseudo)$filter_expr)
+# Mode   FALSE    TRUE 
+# logical   21059    7857 
+
+spe_pseudo <- spe_pseudo[which(rowData(spe_pseudo)$filter_expr),]
+
+
+#spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL) #change this to use calcNormFactors from edgeR
+
 #spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL) #change this to use calcNormFactors from edgeR
 x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo), log = TRUE, prior.count = 1)
 ## Verify that the gene order hasn't changed
@@ -53,15 +67,6 @@ logcounts(spe_pseudo) <- x
 ## We don't need this 'x' object anymore
 rm(x)
 
-###############################
-
-#find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
-rowData(spe_pseudo)$low_expr <- filterByExpr(spe_pseudo)
-summary(rowData(spe_pseudo)$low_expr)
-# Mode   FALSE    TRUE 
-# logical   21059    7857 
-
-spe_pseudo <- spe_pseudo[which(!rowData(spe_pseudo)$low_expr),]
 
 ##### get mean expression  ####
 mat_filter <- assays(spe_pseudo)$logcounts #make matrix of filtered just the log normalized counts
