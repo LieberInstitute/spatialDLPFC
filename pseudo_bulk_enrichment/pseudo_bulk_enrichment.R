@@ -179,14 +179,15 @@ results_specificity <-
 head(results_specificity)
 
 #object to return
-as.data.frame(results_specificity@listData)
+results_specificity <-as.data.frame(results_specificity@listData)
 
+#saveRDS(results_specificity, file = here::here("pseudo_bulk_enrichment","results_specificity.RDS"))
 #stop here
 
 modeling_results = fetch_data(type = "modeling_results")
 
 cor <- layer_stat_cor(
-  test.df,
+  results_specificity,
   modeling_results,
   model_type = names(modeling_results)[2],
   reverse = FALSE,
