@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 
 model_type='nuclei'
-channel = 1 # DAPI
+channels = [1, 0] # DAPI
 cell_diameter = None
 
 #   Path to excel sheet containing sample info; directory containing .tif
@@ -25,11 +25,11 @@ sample_info = pd.read_excel(sample_info_path, header = 1)[:4]
 sample_ids = sample_info['Slide SN #'] + '_' + sample_info['Array #']
 
 img_paths = [str(x) + '.tif' for x in pyhere.here(img_dir, sample_ids)]
-imgs = [imread(f)[channel, :, :] for f in img_paths]
+imgs = [imread(f) for f in img_paths]
 
 #   Initialize the model and process images using it
 model = models.Cellpose(gpu = True, model_type = model_type)
-masks, flows, styles, diams = model.eval(imgs, diameter=cell_diameter)
+masks, flows, styles, diams = model.eval(imgs, diameter=cell_diameter, channels = channels)
 
 #   Save PNG versions of the masks to visually inspect results
 mask_pngs = [str(x) for x in pyhere.here(mask_dir, sample_ids + '_mask.png')]
