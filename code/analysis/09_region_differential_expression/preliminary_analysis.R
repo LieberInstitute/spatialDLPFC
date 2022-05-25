@@ -68,7 +68,6 @@ summary(rowData(spe_pseudo)$filter_expr_group_cluster )
 rowData(spe_pseudo)$filter_expr_group_region <- filterByExpr(spe_pseudo, group = spe_pseudo$region)
 summary(rowData(spe_pseudo)$filter_expr_group_region )
 
-with(rowData(spe_pseudo), table(filter_expr,filter_expr_group_cluster))
 with(rowData(spe_pseudo), table(filter_expr_group_sample_id, filter_expr_group_cluster))
 
 spe_pseudo_filter_cluster <- spe_pseudo[which(rowData(spe_pseudo)$filter_expr_group_cluster),]
@@ -92,6 +91,22 @@ rm(x)
 
 dim(spe_pseudo_filter_cluster)
 
+#run PCA
+pca <- prcomp(t(assays(spe_pseudo_filter_cluster)$logcounts)) #this will be computed in script that creates pseudobulked object
+message(Sys.time(), " % of variance explained for the top 20 PCs:")
+metadata(spe_pseudo_filter_cluster)
+metadata(spe_pseudo_filter_cluster) <- list("PCA_var_explained" = jaffelab::getPcaVars(pca)[seq_len(20)])
+metadata(spe_pseudo_filter_cluster)
+pca_pseudo<- pca$x[, seq_len(50)]
+colnames(pca_pseudo) <- paste0("PC", sprintf("%02d", seq_len(ncol(pca_pseudo))))
+reducedDims(spe_pseudo_filter_cluster) <- list(PCA = pca_pseudo)
+
+## Compute some reduced dims
+set.seed(20220423)
+spe_pseudo_filter_cluster <- scater::runMDS(spe_pseudo_filter_cluster, ncomponents = 20)
+spe_pseudo_filter_cluster <- scater::runPCA(spe_pseudo_filter_cluster, name = "runPCA")
+
+
 #remove parts of pseudobulked objects to make them smaller 
 #https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L389-L399
 rowData(spe_pseudo_filter_cluster)$gene_search <-
@@ -109,7 +124,7 @@ imgData(spe_pseudo_filter_cluster) <- NULL
 # adpate this to use the polychrome scale I'm already using for my other figures 
 #https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L403-L404
 source(here("code", "analysis","colors_bayesSpace.R"), echo = TRUE, max.deparse.length = 500)
-spe_pseudo$BayesSpace_colors <- colors_bayesSpace[as.character(spe_pseudo$BayesSpace)]
+spe_pseudo_filter_cluster$BayesSpace_colors <- colors_bayesSpace[as.character(spe_pseudo_filter_cluster$BayesSpace)]
 
 #update this to indicate this version of the object is normalized and filtered
 saveRDS(spe_pseudo_filter_cluster, 
