@@ -20,6 +20,7 @@ import seaborn as sns
 
 import pyhere
 import session_info
+from pathlib import Path
 
 ################################################################################
 #   Variable definitions
@@ -171,7 +172,7 @@ adata_vis, mod = perform_regression(
 )
 
 fig = mod.plot_spatial_QC_across_batches()
-f.savefig(
+fig.savefig(
     os.path.join(
         plot_dir, f'spatial_qc_across_batches.{plot_file_type}'
     ),
@@ -188,24 +189,70 @@ adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
 #   Visualization
 ################################################################################
 
-#   Take the first sample and first 8 cell types
-# slide = select_slide(adata_vis, adata_vis.obs['sample'].cat.categories[0])
-# cell_types = adata_ref.obs[cell_type_var].cat.categories[:8]
+#   TODO:
+#       1. possibly change number of cell types + related choices
 
-#   Manually subset since 'select_slide' is being weird
-sample_id = adata_vis.obs['sample'].cat.categories[0]
-slide = adata_vis[adata_vis.obs['sample'] == sample_id, :].copy()
-slide.uns['spatial'] = { sample_id: slide.uns['spatial'][sample_id] }
+for sample_id in adata_vis.obs['sample'].cat.categories:
+    #   Subset to this sample
+    slide = select_slide(adata_vis, sample_id)
 
+    cell_types = adata_ref.obs[cell_type_var].cat.categories
 
-sc.pl.spatial(
-    slide, cmap='magma',
-    # show first 8 cell types
-    color=cell_types,
-    ncols=4, size=1.3,
-    img_key='hires',
-    # limit color scale at 99.2% quantile of cell abundance
-    vmin=0, vmax='p99.2'
-)
+    #   Plot 8 cell types separately for this sample
+    sc.pl.spatial(
+        slide, cmap='magma',
+        # show first 8 cell types
+        color=cell_types[:8],
+        ncols=4, size=1.3,
+        img_key='hires',
+        # limit color scale at 99.2% quantile of cell abundance
+        vmin=0, vmax='p99.2'
+    )
+    f = plt.gcf()
+    f.savefig(
+        os.path.join(
+            plot_dir, f'individual_cell_types_{sample_id}.{plot_file_type}'
+        ),
+        bbox_inches='tight'
+    )
+
+    fig = plot_spatial(
+        adata=slide,
+        # labels to show on a plot
+        color=cell_types[:6], labels=cell_types[:6],
+        show_img=True,
+        # 'fast' (white background) or 'dark_background'
+        style='fast',
+        # limit color scale at 99.2% quantile of cell abundance
+        max_color_quantile=0.992,
+        # size of locations (adjust depending on figure size)
+        circle_diameter=6,
+        colorbar_position='right'
+    )
+    fig.savefig(
+        os.path.join(
+            plot_dir, f'multi_cell_types_{sample_id}.{plot_file_type}'
+        ),
+        bbox_inches='tight'
+    )
+
+################################################################################
+#   Export deconvo results
+################################################################################
+
+clusters = adata_vis.obs[
+    ['sample'] + adata_vis.uns['mod']['factor_names'].tolist()
+]
+clusters.index.name = 'key'
+
+clusters_by_id = clusters.groupby('sample')
+
+for sample_id in adata_vis.obs['sample'].cat.categories:
+    clusters_subset = clusters_by_id.get_group(sample_id)
+
+    Path(os.path.join(processed_dir, sample_id)).mkdir(
+        parents=True, exist_ok=True
+    )
+    clusters_subset.to_csv(os.path.join(processed_dir, sample_id, 'clusters.csv'))
 
 session_info.show(html=False)
