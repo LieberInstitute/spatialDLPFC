@@ -107,8 +107,8 @@ spe_pseudo_filter_cluster <- scater::runMDS(spe_pseudo_filter_cluster, ncomponen
 spe_pseudo_filter_cluster <- scater::runPCA(spe_pseudo_filter_cluster, name = "runPCA")
 
 
-#remove parts of pseudobulked objects to make them smaller 
 #https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L389-L399
+## For the spatialLIBD shiny app
 rowData(spe_pseudo_filter_cluster)$gene_search <-
   paste0(
     rowData(spe_pseudo_filter_cluster)$gene_name,
@@ -116,7 +116,7 @@ rowData(spe_pseudo_filter_cluster)$gene_search <-
     rowData(spe_pseudo_filter_cluster)$gene_id
   )
 
-## Drop things we don't need
+#remove parts of pseudobulked objects to make them smaller 
 spatialCoords(spe_pseudo_filter_cluster) <- NULL
 imgData(spe_pseudo_filter_cluster) <- NULL
 
