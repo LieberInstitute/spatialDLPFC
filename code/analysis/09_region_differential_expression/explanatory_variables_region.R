@@ -12,7 +12,7 @@ load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0
 
 
 #run PCA
-pca <- prcomp(t(assays(spe_pseudo_filter_region)$logcounts))
+pca <- prcomp(t(assays(spe_pseudo_filter_region)$logcounts)) #this will be computed in script that creates pseudobulked object
 jaffelab::getPcaVars(pca)[seq_len(50)]
 #  [1] 14.600  4.520  3.150  1.390  1.220  1.080  0.942  0.929  0.889  0.873
 # [11]  0.858  0.855  0.845  0.831  0.818  0.810  0.800  0.796  0.787  0.785
@@ -23,9 +23,11 @@ pca_pseudo<- pca$x[, seq_len(50)]
 
 
 reducedDims(spe_pseudo_filter_region) <- list(PCA=pca_pseudo) 
+#define variables for which we are going to explain variance https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/02_explore_expr_variability.R#L61-L69
 
 # code adapted from: http://bioconductor.org/packages/release/bioc/vignettes/scater/inst/doc/overview.html#2_Diagnostic_plots_for_quality_control
 ###plot PCA###
+#make this a for loophttps://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/02_explore_expr_variability.R#L73-L88
 pdf(file = here::here("plots","09_region_differential_expression",paste0("spe_pseudobulk_pca_k",k,".pdf")), width = 14, height = 14)
 plotPCA(spe_pseudo_filter_region, colour_by = "subject", ncomponents = 12, point_size = 1) 
 plotPCA(spe_pseudo_filter_region, colour_by = "region", ncomponents = 12, point_size = 1) 
@@ -35,9 +37,11 @@ plotPCA(spe_pseudo_filter_region, colour_by = "BayesSpace", ncomponents = 12, po
 plotPCA(spe_pseudo_filter_region, colour_by = "sample_id", ncomponents = 12, point_size = 1)
 dev.off()
 
+#use these to plotPCA function https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/02_explore_expr_variability.R#L80-L81
 ####plot explanatory variables ####
 
 #uses linear regression model
+
 vars <- getVarianceExplained(spe_pseudo_filter_region, 
                              variables=c("subject", "region", "sex", "age", "BayesSpace","sample_id")) 
 head(vars)

@@ -30,7 +30,7 @@ load("sce_pseudobulk_bayesSpace_normalized_filtered_k9.Rdata",verbose = TRUE)
 #load modeling results
 load("parsed_modeling_results_k9.Rdata",verbose = TRUE)
 
-## For sig_genes_extract_all() to work
+## For sig_genes_extract_all() to work https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L37-L44
 spe_pseudo$spatialLIBD <- spe_pseudo$bayesSpace_harmony_9
 # sig_genes <- sig_genes_extract_all(
 #   n = nrow(spe_pseudo),
@@ -45,7 +45,7 @@ spatialLIBD::run_app(
     spe,
     sce_layer = spe_pseudo,
     modeling_results = modeling_results,
-    sig_genes = NULL,
+    sig_genes = NULL, #change this to use sig_genes object
     title = "spatialDLPFC, Spangler et al, 2021",
     spe_discrete_vars = c(
         vars[grep("10x_|scran_", vars)],

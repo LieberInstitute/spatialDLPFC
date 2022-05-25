@@ -27,14 +27,21 @@ spe_pseudo <- aggregateAcrossCells(
   )
 )
 spe_pseudo$BayesSpace <- factor(spe_pseudo$BayesSpace)
+
+# add this line https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L125
+
 #save here for differential expression analysis
 save(spe_pseudo, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("spe_pseudobulk_bayesSpace_k",k,".Rdata")))
+
+#adapt this code to keep colData variables I want https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L181-L196
 
 #drop samples with low numbers of spots here https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L207
 summary(spe_pseudo$ncells)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 # 80.0   394.8  1305.0  1898.8  3391.5  4629.0 
 #spe_pseudo <- spe_pseudo[, spe_pseudo$ncells >=15]
+
+# write csv of this https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L200
 
 #find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
 rowData(spe_pseudo)$filter_expr <- filterByExpr(spe_pseudo) #add group by region keep <- filterByExpr(y, group=current$tomato)
@@ -75,7 +82,11 @@ dim(spe_pseudo_filter_region)
 
 #log normalize the counts
 # spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL)
-x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo_filter_cluster), log = TRUE, prior.count = 1)
+
+#replace calcNormFactors code with this https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L254-L258
+x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo_filter_cluster), 
+                log = TRUE, 
+                prior.count = 1)
 ## Verify that the gene order hasn't changed
 stopifnot(identical(rownames(x), rownames(spe_pseudo_filter_cluster)))
 ## Fix the column names. DGEList will have samples names as Sample1 Sample2 etc
@@ -87,6 +98,10 @@ rm(x)
 
 dim(spe_pseudo_filter_cluster)
 #[1] 12128    60
+
+#remove parts of pseudobulked objects to make them smaller https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L389-L399
+
+# adpate this to use the polychrome scale I'm already using for my other figures https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/11_grey_matter_only/01_create_pseudobulk_data.R#L403-L404
 
 #update this to indicate this version of the object is normalized and filtered
 save(spe_pseudo_filter_cluster, file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k",k,".Rdata")))
