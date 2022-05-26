@@ -3,9 +3,9 @@
 #$ -N "create_masks"
 #$ -o ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
-#$ -l caracol,mf=150G,h_vmem=150G
-#$ -t 1-4
-#$ -tc 2
+#$ -l caracol,mf=400G,h_vmem=400G
+#$ -t 3-4
+#$ -tc 1
 
 echo "**** Job starts ****"
 date
@@ -37,6 +37,8 @@ fi
 export CUDA_VISIBLE_DEVICES=$(
     echo "$avail_gpus" | head -n $NUM_GPUS | paste -sd ","
 )
+
+echo "Chose GPU(s): $CUDA_VISIBLE_DEVICES"
 
 ###############################################################################
 #   Submit the python script
