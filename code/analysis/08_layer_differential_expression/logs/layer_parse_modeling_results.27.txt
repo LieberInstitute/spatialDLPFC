@@ -878,3 +878,149 @@ Sum  26192     1
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
 Wed Apr 27 18:39:02 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Thu May 26 10:24:09 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 230846
+Job name: layer_parse_modeling_results
+Hostname: compute-126.cm.cluster
+Task id: 27
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading objects:
+  f_stats
+  eb0_list
+  eb_contrasts
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+     1               2               3               4          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:24796     FALSE:25491     FALSE:24215     FALSE:21686    
+ TRUE :1396      TRUE :701       TRUE :1977      TRUE :4506     
+     5               6               7               8          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:24752     FALSE:21535     FALSE:25842     FALSE:26021    
+ TRUE :1440      TRUE :4657      TRUE :350       TRUE :171      
+     9               10              11              12         
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:21604     FALSE:25022     FALSE:24619     FALSE:15748    
+ TRUE :4588      TRUE :1170      TRUE :1573      TRUE :10444    
+     13              14              15              16         
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:25752     FALSE:25838     FALSE:23238     FALSE:25031    
+ TRUE :440       TRUE :354       TRUE :2954      TRUE :1161     
+     17              18              19              21         
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:24361     FALSE:20954     FALSE:25976     FALSE:25322    
+ TRUE :1831      TRUE :5238      TRUE :216       TRUE :870      
+     22              23              24              25         
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:16295     FALSE:20941     FALSE:24148     FALSE:25250    
+ TRUE :9897      TRUE :5251      TRUE :2044      TRUE :942      
+     26              27         
+ Mode :logical   Mode :logical  
+ FALSE:16796     FALSE:25159    
+ TRUE :9396      TRUE :1033     
+Loading required package: SpatialExperiment
+Error in f_merge(p = pvals0_contrasts, fdr = fdrs0_contrasts, t = t0_contrasts) : 
+  identical(rownames(res), rownames(spe_pseudo)) is not TRUE
+Calls: f_merge -> stopifnot
+Execution halted
+**** Job ends ****
+Thu May 26 10:24:26 EDT 2022

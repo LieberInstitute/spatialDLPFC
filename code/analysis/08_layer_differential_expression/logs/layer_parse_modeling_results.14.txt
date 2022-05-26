@@ -512,3 +512,339 @@ Sum  24027     1
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
 Wed Apr 27 18:31:32 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Thu May 26 10:21:11 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 230846
+Job name: layer_parse_modeling_results
+Hostname: compute-126.cm.cluster
+Task id: 14
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading objects:
+  f_stats
+  eb0_list
+  eb_contrasts
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+     1               2               3               4          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:2510      FALSE:8957      FALSE:9918      FALSE:9223     
+ TRUE :7500      TRUE :1053      TRUE :92        TRUE :787      
+     5               6               7               8          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:8934      FALSE:7114      FALSE:9490      FALSE:8977     
+ TRUE :1076      TRUE :2896      TRUE :520       TRUE :1033     
+     9               10              11              12         
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:9425      FALSE:9375      FALSE:9631      FALSE:6217     
+ TRUE :585       TRUE :635       TRUE :379       TRUE :3793     
+     13              14         
+ Mode :logical   Mode :logical  
+ FALSE:5611      FALSE:5556     
+ TRUE :4399      TRUE :4454     
+Loading required package: SpatialExperiment
+   t_stat_1   t_stat_2  t_stat_3   t_stat_4   t_stat_5   t_stat_6   t_stat_7   t_stat_8  t_stat_9 t_stat_10  t_stat_11  t_stat_12  t_stat_13  t_stat_14    p_value_1  p_value_2 p_value_3  p_value_4  p_value_5    p_value_6  p_value_7   p_value_8   p_value_9  p_value_10 p_value_11   p_value_12   p_value_13   p_value_14        fdr_1     fdr_2     fdr_3     fdr_4     fdr_5        fdr_6     fdr_7
+1 -6.129938 -0.9625778 1.2101772  2.1871685  2.3536542 -2.3533230  2.3302417  2.5006133 1.5474598 2.7042767  0.6966667 -2.1222799 -2.6263884 -1.6369418 2.089994e-09 0.33633444 0.2269175 0.02930211 0.01906753 1.908429e-02 0.02028437 0.012792486 0.122534312 0.007134216 0.48641146 3.442129e-02 8.957198e-03 0.1024200757 1.896722e-08 0.6295392 0.6630017 0.1349812 0.1046988 0.0619635941 0.1595024
+2 -4.437081 -1.3996594 0.7029135  1.7404121  1.2093604 -0.1408036  1.9967642  1.2870658 2.2049097 1.4970468  0.9598666 -5.2214118 -0.9072042  0.2885017 1.177166e-05 0.16238171 0.4825139 0.08254704 0.22723070 8.880952e-01 0.04652036 0.198807190 0.028022485 0.135160820 0.33769560 2.846211e-07 3.648388e-01 0.7731104892 3.535087e-05 0.4376524 0.8033873 0.2118164 0.4067152 0.9397285959 0.2132183
+3  5.726023  2.2141819 0.2090785  0.4340919 -0.3325842 -4.1786578 -1.4464598  1.0509121 0.6119121 0.8930845 -2.3802933  1.1465381 -1.9972915 -1.6266716 2.007170e-08 0.02737317 0.8344922 0.66445314 0.73962044 3.595506e-05 0.14882259 0.293926257 0.540939633 0.372342838 0.01776118 2.522503e-01 4.646276e-02 0.1045853086 1.333230e-07 0.1508082 0.9527293 0.7448125 0.8353408 0.0003129653 0.3149501
+4  3.239628  1.9397309 0.2650209 -0.7459564  1.7756465  0.3751773 -2.1481503 -0.3639296 1.8345598 1.5979789 -1.3763918  0.4878505 -5.0159118 -1.8110746 1.295740e-03 0.05310717 0.7911284 0.45612698 0.07654290 7.077252e-01 0.03229499 0.716100657 0.067305130 0.110828371 0.16946159 6.259200e-01 7.916236e-07 0.0708707101 2.353967e-03 0.2283766 0.9385268 0.5704437 0.2189355 0.8257756631 0.1910541
+5 -3.786458 -0.3934437 1.1633120  1.4204703  1.8856736  2.6815502  0.5540826  2.1273046 2.5896053 1.6421145  0.4560110 -3.1722411 -4.2612497 -3.0311625 1.759730e-04 0.69419905 0.2453886 0.15624105 0.06005522 7.628153e-03 0.57982847 0.033999082 0.009955305 0.101343310 0.64862671 1.628068e-03 2.531486e-05 0.0025927091 3.924013e-04 0.8670991 0.6794854 0.2905393 0.1925551 0.0298505907 0.6744228
+6 -3.244189 -2.1502934 0.3275871  1.3042478  0.3401193  1.3693639  1.9083458  2.7502344 0.7306355 1.4032787  2.0651421 -2.2949844 -0.7439723 -3.9219952 1.275695e-03 0.03212407 0.7433933 0.19289064 0.73394326 1.716453e-01 0.05705404 0.006222493 0.465424764 0.161300757 0.03954601 2.224520e-02 4.573250e-01 0.0001031421 2.320921e-03 0.1665261 0.9197316 0.3275173 0.8317725 0.3270211635 0.2253504
+       fdr_8     fdr_9     fdr_10    fdr_11       fdr_12       fdr_13       fdr_14         ensembl      gene
+1 0.08855656 0.3359541 0.07821852 0.8415244 7.915393e-02 2.489473e-02 0.1637368255 ENSG00000228794 LINC01128
+2 0.35739365 0.1743350 0.29014793 0.7679072 8.766329e-06 4.607666e-01 0.8244205813 ENSG00000188976     NOC2L
+3 0.44626146 0.7104691 0.51225286 0.2317985 3.620108e-01 8.945077e-02 0.1664386230 ENSG00000188290      HES4
+4 0.79610924 0.2584290 0.26565900 0.6545735 7.164819e-01 2.207285e-05 0.1225666566 ENSG00000187608     ISG15
+5 0.14765291 0.1033164 0.25424150 0.9052009 7.468818e-03 2.929864e-04 0.0099141003 ENSG00000188157      AGRN
+6 0.05644109 0.6516858 0.31671647 0.3651436 5.659575e-02 5.498227e-01 0.0009411599 ENSG00000131591  C1orf159
+[1] 10010   153
+ BayesSpace1-BayesSpace2 BayesSpace1-BayesSpace3 BayesSpace1-BayesSpace4 BayesSpace1-BayesSpace5 BayesSpace1-BayesSpace6 BayesSpace1-BayesSpace7 BayesSpace1-BayesSpace8 BayesSpace1-BayesSpace9 BayesSpace1-BayesSpace10 BayesSpace1-BayesSpace11 BayesSpace1-BayesSpace12 BayesSpace1-BayesSpace13 BayesSpace1-BayesSpace14 BayesSpace1-regionmiddle BayesSpace1-regionposterior BayesSpace1-age
+ Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical  
+ FALSE:4983              FALSE:3350              FALSE:2252              FALSE:2541              FALSE:4411              FALSE:2241              FALSE:2392              FALSE:2889              FALSE:2452               FALSE:2984               FALSE:7004               FALSE:6835               FALSE:6628               FALSE:208                FALSE:243                   FALSE:79       
+ TRUE :5027              TRUE :6660              TRUE :7758              TRUE :7469              TRUE :5599              TRUE :7769              TRUE :7618              TRUE :7121              TRUE :7558               TRUE :7026               TRUE :3006               TRUE :3175               TRUE :3382               TRUE :9802               TRUE :9767                  TRUE :9931     
+ BayesSpace1-sexM BayesSpace2-BayesSpace3 BayesSpace2-BayesSpace4 BayesSpace2-BayesSpace5 BayesSpace2-BayesSpace6 BayesSpace2-BayesSpace7 BayesSpace2-BayesSpace8 BayesSpace2-BayesSpace9 BayesSpace2-BayesSpace10 BayesSpace2-BayesSpace11 BayesSpace2-BayesSpace12 BayesSpace2-BayesSpace13 BayesSpace2-BayesSpace14 BayesSpace2-regionmiddle BayesSpace2-regionposterior BayesSpace2-age BayesSpace2-sexM
+ Mode :logical    Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical   Mode :logical   
+ FALSE:147        FALSE:8648              FALSE:7527              FALSE:7532              FALSE:8100              FALSE:7801              FALSE:8132              FALSE:7757              FALSE:7821               FALSE:8868               FALSE:9569               FALSE:7437               FALSE:7485               FALSE:52                 FALSE:68                    FALSE:27        FALSE:40        
+ TRUE :9863       TRUE :1362              TRUE :2483              TRUE :2478              TRUE :1910              TRUE :2209              TRUE :1878              TRUE :2253              TRUE :2189               TRUE :1142               TRUE :441                TRUE :2573               TRUE :2525               TRUE :9958               TRUE :9942                  TRUE :9983      TRUE :9970      
+ BayesSpace3-BayesSpace4 BayesSpace3-BayesSpace5 BayesSpace3-BayesSpace6 BayesSpace3-BayesSpace7 BayesSpace3-BayesSpace8 BayesSpace3-BayesSpace9 BayesSpace3-BayesSpace10 BayesSpace3-BayesSpace11 BayesSpace3-BayesSpace12 BayesSpace3-BayesSpace13 BayesSpace3-BayesSpace14 BayesSpace3-regionmiddle BayesSpace3-regionposterior BayesSpace3-age BayesSpace3-sexM BayesSpace4-BayesSpace5
+ Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical   Mode :logical    Mode :logical          
+ FALSE:9956              FALSE:9958              FALSE:7238              FALSE:9944              FALSE:9903              FALSE:10000             FALSE:10006              FALSE:9386               FALSE:6307               FALSE:6045               FALSE:6840               FALSE:48                 FALSE:56                    FALSE:23        FALSE:42         FALSE:9920             
+ TRUE :54                TRUE :52                TRUE :2772              TRUE :66                TRUE :107               TRUE :10                TRUE :4                  TRUE :624                TRUE :3703               TRUE :3965               TRUE :3170               TRUE :9962               TRUE :9954                  TRUE :9987      TRUE :9968       TRUE :90               
+ BayesSpace4-BayesSpace6 BayesSpace4-BayesSpace7 BayesSpace4-BayesSpace8 BayesSpace4-BayesSpace9 BayesSpace4-BayesSpace10 BayesSpace4-BayesSpace11 BayesSpace4-BayesSpace12 BayesSpace4-BayesSpace13 BayesSpace4-BayesSpace14 BayesSpace4-regionmiddle BayesSpace4-regionposterior BayesSpace4-age BayesSpace4-sexM BayesSpace5-BayesSpace6 BayesSpace5-BayesSpace7 BayesSpace5-BayesSpace8
+ Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical   Mode :logical    Mode :logical           Mode :logical           Mode :logical          
+ FALSE:6761              FALSE:9939              FALSE:9534              FALSE:9950              FALSE:9822               FALSE:9377               FALSE:4647               FALSE:4230               FALSE:3935               FALSE:35                 FALSE:40                    FALSE:20        FALSE:28         FALSE:6546              FALSE:9775              FALSE:9663             
+ TRUE :3249              TRUE :71                TRUE :476               TRUE :60                TRUE :188                TRUE :633                TRUE :5363               TRUE :5780               TRUE :6075               TRUE :9975               TRUE :9970                  TRUE :9990      TRUE :9982       TRUE :3464              TRUE :235               TRUE :347              
+ BayesSpace5-BayesSpace9 BayesSpace5-BayesSpace10 BayesSpace5-BayesSpace11 BayesSpace5-BayesSpace12 BayesSpace5-BayesSpace13 BayesSpace5-BayesSpace14 BayesSpace5-regionmiddle BayesSpace5-regionposterior BayesSpace5-age BayesSpace5-sexM BayesSpace6-BayesSpace7 BayesSpace6-BayesSpace8 BayesSpace6-BayesSpace9 BayesSpace6-BayesSpace10 BayesSpace6-BayesSpace11 BayesSpace6-BayesSpace12
+ Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical   Mode :logical    Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical           
+ FALSE:9997              FALSE:9986               FALSE:8935               FALSE:4962               FALSE:4568               FALSE:4639               FALSE:46                 FALSE:57                    FALSE:26        FALSE:45         FALSE:7015              FALSE:6808              FALSE:6815              FALSE:6594               FALSE:9017               FALSE:7221              
+ TRUE :13                TRUE :24                 TRUE :1075               TRUE :5048               TRUE :5442               TRUE :5371               TRUE :9964               TRUE :9953                  TRUE :9984      TRUE :9965       TRUE :2995              TRUE :3202              TRUE :3195              TRUE :3416               TRUE :993                TRUE :2789              
+ BayesSpace6-BayesSpace13 BayesSpace6-BayesSpace14 BayesSpace6-regionmiddle BayesSpace6-regionposterior BayesSpace6-age BayesSpace6-sexM BayesSpace7-BayesSpace8 BayesSpace7-BayesSpace9 BayesSpace7-BayesSpace10 BayesSpace7-BayesSpace11 BayesSpace7-BayesSpace12 BayesSpace7-BayesSpace13 BayesSpace7-BayesSpace14 BayesSpace7-regionmiddle BayesSpace7-regionposterior BayesSpace7-age BayesSpace7-sexM
+ Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical   Mode :logical    Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical   Mode :logical   
+ FALSE:7252               FALSE:5742               FALSE:40                 FALSE:51                    FALSE:22        FALSE:32         FALSE:9638              FALSE:9820              FALSE:9776               FALSE:9770               FALSE:4852               FALSE:4378               FALSE:4033               FALSE:32                 FALSE:37                    FALSE:21        FALSE:27        
+ TRUE :2758               TRUE :4268               TRUE :9970               TRUE :9959                  TRUE :9988      TRUE :9978       TRUE :372               TRUE :190               TRUE :234                TRUE :240                TRUE :5158               TRUE :5632               TRUE :5977               TRUE :9978               TRUE :9973                  TRUE :9989      TRUE :9983      
+ BayesSpace8-BayesSpace9 BayesSpace8-BayesSpace10 BayesSpace8-BayesSpace11 BayesSpace8-BayesSpace12 BayesSpace8-BayesSpace13 BayesSpace8-BayesSpace14 BayesSpace8-regionmiddle BayesSpace8-regionposterior BayesSpace8-age BayesSpace8-sexM BayesSpace9-BayesSpace10 BayesSpace9-BayesSpace11 BayesSpace9-BayesSpace12 BayesSpace9-BayesSpace13 BayesSpace9-BayesSpace14 BayesSpace9-regionmiddle
+ Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical               Mode :logical   Mode :logical    Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical           
+ FALSE:9705              FALSE:9985               FALSE:9182               FALSE:4951               FALSE:4301               FALSE:4328               FALSE:45                 FALSE:61                    FALSE:21        FALSE:34         FALSE:9978               FALSE:9020               FALSE:5390               FALSE:5111               FALSE:5554               FALSE:59                
+ TRUE :305               TRUE :25                 TRUE :828                TRUE :5059               TRUE :5709               TRUE :5682               TRUE :9965               TRUE :9949                  TRUE :9989      TRUE :9976       TRUE :32                 TRUE :990                TRUE :4620               TRUE :4899               TRUE :4456               TRUE :9951              
+ BayesSpace9-regionposterior BayesSpace9-age BayesSpace9-sexM BayesSpace10-BayesSpace11 BayesSpace10-BayesSpace12 BayesSpace10-BayesSpace13 BayesSpace10-BayesSpace14 BayesSpace10-regionmiddle BayesSpace10-regionposterior BayesSpace10-age BayesSpace10-sexM BayesSpace11-BayesSpace12 BayesSpace11-BayesSpace13 BayesSpace11-BayesSpace14 BayesSpace11-regionmiddle BayesSpace11-regionposterior
+ Mode :logical               Mode :logical   Mode :logical    Mode :logical             Mode :logical             Mode :logical             Mode :logical             Mode :logical             Mode :logical                Mode :logical    Mode :logical     Mode :logical             Mode :logical             Mode :logical             Mode :logical             Mode :logical               
+ FALSE:73                    FALSE:34        FALSE:57         FALSE:9142                FALSE:4912                FALSE:4308                FALSE:4337                FALSE:48                  FALSE:62                     FALSE:30         FALSE:38          FALSE:6614                FALSE:6726                FALSE:5833                FALSE:27                  FALSE:33                    
+ TRUE :9937                  TRUE :9976      TRUE :9953       TRUE :868                 TRUE :5098                TRUE :5702                TRUE :5673                TRUE :9962                TRUE :9948                   TRUE :9980       TRUE :9972        TRUE :3396                TRUE :3284                TRUE :4177                TRUE :9983                TRUE :9977                  
+ BayesSpace11-age BayesSpace11-sexM BayesSpace12-BayesSpace13 BayesSpace12-BayesSpace14 BayesSpace12-regionmiddle BayesSpace12-regionposterior BayesSpace12-age BayesSpace12-sexM BayesSpace13-BayesSpace14 BayesSpace13-regionmiddle BayesSpace13-regionposterior BayesSpace13-age BayesSpace13-sexM BayesSpace14-regionmiddle BayesSpace14-regionposterior BayesSpace14-age BayesSpace14-sexM
+ Mode :logical    Mode :logical     Mode :logical             Mode :logical             Mode :logical             Mode :logical                Mode :logical    Mode :logical     Mode :logical             Mode :logical             Mode :logical                Mode :logical    Mode :logical     Mode :logical             Mode :logical                Mode :logical    Mode :logical    
+ FALSE:15         FALSE:22          FALSE:8057                FALSE:7911                FALSE:84                  FALSE:100                    FALSE:36         FALSE:52          FALSE:8409                FALSE:102                 FALSE:138                    FALSE:38         FALSE:75          FALSE:162                 FALSE:194                    FALSE:57         FALSE:130        
+ TRUE :9995       TRUE :9988        TRUE :1953                TRUE :2099                TRUE :9926                TRUE :9910                   TRUE :9974       TRUE :9958        TRUE :1601                TRUE :9908                TRUE :9872                   TRUE :9972       TRUE :9935        TRUE :9848                TRUE :9816                   TRUE :9953       TRUE :9880       
+ regionmiddle-regionposterior regionmiddle-age regionmiddle-sexM regionposterior-age regionposterior-sexM  age-sexM      
+ Mode :logical                Mode :logical    Mode :logical     Mode :logical       Mode :logical        Mode :logical  
+ FALSE:9950                   FALSE:9057       FALSE:9602        FALSE:8641          FALSE:9649           FALSE:9611     
+ TRUE :60                     TRUE :953        TRUE :408         TRUE :1369          TRUE :361            TRUE :399      
+  [1] "t_stat_BayesSpace1-BayesSpace2"       "t_stat_BayesSpace1-BayesSpace3"       "t_stat_BayesSpace1-BayesSpace4"       "t_stat_BayesSpace1-BayesSpace5"       "t_stat_BayesSpace1-BayesSpace6"       "t_stat_BayesSpace1-BayesSpace7"       "t_stat_BayesSpace1-BayesSpace8"       "t_stat_BayesSpace1-BayesSpace9"       "t_stat_BayesSpace1-BayesSpace10"      "t_stat_BayesSpace1-BayesSpace11"     
+ [11] "t_stat_BayesSpace1-BayesSpace12"      "t_stat_BayesSpace1-BayesSpace13"      "t_stat_BayesSpace1-BayesSpace14"      "t_stat_BayesSpace1-regionmiddle"      "t_stat_BayesSpace1-regionposterior"   "t_stat_BayesSpace1-age"               "t_stat_BayesSpace1-sexM"              "t_stat_BayesSpace2-BayesSpace3"       "t_stat_BayesSpace2-BayesSpace4"       "t_stat_BayesSpace2-BayesSpace5"      
+ [21] "t_stat_BayesSpace2-BayesSpace6"       "t_stat_BayesSpace2-BayesSpace7"       "t_stat_BayesSpace2-BayesSpace8"       "t_stat_BayesSpace2-BayesSpace9"       "t_stat_BayesSpace2-BayesSpace10"      "t_stat_BayesSpace2-BayesSpace11"      "t_stat_BayesSpace2-BayesSpace12"      "t_stat_BayesSpace2-BayesSpace13"      "t_stat_BayesSpace2-BayesSpace14"      "t_stat_BayesSpace2-regionmiddle"     
+ [31] "t_stat_BayesSpace2-regionposterior"   "t_stat_BayesSpace2-age"               "t_stat_BayesSpace2-sexM"              "t_stat_BayesSpace3-BayesSpace4"       "t_stat_BayesSpace3-BayesSpace5"       "t_stat_BayesSpace3-BayesSpace6"       "t_stat_BayesSpace3-BayesSpace7"       "t_stat_BayesSpace3-BayesSpace8"       "t_stat_BayesSpace3-BayesSpace9"       "t_stat_BayesSpace3-BayesSpace10"     
+ [41] "t_stat_BayesSpace3-BayesSpace11"      "t_stat_BayesSpace3-BayesSpace12"      "t_stat_BayesSpace3-BayesSpace13"      "t_stat_BayesSpace3-BayesSpace14"      "t_stat_BayesSpace3-regionmiddle"      "t_stat_BayesSpace3-regionposterior"   "t_stat_BayesSpace3-age"               "t_stat_BayesSpace3-sexM"              "t_stat_BayesSpace4-BayesSpace5"       "t_stat_BayesSpace4-BayesSpace6"      
+ [51] "t_stat_BayesSpace4-BayesSpace7"       "t_stat_BayesSpace4-BayesSpace8"       "t_stat_BayesSpace4-BayesSpace9"       "t_stat_BayesSpace4-BayesSpace10"      "t_stat_BayesSpace4-BayesSpace11"      "t_stat_BayesSpace4-BayesSpace12"      "t_stat_BayesSpace4-BayesSpace13"      "t_stat_BayesSpace4-BayesSpace14"      "t_stat_BayesSpace4-regionmiddle"      "t_stat_BayesSpace4-regionposterior"  
+ [61] "t_stat_BayesSpace4-age"               "t_stat_BayesSpace4-sexM"              "t_stat_BayesSpace5-BayesSpace6"       "t_stat_BayesSpace5-BayesSpace7"       "t_stat_BayesSpace5-BayesSpace8"       "t_stat_BayesSpace5-BayesSpace9"       "t_stat_BayesSpace5-BayesSpace10"      "t_stat_BayesSpace5-BayesSpace11"      "t_stat_BayesSpace5-BayesSpace12"      "t_stat_BayesSpace5-BayesSpace13"     
+ [71] "t_stat_BayesSpace5-BayesSpace14"      "t_stat_BayesSpace5-regionmiddle"      "t_stat_BayesSpace5-regionposterior"   "t_stat_BayesSpace5-age"               "t_stat_BayesSpace5-sexM"              "t_stat_BayesSpace6-BayesSpace7"       "t_stat_BayesSpace6-BayesSpace8"       "t_stat_BayesSpace6-BayesSpace9"       "t_stat_BayesSpace6-BayesSpace10"      "t_stat_BayesSpace6-BayesSpace11"     
+ [81] "t_stat_BayesSpace6-BayesSpace12"      "t_stat_BayesSpace6-BayesSpace13"      "t_stat_BayesSpace6-BayesSpace14"      "t_stat_BayesSpace6-regionmiddle"      "t_stat_BayesSpace6-regionposterior"   "t_stat_BayesSpace6-age"               "t_stat_BayesSpace6-sexM"              "t_stat_BayesSpace7-BayesSpace8"       "t_stat_BayesSpace7-BayesSpace9"       "t_stat_BayesSpace7-BayesSpace10"     
+ [91] "t_stat_BayesSpace7-BayesSpace11"      "t_stat_BayesSpace7-BayesSpace12"      "t_stat_BayesSpace7-BayesSpace13"      "t_stat_BayesSpace7-BayesSpace14"      "t_stat_BayesSpace7-regionmiddle"      "t_stat_BayesSpace7-regionposterior"   "t_stat_BayesSpace7-age"               "t_stat_BayesSpace7-sexM"              "t_stat_BayesSpace8-BayesSpace9"       "t_stat_BayesSpace8-BayesSpace10"     
+[101] "t_stat_BayesSpace8-BayesSpace11"      "t_stat_BayesSpace8-BayesSpace12"      "t_stat_BayesSpace8-BayesSpace13"      "t_stat_BayesSpace8-BayesSpace14"      "t_stat_BayesSpace8-regionmiddle"      "t_stat_BayesSpace8-regionposterior"   "t_stat_BayesSpace8-age"               "t_stat_BayesSpace8-sexM"              "t_stat_BayesSpace9-BayesSpace10"      "t_stat_BayesSpace9-BayesSpace11"     
+[111] "t_stat_BayesSpace9-BayesSpace12"      "t_stat_BayesSpace9-BayesSpace13"      "t_stat_BayesSpace9-BayesSpace14"      "t_stat_BayesSpace9-regionmiddle"      "t_stat_BayesSpace9-regionposterior"   "t_stat_BayesSpace9-age"               "t_stat_BayesSpace9-sexM"              "t_stat_BayesSpace10-BayesSpace11"     "t_stat_BayesSpace10-BayesSpace12"     "t_stat_BayesSpace10-BayesSpace13"    
+[121] "t_stat_BayesSpace10-BayesSpace14"     "t_stat_BayesSpace10-regionmiddle"     "t_stat_BayesSpace10-regionposterior"  "t_stat_BayesSpace10-age"              "t_stat_BayesSpace10-sexM"             "t_stat_BayesSpace11-BayesSpace12"     "t_stat_BayesSpace11-BayesSpace13"     "t_stat_BayesSpace11-BayesSpace14"     "t_stat_BayesSpace11-regionmiddle"     "t_stat_BayesSpace11-regionposterior" 
+[131] "t_stat_BayesSpace11-age"              "t_stat_BayesSpace11-sexM"             "t_stat_BayesSpace12-BayesSpace13"     "t_stat_BayesSpace12-BayesSpace14"     "t_stat_BayesSpace12-regionmiddle"     "t_stat_BayesSpace12-regionposterior"  "t_stat_BayesSpace12-age"              "t_stat_BayesSpace12-sexM"             "t_stat_BayesSpace13-BayesSpace14"     "t_stat_BayesSpace13-regionmiddle"    
+[141] "t_stat_BayesSpace13-regionposterior"  "t_stat_BayesSpace13-age"              "t_stat_BayesSpace13-sexM"             "t_stat_BayesSpace14-regionmiddle"     "t_stat_BayesSpace14-regionposterior"  "t_stat_BayesSpace14-age"              "t_stat_BayesSpace14-sexM"             "t_stat_regionmiddle-regionposterior"  "t_stat_regionmiddle-age"              "t_stat_regionmiddle-sexM"            
+[151] "t_stat_regionposterior-age"           "t_stat_regionposterior-sexM"          "t_stat_age-sexM"                      "p_value_BayesSpace1-BayesSpace2"      "p_value_BayesSpace1-BayesSpace3"      "p_value_BayesSpace1-BayesSpace4"      "p_value_BayesSpace1-BayesSpace5"      "p_value_BayesSpace1-BayesSpace6"      "p_value_BayesSpace1-BayesSpace7"      "p_value_BayesSpace1-BayesSpace8"     
+[161] "p_value_BayesSpace1-BayesSpace9"      "p_value_BayesSpace1-BayesSpace10"     "p_value_BayesSpace1-BayesSpace11"     "p_value_BayesSpace1-BayesSpace12"     "p_value_BayesSpace1-BayesSpace13"     "p_value_BayesSpace1-BayesSpace14"     "p_value_BayesSpace1-regionmiddle"     "p_value_BayesSpace1-regionposterior"  "p_value_BayesSpace1-age"              "p_value_BayesSpace1-sexM"            
+[171] "p_value_BayesSpace2-BayesSpace3"      "p_value_BayesSpace2-BayesSpace4"      "p_value_BayesSpace2-BayesSpace5"      "p_value_BayesSpace2-BayesSpace6"      "p_value_BayesSpace2-BayesSpace7"      "p_value_BayesSpace2-BayesSpace8"      "p_value_BayesSpace2-BayesSpace9"      "p_value_BayesSpace2-BayesSpace10"     "p_value_BayesSpace2-BayesSpace11"     "p_value_BayesSpace2-BayesSpace12"    
+[181] "p_value_BayesSpace2-BayesSpace13"     "p_value_BayesSpace2-BayesSpace14"     "p_value_BayesSpace2-regionmiddle"     "p_value_BayesSpace2-regionposterior"  "p_value_BayesSpace2-age"              "p_value_BayesSpace2-sexM"             "p_value_BayesSpace3-BayesSpace4"      "p_value_BayesSpace3-BayesSpace5"      "p_value_BayesSpace3-BayesSpace6"      "p_value_BayesSpace3-BayesSpace7"     
+[191] "p_value_BayesSpace3-BayesSpace8"      "p_value_BayesSpace3-BayesSpace9"      "p_value_BayesSpace3-BayesSpace10"     "p_value_BayesSpace3-BayesSpace11"     "p_value_BayesSpace3-BayesSpace12"     "p_value_BayesSpace3-BayesSpace13"     "p_value_BayesSpace3-BayesSpace14"     "p_value_BayesSpace3-regionmiddle"     "p_value_BayesSpace3-regionposterior"  "p_value_BayesSpace3-age"             
+[201] "p_value_BayesSpace3-sexM"             "p_value_BayesSpace4-BayesSpace5"      "p_value_BayesSpace4-BayesSpace6"      "p_value_BayesSpace4-BayesSpace7"      "p_value_BayesSpace4-BayesSpace8"      "p_value_BayesSpace4-BayesSpace9"      "p_value_BayesSpace4-BayesSpace10"     "p_value_BayesSpace4-BayesSpace11"     "p_value_BayesSpace4-BayesSpace12"     "p_value_BayesSpace4-BayesSpace13"    
+[211] "p_value_BayesSpace4-BayesSpace14"     "p_value_BayesSpace4-regionmiddle"     "p_value_BayesSpace4-regionposterior"  "p_value_BayesSpace4-age"              "p_value_BayesSpace4-sexM"             "p_value_BayesSpace5-BayesSpace6"      "p_value_BayesSpace5-BayesSpace7"      "p_value_BayesSpace5-BayesSpace8"      "p_value_BayesSpace5-BayesSpace9"      "p_value_BayesSpace5-BayesSpace10"    
+[221] "p_value_BayesSpace5-BayesSpace11"     "p_value_BayesSpace5-BayesSpace12"     "p_value_BayesSpace5-BayesSpace13"     "p_value_BayesSpace5-BayesSpace14"     "p_value_BayesSpace5-regionmiddle"     "p_value_BayesSpace5-regionposterior"  "p_value_BayesSpace5-age"              "p_value_BayesSpace5-sexM"             "p_value_BayesSpace6-BayesSpace7"      "p_value_BayesSpace6-BayesSpace8"     
+[231] "p_value_BayesSpace6-BayesSpace9"      "p_value_BayesSpace6-BayesSpace10"     "p_value_BayesSpace6-BayesSpace11"     "p_value_BayesSpace6-BayesSpace12"     "p_value_BayesSpace6-BayesSpace13"     "p_value_BayesSpace6-BayesSpace14"     "p_value_BayesSpace6-regionmiddle"     "p_value_BayesSpace6-regionposterior"  "p_value_BayesSpace6-age"              "p_value_BayesSpace6-sexM"            
+[241] "p_value_BayesSpace7-BayesSpace8"      "p_value_BayesSpace7-BayesSpace9"      "p_value_BayesSpace7-BayesSpace10"     "p_value_BayesSpace7-BayesSpace11"     "p_value_BayesSpace7-BayesSpace12"     "p_value_BayesSpace7-BayesSpace13"     "p_value_BayesSpace7-BayesSpace14"     "p_value_BayesSpace7-regionmiddle"     "p_value_BayesSpace7-regionposterior"  "p_value_BayesSpace7-age"             
+[251] "p_value_BayesSpace7-sexM"             "p_value_BayesSpace8-BayesSpace9"      "p_value_BayesSpace8-BayesSpace10"     "p_value_BayesSpace8-BayesSpace11"     "p_value_BayesSpace8-BayesSpace12"     "p_value_BayesSpace8-BayesSpace13"     "p_value_BayesSpace8-BayesSpace14"     "p_value_BayesSpace8-regionmiddle"     "p_value_BayesSpace8-regionposterior"  "p_value_BayesSpace8-age"             
+[261] "p_value_BayesSpace8-sexM"             "p_value_BayesSpace9-BayesSpace10"     "p_value_BayesSpace9-BayesSpace11"     "p_value_BayesSpace9-BayesSpace12"     "p_value_BayesSpace9-BayesSpace13"     "p_value_BayesSpace9-BayesSpace14"     "p_value_BayesSpace9-regionmiddle"     "p_value_BayesSpace9-regionposterior"  "p_value_BayesSpace9-age"              "p_value_BayesSpace9-sexM"            
+[271] "p_value_BayesSpace10-BayesSpace11"    "p_value_BayesSpace10-BayesSpace12"    "p_value_BayesSpace10-BayesSpace13"    "p_value_BayesSpace10-BayesSpace14"    "p_value_BayesSpace10-regionmiddle"    "p_value_BayesSpace10-regionposterior" "p_value_BayesSpace10-age"             "p_value_BayesSpace10-sexM"            "p_value_BayesSpace11-BayesSpace12"    "p_value_BayesSpace11-BayesSpace13"   
+[281] "p_value_BayesSpace11-BayesSpace14"    "p_value_BayesSpace11-regionmiddle"    "p_value_BayesSpace11-regionposterior" "p_value_BayesSpace11-age"             "p_value_BayesSpace11-sexM"            "p_value_BayesSpace12-BayesSpace13"    "p_value_BayesSpace12-BayesSpace14"    "p_value_BayesSpace12-regionmiddle"    "p_value_BayesSpace12-regionposterior" "p_value_BayesSpace12-age"            
+[291] "p_value_BayesSpace12-sexM"            "p_value_BayesSpace13-BayesSpace14"    "p_value_BayesSpace13-regionmiddle"    "p_value_BayesSpace13-regionposterior" "p_value_BayesSpace13-age"             "p_value_BayesSpace13-sexM"            "p_value_BayesSpace14-regionmiddle"    "p_value_BayesSpace14-regionposterior" "p_value_BayesSpace14-age"             "p_value_BayesSpace14-sexM"           
+[301] "p_value_regionmiddle-regionposterior" "p_value_regionmiddle-age"             "p_value_regionmiddle-sexM"            "p_value_regionposterior-age"          "p_value_regionposterior-sexM"         "p_value_age-sexM"                     "fdr_BayesSpace1-BayesSpace2"          "fdr_BayesSpace1-BayesSpace3"          "fdr_BayesSpace1-BayesSpace4"          "fdr_BayesSpace1-BayesSpace5"         
+[311] "fdr_BayesSpace1-BayesSpace6"          "fdr_BayesSpace1-BayesSpace7"          "fdr_BayesSpace1-BayesSpace8"          "fdr_BayesSpace1-BayesSpace9"          "fdr_BayesSpace1-BayesSpace10"         "fdr_BayesSpace1-BayesSpace11"         "fdr_BayesSpace1-BayesSpace12"         "fdr_BayesSpace1-BayesSpace13"         "fdr_BayesSpace1-BayesSpace14"         "fdr_BayesSpace1-regionmiddle"        
+[321] "fdr_BayesSpace1-regionposterior"      "fdr_BayesSpace1-age"                  "fdr_BayesSpace1-sexM"                 "fdr_BayesSpace2-BayesSpace3"          "fdr_BayesSpace2-BayesSpace4"          "fdr_BayesSpace2-BayesSpace5"          "fdr_BayesSpace2-BayesSpace6"          "fdr_BayesSpace2-BayesSpace7"          "fdr_BayesSpace2-BayesSpace8"          "fdr_BayesSpace2-BayesSpace9"         
+[331] "fdr_BayesSpace2-BayesSpace10"         "fdr_BayesSpace2-BayesSpace11"         "fdr_BayesSpace2-BayesSpace12"         "fdr_BayesSpace2-BayesSpace13"         "fdr_BayesSpace2-BayesSpace14"         "fdr_BayesSpace2-regionmiddle"         "fdr_BayesSpace2-regionposterior"      "fdr_BayesSpace2-age"                  "fdr_BayesSpace2-sexM"                 "fdr_BayesSpace3-BayesSpace4"         
+[341] "fdr_BayesSpace3-BayesSpace5"          "fdr_BayesSpace3-BayesSpace6"          "fdr_BayesSpace3-BayesSpace7"          "fdr_BayesSpace3-BayesSpace8"          "fdr_BayesSpace3-BayesSpace9"          "fdr_BayesSpace3-BayesSpace10"         "fdr_BayesSpace3-BayesSpace11"         "fdr_BayesSpace3-BayesSpace12"         "fdr_BayesSpace3-BayesSpace13"         "fdr_BayesSpace3-BayesSpace14"        
+[351] "fdr_BayesSpace3-regionmiddle"         "fdr_BayesSpace3-regionposterior"      "fdr_BayesSpace3-age"                  "fdr_BayesSpace3-sexM"                 "fdr_BayesSpace4-BayesSpace5"          "fdr_BayesSpace4-BayesSpace6"          "fdr_BayesSpace4-BayesSpace7"          "fdr_BayesSpace4-BayesSpace8"          "fdr_BayesSpace4-BayesSpace9"          "fdr_BayesSpace4-BayesSpace10"        
+[361] "fdr_BayesSpace4-BayesSpace11"         "fdr_BayesSpace4-BayesSpace12"         "fdr_BayesSpace4-BayesSpace13"         "fdr_BayesSpace4-BayesSpace14"         "fdr_BayesSpace4-regionmiddle"         "fdr_BayesSpace4-regionposterior"      "fdr_BayesSpace4-age"                  "fdr_BayesSpace4-sexM"                 "fdr_BayesSpace5-BayesSpace6"          "fdr_BayesSpace5-BayesSpace7"         
+[371] "fdr_BayesSpace5-BayesSpace8"          "fdr_BayesSpace5-BayesSpace9"          "fdr_BayesSpace5-BayesSpace10"         "fdr_BayesSpace5-BayesSpace11"         "fdr_BayesSpace5-BayesSpace12"         "fdr_BayesSpace5-BayesSpace13"         "fdr_BayesSpace5-BayesSpace14"         "fdr_BayesSpace5-regionmiddle"         "fdr_BayesSpace5-regionposterior"      "fdr_BayesSpace5-age"                 
+[381] "fdr_BayesSpace5-sexM"                 "fdr_BayesSpace6-BayesSpace7"          "fdr_BayesSpace6-BayesSpace8"          "fdr_BayesSpace6-BayesSpace9"          "fdr_BayesSpace6-BayesSpace10"         "fdr_BayesSpace6-BayesSpace11"         "fdr_BayesSpace6-BayesSpace12"         "fdr_BayesSpace6-BayesSpace13"         "fdr_BayesSpace6-BayesSpace14"         "fdr_BayesSpace6-regionmiddle"        
+[391] "fdr_BayesSpace6-regionposterior"      "fdr_BayesSpace6-age"                  "fdr_BayesSpace6-sexM"                 "fdr_BayesSpace7-BayesSpace8"          "fdr_BayesSpace7-BayesSpace9"          "fdr_BayesSpace7-BayesSpace10"         "fdr_BayesSpace7-BayesSpace11"         "fdr_BayesSpace7-BayesSpace12"         "fdr_BayesSpace7-BayesSpace13"         "fdr_BayesSpace7-BayesSpace14"        
+[401] "fdr_BayesSpace7-regionmiddle"         "fdr_BayesSpace7-regionposterior"      "fdr_BayesSpace7-age"                  "fdr_BayesSpace7-sexM"                 "fdr_BayesSpace8-BayesSpace9"          "fdr_BayesSpace8-BayesSpace10"         "fdr_BayesSpace8-BayesSpace11"         "fdr_BayesSpace8-BayesSpace12"         "fdr_BayesSpace8-BayesSpace13"         "fdr_BayesSpace8-BayesSpace14"        
+[411] "fdr_BayesSpace8-regionmiddle"         "fdr_BayesSpace8-regionposterior"      "fdr_BayesSpace8-age"                  "fdr_BayesSpace8-sexM"                 "fdr_BayesSpace9-BayesSpace10"         "fdr_BayesSpace9-BayesSpace11"         "fdr_BayesSpace9-BayesSpace12"         "fdr_BayesSpace9-BayesSpace13"         "fdr_BayesSpace9-BayesSpace14"         "fdr_BayesSpace9-regionmiddle"        
+[421] "fdr_BayesSpace9-regionposterior"      "fdr_BayesSpace9-age"                  "fdr_BayesSpace9-sexM"                 "fdr_BayesSpace10-BayesSpace11"        "fdr_BayesSpace10-BayesSpace12"        "fdr_BayesSpace10-BayesSpace13"        "fdr_BayesSpace10-BayesSpace14"        "fdr_BayesSpace10-regionmiddle"        "fdr_BayesSpace10-regionposterior"     "fdr_BayesSpace10-age"                
+[431] "fdr_BayesSpace10-sexM"                "fdr_BayesSpace11-BayesSpace12"        "fdr_BayesSpace11-BayesSpace13"        "fdr_BayesSpace11-BayesSpace14"        "fdr_BayesSpace11-regionmiddle"        "fdr_BayesSpace11-regionposterior"     "fdr_BayesSpace11-age"                 "fdr_BayesSpace11-sexM"                "fdr_BayesSpace12-BayesSpace13"        "fdr_BayesSpace12-BayesSpace14"       
+[441] "fdr_BayesSpace12-regionmiddle"        "fdr_BayesSpace12-regionposterior"     "fdr_BayesSpace12-age"                 "fdr_BayesSpace12-sexM"                "fdr_BayesSpace13-BayesSpace14"        "fdr_BayesSpace13-regionmiddle"        "fdr_BayesSpace13-regionposterior"     "fdr_BayesSpace13-age"                 "fdr_BayesSpace13-sexM"                "fdr_BayesSpace14-regionmiddle"       
+[451] "fdr_BayesSpace14-regionposterior"     "fdr_BayesSpace14-age"                 "fdr_BayesSpace14-sexM"                "fdr_regionmiddle-regionposterior"     "fdr_regionmiddle-age"                 "fdr_regionmiddle-sexM"                "fdr_regionposterior-age"              "fdr_regionposterior-sexM"             "fdr_age-sexM"                         "ensembl"                             
+[461] "gene"                                
+    BayesSpace3-BayesSpace10      BayesSpace3-BayesSpace9      BayesSpace5-BayesSpace9     BayesSpace5-BayesSpace10     BayesSpace8-BayesSpace10     BayesSpace9-BayesSpace10      BayesSpace3-BayesSpace5      BayesSpace3-BayesSpace4      BayesSpace4-BayesSpace9 regionmiddle-regionposterior      BayesSpace3-BayesSpace7      BayesSpace4-BayesSpace7      BayesSpace4-BayesSpace5 
+                           4                           10                           13                           24                           25                           32                           52                           54                           60                           60                           66                           71                           90 
+     BayesSpace3-BayesSpace8     BayesSpace4-BayesSpace10      BayesSpace7-BayesSpace9     BayesSpace7-BayesSpace10      BayesSpace5-BayesSpace7     BayesSpace7-BayesSpace11      BayesSpace8-BayesSpace9      BayesSpace5-BayesSpace8         regionposterior-sexM      BayesSpace7-BayesSpace8                     age-sexM            regionmiddle-sexM     BayesSpace2-BayesSpace12 
+                         107                          188                          190                          234                          235                          240                          305                          347                          361                          372                          399                          408                          441 
+     BayesSpace4-BayesSpace8     BayesSpace3-BayesSpace11     BayesSpace4-BayesSpace11     BayesSpace8-BayesSpace11    BayesSpace10-BayesSpace11             regionmiddle-age     BayesSpace9-BayesSpace11     BayesSpace6-BayesSpace11     BayesSpace5-BayesSpace11     BayesSpace2-BayesSpace11      BayesSpace2-BayesSpace3          regionposterior-age    BayesSpace13-BayesSpace14 
+                         476                          624                          633                          828                          868                          953                          990                          993                         1075                         1142                         1362                         1369                         1601 
+     BayesSpace2-BayesSpace8      BayesSpace2-BayesSpace6    BayesSpace12-BayesSpace13    BayesSpace12-BayesSpace14     BayesSpace2-BayesSpace10      BayesSpace2-BayesSpace7      BayesSpace2-BayesSpace9      BayesSpace2-BayesSpace5      BayesSpace2-BayesSpace4     BayesSpace2-BayesSpace14     BayesSpace2-BayesSpace13     BayesSpace6-BayesSpace13      BayesSpace3-BayesSpace6 
+                        1878                         1910                         1953                         2099                         2189                         2209                         2253                         2478                         2483                         2525                         2573                         2758                         2772 
+    BayesSpace6-BayesSpace12      BayesSpace6-BayesSpace7     BayesSpace1-BayesSpace12     BayesSpace3-BayesSpace14     BayesSpace1-BayesSpace13      BayesSpace6-BayesSpace9      BayesSpace6-BayesSpace8      BayesSpace4-BayesSpace6    BayesSpace11-BayesSpace13     BayesSpace1-BayesSpace14    BayesSpace11-BayesSpace12     BayesSpace6-BayesSpace10      BayesSpace5-BayesSpace6 
+                        2789                         2995                         3006                         3170                         3175                         3195                         3202                         3249                         3284                         3382                         3396                         3416                         3464 
+    BayesSpace3-BayesSpace12     BayesSpace3-BayesSpace13    BayesSpace11-BayesSpace14     BayesSpace6-BayesSpace14     BayesSpace9-BayesSpace14     BayesSpace9-BayesSpace12     BayesSpace9-BayesSpace13      BayesSpace1-BayesSpace2     BayesSpace5-BayesSpace12     BayesSpace8-BayesSpace12    BayesSpace10-BayesSpace12     BayesSpace7-BayesSpace12     BayesSpace4-BayesSpace12 
+                        3703                         3965                         4177                         4268                         4456                         4620                         4899                         5027                         5048                         5059                         5098                         5158                         5363 
+    BayesSpace5-BayesSpace14     BayesSpace5-BayesSpace13      BayesSpace1-BayesSpace6     BayesSpace7-BayesSpace13    BayesSpace10-BayesSpace14     BayesSpace8-BayesSpace14    BayesSpace10-BayesSpace13     BayesSpace8-BayesSpace13     BayesSpace4-BayesSpace13     BayesSpace7-BayesSpace14     BayesSpace4-BayesSpace14      BayesSpace1-BayesSpace3     BayesSpace1-BayesSpace11 
+                        5371                         5442                         5599                         5632                         5673                         5682                         5702                         5709                         5780                         5977                         6075                         6660                         7026 
+     BayesSpace1-BayesSpace9      BayesSpace1-BayesSpace5     BayesSpace1-BayesSpace10      BayesSpace1-BayesSpace8      BayesSpace1-BayesSpace4      BayesSpace1-BayesSpace7  BayesSpace1-regionposterior     BayesSpace1-regionmiddle BayesSpace14-regionposterior    BayesSpace14-regionmiddle             BayesSpace1-sexM BayesSpace13-regionposterior            BayesSpace14-sexM 
+                        7121                         7469                         7558                         7618                         7758                         7769                         9767                         9802                         9816                         9848                         9863                         9872                         9880 
+   BayesSpace13-regionmiddle BayesSpace12-regionposterior    BayesSpace12-regionmiddle              BayesSpace1-age            BayesSpace13-sexM  BayesSpace9-regionposterior  BayesSpace2-regionposterior BayesSpace10-regionposterior  BayesSpace8-regionposterior     BayesSpace9-regionmiddle  BayesSpace5-regionposterior             BayesSpace9-sexM             BayesSpace14-age 
+                        9908                         9910                         9926                         9931                         9935                         9937                         9942                         9948                         9949                         9951                         9953                         9953                         9953 
+ BayesSpace3-regionposterior     BayesSpace2-regionmiddle            BayesSpace12-sexM  BayesSpace6-regionposterior     BayesSpace3-regionmiddle    BayesSpace10-regionmiddle     BayesSpace5-regionmiddle             BayesSpace5-sexM     BayesSpace8-regionmiddle             BayesSpace3-sexM             BayesSpace2-sexM  BayesSpace4-regionposterior     BayesSpace6-regionmiddle 
+                        9954                         9958                         9958                         9959                         9962                         9962                         9964                         9965                         9965                         9968                         9970                         9970                         9970 
+           BayesSpace10-sexM             BayesSpace13-age  BayesSpace7-regionposterior             BayesSpace12-age     BayesSpace4-regionmiddle             BayesSpace8-sexM              BayesSpace9-age BayesSpace11-regionposterior             BayesSpace6-sexM     BayesSpace7-regionmiddle             BayesSpace10-age             BayesSpace4-sexM              BayesSpace2-age 
+                        9972                         9972                         9973                         9974                         9975                         9976                         9976                         9977                         9978                         9978                         9980                         9982                         9983 
+            BayesSpace7-sexM    BayesSpace11-regionmiddle              BayesSpace5-age              BayesSpace3-age              BayesSpace6-age            BayesSpace11-sexM              BayesSpace7-age              BayesSpace8-age              BayesSpace4-age             BayesSpace11-age 
+                        9983                         9983                         9984                         9987                         9988                         9988                         9989                         9989                         9990                         9995 
+          n       ratio
+FALSE    12 0.001198801
+TRUE   9998 0.998801199
+Sum   10010 1.000000000
+  f_stat_noWM p_value_noWM     fdr_noWM noWM_AveExpr         ensembl      gene
+1    8.486280 3.177314e-15 5.530328e-15     4.460191 ENSG00000228794 LINC01128
+2   11.285695 1.123212e-20 2.715129e-20     5.346700 ENSG00000188976     NOC2L
+3   16.833963 9.943494e-31 3.790342e-30     6.071017 ENSG00000188290      HES4
+4    8.607061 1.828282e-15 3.233411e-15     5.401883 ENSG00000187608     ISG15
+5    8.191195 1.230486e-14 2.065130e-14     3.912704 ENSG00000188157      AGRN
+6    5.178256 1.529167e-08 1.738440e-08     3.674754 ENSG00000131591  C1orf159
+[1] "Reproducibility information:"
+[1] "2022-05-26 10:21:22 EDT"
+   user  system elapsed 
+  9.179   0.892  10.536 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R Under development (unstable) (2021-11-06 r81149)
+ os       CentOS Linux 7 (Core)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2022-05-26
+ pandoc   2.11.0.4 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ beachmat               2.12.0   2022-04-26 [2] Bioconductor
+ Biobase              * 2.56.0   2022-04-26 [2] Bioconductor
+ BiocGenerics         * 0.42.0   2022-04-26 [2] Bioconductor
+ BiocParallel           1.30.2   2022-05-15 [2] Bioconductor
+ bitops                 1.0-7    2021-04-24 [2] CRAN (R 4.2.0)
+ cli                    3.3.0    2022-04-25 [2] CRAN (R 4.2.0)
+ DelayedArray           0.22.0   2022-04-26 [2] Bioconductor
+ DelayedMatrixStats     1.18.0   2022-04-26 [2] Bioconductor
+ dqrng                  0.3.0    2021-05-01 [2] CRAN (R 4.2.0)
+ DropletUtils           1.16.0   2022-04-26 [2] Bioconductor
+ edgeR                  3.38.1   2022-05-15 [2] Bioconductor
+ GenomeInfoDb         * 1.32.2   2022-05-15 [2] Bioconductor
+ GenomeInfoDbData       1.2.8    2022-04-16 [2] Bioconductor
+ GenomicRanges        * 1.48.0   2022-04-26 [2] Bioconductor
+ HDF5Array              1.24.0   2022-04-26 [2] Bioconductor
+ here                 * 1.0.1    2020-12-13 [1] CRAN (R 4.2.0)
+ IRanges              * 2.30.0   2022-04-26 [2] Bioconductor
+ lattice                0.20-45  2021-09-22 [3] CRAN (R 4.2.0)
+ limma                * 3.52.1   2022-05-15 [2] Bioconductor
+ locfit                 1.5-9.5  2022-03-03 [2] CRAN (R 4.2.0)
+ magick                 2.7.3    2021-08-18 [2] CRAN (R 4.2.0)
+ magrittr               2.0.3    2022-03-30 [2] CRAN (R 4.2.0)
+ Matrix                 1.4-1    2022-03-23 [3] CRAN (R 4.2.0)
+ MatrixGenerics       * 1.8.0    2022-04-26 [2] Bioconductor
+ matrixStats          * 0.62.0   2022-04-19 [2] CRAN (R 4.2.0)
+ R.methodsS3            1.8.1    2020-08-26 [2] CRAN (R 4.1.0)
+ R.oo                   1.24.0   2020-08-26 [2] CRAN (R 4.1.0)
+ R.utils                2.11.0   2021-09-26 [2] CRAN (R 4.2.0)
+ Rcpp                   1.0.8.3  2022-03-17 [2] CRAN (R 4.2.0)
+ RCurl                  1.98-1.6 2022-02-08 [2] CRAN (R 4.2.0)
+ rhdf5                  2.40.0   2022-04-26 [2] Bioconductor
+ rhdf5filters           1.8.0    2022-04-26 [2] Bioconductor
+ Rhdf5lib               1.18.2   2022-05-15 [2] Bioconductor
+ rjson                  0.2.21   2022-01-09 [2] CRAN (R 4.2.0)
+ rprojroot              2.0.3    2022-04-02 [2] CRAN (R 4.2.0)
+ S4Vectors            * 0.34.0   2022-04-26 [2] Bioconductor
+ scuttle                1.6.2    2022-05-15 [2] Bioconductor
+ sessioninfo          * 1.2.2    2021-12-06 [2] CRAN (R 4.2.0)
+ SingleCellExperiment * 1.18.0   2022-04-26 [2] Bioconductor
+ sparseMatrixStats      1.8.0    2022-04-26 [2] Bioconductor
+ SpatialExperiment    * 1.6.0    2022-04-26 [2] Bioconductor
+ SummarizedExperiment * 1.26.1   2022-04-29 [2] Bioconductor
+ XVector                0.36.0   2022-04-26 [2] Bioconductor
+ zlibbioc               1.42.0   2022-04-26 [2] Bioconductor
+
+ [1] /users/aspangle/R/devel
+ [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/site-library
+ [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu May 26 10:21:23 EDT 2022
