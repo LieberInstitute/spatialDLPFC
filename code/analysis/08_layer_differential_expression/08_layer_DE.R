@@ -47,33 +47,36 @@ library("limma")
 # dir_plots <- here::here("plots", "08_layer_differential_expression", opt$spetype)
 # dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 # stopifnot(file.exists(dir_plots))
+
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## load spe data
-load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
+spe_pseudo <-
+  readRDS(
+    file = here::here("processed-data",
+                      "rdata",
+                      "spe",
+                      "pseudo_bulked_spe",
+                      paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k",k,".RDS")
+                      )
+    )
 
 #boxplots of spots per cluster
 pdf(file = here::here("plots","08_layer_differential_expression",paste0("ncells_per_cluster_k",k,".pdf")))
-boxplot(ncells ~ colData(spe_pseudo)[[paste0("bayesSpace_harmony_",k)]], data = colData(spe_pseudo))
+boxplot(ncells ~ spe_pseudo$BayesSpace, data = colData(spe_pseudo))
 dev.off()
-
-summary(spe_pseudo$ncells)
-
-#drop samples with too few cells 
-dim(spe_pseudo)
-spe_pseudo <- spe_pseudo[,spe_pseudo$ncells >= 10]
-dim(spe_pseudo)
 
 
 ## Extract the data
 mat <- assays(spe_pseudo)$logcounts
 
 #make mat_formula
-var_oi = paste0("bayesSpace_harmony_",k)
+#var_oi = paste0("bayesSpace_harmony_",k)
+var_oi = "BayesSpace"
 covars = c("region","age","sex")
 mat_formula <- eval(str2expression(paste("~","0","+",var_oi,"+",paste(covars, collapse=" + "))))
 
-
+#make sure everything is  a factor
 colData(spe_pseudo)[[var_oi]] <- as.factor(colData(spe_pseudo)[[var_oi]])
 colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
 colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
