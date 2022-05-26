@@ -49,10 +49,15 @@ k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## Load the modeling results
 load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("cluster_modeling_results_k",k,".Rdata")),verbose = TRUE)
-#load(file = "processed-data/rdata/spe/08_layer_differential_expression/cluster_modeling_results_k9.Rdata", verbose = TRUE)
 
 ## load spe data
-load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_normalized_filtered_k",k,".Rdata")))
+spe_pseudo <-
+  readRDS(
+    file = here::here("processed-data",
+                      "rdata",
+                      "spe",
+                      "pseudo_bulked_spe",
+                      paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k",k,".RDS")))
 
 
 ## We don't want to model the pathology groups as integers / numeric
@@ -212,47 +217,54 @@ modeling_results <- list(
   "pairwise" = results_pairwise
 )
 
-save(modeling_results,file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
-
-which(modeling_results$anova$fdr_noWM < 0.05)
-summary(modeling_results$anova$fdr_noWM)
-
-length(which(modeling_results$enrichment$fdr_1 < 0.05))
-length(which(modeling_results$enrichment$fdr_2 < 0.05))
-length(which(modeling_results$enrichment$fdr_3 < 0.05))
-length(which(modeling_results$enrichment$fdr_4 < 0.05))
-length(which(modeling_results$enrichment$fdr_5 < 0.05))
-length(which(modeling_results$enrichment$fdr_6 < 0.05))
-length(which(modeling_results$enrichment$fdr_7 < 0.05))
-length(which(modeling_results$enrichment$fdr_8 < 0.05))
-length(which(modeling_results$enrichment$fdr_9 < 0.05))
-
-cluster <- c(1:9)
-genes <- c(9255,4051,1293,4739,2615,4422,3250,3332,417)
-df <- data.frame(cluster, genes)
-pdf(file = here::here("plots","08_layer_differential_expression","plot_enrichment_DEGs.pdf"))
-plot(df$genes~df$cluster)
-dev.off()
+save(
+  modeling_results,
+  file = here::here("processed-data",
+                    "rdata",
+                    "spe",
+                    "08_layer_differential_expression",
+                    paste0("parsed_modeling_results_k",k,".Rdata")))
 
 
-library(vioplot)
-pdf(file = here::here("plots","08_layer_differential_expression","boxplot_num_enrichment_DEGs.pdf"))
-x1 <- modeling_results$enrichment$fdr_1
-x2 <- modeling_results$enrichment$fdr_2
-x3 <- modeling_results$enrichment$fdr_3
-x4 <- modeling_results$enrichment$fdr_4
-x5 <- modeling_results$enrichment$fdr_5
-x6 <- modeling_results$enrichment$fdr_6
-x7 <- modeling_results$enrichment$fdr_7
-x8 <- modeling_results$enrichment$fdr_8
-x9 <- modeling_results$enrichment$fdr_9
-
-vioplot(x1,x2,x3,x4,x5,x6,x7,x8,x9)
-dev.off()
-
-
-which(modeling_results$enrichment$p_value_1 < 0.05)
-summary(modeling_results$pa$fdr_1)
+# which(modeling_results$anova$fdr_noWM < 0.05)
+# summary(modeling_results$anova$fdr_noWM)
+# 
+# length(which(modeling_results$enrichment$fdr_1 < 0.05))
+# length(which(modeling_results$enrichment$fdr_2 < 0.05))
+# length(which(modeling_results$enrichment$fdr_3 < 0.05))
+# length(which(modeling_results$enrichment$fdr_4 < 0.05))
+# length(which(modeling_results$enrichment$fdr_5 < 0.05))
+# length(which(modeling_results$enrichment$fdr_6 < 0.05))
+# length(which(modeling_results$enrichment$fdr_7 < 0.05))
+# length(which(modeling_results$enrichment$fdr_8 < 0.05))
+# length(which(modeling_results$enrichment$fdr_9 < 0.05))
+# 
+# cluster <- c(1:9)
+# genes <- c(9255,4051,1293,4739,2615,4422,3250,3332,417)
+# df <- data.frame(cluster, genes)
+# pdf(file = here::here("plots","08_layer_differential_expression","plot_enrichment_DEGs.pdf"))
+# plot(df$genes~df$cluster)
+# dev.off()
+# 
+# 
+# library(vioplot)
+# pdf(file = here::here("plots","08_layer_differential_expression","boxplot_num_enrichment_DEGs.pdf"))
+# x1 <- modeling_results$enrichment$fdr_1
+# x2 <- modeling_results$enrichment$fdr_2
+# x3 <- modeling_results$enrichment$fdr_3
+# x4 <- modeling_results$enrichment$fdr_4
+# x5 <- modeling_results$enrichment$fdr_5
+# x6 <- modeling_results$enrichment$fdr_6
+# x7 <- modeling_results$enrichment$fdr_7
+# x8 <- modeling_results$enrichment$fdr_8
+# x9 <- modeling_results$enrichment$fdr_9
+# 
+# vioplot(x1,x2,x3,x4,x5,x6,x7,x8,x9)
+# dev.off()
+# 
+# 
+# which(modeling_results$enrichment$p_value_1 < 0.05)
+# summary(modeling_results$pa$fdr_1)
 
 ## Reproducibility information
 print("Reproducibility information:")
