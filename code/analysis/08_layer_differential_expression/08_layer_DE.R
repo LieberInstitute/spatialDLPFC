@@ -140,7 +140,7 @@ eb <- eBayes(fit)
 
 ## Define the contrasts for each pathology group vs another one
 message(Sys.time(), " run pairwise models")
-cluster_combs <- combn(colnames(mod), 2)
+cluster_combs <- combn(colnames(mod), 2) #just find column names that contain BayesSpace, or make mod that doesn't contain region, age and sex
 cluster_constrats <- apply(cluster_combs, 2, function(x) {
   z <- paste(x, collapse = "-")
   makeContrasts(contrasts = z, levels = mod)

@@ -26,11 +26,7 @@ sig_genes <- sig_genes_extract_all(
   modeling_results = modeling_results,
   sce_layer = spe_pseudo
 )
-sig_genes <- sig_genes_extract_all(
-  n = nrow(spe_pseudo),
-  modeling_results = test,
-  sce_layer = spe_pseudo
-)
+
 
 ## Extract FDR < 5%
 ## From
@@ -48,7 +44,7 @@ sig_genes <- sig_genes_extract_all(
 # write.csv(z, file = file.path(dir_rdata, "Visium_IF_AD_wholegenome_model_results_FDR5perc.csv"))
 
 vars <- colnames(colData(spe))
-
+#https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
 
 ## Deploy the website
 spatialLIBD::run_app(
@@ -57,10 +53,10 @@ spatialLIBD::run_app(
     modeling_results = modeling_results,
     sig_genes = NULL, #change this to use sig_genes object
     title = "spatialDLPFC, Spangler et al, 2021",
-    spe_discrete_vars = c(
+    spe_discrete_vars = c( #this is the variables for the spe object not the spe_pseudo object
         vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
-        "BayesSpace"
+        "BayesSpace" 
     ),
     spe_continuous_vars = c(
         "sum_umi",
