@@ -13,16 +13,16 @@ library(RColorBrewer)
 library(lattice)
 library(edgeR)
 
-# mat_formula = ~ 0 + bayesSpace_harmony_9 + region + age + sex 
+# mat_formula = ~ 0 + bayesSpace_harmony_9 + region + age + sex
 # foo <- function(sce, var_oi, covars, block_var = NULL) { #must specify in documentation that the second element of the formula is the cluster label, and the first element is zero
-#   
+#
 #   terms <- attributes(terms(fo))$term.labels
 #   pd <- colData(sce)[ , c(terms[!grepl(":", terms)], block_var) ]
-#   
+#
 #   sce_pseudo <- aggregateAcrossCells(sce, pd)
-#   
+#
 #   ## then model
-#   
+#
 #   ## then re-arrange results
 # }
 
@@ -48,8 +48,8 @@ spe_pseudo <- aggregateAcrossCells(
 #find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
 rowData(spe_pseudo)$filter_expr <- filterByExpr(spe_pseudo)
 summary(rowData(spe_pseudo)$filter_expr)
-# Mode   FALSE    TRUE 
-# logical   21059    7857 
+# Mode   FALSE    TRUE
+# logical   21059    7857
 
 spe_pseudo <- spe_pseudo[which(rowData(spe_pseudo)$filter_expr),]
 
@@ -77,7 +77,7 @@ mat_filter <- assays(spe_pseudo)$logcounts #make matrix of filtered just the log
 
 
 #tell user in documentation to make sure their columns are converted to either factors or numerics as appropriate
-#convert variables to factors 
+#convert variables to factors
 # colData(spe_pseudo)[[cluster]] <- as.factor(colData(spe_pseudo)[[cluster]])
 # colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
 # colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
@@ -97,7 +97,7 @@ for(i in seq_along(terms)){
 #create matrix where the rownames are the sample:clusters and the columns are the other variables (spatial.cluster + region + age + sex)
 
 mod<- model.matrix(mat_formula,
-                   data = colData(spe_pseudo)) #binarizes factors 
+                   data = colData(spe_pseudo)) #binarizes factors
 
 
 
@@ -106,15 +106,15 @@ corfit <- duplicateCorrelation(mat_filter, mod,
                                block = spe_pseudo$sample_id)
 
 ## Next for each layer test that layer vs the rest
-cluster_idx <- splitit(colData(spe_pseudo)[,var_oi]) 
+cluster_idx <- splitit(colData(spe_pseudo)[,var_oi])
 
 eb0_list_cluster <- lapply(cluster_idx, function(x) {
   res <- rep(0, ncol(spe_pseudo))
   res[x] <- 1
   res_formula <- paste("~","res","+",paste(covars, collapse=" + "))
   m <- with(colData(spe_pseudo),
-            model.matrix(eval(str2expression(res_formula)))) 
-  
+            model.matrix(eval(str2expression(res_formula))))
+
   #josh suggested use top table as a wrapper because it makes the output of eBayes nicer
 
     eBayes(
@@ -160,7 +160,7 @@ data.frame(
 # 7     61           9           3
 
 
-f_merge <- function(p, fdr, t) { 
+f_merge <- function(p, fdr, t) {
   colnames(p) <- paste0('p_value_', colnames(p))
   colnames(fdr) <- paste0('fdr_', colnames(fdr))
   colnames(t) <- paste0('t_stat_', colnames(t))
@@ -186,13 +186,20 @@ results_specificity <-as.data.frame(results_specificity@listData)
 
 modeling_results = fetch_data(type = "modeling_results")
 
+## Related to https://github.com/LieberInstitute/spatialLIBD/commit/92c382b08599b61076e2b5cfa08544705c82c971
+specificity_stats <- results_specificity[, grep("^t_stat", colnames(results_specificity))]
+rownames(specificity_stats) <- results_specificity$ensembl
+colnames(specificity_stats) <- gsub("^t_stat_", "", colnames(specificity_stats))
+head(specificity_stats)
+
 cor <- layer_stat_cor(
-  results_specificity,
+  specificity_stats,
   modeling_results,
   model_type = names(modeling_results)[2],
   reverse = FALSE,
   top_n = NULL
 )
+layer_stat_cor_plot(cor, max = 1)
 
 
 ### heatmap ### here can also use layer_stat_cor_plot() from spatialLIBD
@@ -203,7 +210,7 @@ dd = dist(1-cor_t_layer)
 hc = hclust(dd)
 cor_t_layer_toPlot = cor_t_layer[hc$order, c(1, 7:2)]
 colnames(cor_t_layer_toPlot) = gsub("ayer", "", colnames(cor_t_layer_toPlot))
-rownames(cor_t_layer_toPlot)[rownames(cor_t_layer_toPlot) == "Oligodendrocytes"] = "OLIGO" # does thismatter? 
+rownames(cor_t_layer_toPlot)[rownames(cor_t_layer_toPlot) == "Oligodendrocytes"] = "OLIGO" # does thismatter?
 
 
 #implement layer_stat_cor_plot
