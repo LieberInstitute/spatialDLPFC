@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
-#$ -N "prepare_anndatas"
-#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_$TASK_ID.log
-#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_$TASK_ID.log
+#$ -N "prepare_anndatas_nonIF"
+#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_$TASK_ID.log
 #$ -l bluejay,mf=10G,h_vmem=10G
 #$ -t 1
 #$ -tc 1
@@ -17,7 +17,7 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 module load tangram/1.0.2
-python 02-prepare_anndatas.py
+python 02-prepare_anndatas_nonIF.py
 
 echo "**** Job ends ****"
 date

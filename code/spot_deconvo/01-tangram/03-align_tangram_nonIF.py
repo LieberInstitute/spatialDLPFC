@@ -26,8 +26,10 @@ import custom_tg_code as ctg
 #   Paths
 #-------------------------------------------------------------------------------
 
-plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram")
-processed_dir = pyhere.here("processed_data", "spot_deconvo", "01-tangram")
+plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "nonIF")
+processed_dir = pyhere.here(
+    "processed_data", "spot_deconvo", "01-tangram", "nonIF"
+)
 sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_in = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 id_path = pyhere.here(processed_dir, 'sample_ids.txt')

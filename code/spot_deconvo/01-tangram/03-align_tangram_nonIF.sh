@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
-#$ -N "align_tangram"
-#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/03-align_tangram_$TASK_ID.log
-#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/03-align_tangram_$TASK_ID.log
+#$ -N "align_tangram_nonIF"
+#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/03-align_tangram_nonIF_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/03-align_tangram_nonIF_$TASK_ID.log
 #$ -l caracol,mf=64G,h_vmem=64G
 #$ -t 1
 #$ -tc 1
@@ -44,7 +44,7 @@ export CUDA_VISIBLE_DEVICES=$(
 
 module load tangram/1.0.2
 
-python 03-align_tangram.py
+python 03-align_tangram_nonIF.py
 
 echo "**** Job ends ****"
 date

@@ -17,9 +17,18 @@ spe_in = here(
     "processed-data","rdata", "spe", "01_build_spe", "spe_final.Rdata"
 )
 
-sce_out = here("processed-data", "spot_deconvo", "01-tangram", "spe.h5ad")
-spe_out = here("processed-data", "spot_deconvo", "01-tangram", "spe.h5ad")
-marker_out = here("processed-data", "spot_deconvo", "01-tangram", "markers.txt")
+sce_out = here(
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "sce.h5ad"
+    )
+spe_out = here(
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "spe.h5ad"
+)
+marker_out = here(
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "markers.txt"
+)
+sample_out = here(
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "sample_ids.txt"
+)
 
 #  Make sure output directories exist
 dir.create(dirname(sce_out), showWarnings = FALSE)
@@ -95,5 +104,7 @@ writeLines(
     marker_stats$gene,
     con = marker_out
 )
+
+#   TODO: write sample names to text file
 
 session_info()

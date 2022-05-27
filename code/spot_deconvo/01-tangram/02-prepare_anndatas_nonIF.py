@@ -1,6 +1,6 @@
-#   While 01-r_to_python_dlpfc.R ideally would produce an AnnData totally
+#   While 01-r_to_python_nonIF.R ideally would produce an AnnData totally
 #   ready for use with Tangram, in reality there are a few details
-#   to adjust. This code is separate from 01-r_to_python_dlpfc.R because it
+#   to adjust. This code is separate from 01-r_to_python_nonIF.R because it
 #   is simpler to perform in python than R.
 
 import os, sys
@@ -25,8 +25,10 @@ import json
 #   Paths
 #-------------------------------------------------------------------------------
 
-plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram")
-processed_dir = pyhere.here("processed_data", "spot_deconvo", "01-tangram")
+plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "nonIF")
+processed_dir = pyhere.here(
+    "processed_data", "spot_deconvo", "01-tangram", "nonIF"
+)
 
 sc_path_in = pyhere.here(processed_dir, 'sce.h5ad')
 sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
