@@ -5,8 +5,6 @@ app_dir <- here::here("code","analysis_IF", "02_shinyapp")
 
 ## Or you can go to your shinyapps.io account and copy this
 ## Here we do this to keep our information hidden.
-load(file.path(app_dir, ".deploy_info.Rdata"), verbose = TRUE)
-
 source(file.path(app_dir,"token.R"))
 
 ## You need this to enable shinyapps to install Bioconductor packages
