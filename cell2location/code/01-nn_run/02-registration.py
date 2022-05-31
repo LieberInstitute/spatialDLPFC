@@ -69,6 +69,7 @@ def perform_regression(
         os.path.join(plot_dir, f'{plot_name}.{plot_file_type}'),
         bbox_inches='tight'
     )
+    plt.close(f)
 
     # In this section, we export the estimated cell abundance (summary of the
     # posterior distribution).
@@ -88,6 +89,13 @@ def perform_regression(
     # mapping the plot should be roughly diagonal, strong deviations will signal
     # problems
     mod.plot_QC()
+    plt.savefig(
+        os.path.join(
+            plot_dir, f'{adata_name}_QC.{plot_file_type}'
+        ),
+        bbox_inches='tight'
+    )
+    plt.close('all')
 
     return (adata, mod)
 
@@ -159,7 +167,7 @@ mod = cell2location.models.Cell2location(
     # hyper-prior which can be estimated from paired histology:
     N_cells_per_location=N_CELLS_PER_SPOT,
     # hyperparameter controlling normalisation of
-    # within-experiment variation in RNA detection (using default here):
+    # within-experiment variation in RNA detection:
     detection_alpha=20 # default: 200
 )
 
@@ -178,6 +186,7 @@ fig.savefig(
     ),
     bbox_inches='tight'
 )
+plt.close(fig)
 
 # add 5% quantile, representing confident cell abundance, 'at least this amount
 # is present', to adata.obs with nice names for plotting
@@ -193,7 +202,7 @@ adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
 #       1. possibly change number of cell types + related choices
 
 for sample_id in adata_vis.obs['sample'].cat.categories:
-    #   Subset to this sample
+        #   Subset to this sample
     slide = select_slide(adata_vis, sample_id)
 
     cell_types = adata_ref.obs[cell_type_var].cat.categories
@@ -215,6 +224,7 @@ for sample_id in adata_vis.obs['sample'].cat.categories:
         ),
         bbox_inches='tight'
     )
+    plt.close(f)
 
     fig = plot_spatial(
         adata=slide,
@@ -235,13 +245,14 @@ for sample_id in adata_vis.obs['sample'].cat.categories:
         ),
         bbox_inches='tight'
     )
+    plt.close(fig)
 
 ################################################################################
 #   Export deconvo results
 ################################################################################
 
 clusters = adata_vis.obs[
-    ['sample'] + adata_vis.uns['mod']['factor_names'].tolist()
+    ['sample'] + list(adata_vis.uns['mod']['factor_names'])
 ]
 clusters.index.name = 'key'
 
