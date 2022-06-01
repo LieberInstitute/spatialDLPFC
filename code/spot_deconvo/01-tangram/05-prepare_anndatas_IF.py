@@ -72,6 +72,15 @@ select_genes_names = [
 
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
+#   If True, important per-spot cell counts from a 'clusters.csv' file.
+#   Otherwise it is assumed the object already contains cell counts that will be
+#   used later
+IMPORT_CELL_COUNTS = True
+cell_count_var = 'cell_count' # Column in ad_sp.obs containing cell counts
+cell_counts_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
+)
+
 ################################################################################
 #   Preprocessing
 ################################################################################
@@ -164,6 +173,23 @@ ad_sp.obsm['spatial'] = np.array(
         )
     )
 )
+
+#-------------------------------------------------------------------------------
+#   Add cell counts from a 'clusters.csv' file, if applicable
+#-------------------------------------------------------------------------------
+
+if IMPORT_CELL_COUNTS:
+    cell_counts_path = cell_counts_path.format(sample_name)
+
+    #   Read in counts, whose associated barcodes should match the spatial
+    #   AnnData's
+    cell_counts = pd.read_csv(cell_counts_path)
+    cell_counts['key'].index = pd.Series(
+        [x.split('_')[1] for x in cell_counts['key']]
+    )
+    assert all(ad_sp.obs['key'] == cell_counts['key'])
+
+    ad_sp.obs[cell_count_var] = cell_counts['cell_count']
 
 #-------------------------------------------------------------------------------
 #   Save AnnDatas
