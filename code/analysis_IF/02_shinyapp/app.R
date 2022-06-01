@@ -20,7 +20,13 @@ spatialLIBD::run_app(
     modeling_results = NULL,
     sig_genes = NULL,
     title = "spatialDLPFC_IF",
-    spe_discrete_vars = c(vars[grep("10x_", vars)], "ManualAnnotation"),
-    spe_continuous_vars = c("sum_umi", "sum_gene", "expr_chrM", "expr_chrM_ratio","CellCount"),
+    spe_discrete_vars = c(vars[grep("^10x_", vars)], "ManualAnnotation"),
+    spe_continuous_vars = c(
+        "sum_umi",
+        "sum_gene",
+        "expr_chrM",
+        "expr_chrM_ratio",
+        "CellCount"
+    ),
     default_cluster = "10x_graphclust"
-  )
+)
