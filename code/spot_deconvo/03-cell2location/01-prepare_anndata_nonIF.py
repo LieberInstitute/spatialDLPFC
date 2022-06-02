@@ -94,11 +94,6 @@ adata_ref.var.index = adata_ref.var[ensembl_id_var]
 adata_ref.var_names = adata_ref.var[ensembl_id_var]
 adata_ref.var.index.name = None
 
-#   Drop rare cell types from single-cell data
-adata_ref = adata_ref[
-    ~ adata_ref.obs[cell_type_var].isin(cell_types_to_drop), :
-]
-
 #   Subset to specific genes
 selected = filter_genes(
     adata_ref, cell_count_cutoff=5, cell_percentage_cutoff2=0.03,
