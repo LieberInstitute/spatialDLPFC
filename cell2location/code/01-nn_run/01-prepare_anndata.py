@@ -25,10 +25,14 @@ import json
 ################################################################################
 
 sc_path = pyhere.here(
-    'tangram_libd', 'processed-data', '03_nn_run', 'sce_DLPFC.h5ad'
+    "cell2location", "processed-data", "01-nn_run", "sce_pan.h5ad"
 )
 sp_path = pyhere.here(
-    'tangram_libd', 'processed-data', '03_nn_run', 'visium_DLPFC.h5ad'
+    "cell2location", "processed-data", "01-nn_run", "spe.h5ad"
+)
+
+marker_path = pyhere.here(
+    "cell2location", "processed-data", "01-nn_run", "pan_markers.txt"
 )
 
 processed_dir = pyhere.here('cell2location', 'processed-data', '01-nn_run')
@@ -41,13 +45,11 @@ Path(processed_dir).mkdir(parents=True, exist_ok=True)
 json_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X'
 
 #   Naming conventions used for different columns in the spatial AnnData
-sample_id_var = 'sample_id'   # in spatial object only
-ensembl_id_var = 'gene_id'    # in both spatial and single-cell objects
-gene_symbol_var = 'gene_name' # in both spatial and single-cell objects
-cell_type_var = 'cellType'    # in single-cell only
+sample_id_var = 'sample_id'         # in spatial object only
+ensembl_id_var = 'gene_id'          # in both spatial and single-cell objects
+gene_symbol_var = 'gene_name'       # in both spatial and single-cell objects
+cell_type_var = 'cellType.Broad'    # in single-cell only
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
-
-cell_types_to_drop = ['Macrophage', 'Mural', 'Tcell']
 
 plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 
@@ -87,25 +89,9 @@ adata_ref.var.index = adata_ref.var[ensembl_id_var]
 adata_ref.var_names = adata_ref.var[ensembl_id_var]
 adata_ref.var.index.name = None
 
-#   Drop rare cell types from single-cell data
-adata_ref = adata_ref[
-    ~ adata_ref.obs[cell_type_var].isin(cell_types_to_drop), :
-]
-
-#   Subset to specific genes
-selected = filter_genes(
-    adata_ref, cell_count_cutoff=5, cell_percentage_cutoff2=0.03,
-    nonz_mean_cutoff=1.12
-)
-
-#   This code to save plot doesn't work! TODO
-f = plt.gcf()
-f.savefig(
-    os.path.join(
-        plot_dir, f'cell_annotation.{plot_file_type}'
-    ),
-    bbox_inches='tight'
-)
+#   Subset to marker genes
+with open(marker_path, 'r') as f:
+    selected = f.read().splitlines()
 
 adata_ref = adata_ref[:, selected].copy()
 
