@@ -38,8 +38,8 @@ sc_path = os.path.join(processed_dir, 'adata_ref.h5ad')
 ref_run_name = f'{processed_dir}/reference_signatures'
 run_name = f'{processed_dir}/cell2location_map'
 
-#   Naming conventions used for different columns in the spatial AnnData
-cell_type_var = 'cellType'    # in single-cell only
+#   Naming conventions used for different columns in the AnnDatas
+cell_type_var = 'cellType.Broad'    # in single-cell only
 
 plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 
@@ -168,7 +168,7 @@ mod = cell2location.models.Cell2location(
     N_cells_per_location=N_CELLS_PER_SPOT,
     # hyperparameter controlling normalisation of
     # within-experiment variation in RNA detection:
-    detection_alpha=20 # default: 200
+    detection_alpha=20 # default: 20 for visium
 )
 
 cell2location.models.Cell2location.view_anndata_setup(mod)
