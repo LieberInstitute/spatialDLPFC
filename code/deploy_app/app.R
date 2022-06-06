@@ -51,9 +51,9 @@ spatialLIBD::run_app(
     spe,
     sce_layer = spe_pseudo,
     modeling_results = modeling_results,
-    sig_genes = sig_genes, #change this to use sig_genes object
+    sig_genes = sig_genes, 
     title = "spatialDLPFC, Spangler et al, 2021",
-    spe_discrete_vars = c( #this is the variables for the spe object not the spe_pseudo object, need to include all bayesSpace clusterings columns 
+    spe_discrete_vars = c( #this is the variables for the spe object not the spe_pseudo object 
         vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
         vars[grep("bayesSpace_harmony", vars)],
