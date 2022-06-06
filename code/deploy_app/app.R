@@ -11,11 +11,11 @@ options("golem.app.prod" = TRUE)
 ## You need this to enable shinyapps to install Bioconductor packages
 options(repos = BiocManager::repositories())
 
-## Load the data
+## Load the spe object
 load("spe_filtered_final_with_clusters.Rdata", verbose = TRUE)
-#load spe_pseudo
+#load the pseudobulked object spe_pseudo
 spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS")
-#load modeling results
+#load modeling results for k9 clustering/pseudobulking 
 load("parsed_modeling_results_k9.Rdata",verbose = TRUE)
 
 
@@ -51,12 +51,16 @@ spatialLIBD::run_app(
     spe,
     sce_layer = spe_pseudo,
     modeling_results = modeling_results,
-    sig_genes = NULL, #change this to use sig_genes object
+    sig_genes = sig_genes, #change this to use sig_genes object
     title = "spatialDLPFC, Spangler et al, 2021",
-    spe_discrete_vars = c( #this is the variables for the spe object not the spe_pseudo object
+    spe_discrete_vars = c( #this is the variables for the spe object not the spe_pseudo object, need to include all bayesSpace clusterings columns 
         vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
-        "BayesSpace" 
+        vars[grep("bayesSpace_harmony", vars)],
+        vars[grep("bayesSpace_harmony", vars)],
+        "graph_based_PCA_within",
+        "PCA_SNN_k10_k7", 
+        "Harmony_SNN_k10_k7" 
     ),
     spe_continuous_vars = c(
         "sum_umi",
