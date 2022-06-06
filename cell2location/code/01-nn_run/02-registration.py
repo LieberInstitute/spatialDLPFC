@@ -30,7 +30,7 @@ processed_dir = pyhere.here('cell2location', 'processed-data', '01-nn_run')
 plot_dir = pyhere.here('cell2location', 'plots', '01-nn_run')
 
 sp_path = os.path.join(processed_dir, 'adata_vis_orig.h5ad')
-sc_path = os.path.join(processed_dir, 'adata_ref.h5ad')
+sc_path = os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 
 
 # create paths and names to results folders for reference regression and
