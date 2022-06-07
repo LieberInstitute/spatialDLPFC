@@ -3,9 +3,12 @@
 #$ -N "create_masks"
 #$ -o ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
-#$ -l caracol,mf=400G,h_vmem=400G
-#$ -t 3-4
+#$ -l caracol,mf=300G,h_vmem=300G
+#$ -t 4
 #$ -tc 1
+
+#   This array job loops through all channels (excluding lipofuscin) of all 4
+#   samples for the Visium_IF data, for a total of 20 tasks
 
 echo "**** Job starts ****"
 date
