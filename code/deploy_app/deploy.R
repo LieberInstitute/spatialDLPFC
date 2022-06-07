@@ -19,7 +19,7 @@ rsconnect::deployApp(
     appFiles = c(
         "app.R",
         "spe_subset.Rdata",
-        "sce_pseudobulk_bayesSpace_normalized_filtered_k9.Rdata",
+        "spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS",
         "parsed_modeling_results_k9.Rdata"
     ),
     appName = 'spatialDLPFC_Spangler2022',
