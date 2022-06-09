@@ -17,7 +17,7 @@ color.bar <- function(mycolors){
 }
 
 ## Make the plot
-k = c(3,9,16)
+k = c(3,9,16,28)
 for(i in seq_along(k) ){
   print(k[i])
   mycolors <- Polychrome::palette36.colors(k[i])
@@ -33,6 +33,9 @@ for(i in seq_along(k) ){
   }
   if(k[i]==16){
     mycolors <- mycolors[c(13,11,6,15,4,16,7,12,2,1,14,5,9,8,3,10)]
+  }
+  if(k[i]==28){
+    mycolors <- mycolors[c(16,17,20,6,28,4,13,19,7,14,11,23,27,26,12,15,22,25,5,10,24,1,8,9,2,3)]
   }
   png(paste0("/Users/abbyspangler/Desktop/colorbar",k[i],".png"))
   color.bar(mycolors = mycolors)
