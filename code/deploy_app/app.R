@@ -16,6 +16,7 @@ load("spe_subset.Rdata", verbose = TRUE)
 spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS")
 #load modeling results for k9 clustering/pseudobulking
 load("parsed_modeling_results_k9.Rdata",verbose = TRUE)
+warning("modeling results loaded")
 
 
 ## For sig_genes_extract_all() to work https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L37-L44
@@ -25,7 +26,7 @@ sig_genes <- sig_genes_extract_all(
   modeling_results = modeling_results,
   sce_layer = spe_pseudo
 )
-
+warning("sig_genes done")
 
 ## Extract FDR < 5%
 ## From
