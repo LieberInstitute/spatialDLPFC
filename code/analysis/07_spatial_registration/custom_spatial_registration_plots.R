@@ -27,7 +27,7 @@ layer_matrix_plot_AS <-
            ),
            breaks = NULL,
            axis.args = NULL,
-           srt = 45,
+           srt = 0,
            mar = c(8, 4 + (max(nchar(rownames(matrix_values))) %/% 3) * 0.5, 4, 2) + 0.1,
            cex = 1.2) {
     ## Create some default values in case the user didn't specify them
@@ -75,7 +75,7 @@ layer_matrix_plot_AS <-
       col = mypal,
       xaxt = "n",
       yaxt = "n",
-      xlab = "Cluster Registration",
+      xlab = "", #x label for plot
       ylab = "",
       breaks = breaks,
       nlevel = length(mypal),
@@ -95,7 +95,7 @@ layer_matrix_plot_AS <-
       xpd = TRUE,
       srt = srt,
       cex = cex,
-      adj = 1
+      adj = c(0.5,2) #moves x axis number labels (x direction, y direction)
     )
     abline(h = layerHeights, v = c(0, seq_len(ncol(matrix_values))))
     text(
@@ -157,7 +157,7 @@ layer_stat_cor_plot_AS <-
       mypal = my.col,
       breaks = breaks,
       axis.args = axis.args,
-      srt = 90,
+      srt = 0, #keep x axis labels normal
       cex = cex
     )
   }
