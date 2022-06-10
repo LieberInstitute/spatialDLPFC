@@ -117,7 +117,8 @@ adata_ref = sc.read_h5ad(sc_path)
 RegressionModel.setup_anndata(
     adata = adata_ref,
     batch_key = 'donor', # tried 'processBatch' as well with poor results
-    labels_key = cell_type_var
+    labels_key = cell_type_var,
+    categorical_covariate_keys = ['sequencer']
 )
 
 # create and train the regression model
@@ -125,7 +126,7 @@ mod = RegressionModel(adata_ref)
 RegressionModel.view_anndata_setup(mod)
 
 adata_ref, mod = perform_regression(
-    mod, adata_ref, 'adata_ref', 250, 0.002,
+    mod, adata_ref, 'adata_ref', 400, 0.002, # changed 250 epochs to 400
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
