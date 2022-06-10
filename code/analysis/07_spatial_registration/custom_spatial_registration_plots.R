@@ -95,7 +95,7 @@ layer_matrix_plot_AS <-
       xpd = TRUE,
       srt = srt,
       cex = cex,
-      adj = c(0.5,2) #moves x axis number labels (x direction, y direction)
+      adj = c(2,0.5) #moves x axis number labels (x direction, y direction)
     )
     abline(h = layerHeights, v = c(0, seq_len(ncol(matrix_values))))
     text(
@@ -157,7 +157,7 @@ layer_stat_cor_plot_AS <-
       mypal = my.col,
       breaks = breaks,
       axis.args = axis.args,
-      srt = 0, #keep x axis labels normal
+      srt = 90, #keep x axis labels normal
       cex = cex
     )
   }
