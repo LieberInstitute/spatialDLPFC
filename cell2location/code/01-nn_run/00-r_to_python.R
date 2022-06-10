@@ -92,8 +92,8 @@ print('Determining and writing markers...')
 
 load(marker_path_in, verbose = TRUE)
 
-#   Take top 25 marker genes for each (non-rare) cell type
-n_genes <- 25
+#   Take top N marker genes for each (non-rare) cell type
+n_genes <- 100
 marker_stats = marker_stats %>% 
     filter(! cellType.target %in% cell_types_to_drop) %>%
     filter(rank_ratio <= n_genes)
