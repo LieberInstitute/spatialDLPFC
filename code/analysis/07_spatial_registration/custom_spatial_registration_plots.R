@@ -1,10 +1,11 @@
+library(spatialLIBD)
+
 load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
 
 t0_contrasts_cell<-modeling_results$enrichment
 rownames(t0_contrasts_cell) = t0_contrasts_cell$ensembl
-t0_contrasts_cell <- t0_contrasts_cell[,! names(t0_contrasts_cell)%in%c("ensembl","gene")]
+t0_contrasts_cell <- t0_contrasts_cell[,1:k]
 colnames(t0_contrasts_cell) <- gsub("^t_stat_", "", colnames(t0_contrasts_cell))
-
 
 ground_truth <- spatialLIBD::fetch_data("modeling_results")
 
@@ -84,7 +85,7 @@ layer_matrix_plot_AS <-
          rownames(matrix_labels),
          at = midpoint(layerHeights),
          las = 1,
-         cex.axis = 4
+         cex.axis = 2 #size of y axis test
     )
     axis(1, rep("", ncol(matrix_values)), at = seq(0.5, ncol(matrix_values) - 0.5))
     text(
@@ -140,11 +141,12 @@ layer_stat_cor_plot_AS <-
     delta <- (midpoints[2] - midpoints[1]) / 2
     breaks <- c(midpoints[1] - delta, midpoints + delta)
     
-    legend_cuts <- seq(-1, 1, by = 0.1)
+    legend_cuts <- seq(-1, 1, by = 1)
     legend_cuts <- legend_cuts[legend_cuts >= min & legend_cuts <= max]
     axis.args <- list(
       at = legend_cuts,
-      labels = legend_cuts
+      labels = legend_cuts,
+      cex.axis=2
     )
     
     layer_matrix_plot_AS(
