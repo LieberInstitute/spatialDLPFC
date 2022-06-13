@@ -24,7 +24,7 @@ spe_pseudo$spatialLIBD <- spe_pseudo$BayesSpace
 ## Check that we have the right number of tests
 k <- 9
 tests <- lapply(modeling_results, function(x) { colnames(x)[grep("stat", colnames(x))]})
-stopifnot(length(tests$anova) == 1) ## assuming only WM
+stopifnot(length(tests$anova) == 1) ## assuming only noWM
 stopifnot(length(tests$enrichment) == k)
 stopifnot(length(tests$pairwise) == choose(k, 2) * 2)
 
@@ -35,7 +35,7 @@ sig_genes <- sig_genes_extract_all(
 )
 
 ## Check that we have the right number of tests.
-## the + 1 at the end assumes only WM
+## the + 1 at the end assumes only noWM
 # stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
 
 ## Extract FDR < 5%
