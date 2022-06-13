@@ -4,7 +4,7 @@ load(file = here::here("processed-data","rdata","spe","08_layer_differential_exp
 
 t0_contrasts_cell<-modeling_results$enrichment
 rownames(t0_contrasts_cell) = t0_contrasts_cell$ensembl
-t0_contrasts_cell <- t0_contrasts_cell[,1:k]
+t0_contrasts_cell <- t0_contrasts_cell[,grep("t_stat",colnames(t0_contrasts_cell))]
 colnames(t0_contrasts_cell) <- gsub("^t_stat_", "", colnames(t0_contrasts_cell))
 
 ground_truth <- spatialLIBD::fetch_data("modeling_results")
@@ -94,7 +94,7 @@ layer_matrix_plot_AS <-
       xlabs,
       xpd = TRUE,
       srt = srt,
-      cex = cex,
+      cex = 1.1, #sixe of xaxis text
       adj = c(2,0.5) #moves x axis number labels (x direction, y direction)
     )
     abline(h = layerHeights, v = c(0, seq_len(ncol(matrix_values))))
