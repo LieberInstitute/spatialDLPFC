@@ -25,14 +25,14 @@ import json
 ################################################################################
 
 sc_path = pyhere.here(
-    "cell2location", "processed-data", "01-nn_run", "sce_pan.h5ad"
+    "cell2location", "processed-data", "01-nn_run", "sce_dlpfc.h5ad"
 )
 sp_path = pyhere.here(
     "cell2location", "processed-data", "01-nn_run", "spe.h5ad"
 )
 
 marker_path = pyhere.here(
-    "cell2location", "processed-data", "01-nn_run", "pan_markers.txt"
+    "cell2location", "processed-data", "01-nn_run", "dlpfc_markers.txt"
 )
 
 processed_dir = pyhere.here('cell2location', 'processed-data', '01-nn_run')
@@ -48,7 +48,7 @@ json_dir = '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X'
 sample_id_var = 'sample_id'         # in spatial object only
 ensembl_id_var = 'gene_id'          # in both spatial and single-cell objects
 gene_symbol_var = 'gene_name'       # in both spatial and single-cell objects
-cell_type_var = 'cellType.Broad'    # in single-cell only
+cell_type_var = 'cellType'          # in single-cell only
 spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots

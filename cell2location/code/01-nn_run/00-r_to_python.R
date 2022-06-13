@@ -16,18 +16,20 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("spatialLIBD"))
 suppressPackageStartupMessages(library("here"))
 
-sce_in = here("tangram_libd", "raw-data", "03_nn_run", "sce_pan.v2.Rdata")
+sce_in = here(
+    "tangram_libd", "raw-data", "03_nn_run", "SCE_DLPFC-n3_tran-etal.rda"
+)
 spe_out = here("cell2location", "processed-data", "01-nn_run", "spe.h5ad")
-sce_out = here("cell2location", "processed-data", "01-nn_run", "sce_pan.h5ad")
+sce_out = here("cell2location", "processed-data", "01-nn_run", "sce_dlpfc.h5ad")
 
 marker_path_in = here(
     "tangram_libd", "raw-data", "03_nn_run", "marker_stats_pan.v2.Rdata"
 )
 marker_path_out = here(
-    "cell2location", "processed-data", "01-nn_run", "pan_markers.txt"
+    "cell2location", "processed-data", "01-nn_run", "dlpfc_markers.txt"
 )
 
-cell_types_to_drop = c('Endo', 'Macro', 'Mural', 'Tcell')
+cell_types_to_drop = c('Endo', 'Macrophage', 'Mural', 'Tcell')
 
 ###############################################################################
 #   Functions
@@ -69,10 +71,17 @@ spe = spatialLIBD::fetch_data("spe")
 
 #   Drop rare cell types for single-cell data
 print('Cell types in single-cell originally:')
-levels(sce_pan$cellType.Broad)
+levels(sce.dlpfc.tran$cellType)
+
+#   Manually merge finer cell types into the standard broad categories
+sce.dlpfc.tran$cellType = as.character(sce.dlpfc.tran$cellType)
+sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Excit"] = "Excit"
+sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Inhib"] = "Inhib"
+
 print('Distribution of cells to keep (FALSE) vs. drop (TRUE):')
-table(sce_pan$cellType.Broad %in% cell_types_to_drop)
-sce_pan = sce_pan[, ! (sce_pan$cellType.Broad %in% cell_types_to_drop)]
+table(sce.dlpfc.tran$cellType %in% cell_types_to_drop)
+sce.dlpfc.tran = sce.dlpfc.tran[, ! (sce.dlpfc.tran$cellType %in% cell_types_to_drop)]
+sce.dlpfc.tran$cellType = as.factor(sce.dlpfc.tran$cellType)
 
 #  Append 'spatialCoords' slot to 'colData', since in
 #  conversion we're treating the spatialExperiment object as if it is a
@@ -80,8 +89,8 @@ sce_pan = sce_pan[, ! (sce_pan$cellType.Broad %in% cell_types_to_drop)]
 colData(spe) = cbind(colData(spe), spatialCoords(spe))
 
 print('Writing AnnDatas...')
-write_anndata(sce_pan, sce_out)
-write_anndata(spe, spe_out)
+write_anndata(sce.dlpfc.tran, sce_out)
+#write_anndata(spe, spe_out)
 gc()
 
 ###############################################################################
@@ -101,7 +110,7 @@ marker_stats = marker_stats %>%
 
 #   All the marker genes are present in the single-cell data (sanity check) and
 #   spatial data, as required
-all(marker_stats$gene %in% rowData(sce_pan)$gene_id)
+all(marker_stats$gene %in% rowData(sce.dlpfc.tran)$gene_id)
 all(marker_stats$gene %in% rowData(spe)$gene_id)
 
 #   Write list of markers
