@@ -39,14 +39,17 @@ ref_run_name = f'{processed_dir}/reference_signatures'
 run_name = f'{processed_dir}/cell2location_map'
 
 #   Naming conventions used for different columns in the AnnDatas
-cell_type_var = 'cellType.Broad'    # in single-cell only
+cell_type_var = 'cellType'    # in single-cell only
 
 plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 
 #   Default is 30 in tutorial, but 5 is recommended as an initial guess for
 #   Visium data:
 #   https://github.com/BayraktarLab/cell2location/blob/master/docs/images/Note_on_selecting_hyperparameters.pdf
-N_CELLS_PER_SPOT = 5
+N_CELLS_PER_SPOT = 3
+
+#   For spatial mapping model: tutorial recommends 20 as default but to try 200
+detection_alpha = 20
 
 ################################################################################
 #   Function definitions
@@ -126,7 +129,7 @@ mod = RegressionModel(adata_ref)
 RegressionModel.view_anndata_setup(mod)
 
 adata_ref, mod = perform_regression(
-    mod, adata_ref, 'adata_ref', 400, 0.002, # changed 250 epochs to 400
+    mod, adata_ref, 'adata_ref', 250, 0.002, # changed 250 epochs to 400
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
@@ -169,7 +172,7 @@ mod = cell2location.models.Cell2location(
     N_cells_per_location=N_CELLS_PER_SPOT,
     # hyperparameter controlling normalisation of
     # within-experiment variation in RNA detection:
-    detection_alpha=200 # default: 20 for visium
+    detection_alpha=detection_alpha
 )
 
 cell2location.models.Cell2location.view_anndata_setup(mod)
