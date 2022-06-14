@@ -276,8 +276,16 @@ for t in thresholds:
     temp[t] *= weights[t]
 
 temp['max_channel'] = [temp.columns[np.argmax(temp.loc[i])] for i in temp.index]
-temp['cell_type'] = [cell_types[x] for x in temp['max_channel']]
+df['cell_type'] = [cell_types[x] for x in temp['max_channel']]
 
-#   Keep the spot identity for each cell
-temp['idx'] = df['idx']
+#   Count cell types in each spot
+for cell_type in cell_types.values():
+    raw[cell_type] = df[
+        df['cell_type'] == cell_type
+    ].groupby('idx')['idx'].count().astype(int)
+
+#   Some spots will have no cells (and NaN values for this reason). Also count
+#   the total number of cells per spot
+raw.fillna(0, inplace=True)
+raw['n_cells'] = raw[[x for x in cell_types.values()]].sum(axis=1)
 
