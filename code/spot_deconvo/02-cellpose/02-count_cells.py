@@ -27,7 +27,7 @@ out_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
 )
 mask_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', 'masks', '{}_channeldapi_mask.npy'
+    'processed-data', 'spot_deconvo', '02-cellpose', 'masks', '{}_mask.npy'
 )
 spot_path = pyhere.here(
     'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
@@ -203,13 +203,10 @@ px_dist = spot_radius / m_per_px  # meter per px.
 filtered = combi[(combi.area > area_threshold) & (combi.dist < px_dist)]
 
 #   For each channel, count how many nuclei per spot have sufficiently high
-#   mean intensity, and the mean intensity across all nuclei in the spot.
-#   Note that a nucleus can be "counted" for multiple channels, or even for
-#   none
+#   mean intensity. Note that a nucleus can be "counted" for multiple channels,
+#   or even for none
 summed = filtered[[f"N_{name}" for name in thresholds] + \
     ["idx"]].groupby("idx").sum().astype(int)
-means = filtered[[f"{name}" for name in thresholds] + \
-    ["idx"]].groupby("idx").mean()
 
 # Export
 out = pd.concat(
