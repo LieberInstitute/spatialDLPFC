@@ -152,18 +152,26 @@ raw = raw.iloc[raw.included[raw.included == 1].index].reset_index().drop(
 )
 
 df, masks, target = setup()
+props = regionprops(masks)
 
 idx = 400
 pad = 5
 
 # Plot ROI - sanity check
 plot_roi(4)
-plt.scatter(raw["x"], raw["y"], 2)
-plt.scatter(df["y"], df["x"], 2)
-f = plt.gcf()
-f.savefig(
+fig.savefig(
     os.path.join(plot_dir, 'roi_{}.{}'.format(sample_id_img, plot_file_type)),
     bbox_inches='tight'
+)
+
+#   Plot mask spatial distribution vs. spot distribution; there should be
+#   quite a bit of overlap
+plt.scatter(raw["x"], raw["y"], 2)
+plt.scatter(df["y"], df["x"], 2)
+plt.savefig(
+    os.path.join(
+        plot_dir, f'mask_spot_overlap_{sample_id_img}.{plot_file_type}'
+    )
 )
 
 # ### Process ROI properties.
