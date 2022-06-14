@@ -21,6 +21,7 @@ sample_info_path = pyhere.here(
 mask_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', 'masks', '{}_mask.npy'
 )
+img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
 plot_path = pyhere.here(
     "plots", "spot_deconvo", "02-cellpose", "mask_dilation_test"
 )
@@ -71,10 +72,10 @@ expanded_masks = ndimage.grey_dilation(
 ).astype(masks.dtype)
 
 #   Plot the comparison and save
-plt.clf()
-fig = plot_roi(masks, expanded_masks, props, mask_index)
+# plt.clf()
+fig = plot_roi(masks, expanded_masks, props_orig, mask_index)
 # fig.show()
-f.savefig(plot_path)
+fig.savefig(plot_path)
 
 #   Dilation should not be so severe as to merge previously distinct masks
 props_new = regionprops(expanded_masks)
