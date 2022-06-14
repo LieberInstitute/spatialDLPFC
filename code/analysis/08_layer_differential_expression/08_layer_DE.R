@@ -90,7 +90,6 @@ mod<- model.matrix(mat_formula,
                    data = colData(spe_pseudo))
 
 
-
 message(Sys.time(), " running duplicateCorrelation()")
 corfit <- duplicateCorrelation(mat, mod,
                                block = spe_pseudo$sample_id
@@ -123,15 +122,15 @@ eb0_list <- lapply(cluster_idx, function(x) {
 ## Adapted from https://github.com/LieberInstitute/HumanPilot/blob/7049cd42925e00b187c0866f93409196dbcdd526/Analysis/Layer_Guesses/layer_specificity.R#L1355-L1383
 
 ## Build a group model
-#mod <- with(colData(spe_pseudo), model.matrix(~ 0 + bayesSpace_harmony_9 + region + age + sex))
+mod_p<- model.matrix(~ 0 + BayesSpace,
+                   data = colData(spe_pseudo))
 #colnames(mod) <- gsub("bayesSpace_harmony_9", "", colnames(mod))
-#colnames(mod) <- gsub("\\+", "pos", colnames(mod)) #can remove this
 
 message(Sys.time(), " running the baseline pairwise model")
 fit <-
   lmFit(
     mat,
-    design = mod,
+    design = mod_p,
     block = spe_pseudo$sample_id,
     correlation = corfit$consensus.correlation
   )
@@ -140,14 +139,17 @@ eb <- eBayes(fit)
 
 ## Define the contrasts for each pathology group vs another one
 message(Sys.time(), " run pairwise models")
-cluster_combs <- combn(colnames(mod)[grep("BayesSpace",colnames(mod))], 2) 
+#cluster_combs <- combn(colnames(mod)[grep("BayesSpace",colnames(mod))], 2) 
+cluster_combs <- combn(colnames(mod_p), 2) 
 cluster_constrats <- apply(cluster_combs, 2, function(x) {
   z <- paste(x, collapse = "-")
-  makeContrasts(contrasts = z, levels = mod)
+  makeContrasts(contrasts = z, levels = mod_p)
 })
-rownames(cluster_constrats) <- colnames(mod)
+rownames(cluster_constrats) <- colnames(mod_p)
 colnames(cluster_constrats) <-
   apply(cluster_combs, 2, paste, collapse = "-")
+
+#cluster_constrats <- cluster_constrats[grep("BayesSpace",rownames(cluster_constrats)),]
 eb_contrasts <- eBayes(contrasts.fit(fit, cluster_constrats))
 
 
