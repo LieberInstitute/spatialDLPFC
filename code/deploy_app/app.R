@@ -34,6 +34,14 @@ sig_genes <- sig_genes_extract_all(
   sce_layer = spe_pseudo
 )
 
+lobstr::obj_size(modeling_results) / 1024^3
+#0.01460112 B
+lobstr::obj_size(sig_genes) / 1024^3
+#0.3946267 B
+
+dim(sig_genes)
+#[1] 1002450      12
+
 ## Check that we have the right number of tests.
 ## the + 1 at the end assumes only noWM
 # stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
