@@ -94,8 +94,8 @@ layer_matrix_plot_AS <-
       xlabs,
       xpd = TRUE,
       srt = srt,
-      cex = 1.1, #sixe of xaxis text
-      adj = c(2,0.5) #moves x axis number labels (x direction, y direction)
+      cex = 1.0, #size of xaxis text. 1.6 for k = 16, 1.8 for k = 9, 1.0 for k = 28
+      adj = c(0.5,2) #moves x axis number labels (x direction, y direction)
     )
     abline(h = layerHeights, v = c(0, seq_len(ncol(matrix_values))))
     text(
@@ -157,7 +157,7 @@ layer_stat_cor_plot_AS <-
       mypal = my.col,
       breaks = breaks,
       axis.args = axis.args,
-      srt = 90, #keep x axis labels normal
+      srt = 0, #keep x axis labels normal
       cex = cex
     )
   }
