@@ -62,7 +62,7 @@ dim(sig_genes)
 # z <- fix_csv(as.data.frame(subset(sig_genes, fdr < 0.05)))
 # write.csv(z, file = file.path(dir_rdata, "Visium_IF_AD_wholegenome_model_results_FDR5perc.csv"))
 
-spe$BayesSpace <- spe$bayesSpace_harmony_9
+spe$BayesSpace <- spe$bayesSpace_harmony_16
 vars <- colnames(colData(spe))
 #https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
 
