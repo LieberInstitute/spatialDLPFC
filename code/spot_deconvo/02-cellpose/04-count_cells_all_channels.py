@@ -29,15 +29,18 @@ sample_info_path = pyhere.here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
 )
 img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
-out_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
-)
 mask_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', 'masks', '{}_mask.npy'
 )
 spot_path = pyhere.here(
     'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
     'tissue_positions_list.csv'
+)
+clusters_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
+)
+cells_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'cell_metrics.csv'
 )
 plot_dir = pyhere.here("plots", "spot_deconvo", "02-cellpose")
 
@@ -48,12 +51,6 @@ Path(plot_dir).mkdir(parents=True, exist_ok=True)
 #-------------------------------------------------------------------------------
 
 names = {0: "junk", 1: "dapi", 2: "gfap", 3: "neun", 4: "olig2", 5: "tmem119"}
-thresholds = {
-    "neun": 10,
-    "olig2": 10,
-    "tmem119": 25,
-    "gfap": 100 # need to adjust this!
-}
 cell_types = {
     "neun": "neuron",
     "olig2": "oligo",
@@ -121,18 +118,17 @@ sample_ids_spot = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
 
 sample_id_img = sample_ids_img[int(os.environ['SGE_TASK_ID']) - 1]
 img_path = str(img_path).format(sample_id_img)
-out_path = str(out_path).format(sample_id_img)
+clusters_path = str(clusters_path).format(sample_id_img)
+cells_path = str(cells_path).format(sample_id_img)
 mask_path = str(mask_path).format(sample_id_img)
 sample_id_spot = sample_ids_spot[int(os.environ['SGE_TASK_ID']) - 1]
 spot_path = str(spot_path).format(sample_id_spot)
 
-Path(out_path).parents[0].mkdir(parents=True, exist_ok=True)
+Path(clusters_path).parents[0].mkdir(parents=True, exist_ok=True)
 
 #-------------------------------------------------------------------------------
 #   Read in spot data
 #-------------------------------------------------------------------------------
-
-assert set(thresholds.keys()).issubset(set(names.values()))
 
 #   Read in all spot data
 raw = pd.read_csv(
@@ -186,12 +182,13 @@ props = regionprops(expanded_masks)
 
 fig = plot_roi(imgs, props, 400) # 400 here is an arbitrarily chosen index
 fig.savefig(
-    os.path.join(plot_dir, 'roi_{}.{}'.format(sample_id_img, plot_file_type)),
+    os.path.join(plot_dir, 'random_roi_{}.{}'.format(sample_id_img, plot_file_type)),
     bbox_inches='tight'
 )
 
 #   Plot mask spatial distribution vs. spot distribution; there should be
 #   quite a bit of overlap
+plt.clf()
 plt.scatter(raw["x"], raw["y"], 2)
 plt.scatter(df["y"], df["x"], 2)
 plt.savefig(
@@ -229,9 +226,9 @@ df = df[df.area > area_threshold]
 
 plt.clf()
 fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(10, 10))
-for i, t in enumerate(thresholds):
-    axs[i].hist(df[t], bins = 50)
-    axs[i].set_title(t)
+for i, channel in enumerate(cell_types.keys()):
+    axs[i].hist(df[channel], bins = 50)
+    axs[i].set_title(channel)
 
 # plt.show()
 plt.savefig(
@@ -248,35 +245,82 @@ temp = (df['neun'] < noise_cutoff) & \
     (df['gfap'] < noise_cutoff)
 
 #   However, some nuclei don't have a clear cell type with this cutoff
-np.sum(temp) / len(temp) # 0.05242629344958128
+bad_perc = round(100 * np.sum(temp) / len(temp), 1) # ~5%
+print(f"{bad_perc}% of nuclei don't have a clear cell type.")
 
-#   Let's view an example unclear nucleus. It looks like in this case GFAP and
-#   TMEM119 dominate but are still quite low in intensity. This likely shows
-#   that we aren't looking at a large enough region around the nucleus
-bad_index = temp[temp].index[0]
-df.loc[bad_index]
-fig = plot_roi(imgs, props, bad_index)
-fig.show()
+#   Look at a few random examples of "bad cells". Generally, it looks like GFAP
+#   and TMEM119 dominate but are still quite low in intensity. This possibly
+#   shows that we aren't looking at a large enough region around the nucleus,
+#   but looking at the image ROIs show a diverse number of scenarios
+num_bad_examples = 5
+indices = np.random.randint(len(temp[temp]), size=num_bad_examples)
+for i in range(num_bad_examples):
+    print(f'Intensities for "bad cell" {i}:')
+
+    bad_index = temp[temp].index[indices[i]]
+    print(df.loc[bad_index][cell_types.keys()])
+
+    fig = plot_roi(imgs, props, bad_index)
+    fig.savefig(
+        os.path.join(
+            plot_dir, f'bad_cell_{i+1}_{sample_id_img}.{plot_file_type}'
+        )
+    )
+
+#-------------------------------------------------------------------------------
+#   Call cell types
+#-------------------------------------------------------------------------------
 
 #   Filtering out what we think are cells of a non-target type dramatically
 #   changes the mean intensity, which is a good sign (we get a clear signal for
 #   what intensity looks like in the target cell type)
 weights = {}
-for t in thresholds:
-    print(f'Mean for {t} above cutoff: {np.mean(df[t][df[t] > noise_cutoff])}')
-    print(f'Mean for {t} otherwise: {np.mean(df[t])}')
-    weights[t] = 1 / np.mean(df[t][df[t] > noise_cutoff])
+for channel in cell_types.keys():
+    print(f'Mean for {channel} above cutoff: {np.mean(df[channel][df[channel] > noise_cutoff])}')
+    print(f'Mean for {channel} otherwise: {np.mean(df[channel])}')
+    weights[channel] = 1 / np.mean(df[channel][df[channel] > noise_cutoff])
 
 
 #   Weight the intensity of each channel inversely by the average intensity seen
 #   in cells above the "noise cutoff". Then call cell types by choosing the
 #   maximal weighted intensity across the 4 possible types
-temp = df[[t for t in thresholds]].copy()
-for t in thresholds:
-    temp[t] *= weights[t]
+temp = df[[x for x in cell_types.keys()]].copy()
+for channel in cell_types.keys():
+    temp[channel] *= weights[channel]
 
 temp['max_channel'] = [temp.columns[np.argmax(temp.loc[i])] for i in temp.index]
 df['cell_type'] = [cell_types[x] for x in temp['max_channel']]
+
+#-------------------------------------------------------------------------------
+#   Verify how well the deconvolution method performed
+#-------------------------------------------------------------------------------
+
+#   For each classified cell type, show how mean intensities look for the other
+#   channels. We'd like to see a large gap between the target cell type (as
+#   classified) and all others. Note that some gap is likely to arise simply by
+#   the definition of classification itself: e.g. neurons will generally have
+#   higher neun intensity (that's what made us call them neurons)
+plt.clf()
+fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(10, 10))
+plt.suptitle(f'Weighted mean intensity comparison')
+for i, channel in enumerate(cell_types.keys()):
+    a = temp[temp['max_channel'] == channel]
+    data_list = [a[x] for x in cell_types.keys()]
+    axs[i].boxplot(data_list)
+    axs[i].set_title(f'{cell_types[channel]} cells')
+    axs[i].set_xticklabels(cell_types.keys())
+
+# plt.show()
+plt.savefig(
+    os.path.join(
+        plot_dir,
+        f'classified_intensity_comparison_{sample_id_img}.{plot_file_type}'
+    )
+)
+
+#-------------------------------------------------------------------------------
+#   Count cells per spot and print some related statistics
+#-------------------------------------------------------------------------------
 
 #   Count cell types in each spot
 for cell_type in cell_types.values():
@@ -289,3 +333,53 @@ for cell_type in cell_types.values():
 raw.fillna(0, inplace=True)
 raw['n_cells'] = raw[[x for x in cell_types.values()]].sum(axis=1)
 
+#   Print number of cells of each type
+for cell_type in cell_types.values():
+    print(f'Total number of {cell_type} cells: {raw[cell_type].sum()}')
+
+#   Correct the data type
+for column_name in list(cell_types.values()) + ['n_cells']:
+    raw[column_name] = raw[column_name].astype(int)
+
+#   Print some quick stats about the cell counts per spot
+prop_nonzero = round(100 * np.count_nonzero(raw['n_cells']) / raw.shape[0], 1)
+print(f"Percentage of spots with at least one cell: {prop_nonzero}%")
+print(f"Mean number of cells per spot: {round(np.mean(raw['n_cells']), 3)}")
+print(f"Max number of cells per spot: {np.max(raw['n_cells'])}")
+
+#-------------------------------------------------------------------------------
+#   Export the table of metrics for each cell
+#-------------------------------------------------------------------------------
+
+#   Use more informative column names for output
+df.rename(
+    columns = {
+        'area': 'nucleus_area_with_donut', 'x': 'centroid_x', 'y': 'centroid_y',
+        'dist': 'dist_to_nearest_spot'
+    },
+    inplace = True
+)
+
+df.rename(
+    columns = {
+        x: f'{x}_intensity' for x in cell_types.keys()
+    },
+    inplace = True
+)
+
+df.drop(['idx'], axis = 1, inplace = True)
+
+#   Save
+df.to_csv(cells_path, float_format="%.3f")
+
+#-------------------------------------------------------------------------------
+#   Export spot-level table as a 'clusters.csv' file
+#-------------------------------------------------------------------------------
+
+#   Make compatible with spatialLIBD 'clusters.csv' format
+raw.index = raw['barcode'] + '_' + sample_id_img
+raw.index.name = 'key'
+raw.drop(['row', 'col', 'x', 'y', 'barcode'], axis = 1, inplace = True)
+
+#   Save
+raw.to_csv(clusters_path, float_format="%.3f")
