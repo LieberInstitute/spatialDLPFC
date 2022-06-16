@@ -55,6 +55,75 @@ bib <- c(
 
 This project has the code for the project using 10X Genomics Visium for generating spatial transcriptomics data from the dorsolateral prefrontal cortex (DLPFC) from human brain samples. This work is being done by the groups at the Lieber Institute for Brain Development led by Keri Martinowich, Kristen Maynard and Leonardo Collado-Torres as well as Stephanie Hicks from JHBSPH's Biostatistics Department.
 
+## Installation instructions
+
+Get the latest stable `R` release from
+[CRAN](http://cran.r-project.org/). Then install `spatialLIBD` using
+from [Bioconductor](http://bioconductor.org/) the following code:
+
+```{r 'install', eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("spatialLIBD")
+```
+
+## Access the data
+
+Through the `spatialLIBD` package you can access the processed data in
+it’s final R format. However, we also provide a table of links so you
+can download the raw data we received from 10x Genomics.
+
+### Processed data
+
+Using `spatialLIBD` you can access the Human DLPFC spatial
+transcriptomics data from the 10x Genomics Visium platform. For example,
+this is the code you can use to access the layer-level data. For more
+details, check the help file for `fetch_data()`.
+
+```{r 'access_data', message=FALSE, fig.height = 8, fig.width = 9, eval = FALSE}
+## Load the package
+library('spatialLIBD')
+## Download the spot-level data
+sce <- fetch_data(type = 'sce')
+#> Loading objects:
+#>   sce
+## This is a SingleCellExperiment object
+sce
+#> class: SingleCellExperiment 
+#> dim: 33538 47681 
+#> metadata(1): image
+#> assays(2): counts logcounts
+#> rownames(33538): ENSG00000243485 ENSG00000237613 ... ENSG00000277475
+#>   ENSG00000268674
+#> rowData names(9): source type ... gene_search is_top_hvg
+#> colnames(47681): AAACAACGAATAGTTC-1 AAACAAGTATCTCCCA-1 ...
+#>   TTGTTTCCATACAACT-1 TTGTTTGTGTAAATTC-1
+#> colData names(73): barcode sample_name ... pseudobulk_UMAP_spatial
+#>   markers_UMAP_spatial
+#> reducedDimNames(6): PCA TSNE_perplexity50 ... TSNE_perplexity80
+#>   UMAP_neighbors15
+#> spikeNames(0):
+#> altExpNames(0):
+## Note the memory size
+pryr::object_size(sce)
+#> 2.08 GB
+## Remake the logo image with histology information
+sce_image_clus(
+    sce = sce,
+    clustervar = 'layer_guess_reordered',
+    sampleid = '151673',
+    colors = libd_layer_colors,
+    ... = ' DLPFC Human Brain Layers\nMade with github.com/LieberInstitute/spatialLIBD'
+)
+```
+
+<img src="http://research.libd.org/spatialLIBD/reference/figures/README-access_data-1.png" width="600px" align="center" />
+
+### Raw data
+
+You can access all the raw data through [Globus](http://research.libd.org/globus/) (`jhpce#HumanPilot10x`). Furthermore, below you can find the links to the raw data we received from 10x Genomics.
+
+
 # Internal
 
 _Note: the idea is to use the same structure as in the [`locus-c`](https://github.com/lmweber/locus-c) project._
