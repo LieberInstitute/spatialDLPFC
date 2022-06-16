@@ -70,25 +70,24 @@ BiocManager::install("spatialLIBD")
 ## Access the data
 
 Through the `spatialLIBD` package you can access the processed data in
-it’s final R format. However, we also provide a table of links so you
-can download the raw data we received from 10x Genomics.
+it’s final R format.
 
 ### Processed data
 
 Using `spatialLIBD` you can access the Human DLPFC spatial
 transcriptomics data from the 10x Genomics Visium platform. For example,
-this is the code you can use to access the layer-level data. For more
+this is the code you can use to access the spatially-resolved data. For more
 details, check the help file for `fetch_data()`.
 
 ```{r 'access_data', message=FALSE, fig.height = 8, fig.width = 9, eval = FALSE}
 ## Load the package
-library('spatialLIBD')
+library("spatialLIBD")
 ## Download the spot-level data
-sce <- fetch_data(type = 'sce')
+spe <- fetch_data(type = "spe_spatialDLPFC") ## TODO update spatialLIBD
 #> Loading objects:
-#>   sce
-## This is a SingleCellExperiment object
-sce
+#>   spe
+## This is a SpatialExperiment object
+spe ## TODO: update the output below
 #> class: SingleCellExperiment 
 #> dim: 33538 47681 
 #> metadata(1): image
@@ -105,23 +104,25 @@ sce
 #> spikeNames(0):
 #> altExpNames(0):
 ## Note the memory size
-pryr::object_size(sce)
-#> 2.08 GB
+lobstr::object_size(spe) / 1024^3
+#> 2.08 GB ## TODO: update this
 ## Remake the logo image with histology information
-sce_image_clus(
-    sce = sce,
-    clustervar = 'layer_guess_reordered',
-    sampleid = '151673',
-    colors = libd_layer_colors,
-    ... = ' DLPFC Human Brain Layers\nMade with github.com/LieberInstitute/spatialLIBD'
+spatialLIBD::vis_clus(
+    spe = spe,
+    clustervar = "bayesSpace_harmony_9",
+    sampleid = "Br2720_Ant",
+    colors = libd_layer_colors, ## TODO
+    ... = " spatial DLPFC Human Brain k=9\nMade with github.com/LieberInstitute/spatialLIBD"
 )
 ```
+
+TODO: update this:
 
 <img src="http://research.libd.org/spatialLIBD/reference/figures/README-access_data-1.png" width="600px" align="center" />
 
 ### Raw data
 
-You can access all the raw data through [Globus](http://research.libd.org/globus/) (`jhpce#HumanPilot10x`). Furthermore, below you can find the links to the raw data we received from 10x Genomics.
+You can access all the raw data through [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC`).
 
 
 # Internal
