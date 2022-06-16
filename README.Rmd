@@ -1,4 +1,57 @@
-# Spatial DLPFC (U01)
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r 'setup', include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+library('BiocStyle')
+library('spatialLIBD')
+## Bib setup
+library('knitcitations')
+## Load knitcitations with a clean bibliography
+cleanbib()
+cite_options(hyperlink = 'to.doc', citation_format = 'text', style = 'html')
+# Note links won't show for now due to the following issue
+# https://github.com/cboettig/knitcitations/issues/63
+## Write bibliography information
+bib <- c(
+    R = citation(),
+    AnnotationHub = citation('AnnotationHub'),
+    BiocStyle = citation('BiocStyle'),
+    cowplot = citation('cowplot'),
+    DT = citation('DT'),
+    ExperimentHub = citation('ExperimentHub'),
+    fields = citation('fields'),
+    ggplot2 = citation('ggplot2'),
+    golem = citation('golem'),
+    IRanges = citation('IRanges'),
+    knitcitations = citation('knitcitations'),
+    knitr = citation('knitr')[3],
+    plotly = citation('plotly'),
+    Polychrome = citation('Polychrome'),
+    RColorBrewer = citation('RColorBrewer'),
+    rmarkdown = citation('rmarkdown')[1],
+    S4Vectors = citation('S4Vectors'),
+    scater = citation('scater'),
+    sessioninfo = citation('sessioninfo'),
+    SingleCellExperiment = citation('SingleCellExperiment'),
+    shiny = citation('shiny'),
+    SummarizedExperiment = citation('SummarizedExperiment'),
+    testthat = citation('testthat'),
+    viridisLite = citation('viridisLite'),
+    spatialLIBD = citation('spatialLIBD')[1],
+    spatialLIBDpaper = citation('spatialLIBD')[2]
+)
+```
+
+# Spatial DLPFC
 
 This project has the code for the project using 10X Genomics Visium for generating spatial transcriptomics data from the dorsolateral prefrontal cortex (DLPFC) from human brain samples. This work is being done by the groups at the Lieber Institute for Brain Development led by Keri Martinowich, Kristen Maynard and Leonardo Collado-Torres as well as Stephanie Hicks from JHBSPH's Biostatistics Department.
 
