@@ -82,11 +82,11 @@ pdf(file = here::here("plots","07_spatial_registration","ggplot_t_cor_k7_wm.pdf"
 ggplot(dat_small, aes(x = dat_small[,7], y = WM)) +
   geom_point(alpha = 0.7, size = 0.5) +
   labs(x = "t-stats BayesSpace Cluster 7", 
-       y = "t-stats Ground Truth WM",
+       y = "t-stats Manual Annotations WM",
        title = "t-stat Correlation") +
   theme_bw() +
   geom_smooth(method=lm, se=FALSE, colour = "#00BA38") +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),text = element_text(size = 20), axis.text = element_text(size = 25))
 dev.off()
 
 
