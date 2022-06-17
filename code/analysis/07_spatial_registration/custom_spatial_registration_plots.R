@@ -1,4 +1,5 @@
 library(spatialLIBD)
+library(here)
 
 load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
 
@@ -94,7 +95,7 @@ layer_matrix_plot_AS <-
       xlabs,
       xpd = TRUE,
       srt = srt,
-      cex = 1.0, #size of xaxis text. 1.6 for k = 16, 1.8 for k = 9, 1.0 for k = 28
+      cex = 2.5, #size of xaxis text. 1.6 for k = 16, 1.8 for k = 9, 1.0 for k = 28
       adj = c(0.5,2) #moves x axis number labels (x direction, y direction)
     )
     abline(h = layerHeights, v = c(0, seq_len(ncol(matrix_values))))
