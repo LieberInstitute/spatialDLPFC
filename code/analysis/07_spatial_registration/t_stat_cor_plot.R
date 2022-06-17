@@ -114,7 +114,7 @@ ggplot(dat, aes(x = dat[,7], y = WM,color = TopGene)) +
   theme_bw() +
   geom_smooth(method=lm, se=FALSE, colour = "#00BA38") +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  scale_color_manual(values = c ("TRUE" = "red", "FALSE" = "black"))+
+  scale_color_manual(values = c ("TRUE" = "red", "FALSE" = "gray"))+
   guides(fill=guide_legend(title="Top Gene"))
 dev.off()
 
