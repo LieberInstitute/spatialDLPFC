@@ -14,44 +14,26 @@ library('RColorBrewer')
 library('ggplot2')
 library('fields')
 
-## load sce object
-sce_layer_file <-
-  here('Analysis', 'Layer_Guesses', 'rda', 'sce_layer.Rdata')
-if (file.exists(sce_layer_file))
-  load(sce_layer_file, verbose = TRUE)
+k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
+
+## load sce pseudobulked object
+readRDS(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe","spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS"))
+
 
 ###################
 ## load modeling outputs
-load("rda/eb_contrasts.Rdata")
-load("rda/eb0_list.Rdata")
+load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
 
-## Extract the p-values
-logFC0_contrasts <- sapply(eb0_list, function(x) {
-  x$coef[, 2, drop = FALSE]
-})
-rownames(logFC0_contrasts) = rownames(eb_contrasts)
-## Extract the p-values
-pvals0_contrasts <- sapply(eb0_list, function(x) {
-  x$p.value[, 2, drop = FALSE]
-})
-rownames(pvals0_contrasts) = rownames(eb_contrasts)
-fdrs0_contrasts = apply(pvals0_contrasts, 2, p.adjust, "fdr")
+# ## Expand https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/Layer_Guesses/layer_specificity.R#L1445-L1457
+# do.call(rbind, lapply(seq_len(ncol(fdrs0_contrasts)), function(i) {
+#   data.frame(
+#     Layer = colnames(fdrs0_contrasts)[i],
+#     FDR5_anyT = sum(fdrs0_contrasts[, i] < 0.05),
+#     FDR5_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.05),
+#     FDR10_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.1)
+#   )
+# }))
 
-## Extract the t-stats
-t0_contrasts <- sapply(eb0_list, function(x) {
-  x$t[, 2, drop = FALSE]
-})
-rownames(t0_contrasts) = rownames(eb_contrasts)
-
-## Expand https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/Layer_Guesses/layer_specificity.R#L1445-L1457
-do.call(rbind, lapply(seq_len(ncol(fdrs0_contrasts)), function(i) {
-  data.frame(
-    Layer = colnames(fdrs0_contrasts)[i],
-    FDR5_anyT = sum(fdrs0_contrasts[, i] < 0.05),
-    FDR5_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.05),
-    FDR10_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.1)
-  )
-}))
 # Layer FDR5_anyT FDR5_positiveT FDR10_positiveT
 # 1     WM      9124           4406            5010
 # 2 Layer1      3033           1404            1876
@@ -70,9 +52,9 @@ do.call(rbind, lapply(seq_len(ncol(fdrs0_contrasts)), function(i) {
 #########################
 
 ##################################
-## Satterstrom et al, Cell 2020 ##
+## Satterstrom et al, Cell 2020 ##    Doesn't work because the dataframe doesn't have the right column names for line 62
 ##################################
-asd_exome = read_excel("gene_sets/1-s2.0-S0092867419313984-mmc2.xlsx", 
+asd_exome = read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/1-s2.0-S0896627312002863-mmc2.xlsx", 
                        sheet = 2)
 asd_exome = as.data.frame(asd_exome)
 
