@@ -4,7 +4,7 @@
 #$ -o ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/02-cellpose/01-create_masks_$TASK_ID.log
 #$ -l caracol,mf=200G,h_vmem=200G
-#$ -t 1
+#$ -t 2-4
 #$ -tc 1
 
 echo "**** Job starts ****"
