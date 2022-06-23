@@ -551,6 +551,7 @@ enrichLong_ASD$ID2[enrichLong_ASD$ID == "TWAS_PE_ASD.Up"] = "TWAS.Up"
 enrichLong_ASD$ID2[enrichLong_ASD$ID == "TWAS_PE_ASD.Down"] = "TWAS.Down"
 enrichLong_ASD$ID2 = factor(enrichLong_ASD$ID2, unique(enrichLong_ASD$ID2))
 
+#need to get these two lines working
 enrichLong_ASD$LayerFac = factor(as.character(enrichLong_ASD$Layer), 
                                  c(paste0("cluster", 1:9)))
 enrichLong_ASD = enrichLong_ASD[order(enrichLong_ASD$ID2, enrichLong_ASD$LayerFac),]
@@ -561,23 +562,23 @@ midpoint = function(x) x[-length(x)] + diff(x)/2
 
 customLayerEnrichment = function(enrichTab , groups, xlabs, 
                                  Pthresh = 12, ORcut = 3, enrichOnly = FALSE,
-                                 layerHeights = c(0,40,55,75,85,110,120,135),
+                                 layerHeights = c(0,40,55,75,85,110,120,135,145,155),
                                  mypal = c("white", colorRampPalette(brewer.pal(9,"YlOrRd"))(50)), ...) {
   
   wide_p = -log10( enrichTab[groups,grep("Pval", colnames(enrichTab))])
   wide_p[wide_p > Pthresh] = Pthresh
   wide_p = t(round(wide_p[,
-                          c("WM.Pval", "Layer6.Pval", "Layer5.Pval", "Layer4.Pval", "Layer3.Pval","Layer2.Pval", "Layer1.Pval")],2))
+                          c("1.Pval", "2.Pval", "3.Pval", "4.Pval", "5.Pval","6.Pval", "7.Pval","8.Pval","9.Pval")],2))
   
   wide_or = enrichTab[groups,grep("OR", colnames(enrichTab))]
   wide_or= round(t(wide_or[,
-                           c("WM.OR", "Layer6.OR", "Layer5.OR", "Layer4.OR", "Layer3.OR", "Layer2.OR", "Layer1.OR")]),1)
+                           c("1.OR", "2.OR", "3.OR", "4.OR", "5.OR", "6.OR", "7.OR","8.OR","9.OR")]),1)
   if(enrichOnly) wide_p[wide_or < 1] = 0
   wide_or[wide_p < ORcut] = ""
   
   image.plot(x = seq(0,ncol(wide_p),by=1), y = layerHeights, z = as.matrix(t(wide_p)),
              col = mypal,xaxt="n", yaxt="n",xlab = "", ylab="", ...)
-  axis(2, c("WM", paste0("L", 6:1)), at = midpoint(layerHeights),las=1)
+  axis(2, c(1:9), at = midpoint(layerHeights),las=1)
   axis(1, rep("", ncol(wide_p)), at = seq(0.5,ncol(wide_p)-0.5))
   text(x = seq(0.5,ncol(wide_p)-0.5), y=-1*max(nchar(xlabs))/2, xlabs,
        xpd=TRUE, srt=45,cex=2,adj= 1)
@@ -605,6 +606,9 @@ groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down",
           "DE_BS2_SCZ.Up", "DE_BS2_SCZ.Down", 
           "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
           "TWAS_PE_SCZ.Down")
+groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
+          "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
+          "TWAS_PE_SCZ.Down")
 xlabs = ss(gsub("_SCZ", "", groups), "_", 2)
 customLayerEnrichment(enrichTab, groups,xlabs, enrichOnly=TRUE)
 abline(v=4,lwd=3)
@@ -618,6 +622,7 @@ groups =grep(enrichTab$ID, pattern = "Birnbaum", value=TRUE)
 xlabs = ss(groups, "_", 3)
 customLayerEnrichment(enrichTab, groups,xlabs, enrichOnly=TRUE,
                       breaks = seq(0,12,len = 51))
+customLayerEnrichment(enrichTab, groups,xlabs, enrichOnly=TRUE)
 dev.off()
 
 
