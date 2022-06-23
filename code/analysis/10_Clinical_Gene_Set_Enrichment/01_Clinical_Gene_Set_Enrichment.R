@@ -22,26 +22,47 @@ readRDS(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe","sp
 
 ###################
 ## load modeling outputs
-load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
+#load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
+load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("cluster_modeling_results_k",k,".Rdata")))
+
+## Extract the p-values
+logFC0_contrasts <- sapply(eb0_list, function(x) {
+  x$coef[, 2, drop = FALSE]
+})
+rownames(logFC0_contrasts) = rownames(eb_contrasts)
+## Extract the p-values
+pvals0_contrasts <- sapply(eb0_list, function(x) {
+  x$p.value[, 2, drop = FALSE]
+})
+rownames(pvals0_contrasts) = rownames(eb_contrasts)
+fdrs0_contrasts = apply(pvals0_contrasts, 2, p.adjust, "fdr")
+
+## Extract the t-stats
+t0_contrasts <- sapply(eb0_list, function(x) {
+  x$t[, 2, drop = FALSE]
+})
+rownames(t0_contrasts) = rownames(eb_contrasts)
 
 # ## Expand https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/Layer_Guesses/layer_specificity.R#L1445-L1457
-# do.call(rbind, lapply(seq_len(ncol(fdrs0_contrasts)), function(i) {
-#   data.frame(
-#     Layer = colnames(fdrs0_contrasts)[i],
-#     FDR5_anyT = sum(fdrs0_contrasts[, i] < 0.05),
-#     FDR5_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.05),
-#     FDR10_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.1)
-#   )
-# }))
+do.call(rbind, lapply(seq_len(ncol(fdrs0_contrasts)), function(i) {
+  data.frame(
+    Layer = colnames(fdrs0_contrasts)[i],
+    FDR5_anyT = sum(fdrs0_contrasts[, i] < 0.05),
+    FDR5_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.05),
+    FDR10_positiveT = sum(t0_contrasts[, i] > 0 & fdrs0_contrasts[, i] < 0.1)
+  )
+}))
 
 # Layer FDR5_anyT FDR5_positiveT FDR10_positiveT
-# 1     WM      9124           4406            5010
-# 2 Layer1      3033           1404            1876
-# 3 Layer2      1562           1093            1512
-# 4 Layer3       183            139             270
-# 5 Layer4       740            348             610
-# 6 Layer5       643            537             794
-# 7 Layer6       379            264             432
+# 1     1     10906            612             658
+# 2     2      2770           1010            1203
+# 3     3      1485           1069            1551
+# 4     4      1481           1228            1921
+# 5     5      1265            956            1632
+# 6     6      5192           1638            1858
+# 7     7       694            642             966
+# 8     8      2326           1856            2675
+# 9     9       700            609             777
 
 
 ## Total genes: 22331
@@ -76,7 +97,7 @@ names(asd_exome_geneList) = paste0("Gene_Satterstrom_",
 ### SFARI #####
 ###############
 
-asd_sfari = read.csv("gene_sets/SFARI-Gene_genes_01-03-2020release_02-04-2020export.csv",
+asd_sfari = read.csv("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/SFARI-Gene_genes_01-03-2020release_02-04-2020export.csv",
                      as.is = TRUE)
 asd_sfari_geneList = list(
   Gene_SFARI_all = asd_sfari$ensembl.id,
@@ -112,7 +133,7 @@ asd_sfari_geneList = list(
 ### birnbaum sets ##
 ####################
 
-birnbaum = read_excel("gene_sets/Supplementary Tables for paper.Birnbaum November 2013.AJP.xlsx",
+birnbaum = read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/Supplementary Tables for paper.Birnbaum November 2013.AJP.xlsx",
                       sheet = 1)
 ens2 = select(org.Hs.eg.db,
               columns = c("ENSEMBL", "ENTREZID"),
@@ -130,7 +151,7 @@ birnbaum_geneList = birnbaum_geneList[rev(seq(along=birnbaum_geneList))]
 ## psychENCODE DEGs ##
 ######################
 
-psychENCODE = as.data.frame(read_excel("gene_sets/aat8127_Table_S1.xlsx", sheet = "DGE"))
+psychENCODE = as.data.frame(read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/aat8127_Table_S1.xlsx", sheet = "DGE"))
 
 pe_geneList = with(
   psychENCODE,
@@ -145,7 +166,7 @@ pe_geneList = with(
 )
 
 #################
-## brainseq  ####
+## brainseq  ####  doesn't work
 #################
 
 ## DLPFC RiboZero
@@ -153,6 +174,7 @@ load(
   "/dcl01/ajaffe/data/lab/qsva_brain/brainseq_phase2_qsv/rdas/dxStats_dlpfc_filtered_qSVA_noHGoldQSV_matchDLPFC.rda"
 )
 
+#Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection
 bs2_geneList = with(outGene,
                     list(DE_BS2_SCZ.Up = ensemblID[logFC > 0 & adj.P.Val < 0.05],
                          DE_BS2_SCZ.Down = ensemblID[logFC < 0 & adj.P.Val < 0.05]))
@@ -161,7 +183,7 @@ bs2_geneList = with(outGene,
 ##############################
 ### Sestan DS Neuron 2017? ###
 
-ds = read_excel("gene_sets/1-s2.0-S0896627316000891-mmc4.xlsx",skip=2)
+ds = read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/1-s2.0-S0896627316000891-mmc4.xlsx",skip=2)
 ds = clean_names(ds)
 ds = as.data.frame(ds)
 ens3 = select(org.Hs.eg.db,
@@ -185,11 +207,11 @@ tt_dlpfc=  as.data.frame(tt[tt$region == "DLPFC",])
 tt_dlpfc$ensemblID = ss(tt_dlpfc$geneid, "\\.")
 
 ## PE 
-twas_sczd = as.data.frame(read_excel("gene_sets/aat8127_Table_S4.xlsx", sheet = "SCZ.TWAS"))
+twas_sczd = as.data.frame(read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/aat8127_Table_S4.xlsx", sheet = "SCZ.TWAS"))
 twas_sczd$TWAS.FDR = p.adjust(twas_sczd$TWAS.P, "fdr")
-twas_asd = as.data.frame(read_excel("gene_sets/aat8127_Table_S4.xlsx", sheet = "ASD.TWAS"))
+twas_asd = as.data.frame(read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/aat8127_Table_S4.xlsx", sheet = "ASD.TWAS"))
 twas_asd$TWAS.FDR = p.adjust(twas_asd$TWAS.P, "fdr")
-twas_bpdscz = as.data.frame(read_excel("gene_sets/aat8127_Table_S4.xlsx", sheet = "BD.SCZ"))
+twas_bpdscz = as.data.frame(read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/aat8127_Table_S4.xlsx", sheet = "BD.SCZ"))
 twas_bpdscz$TWAS.FDR = p.adjust(twas_bpdscz$TWAS.P, "fdr")
 
 twas_geneList = list(TWAS_BS2_SCZ.Up = tt_dlpfc$ensemblID[tt_dlpfc$TWAS.Z > 0 & tt_dlpfc$TWAS.FDR < 0.05],
@@ -209,9 +231,9 @@ twas_geneList = list(TWAS_BS2_SCZ.Up = tt_dlpfc$ensemblID[tt_dlpfc$TWAS.Z > 0 & 
 geneList = c(
   birnbaum_geneList,
   asd_sfari_geneList,
-  asd_exome_geneList,
+  #asd_exome_geneList,
   pe_geneList,
-  bs2_geneList,
+  #bs2_geneList,
   ds_geneList,
   twas_geneList
 )
@@ -253,7 +275,7 @@ enrichTab$SetSize = sapply(geneList_present, length)
 
 ### save a copy as a supp table
 enrichTabOut = enrichTab[,c(25, 22:24,26, 1:21)]
-write.csv(enrichTabOut, file = "SupplementaryTableXX_clinical_enrichment.csv",row.names=FALSE)
+write.csv(enrichTabOut, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/SupplementaryTableXX_clinical_enrichment.csv",row.names=FALSE)
 
 ## look at enrichment
 pMat = enrichTab[, grep("Pval", colnames(enrichTab))]
@@ -263,6 +285,160 @@ colnames(orMat) = ss(colnames(orMat), "\\.")
 pMat < 0.05 / nrow(pMat)
 pMat < 0.001
 round(-log10(pMat),1)
+
+# > pMat < 0.05 / nrow(pMat)
+# 1     2     3     4     5     6     7     8
+# Gene_Birnbaum_SCZ.SNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_SCZ.PGC.GWAS      FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_SCZ.Meta.analysis FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_SCZ.CNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_Neurodegenerative FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_NDD               FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_ID                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_BPAD.GWAS         FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_ASD.DATABASE      FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+# Gene_Birnbaum_ASD.CNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_SFARI_all                   TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+# Gene_SFARI_high                 FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE
+# Gene_SFARI_syndromic            FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+# DE_PE_ASD.Up                     TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+# DE_PE_ASD.Down                   TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE
+# DE_PE_BD.Up                     FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE
+# DE_PE_BD.Down                    TRUE FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE
+# DE_PE_SCZ.Up                     TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+# DE_PE_SCZ.Down                  FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE
+# DE_DS_DS.Up                     FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE
+# DE_DS_DS.Down                   FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE
+# TWAS_BS2_SCZ.Up                 FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_BS2_SCZ.Down               FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+# TWAS_PE_SCZ.Up                  FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_SCZ.Down                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_ASD.Up                  FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_ASD.Down                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_SCZBD.Up                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_SCZBD.Down              FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# 9
+# Gene_Birnbaum_SCZ.SNV           FALSE
+# Gene_Birnbaum_SCZ.PGC.GWAS      FALSE
+# Gene_Birnbaum_SCZ.Meta.analysis FALSE
+# Gene_Birnbaum_SCZ.CNV           FALSE
+# Gene_Birnbaum_Neurodegenerative FALSE
+# Gene_Birnbaum_NDD               FALSE
+# Gene_Birnbaum_ID                FALSE
+# Gene_Birnbaum_BPAD.GWAS         FALSE
+# Gene_Birnbaum_ASD.DATABASE      FALSE
+# Gene_Birnbaum_ASD.CNV           FALSE
+# Gene_SFARI_all                  FALSE
+# Gene_SFARI_high                 FALSE
+# Gene_SFARI_syndromic            FALSE
+# DE_PE_ASD.Up                    FALSE
+# DE_PE_ASD.Down                   TRUE
+# DE_PE_BD.Up                      TRUE
+# DE_PE_BD.Down                    TRUE
+# DE_PE_SCZ.Up                     TRUE
+# DE_PE_SCZ.Down                   TRUE
+# DE_DS_DS.Up                     FALSE
+# DE_DS_DS.Down                   FALSE
+# TWAS_BS2_SCZ.Up                 FALSE
+# TWAS_BS2_SCZ.Down               FALSE
+# TWAS_PE_SCZ.Up                  FALSE
+# TWAS_PE_SCZ.Down                FALSE
+# TWAS_PE_ASD.Up                  FALSE
+# TWAS_PE_ASD.Down                FALSE
+# TWAS_PE_SCZBD.Up                FALSE
+# TWAS_PE_SCZBD.Down              FALSE
+# > pMat < 0.001
+# 1     2     3     4     5     6     7     8
+# Gene_Birnbaum_SCZ.SNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_SCZ.PGC.GWAS      FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_SCZ.Meta.analysis FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_SCZ.CNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_Neurodegenerative FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_NDD               FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_ID                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_BPAD.GWAS         FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_Birnbaum_ASD.DATABASE      FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+# Gene_Birnbaum_ASD.CNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# Gene_SFARI_all                   TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+# Gene_SFARI_high                 FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE
+# Gene_SFARI_syndromic            FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+# DE_PE_ASD.Up                     TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+# DE_PE_ASD.Down                   TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE
+# DE_PE_BD.Up                     FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE
+# DE_PE_BD.Down                    TRUE FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE
+# DE_PE_SCZ.Up                     TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+# DE_PE_SCZ.Down                  FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE
+# DE_DS_DS.Up                     FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE
+# DE_DS_DS.Down                   FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_BS2_SCZ.Up                 FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_BS2_SCZ.Down               FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_SCZ.Up                  FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_SCZ.Down                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_ASD.Up                  FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_ASD.Down                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_SCZBD.Up                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# TWAS_PE_SCZBD.Down              FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# 9
+# Gene_Birnbaum_SCZ.SNV           FALSE
+# Gene_Birnbaum_SCZ.PGC.GWAS      FALSE
+# Gene_Birnbaum_SCZ.Meta.analysis FALSE
+# Gene_Birnbaum_SCZ.CNV           FALSE
+# Gene_Birnbaum_Neurodegenerative FALSE
+# Gene_Birnbaum_NDD               FALSE
+# Gene_Birnbaum_ID                FALSE
+# Gene_Birnbaum_BPAD.GWAS         FALSE
+# Gene_Birnbaum_ASD.DATABASE      FALSE
+# Gene_Birnbaum_ASD.CNV           FALSE
+# Gene_SFARI_all                  FALSE
+# Gene_SFARI_high                 FALSE
+# Gene_SFARI_syndromic            FALSE
+# DE_PE_ASD.Up                    FALSE
+# DE_PE_ASD.Down                  FALSE
+# DE_PE_BD.Up                      TRUE
+# DE_PE_BD.Down                    TRUE
+# DE_PE_SCZ.Up                     TRUE
+# DE_PE_SCZ.Down                   TRUE
+# DE_DS_DS.Up                     FALSE
+# DE_DS_DS.Down                   FALSE
+# TWAS_BS2_SCZ.Up                 FALSE
+# TWAS_BS2_SCZ.Down               FALSE
+# TWAS_PE_SCZ.Up                  FALSE
+# TWAS_PE_SCZ.Down                FALSE
+# TWAS_PE_ASD.Up                  FALSE
+# TWAS_PE_ASD.Down                FALSE
+# TWAS_PE_SCZBD.Up                FALSE
+# TWAS_PE_SCZBD.Down              FALSE
+# > round(-log10(pMat),1)
+# 1    2    3    4    5    6    7    8    9
+# Gene_Birnbaum_SCZ.SNV            0.1  0.3  0.1  0.3  0.8  0.9  0.6  0.3  0.4
+# Gene_Birnbaum_SCZ.PGC.GWAS       0.0  0.0  0.2  2.1  0.1  0.6  0.5  0.2  0.3
+# Gene_Birnbaum_SCZ.Meta.analysis  0.2  0.6  2.3  0.1  2.7  0.2  2.1  0.5  0.2
+# Gene_Birnbaum_SCZ.CNV            0.4  1.5  0.1  0.8  0.4  0.5  0.0  0.1  1.0
+# Gene_Birnbaum_Neurodegenerative  0.0  0.0  0.2  1.2  0.1  0.2  1.3  1.0  0.6
+# Gene_Birnbaum_NDD                1.2  0.5  0.8  0.5  0.4  0.4  0.3  0.8  0.0
+# Gene_Birnbaum_ID                 0.1  0.0  1.6  1.5  0.4  0.6  1.2  0.2  0.2
+# Gene_Birnbaum_BPAD.GWAS          0.0  0.1  0.8  0.1  0.9  0.9  0.5  0.1  1.7
+# Gene_Birnbaum_ASD.DATABASE       0.3  0.0  6.7  1.6  4.9  0.2  4.8  0.3  0.6
+# Gene_Birnbaum_ASD.CNV            1.0  1.4  1.0  1.0  0.9  0.8  0.7  0.3  0.9
+# Gene_SFARI_all                   3.7  0.5 11.3  1.0  5.8  0.1  8.9  0.9  1.4
+# Gene_SFARI_high                  1.4  1.0  4.8  0.3  1.5  2.6  4.5  1.5  0.6
+# Gene_SFARI_syndromic             2.3  0.0  1.5  0.6  4.0  0.6  1.5  0.4  0.0
+# DE_PE_ASD.Up                    20.9 51.9  3.7  8.8 11.1  0.5  5.6 22.0  0.3
+# DE_PE_ASD.Down                   3.5 18.6  2.1 53.7 37.0  0.3 25.6 67.4  2.8
+# DE_PE_BD.Up                      0.8  0.6 13.0  0.1  5.8  6.1  0.1  1.7  4.7
+# DE_PE_BD.Down                    9.6  0.4  3.7  0.0  4.1  4.5  0.1  2.1  5.1
+# DE_PE_SCZ.Up                    16.3 45.5  8.1  8.5  1.0 15.3  6.4  4.7  8.6
+# DE_PE_SCZ.Down                   0.0 12.8  2.6  1.9  1.7 30.1  9.0  0.1 37.6
+# DE_DS_DS.Up                      2.7  9.8  1.3  1.1  3.3  2.0  0.1  2.1  0.5
+# DE_DS_DS.Down                    2.5  3.9  0.0  2.1  0.8  0.6  2.8  1.0  0.2
+# TWAS_BS2_SCZ.Up                  0.5  0.0  0.2  0.3  0.0  0.5  0.3  0.1  0.0
+# TWAS_BS2_SCZ.Down                2.3  2.7  0.1  0.7  2.4  1.4  1.0  3.0  0.5
+# TWAS_PE_SCZ.Up                   0.4  0.3  0.2  0.8  0.3  1.5  0.0  0.2  0.6
+# TWAS_PE_SCZ.Down                 2.1  2.1  0.8  0.6  1.3  1.9  1.2  0.8  1.3
+# TWAS_PE_ASD.Up                   0.0  0.0  0.9  0.2  0.3  0.0  0.5  0.0  0.0
+# TWAS_PE_ASD.Down                 0.0  0.0  0.3  1.3  0.2  0.0  0.4  0.9  0.5
+# TWAS_PE_SCZBD.Up                 0.1  0.1  0.3  0.8  1.1  0.3  1.2  1.2  0.8
+# TWAS_PE_SCZBD.Down               0.6  0.1  0.2  0.0  0.6  0.6  0.3  0.2  0.3
 
 # #######################
 # # FDR < 0.05 version ##
@@ -304,11 +480,14 @@ round(-log10(pMat),1)
 
 ## summary stats from genes
 enrichTab["Gene_SFARI_all",]
+
+#these don't work right now
 enrichTab["Gene_Satterstrom_ASC102.2018",]
 enrichTab["Gene_Satterstrom_ASD53",]
 enrichTab["Gene_Satterstrom_DDID49",]
 
 ## Satterstrom deep dive
+#also doesnt' work right now
 sat_102_l2= which(t0_contrasts[,"Layer2"] > 0 & fdrs0_contrasts[,"Layer2"] < 0.1 & 
                     rownames(t0_contrasts) %in% geneList_present$Gene_Satterstrom_ASC102.2018)
 rowData(sce_layer)$gene_name[sat_102_l2]
@@ -338,9 +517,9 @@ enrichTab[c("DE_PE_SCZ.Down","DE_BS2_SCZ.Down"),]
 ################
 
 ## make long
-enrichLong = reshape2::melt(enrichTab[,c(seq(1,19,by=3),22:26)],id.vars = 8:12)
-colnames(enrichLong)[6:7] = c("Layer", "OR")
-enrichLong_P = reshape2::melt(enrichTab[,c(seq(2,20,by=3),22:26)],id.vars = 8:12)
+enrichLong = reshape2::melt(enrichTab[,c(seq(1,25,by=3),28:32)]) #Using Type, Group, Set, ID as id variables
+colnames(enrichLong)[5:6] = c("Layer", "OR")
+enrichLong_P = reshape2::melt(enrichTab[,c(seq(2,26,by=3),28:32)])
 identical(enrichLong$ID, enrichLong_P$ID)
 enrichLong$P = enrichLong_P$value
 enrichLong$Layer = ss(as.character(enrichLong$Layer), "\\.")
@@ -351,7 +530,7 @@ enrichLong$FDR = p.adjust(enrichLong$P, "fdr")
 ## what p-value controls FDR?
 enrichLongSort = enrichLong[order(enrichLong$P),]
 max(enrichLongSort$P[enrichLongSort$FDR < 0.05] )
-# 0.01009034
+# [1] 0.01193861
 
 ## overall ##
 enrichLong$P_thresh = enrichLong$P
@@ -373,7 +552,7 @@ enrichLong_ASD$ID2[enrichLong_ASD$ID == "TWAS_PE_ASD.Down"] = "TWAS.Down"
 enrichLong_ASD$ID2 = factor(enrichLong_ASD$ID2, unique(enrichLong_ASD$ID2))
 
 enrichLong_ASD$LayerFac = factor(as.character(enrichLong_ASD$Layer), 
-                                 c("WM", paste0("Layer", 6:1)))
+                                 c(paste0("cluster", 1:9)))
 enrichLong_ASD = enrichLong_ASD[order(enrichLong_ASD$ID2, enrichLong_ASD$LayerFac),]
 
 ### custom heatmap
@@ -408,7 +587,7 @@ customLayerEnrichment = function(enrichTab , groups, xlabs,
        as.character(wide_or),cex=1.5,font=2)
 }
 
-pdf("pdf/asd_geneSet_heatmap.pdf",w=6)
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/10_clinical_gene_set_enrichment/asd_geneSet_heatmap.pdf",w=6)
 par(mar=c(8,4.5,2.5,1), cex.axis=2,cex.lab=2)
 groups = unique(as.character(enrichLong_ASD$ID))[1:6]
 xlabs  = as.character(enrichLong_ASD$ID2[match(groups, enrichLong_ASD$ID)])
@@ -419,7 +598,7 @@ text(x = 3, y = 142, c("ASD"), xpd=TRUE,cex=2.5,font=2)
 dev.off()
 
 
-pdf("pdf/sczd_geneSet_heatmap.pdf",w=8)
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/10_clinical_gene_set_enrichment/sczd_geneSet_heatmap.pdf",w=8)
 par(mar=c(8,4.5,2.5,1), cex.axis=2,cex.lab=2)
 
 groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
@@ -433,7 +612,7 @@ text(x = c(2,6), y = 142, c("SCZD-DE", "SCZD-TWAS"), xpd=TRUE,cex=2.5,font=2)
 dev.off()
 
 
-pdf("pdf/suppXX_birnbaum_geneSet_heatmap.pdf",w=8)
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/10_clinical_gene_set_enrichment/suppXX_birnbaum_geneSet_heatmap.pdf",w=8)
 par(mar=c(12,5.5,2.5,1), cex.axis=2,cex.lab=2)
 groups =grep(enrichTab$ID, pattern = "Birnbaum", value=TRUE)
 xlabs = ss(groups, "_", 3)
