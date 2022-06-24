@@ -5,7 +5,7 @@ import pandas as pd
 import tifffile
 from scipy.spatial import KDTree
 from scipy import ndimage
-from skimage.measure import regionprops, regionprops_table
+from skimage.measure import regionprops, regionprops_table, label
 import pyhere
 
 #   This script is a proof of concept, showing how image dilation can be used
@@ -25,7 +25,7 @@ img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
 plot_path = pyhere.here(
     "plots", "spot_deconvo", "02-cellpose", "mask_dilation_test_{}pix.png"
 )
-dilation_radii = range(3, 30, 3)
+dilation_radii = range(3, 45, 6)
 mask_index = 400
 sample_index = 0
 
@@ -66,6 +66,13 @@ def plot_roi(img, img2, props, idx: int, pad: int = 5):
 #   Use 'regionprops' to form a list of masks and their bounding boxes
 props_orig = regionprops(masks)
 
+#   Relabel masks. This will be later used to have a more consistent estimate
+#   as to how many nuclei merged due to dilation
+temp = masks.copy()
+temp[temp > 0] = 1
+temp = label(temp, connectivity = 2)
+num_nuclei_orig = np.max(temp)
+
 for dilation_radius in dilation_radii:
     #   Dilate the original masks
     expanded_masks = ndimage.grey_dilation(
@@ -76,7 +83,13 @@ for dilation_radius in dilation_radii:
     fig = plot_roi(masks, expanded_masks, props_orig, mask_index, 5 + dilation_radius)
     fig.savefig(str(plot_path).format(dilation_radius))
 
-    #   Check if dilation merges previously distinct masks
-    props_new = regionprops(expanded_masks)
-    perc_left = round(100 * len(props_new) / len(props_orig), 1)
-    print(f'Dilation by {dilation_radius} pixels results in {perc_left}% of masks kept.')
+    #   Check if dilation merges previously distinct masks. Here we relabel the
+    #   masks manually, since dilation doesn't combine labels for masks that
+    #   merge
+    temp = expanded_masks.copy()
+    temp[temp > 0] = 1
+    temp = label(temp, connectivity = 2)
+    num_nuclei_new = np.max(temp)
+
+    perc_left = round(100 * num_nuclei_new / num_nuclei_orig, 1)
+    print(f'Dilation by {dilation_radius} pixels results in ~{perc_left}% of masks kept.')
