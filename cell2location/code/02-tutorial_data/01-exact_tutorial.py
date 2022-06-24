@@ -16,11 +16,15 @@ from pathlib import Path
 rcParams['pdf.fonttype'] = 42 # enables correct plotting of text for PDFs
 
 import pyhere
+import os
 
 results_folder = pyhere.here(
-    "cell2location", "processed-data", "02-tutorial_data", "exact_tutorial_results"
+    "cell2location", "processed-data", "02-tutorial_data",
+    "exact_tutorial_results"
 )
-plot_dir = pyhere.here('cell2location', 'plots', '02-tutorial_data')
+plot_dir = pyhere.here(
+    'cell2location', 'plots', '02-tutorial_data', 'exact_tutorial_results'
+)
 
 # create paths and names to results folders for reference regression and cell2location models
 ref_run_name = f'{results_folder}/reference_signatures'
@@ -81,6 +85,11 @@ mod.view_anndata_setup()
 mod.train(max_epochs=250, use_gpu=True)
 
 mod.plot_history(20)
+f = plt.gcf()
+f.savefig(
+    os.path.join(plot_dir, 'cell_signature_training_history.png')
+)
+plt.close(f)
 
 # In this section, we export the estimated cell abundance (summary of the posterior distribution).
 adata_ref = mod.export_posterior(
@@ -95,8 +104,8 @@ adata_file = f"{ref_run_name}/sc.h5ad"
 adata_ref.write(adata_file)
 
 mod.plot_QC()
-
-mod = cell2location.models.RegressionModel.load(f"{ref_run_name}", adata_ref)
+plt.savefig(os.path.join(plot_dir, 'adata_ref_QC.png'))
+plt.close('all')
 
 # export estimated expression in each cluster
 if 'means_per_cluster_mu_fg' in adata_ref.varm.keys():
@@ -105,6 +114,7 @@ if 'means_per_cluster_mu_fg' in adata_ref.varm.keys():
 else:
     inf_aver = adata_ref.var[[f'means_per_cluster_mu_fg_{i}'
                                     for i in adata_ref.uns['mod']['factor_names']]].copy()
+
 inf_aver.columns = adata_ref.uns['mod']['factor_names']
 inf_aver.iloc[0:5, 0:5]
 
@@ -138,7 +148,12 @@ mod.train(max_epochs=30000,
 
 # plot ELBO loss history during training, removing first 100 epochs from the plot
 mod.plot_history(1000)
-plt.legend(labels=['full data training']);
+plt.legend(labels=['full data training'])
+f = plt.gcf()
+f.savefig(
+    os.path.join(plot_dir, 'spatial_mapping_training_history.png')
+)
+plt.close(f)
 
 # In this section, we export the estimated cell abundance (summary of the posterior distribution).
 adata_vis = mod.export_posterior(
@@ -148,16 +163,17 @@ adata_vis = mod.export_posterior(
 # Save model
 mod.save(f"{run_name}", overwrite=True)
 
-# mod = cell2location.models.Cell2location.load(f"{run_name}", adata_vis)
-
 # Save anndata object with results
 adata_file = f"{run_name}/sp.h5ad"
 adata_vis.write(adata_file)
 
-mod = cell2location.models.Cell2location.load(f"{run_name}", adata_vis)
 mod.plot_QC()
+plt.savefig(os.path.join(plot_dir, 'adata_vis_QC.png'))
+plt.close('all')
 
 fig = mod.plot_spatial_QC_across_batches()
+fig.savefig(os.path.join(plot_dir, 'spatial_qc_across_batches.png'))
+plt.close(fig)
 
 # add 5% quantile, representing confident cell abundance, 'at least this amount is present',
 # to adata.obs with nice names for plotting
@@ -167,18 +183,18 @@ adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm['q05_cell_a
 slide = select_slide(adata_vis, 'V1_Human_Lymph_Node')
 
 # plot in spatial coordinates
-with mpl.rc_context({'axes.facecolor':  'black',
-                     'figure.figsize': [4.5, 5]}):
-
-    sc.pl.spatial(slide, cmap='magma',
-                  # show first 8 cell types
-                  color=['B_Cycling', 'B_GC_LZ', 'T_CD4+_TfH_GC', 'FDC',
-                         'B_naive', 'T_CD4+_naive', 'B_plasma', 'Endo'],
-                  ncols=4, size=1.3,
-                  img_key='hires',
-                  # limit color scale at 99.2% quantile of cell abundance
-                  vmin=0, vmax='p99.2'
-                 )
+sc.pl.spatial(slide, cmap='magma',
+              # show first 8 cell types
+              color=['B_Cycling', 'B_GC_LZ', 'T_CD4+_TfH_GC', 'FDC',
+                     'B_naive', 'T_CD4+_naive', 'B_plasma', 'Endo'],
+              ncols=4, size=1.3,
+              img_key='hires',
+              # limit color scale at 99.2% quantile of cell abundance
+              vmin=0, vmax='p99.2'
+             )
+f = plt.gcf()
+f.savefig(os.path.join(plot_dir, 'individual_cell_types.png'))
+plt.close(f)
 
 # select up to 6 clusters
 clust_labels = ['T_CD4+_naive', 'B_naive', 'FDC']
@@ -186,17 +202,19 @@ clust_col = ['' + str(i) for i in clust_labels] # in case column names differ fr
 
 slide = select_slide(adata_vis, 'V1_Human_Lymph_Node')
 
-with mpl.rc_context({'figure.figsize': (15, 15)}):
-    fig = plot_spatial(
-        adata=slide,
-        # labels to show on a plot
-        color=clust_col, labels=clust_labels,
-        show_img=True,
-        # 'fast' (white background) or 'dark_background'
-        style='fast',
-        # limit color scale at 99.2% quantile of cell abundance
-        max_color_quantile=0.992,
-        # size of locations (adjust depending on figure size)
-        circle_diameter=6,
-        colorbar_position='right'
-    )
+fig = plot_spatial(
+    adata=slide,
+    # labels to show on a plot
+    color=clust_col, labels=clust_labels,
+    show_img=True,
+    # 'fast' (white background) or 'dark_background'
+    style='fast',
+    # limit color scale at 99.2% quantile of cell abundance
+    max_color_quantile=0.992,
+    # size of locations (adjust depending on figure size)
+    circle_diameter=6,
+    colorbar_position='right'
+)
+f = plt.gcf()
+f.savefig(os.path.join(plot_dir, 'multi_cell_types.png'))
+plt.close(f)
