@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.random import default_rng
 import pandas as pd
 import tifffile
 from scipy.spatial import KDTree
@@ -73,6 +74,9 @@ temp[temp > 0] = 1
 temp = label(temp, connectivity = 2)
 num_nuclei_orig = np.max(temp)
 
+rng = default_rng()
+indices = rng.choice(num_nuclei_orig, size = 100, replace = False)
+
 for dilation_radius in dilation_radii:
     #   Dilate the original masks
     expanded_masks = ndimage.grey_dilation(
@@ -83,6 +87,20 @@ for dilation_radius in dilation_radii:
     fig = plot_roi(masks, expanded_masks, props_orig, mask_index, 5 + dilation_radius)
     fig.savefig(str(plot_path).format(dilation_radius))
 
+    #   Estimate how many nuclei are contained in a typical expanded mask (we
+    #   only want 1, but will often get more from dilation!)
+    a = []
+    for i in indices:
+        a.append(
+            np.unique(masks[(expanded_masks == i) & (masks != 0)]).shape[0]
+        )
+
+    a = np.array(a)
+    print(f'------------- Dilation by {dilation_radius} pixels:')
+    print(f'Average number of nuclei covered per expanded mask: ~{np.mean(a)}')
+    print(f'~{round(100 * np.count_nonzero(a > 1) / a.size, 1)}% masks have at least 2 nuclei.')
+    print(f'~{round(100 * np.count_nonzero(a == 0) / a.size, 1)}% masks have no nuclei (dilation "ate" the nucleus)')
+
     #   Check if dilation merges previously distinct masks. Here we relabel the
     #   masks manually, since dilation doesn't combine labels for masks that
     #   merge
@@ -92,4 +110,4 @@ for dilation_radius in dilation_radii:
     num_nuclei_new = np.max(temp)
 
     perc_left = round(100 * num_nuclei_new / num_nuclei_orig, 1)
-    print(f'Dilation by {dilation_radius} pixels results in ~{perc_left}% of masks kept.')
+    print(f'Dilation-induced overlap of expanded masks resulted in ~{perc_left}% of masks kept.')
