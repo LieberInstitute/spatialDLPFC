@@ -23,9 +23,9 @@ mask_path = pyhere.here(
 )
 img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
 plot_path = pyhere.here(
-    "plots", "spot_deconvo", "02-cellpose", "mask_dilation_test"
+    "plots", "spot_deconvo", "02-cellpose", "mask_dilation_test_{}pix.png"
 )
-dilation_radius = 3
+dilation_radii = range(3, 30, 3)
 mask_index = 400
 sample_index = 0
 
@@ -66,17 +66,17 @@ def plot_roi(img, img2, props, idx: int, pad: int = 5):
 #   Use 'regionprops' to form a list of masks and their bounding boxes
 props_orig = regionprops(masks)
 
-#   Dilate the original masks
-expanded_masks = ndimage.grey_dilation(
-    masks, size = (dilation_radius, dilation_radius)
-).astype(masks.dtype)
+for dilation_radius in dilation_radii:
+    #   Dilate the original masks
+    expanded_masks = ndimage.grey_dilation(
+        masks, size = (dilation_radius, dilation_radius)
+    ).astype(masks.dtype)
 
-#   Plot the comparison and save
-# plt.clf()
-fig = plot_roi(masks, expanded_masks, props_orig, mask_index)
-# fig.show()
-fig.savefig(plot_path)
+    #   Plot the comparison and save
+    fig = plot_roi(masks, expanded_masks, props_orig, mask_index, 5 + dilation_radius)
+    fig.savefig(str(plot_path).format(dilation_radius))
 
-#   Dilation should not be so severe as to merge previously distinct masks
-props_new = regionprops(expanded_masks)
-assert len(props_new) == len(props_orig)
+    #   Check if dilation merges previously distinct masks
+    props_new = regionprops(expanded_masks)
+    perc_left = round(100 * len(props_new) / len(props_orig), 1)
+    print(f'Dilation by {dilation_radius} pixels results in {perc_left}% of masks kept.')
