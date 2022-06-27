@@ -76,28 +76,42 @@ def plot_roi(img, img2, props, idx: int, pad: int = 5):
 def balanced_dilation(img, dilation_radius, chunk_size, verbose = False):
     assert chunk_size % 2 == 0, 'chunk_size must be even'
     assert 2 * dilation_radius % chunk_size == 0, 'cannot break this radius into chunks'
-
+    
     num_chunks =  int(2 * dilation_radius / chunk_size)
     dilation_chunked = int(dilation_radius / num_chunks)
     assert num_chunks % 2 == 1, 'must use an odd number of chunks'
-
+    
+    #   We'll use -1 * MAX_VALUE as a placeholder, assumed to be smaller than
+    #   all elements in 'img'. Check this assumption
+    MAX_VALUE = 2 ** 31 - 1
+    assert(np.all(img < MAX_VALUE))
+    
     expanded_masks = img.copy().astype(np.int32)
-
+    
     for i in range(num_chunks):
         if verbose:
             print(f'Dilating by {dilation_chunked} pixels...')
-
+        
+        #   Make sure zero-valued elements are always treated as the smallest
+        #   value possible for dilation
+        zero_indices = expanded_masks == 0
+        expanded_masks[zero_indices] = -1 * MAX_VALUE
+        
         expanded_masks = ndimage.grey_dilation(
             expanded_masks,
             size = (dilation_chunked, dilation_chunked)
         )
-
+        
+        #   Return "zero-valued" elements to a true value of 0
+        zero_indices = expanded_masks == -1 * MAX_VALUE
+        expanded_masks[zero_indices] = 0
+        
         if i < num_chunks - 1:
             if verbose:
                 print('Inverting...')
-
+            
             expanded_masks *= -1
-
+    
     return expanded_masks.astype(img.dtype)
 
 #   Perform a grey dilation of size 'dilation_radius' on 'img'. 'chunk_size' is
@@ -132,7 +146,7 @@ for dilation_radius in dilation_radii:
     ):
         #   Dilate the original masks by the appropriate function
         expanded_masks = dilation_fun(masks, dilation_radius, 6)
-        
+
         #   Plot the comparison and save
         fig = plot_roi(masks, expanded_masks, props_orig, mask_index, 5 + dilation_radius)
         fig.savefig(
@@ -140,7 +154,7 @@ for dilation_radius in dilation_radii:
                 dilation_radius, description.split()[0].lower()
             )
         )
-        
+
         #   Estimate how many nuclei are contained in a typical expanded mask (we
         #   only want 1, but will often get more from dilation!)
         a = []
@@ -148,13 +162,13 @@ for dilation_radius in dilation_radii:
             a.append(
                 np.unique(masks[(expanded_masks == i) & (masks != 0)]).shape[0]
             )
-        
+
         a = np.array(a)
         print(f'------------- {description} by {dilation_radius} pixels:')
         print(f'Average number of nuclei covered per expanded mask: ~{np.mean(a)}')
         print(f'~{round(100 * np.count_nonzero(a > 1) / a.size, 1)}% masks have at least 2 nuclei.')
         print(f'~{round(100 * np.count_nonzero(a == 0) / a.size, 1)}% masks have no nuclei (dilation "ate" the nucleus)')
-        
+
         #   Check if dilation merges previously distinct masks. Here we relabel the
         #   masks manually, since dilation doesn't combine labels for masks that
         #   merge
@@ -162,6 +176,6 @@ for dilation_radius in dilation_radii:
         temp[temp > 0] = 1
         temp = label(temp, connectivity = 2)
         num_nuclei_new = np.max(temp)
-        
+
         perc_left = round(100 * num_nuclei_new / num_nuclei_orig, 1)
         print(f'Dilation-induced overlap of expanded masks resulted in ~{perc_left}% of masks kept.')
