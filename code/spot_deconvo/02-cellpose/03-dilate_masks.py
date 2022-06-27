@@ -24,7 +24,7 @@ mask_path = pyhere.here(
 )
 img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
 plot_path = pyhere.here(
-    "plots", "spot_deconvo", "02-cellpose", "mask_dilation_test_{}pix.png"
+    "plots", "spot_deconvo", "02-cellpose", "mask_dilation_test_{}pix_{}.png"
 )
 dilation_radii = range(3, 45, 6)
 mask_index = 400
@@ -39,6 +39,10 @@ img_path = str(img_path).format(sample_id_img)
 
 masks = np.load(mask_path)
 imgs = tifffile.imread(img_path)
+
+################################################################################
+#   Function definitions
+################################################################################
 
 #   Function to plot what the original ('img') and expanded ('img2') masks
 #   look like at a particular mask index ('idx')
@@ -64,6 +68,49 @@ def plot_roi(img, img2, props, idx: int, pad: int = 5):
     fig.tight_layout()
     return fig
 
+#   Perform a dilation-like transformation on 'img' by total size
+#   'dilation_radius'. The whole transformation actually involves a series
+#    of dilations by size [chunk_size / 2] followed by inversion. The idea
+#   is to expand each mask equally without bias towards masks with larger-valued
+#   labels (in case of overlap, which frequently happens)
+def balanced_dilation(img, dilation_radius, chunk_size, verbose = False):
+    assert chunk_size % 2 == 0, 'chunk_size must be even'
+    assert 2 * dilation_radius % chunk_size == 0, 'cannot break this radius into chunks'
+
+    num_chunks =  int(2 * dilation_radius / chunk_size)
+    dilation_chunked = int(dilation_radius / num_chunks)
+    assert num_chunks % 2 == 1, 'must use an odd number of chunks'
+
+    expanded_masks = img.copy().astype(np.int32)
+
+    for i in range(num_chunks):
+        if verbose:
+            print(f'Dilating by {dilation_chunked} pixels...')
+
+        expanded_masks = ndimage.grey_dilation(
+            expanded_masks,
+            size = (dilation_chunked, dilation_chunked)
+        )
+
+        if i < num_chunks - 1:
+            if verbose:
+                print('Inverting...')
+
+            expanded_masks *= -1
+
+    return expanded_masks.astype(img.dtype)
+
+#   Perform a grey dilation of size 'dilation_radius' on 'img'. 'chunk_size' is
+#   ignored.
+def normal_dilation(img, dilation_radius, chunk_size):
+    return ndimage.grey_dilation(
+        img, size = (dilation_radius, dilation_radius)
+    ).astype(img.dtype)
+
+################################################################################
+#   Analysis
+################################################################################
+
 #   Use 'regionprops' to form a list of masks and their bounding boxes
 props_orig = regionprops(masks)
 
@@ -78,36 +125,43 @@ rng = default_rng()
 indices = rng.choice(num_nuclei_orig, size = 100, replace = False)
 
 for dilation_radius in dilation_radii:
-    #   Dilate the original masks
-    expanded_masks = ndimage.grey_dilation(
-        masks, size = (dilation_radius, dilation_radius)
-    ).astype(masks.dtype)
-
-    #   Plot the comparison and save
-    fig = plot_roi(masks, expanded_masks, props_orig, mask_index, 5 + dilation_radius)
-    fig.savefig(str(plot_path).format(dilation_radius))
-
-    #   Estimate how many nuclei are contained in a typical expanded mask (we
-    #   only want 1, but will often get more from dilation!)
-    a = []
-    for i in indices:
-        a.append(
-            np.unique(masks[(expanded_masks == i) & (masks != 0)]).shape[0]
+    #   We'll compare two mask-expanding methods. 
+    for dilation_fun, description in zip(
+        (normal_dilation, balanced_dilation),
+        ('Normal dilation', 'Balanced dilation')
+    ):
+        #   Dilate the original masks by the appropriate function
+        expanded_masks = dilation_fun(masks, dilation_radius, 6)
+        
+        #   Plot the comparison and save
+        fig = plot_roi(masks, expanded_masks, props_orig, mask_index, 5 + dilation_radius)
+        fig.savefig(
+            str(plot_path).format(
+                dilation_radius, description.split()[0].lower()
+            )
         )
-
-    a = np.array(a)
-    print(f'------------- Dilation by {dilation_radius} pixels:')
-    print(f'Average number of nuclei covered per expanded mask: ~{np.mean(a)}')
-    print(f'~{round(100 * np.count_nonzero(a > 1) / a.size, 1)}% masks have at least 2 nuclei.')
-    print(f'~{round(100 * np.count_nonzero(a == 0) / a.size, 1)}% masks have no nuclei (dilation "ate" the nucleus)')
-
-    #   Check if dilation merges previously distinct masks. Here we relabel the
-    #   masks manually, since dilation doesn't combine labels for masks that
-    #   merge
-    temp = expanded_masks.copy()
-    temp[temp > 0] = 1
-    temp = label(temp, connectivity = 2)
-    num_nuclei_new = np.max(temp)
-
-    perc_left = round(100 * num_nuclei_new / num_nuclei_orig, 1)
-    print(f'Dilation-induced overlap of expanded masks resulted in ~{perc_left}% of masks kept.')
+        
+        #   Estimate how many nuclei are contained in a typical expanded mask (we
+        #   only want 1, but will often get more from dilation!)
+        a = []
+        for i in indices:
+            a.append(
+                np.unique(masks[(expanded_masks == i) & (masks != 0)]).shape[0]
+            )
+        
+        a = np.array(a)
+        print(f'------------- {description} by {dilation_radius} pixels:')
+        print(f'Average number of nuclei covered per expanded mask: ~{np.mean(a)}')
+        print(f'~{round(100 * np.count_nonzero(a > 1) / a.size, 1)}% masks have at least 2 nuclei.')
+        print(f'~{round(100 * np.count_nonzero(a == 0) / a.size, 1)}% masks have no nuclei (dilation "ate" the nucleus)')
+        
+        #   Check if dilation merges previously distinct masks. Here we relabel the
+        #   masks manually, since dilation doesn't combine labels for masks that
+        #   merge
+        temp = expanded_masks.copy()
+        temp[temp > 0] = 1
+        temp = label(temp, connectivity = 2)
+        num_nuclei_new = np.max(temp)
+        
+        perc_left = round(100 * num_nuclei_new / num_nuclei_orig, 1)
+        print(f'Dilation-induced overlap of expanded masks resulted in ~{perc_left}% of masks kept.')
