@@ -43,7 +43,7 @@ plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 #   Default is 30 in tutorial, but 5 is recommended as an initial guess for
 #   Visium data:
 #   https://github.com/BayraktarLab/cell2location/blob/master/docs/images/Note_on_selecting_hyperparameters.pdf
-N_CELLS_PER_SPOT = 3
+N_CELLS_PER_SPOT = 30
 
 #   For spatial mapping model: tutorial recommends 20 as default but to try 200
 detection_alpha = 20
