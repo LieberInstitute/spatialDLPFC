@@ -37,6 +37,7 @@ plot_dir = pyhere.here(
     'cell2location', 'plots', '02-tutorial_data', 'modified_tutorial_results'
 )
 
+cell_type_var = 'Subset'    # in single-cell only
 plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 
 #   Default is 30 in tutorial, but 5 is recommended as an initial guess for
@@ -59,7 +60,7 @@ def perform_regression(
         max_epochs=max_epochs, batch_size=sample_kwargs['batch_size'],
         train_size=1, lr=lr, use_gpu=True
     )
-    
+
     # plot ELBO loss history during training, removing first 10% of epochs from
     # the plot
     mod.plot_history(int(max_epochs / 10))
@@ -69,21 +70,21 @@ def perform_regression(
         bbox_inches='tight'
     )
     plt.close(f)
-    
+
     # In this section, we export the estimated cell abundance (summary of the
     # posterior distribution).
     adata = mod.export_posterior(
         adata, sample_kwargs=sample_kwargs
     )
-    
+
     # Save model
-    mod.save(f'{processed_dir}/{adata_name}', overwrite=True)
-    
+    mod.save(f'{results_folder}/{adata_name}', overwrite=True)
+
     # Save anndata object with results
     adata.write_h5ad(
-        os.path.join(processed_dir, f'{adata_name}_after.h5ad')
+        os.path.join(results_folder, f'{adata_name}_after.h5ad')
     )
-    
+
     # Examine reconstruction accuracy to assess if there are any issues with
     # mapping the plot should be roughly diagonal, strong deviations will signal
     # problems
@@ -95,7 +96,7 @@ def perform_regression(
         bbox_inches='tight'
     )
     plt.close('all')
-    
+
     return (adata, mod)
 
 ################################################################################
@@ -148,7 +149,7 @@ adata_ref = adata_ref[:, selected].copy()
 RegressionModel.setup_anndata(
     adata = adata_ref,
     batch_key='Sample',
-    labels_key='Subset',
+    labels_key=cell_type_var,
     categorical_covariate_keys=['Method']
 )
 
@@ -157,7 +158,7 @@ mod = RegressionModel(adata_ref)
 RegressionModel.view_anndata_setup(mod)
 
 adata_ref, mod = perform_regression(
-    mod, adata_ref, 'adata_ref', 250, 0.002, # changed 250 epochs to 400
+    mod, adata_ref, 'adata_ref', 250, 0.002,
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
