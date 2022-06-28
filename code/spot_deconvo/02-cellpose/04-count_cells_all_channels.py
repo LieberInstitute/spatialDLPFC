@@ -167,7 +167,7 @@ its = {
 
 #   Create a table containing the centroids and areas of each mask
 #   (nucleus), and add this info to the intensities table
-general = regionprops_table(expanded_masks, properties=["centroid", "area"])
+general = regionprops_table(masks, properties=["centroid", "area"])
 its["area"] = general["area"]
 its["x"] = general["centroid-0"]
 its["y"] = general["centroid-1"]
