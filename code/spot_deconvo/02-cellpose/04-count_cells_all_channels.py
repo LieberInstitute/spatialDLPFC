@@ -61,7 +61,8 @@ m_per_px = 0.497e-6
 spot_radius = 65e-6
 area_threshold = 200
 
-dilation_radius = 3
+dilation_radius = 15
+dilation_chunk_size = 6
 
 #   Mean fluorescence below this value will be considered an indication of an 
 #   absence of the given cell type
@@ -96,6 +97,52 @@ def plot_roi(img, props, idx: int, vmax: int = 128, nrows: int = 3, ncols: int =
 
     fig.tight_layout()
     return fig
+
+#   Perform a dilation-like transformation on 'img' by total size
+#   'dilation_radius'. The whole transformation actually involves a series
+#    of dilations by size [chunk_size / 2] followed by inversion. The idea
+#   is to expand each mask equally without bias towards masks with larger-valued
+#   labels (in case of overlap, which frequently happens)
+def balanced_dilation(img, dilation_radius, chunk_size, verbose = False):
+    assert chunk_size % 2 == 0, 'chunk_size must be even'
+    assert 2 * dilation_radius % chunk_size == 0, 'cannot break this radius into chunks'
+    
+    num_chunks =  int(2 * dilation_radius / chunk_size)
+    dilation_chunked = int(dilation_radius / num_chunks)
+    assert num_chunks % 2 == 1, 'must use an odd number of chunks'
+    
+    #   We'll use -1 * MAX_VALUE as a placeholder, assumed to be smaller than
+    #   all elements in 'img'. Check this assumption
+    MAX_VALUE = 2 ** 31 - 1
+    assert(np.all(img < MAX_VALUE))
+    
+    expanded_masks = img.copy().astype(np.int32)
+    
+    for i in range(num_chunks):
+        if verbose:
+            print(f'Dilating by {dilation_chunked} pixels...')
+        
+        #   Make sure zero-valued elements are always treated as the smallest
+        #   value possible for dilation
+        zero_indices = expanded_masks == 0
+        expanded_masks[zero_indices] = -1 * MAX_VALUE
+        
+        expanded_masks = ndimage.grey_dilation(
+            expanded_masks,
+            size = (dilation_chunked, dilation_chunked)
+        )
+        
+        #   Return "zero-valued" elements to a true value of 0
+        zero_indices = expanded_masks == -1 * MAX_VALUE
+        expanded_masks[zero_indices] = 0
+        
+        if i < num_chunks - 1:
+            if verbose:
+                print('Inverting...')
+            
+            expanded_masks *= -1
+    
+    return expanded_masks.astype(img.dtype)
 
 ################################################################################
 #   Analysis
@@ -151,9 +198,7 @@ imgs = tifffile.imread(img_path)
 masks = np.load(mask_path)
 
 #   Dilate the original masks
-expanded_masks = ndimage.grey_dilation(
-    masks, size = (dilation_radius, dilation_radius)
-).astype(masks.dtype)
+expanded_masks = balanced_dilation(masks, dilation_radius, dilation_chunk_size)
 
 #   Quantify the mean image fluorescence intensity at each nucleus
 #   identified by segmenting the DAPI channel. This is done for each
