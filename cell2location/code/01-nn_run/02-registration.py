@@ -55,15 +55,7 @@ detection_alpha = 20
 #   Function definitions
 ################################################################################
 
-def perform_regression(
-    mod, adata, adata_name, max_epochs, lr, sample_kwargs, plot_name
-):
-    # Use all data for training (validation not implemented yet, train_size=1)
-    mod.train(
-        max_epochs=max_epochs, batch_size=sample_kwargs['batch_size'],
-        train_size=1, lr=lr, use_gpu=True
-    )
-
+def post_training(mod, adata, adata_name, max_epochs, sample_kwargs, plot_name):
     # plot ELBO loss history during training, removing first 10% of epochs from
     # the plot
     mod.plot_history(int(max_epochs / 10))
@@ -128,8 +120,10 @@ RegressionModel.setup_anndata(
 mod = RegressionModel(adata_ref)
 RegressionModel.view_anndata_setup(mod)
 
-adata_ref, mod = perform_regression(
-    mod, adata_ref, 'adata_ref', 250, 0.002, # changed 250 epochs to 400
+mod.train(max_epochs=250, use_gpu=True)
+
+adata_ref, mod = post_training(
+    mod, adata_ref, 'adata_ref', 250,
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
@@ -177,8 +171,18 @@ mod = cell2location.models.Cell2location(
 
 cell2location.models.Cell2location.view_anndata_setup(mod)
 
-adata_vis, mod = perform_regression(
-    mod, adata_vis, 'adata_vis', 30000, None,
+mod.train(
+    max_epochs=30000,
+    # train using full data (batch_size=None)
+    batch_size=None,
+    # use all data points in training because
+    # we need to estimate cell abundance at all locations
+    train_size=1,
+    use_gpu=True
+)
+
+adata_vis, mod = post_training(
+    mod, adata_vis, 'adata_vis', 30000,
     {'num_samples': 1000, 'batch_size': mod.adata.n_obs, 'use_gpu': True},
     'spatial_mapping_training_history'
 )
