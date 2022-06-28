@@ -223,6 +223,39 @@ twas_geneList = list(TWAS_BS2_SCZ.Up = tt_dlpfc$ensemblID[tt_dlpfc$TWAS.Z > 0 & 
                      TWAS_PE_SCZBD.Up = twas_bpdscz$ID[twas_bpdscz$TWAS.Z > 0 & twas_bpdscz$TWAS.FDR < 0.05],
                      TWAS_PE_SCZBD.Down = twas_bpdscz$ID[twas_bpdscz$TWAS.Z < 0 & twas_bpdscz$TWAS.FDR < 0.05])
 
+
+##############
+#### Nagy sn_rna_seq in dlpfc in MDD
+####https://www.nature.com/articles/s41593-020-0621-y 
+####sup table 6 is marker genes
+####sup table 32 is DEGs
+#### file = /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx
+#############
+sn_rna_seq_MDD = as.data.frame(read_excel("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx", sheet = "Supplementary Table 32"))
+
+##############
+### snRNAseq ASD
+### https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7678724/#SD5
+### data S4 is DEGS
+### data S3 is marker genes
+### file = /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/NIHMS1053005-supplement-Data_S4.xls
+#############
+
+############
+###https://www.medrxiv.org/content/10.1101/2020.11.06.20225342v1.full
+### snRNAseq SCZ
+### supplementary table 6 is DEGS, can't figure out how to download
+##########
+
+##########
+###snRNAseq and spatial SCZ
+###https://www.biorxiv.org/content/10.1101/2020.11.17.386458v2
+### supplementary table 2 is marker genes
+### supplementary table 4 is DEGs, can't figure out how to download
+###########
+
+
+
 ###############
 ### combine ###
 ###############
