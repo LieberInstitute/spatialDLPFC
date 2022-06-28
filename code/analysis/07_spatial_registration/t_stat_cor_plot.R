@@ -97,6 +97,8 @@ dat_small <- cbind(stats_small,tstats_small)
 colnames(dat_small)
 colnames(dat_small)[15] <- "Layer"
 
+save(dat_small, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_spatial_registration/t_cor_plot_top_genes_k7.rda")
+
 #from Louise's code https://github.com/LieberInstitute/goesHyde_mdd_rnaseq/blob/2bb13a25fad8d1260ef38a8f073be4387c1f9ed0/differential_expression/code/utils.R#L51-L59
 pdf(file = here::here("plots","07_spatial_registration","ggplot_t_cor_k7_wm_colored.pdf"))
 ggplot(dat_small, aes(x = dat_small[,7], y = WM, color = Layer)) +
