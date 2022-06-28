@@ -44,27 +44,40 @@ imgs = tifffile.imread(img_path)
 #   Function definitions
 ################################################################################
 
-#   Function to plot what the original ('img') and expanded ('img2') masks
-#   look like at a particular mask index ('idx')
-def plot_roi(img, img2, props, idx: int, pad: int = 5):
+#   Return a figure containing plots of each mask array in 'img_list', whose
+#   titles are given by 'title_list'. The particular nucleus plotted is given by
+#   index 'idx'. 'props' is the output of regionprops() on one of the mask
+#   arrays passed to 'img_list'.
+def plot_roi(img_list, title_list, props, idx: int, pad: int = 5):
     bbox = props[idx]["bbox"]
-    roi = props[idx]["image"]
-    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 8))
+    
+    #   First, clean up the image values so the color scaling works cleanly
+    sub_img_list = []
+    for i in range(len(img_list)):
+        sub_img_list.append(
+            img_list[i][
+                max(0, bbox[0] - pad) : min(img_list[i].shape[0], bbox[2] + pad),
+                max(0, bbox[1] - pad) : min(img_list[i].shape[1], bbox[3] + pad),
+            ].copy()
+        )
+        
+        uniq_vals = np.unique(sub_img_list[-1])
+        for j, val in enumerate(uniq_vals):
+            sub_img_list[-1][sub_img_list[-1] == val] = j + 1
+    
+    fig, axs = plt.subplots(nrows=1, ncols=len(img_list), figsize=(8, 4 * len(img_list)))
     axs = axs.flatten()
-    axs[0].imshow(
-        np.pad(roi, (pad, pad), mode="constant", constant_values=0),
-        aspect="equal"
-    )
-    axs[0].set_title("Original mask")
-    axs[0].grid(False)
-    axs[1].imshow(
-        img2[
-            max(0, bbox[0] - pad) : min(img2.shape[0], bbox[2] + pad),
-            max(0, bbox[1] - pad) : min(img2.shape[1], bbox[3] + pad),
-        ]
-    )
-    axs[1].set_title('Expanded mask')
-    axs[1].grid(False)
+    
+    #   Plot each mask array in a subfigure
+    for i, img in enumerate(sub_img_list):
+        axs[i].imshow(
+            sub_img_list[i],
+            aspect="equal",
+            cmap = 'viridis'
+        )
+        axs[i].set_title(title_list[i])
+        axs[i].grid(False)
+    
     fig.tight_layout()
     return fig
 
@@ -148,7 +161,11 @@ for dilation_radius in dilation_radii:
         expanded_masks = dilation_fun(masks, dilation_radius, 6)
 
         #   Plot the comparison and save
-        fig = plot_roi(masks, expanded_masks, props_orig, mask_index, 5 + dilation_radius)
+        fig = plot_roi(
+            [masks, expanded_masks],
+            ['Original mask', 'Expanded mask'],
+            props_orig, mask_index, 5 + dilation_radius
+        )
         fig.savefig(
             str(plot_path).format(
                 dilation_radius, description.split()[0].lower()
@@ -179,3 +196,35 @@ for dilation_radius in dilation_radii:
 
         perc_left = round(100 * num_nuclei_new / num_nuclei_orig, 1)
         print(f'Dilation-induced overlap of expanded masks resulted in ~{perc_left}% of masks kept.')
+
+#-------------------------------------------------------------------------------
+#   Now examine what both dilation methods look like at a fixed radius for
+#   sufficiently nearby nuclei
+#-------------------------------------------------------------------------------
+
+dilation_radius = 21
+expanded_masks_1 = normal_dilation(masks, dilation_radius, 6)
+expanded_masks_2 = balanced_dilation(masks, dilation_radius, 6)
+
+#   Search through 100 random masks to find one with nearby nuclei
+i = 0
+num_overlaps = 0
+
+while num_overlaps < 2 and i < indices.shape[0]:
+    num_overlaps = np.unique(
+        masks[(expanded_masks_1 == indices[i]) & (masks != 0)]
+    ).shape[0]
+    i += 1
+
+#   Check how the dilation methods perform in this context
+idx = indices[i - 1]
+fig = plot_roi(
+    [masks, expanded_masks_1, expanded_masks_2],
+    ['Original', 'Normal dilation', 'Balanced dilation'],
+    props_orig, idx, 5 + dilation_radius
+)
+fig.savefig(
+    str(plot_path).format(
+        dilation_radius, 'nearby_nuclei'
+    )
+)
