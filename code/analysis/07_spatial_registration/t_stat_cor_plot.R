@@ -46,6 +46,23 @@ top_n_index <- unique(as.vector(apply(tstats, 2, function(t) {
 })))
 length(top_n_index)
 #[1] 692
+summary(top_n_index)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 45    4935   10384   10574   15708   22225 
+
+top_n_index_test <- c()
+for (i in 1:k){
+  x <- as.vector(order(tstats[,i], decreasing = TRUE)[seq_len(100)])
+  names(x) <- i
+  top_n_index_test <- append(top_n_index_test,x)
+}
+top_n_index_test <- unique(top_n_index_test)
+length(top_n_index_test)
+# [1] 692
+summary(top_n_index_test)
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 45    4935   10384   10574   15708   22225 
+names(top_n_index_test)
 
 tstats_small <- tstats[top_n_index, , drop = FALSE]
 dim(tstats_small)
