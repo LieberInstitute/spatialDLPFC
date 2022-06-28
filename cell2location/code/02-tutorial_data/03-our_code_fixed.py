@@ -53,7 +53,7 @@ detection_alpha = 20
 #   Function definitions
 ################################################################################
 
-def post_training(mod, adata, adata_name, sample_kwargs, plot_name):
+def post_training(mod, adata, adata_name, max_epochs, sample_kwargs, plot_name):
     # plot ELBO loss history during training, removing first 10% of epochs from
     # the plot
     mod.plot_history(int(max_epochs / 10))
@@ -153,7 +153,7 @@ RegressionModel.view_anndata_setup(mod)
 mod.train(max_epochs=250, use_gpu=True)
 
 adata_ref, mod = post_training(
-    mod, adata_ref, 'adata_ref',
+    mod, adata_ref, 'adata_ref', 250,
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
@@ -212,7 +212,7 @@ mod.train(
 )
 
 adata_vis, mod = post_training(
-    mod, adata_vis, 'adata_vis',
+    mod, adata_vis, 'adata_vis', 30000,
     {'num_samples': 1000, 'batch_size': mod.adata.n_obs, 'use_gpu': True},
     'spatial_mapping_training_history'
 )
