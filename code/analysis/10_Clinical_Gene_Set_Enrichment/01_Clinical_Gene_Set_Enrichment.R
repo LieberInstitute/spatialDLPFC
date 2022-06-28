@@ -73,7 +73,7 @@ do.call(rbind, lapply(seq_len(ncol(fdrs0_contrasts)), function(i) {
 #########################
 
 ##################################
-## Satterstrom et al, Cell 2020 ##    Doesn't work because the dataframe doesn't have the right column names for line 62
+## Satterstrom et al, Cell 2020 ##    Doesn't work because the dataframe doesn't have the right column names for line 62, make issue
 ##################################
 asd_exome = read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/1-s2.0-S0896627312002863-mmc2.xlsx", 
                        sheet = 2)
@@ -602,10 +602,10 @@ dev.off()
 pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/10_clinical_gene_set_enrichment/sczd_geneSet_heatmap.pdf",w=8)
 par(mar=c(8,4.5,2.5,1), cex.axis=2,cex.lab=2)
 
-groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
-          "DE_BS2_SCZ.Up", "DE_BS2_SCZ.Down", 
-          "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
-          "TWAS_PE_SCZ.Down")
+# groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
+#           "DE_BS2_SCZ.Up", "DE_BS2_SCZ.Down", 
+#           "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
+#           "TWAS_PE_SCZ.Down")
 groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
           "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
           "TWAS_PE_SCZ.Down")
