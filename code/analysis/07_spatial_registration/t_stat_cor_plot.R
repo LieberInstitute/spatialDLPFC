@@ -41,32 +41,34 @@ colnames(stats)
 # [1] "1" "2" "3" "4" "5" "6" "7"
 
 #from layer_stat_cor code https://github.com/LieberInstitute/spatialLIBD/blob/d44eea67ffd876ace89718024bf855dbce268111/R/layer_stat_cor.R#L77-L79
-top_n_index <- unique(as.vector(apply(tstats, 2, function(t) {
-  order(t, decreasing = TRUE)[seq_len(100)]
-})))
-length(top_n_index)
-#[1] 692
-summary(top_n_index)
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 45    4935   10384   10574   15708   22225 
+# top_n_index <- unique(as.vector(apply(tstats, 2, function(t) {
+#   order(t, decreasing = TRUE)[seq_len(100)]
+# })))
+# length(top_n_index)
+# #[1] 692
+# summary(top_n_index)
+# # Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# # 45    4935   10384   10574   15708   22225 
 
-top_n_index_test <- c()
+top_n_index <- data.frame(index = integer(),layer = factor())
 for (i in 1:k){
-  x <- as.vector(order(tstats[,i], decreasing = TRUE)[seq_len(100)])
-  names(x) <- i
-  top_n_index_test <- append(top_n_index_test,x)
+  idx <- as.vector(order(tstats[,i], decreasing = TRUE)[seq_len(100)])
+  lyr <- as.vector(rep(colnames(tstats)[i],100))
+  df <- data.frame(idx,lyr)
+  top_n_index <- rbind(top_n_index,df)
 }
-top_n_index_test <- unique(top_n_index_test)
-length(top_n_index_test)
-# [1] 692
-summary(top_n_index_test)
-# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-# 45    4935   10384   10574   15708   22225 
-names(top_n_index_test)
+dim(top_n_index)
+# [1] 700   2
 
-tstats_small <- tstats[top_n_index, , drop = FALSE]
+top_n_index <- top_n_index[!duplicated(top_n_index$idx),]
+dim(top_n_index)
+# [1] 692   2
+
+tstats_small <- tstats[top_n_index$idx, , drop = FALSE]
 dim(tstats_small)
 #[1] 692   7
+
+tstats_small <- cbind(tstats_small,top_n_index$lyr)
 
 mm<-match(rownames(tstats_small),rownames(stats))
 length(which(!is.na(mm)))
@@ -74,7 +76,7 @@ length(which(!is.na(mm)))
 
 tstats_small <- tstats_small[!is.na(mm), ]
 dim(tstats_small)
-# [1] 584   7
+# [1] 584   8
 
 stats_small <-stats[mm[!is.na(mm)], ]
 dim(stats_small)
@@ -93,11 +95,19 @@ dev.off()
 #make nicer plot 
 dat_small <- cbind(stats_small,tstats_small)
 colnames(dat_small)
+colnames(dat_small)[15] <- "Layer"
 
 #from Louise's code https://github.com/LieberInstitute/goesHyde_mdd_rnaseq/blob/2bb13a25fad8d1260ef38a8f073be4387c1f9ed0/differential_expression/code/utils.R#L51-L59
-pdf(file = here::here("plots","07_spatial_registration","ggplot_t_cor_k7_wm.pdf"))
-ggplot(dat_small, aes(x = dat_small[,7], y = WM)) +
-  geom_point(alpha = 0.7, size = 0.5) +
+pdf(file = here::here("plots","07_spatial_registration","ggplot_t_cor_k7_wm_colored.pdf"))
+ggplot(dat_small, aes(x = dat_small[,7], y = WM, color = Layer)) +
+  geom_point(alpha = 0.7, size = 0.8) +
+  scale_color_manual(values = c("WM" = "#1A1A1A",
+                                "Layer1"="#F0027F",
+                                "Layer2"="#377EB8",
+                                "Layer3" = "#4DAF4A",
+                                "Layer4" = "#984EA3",
+                                "Layer5" = "#FFD700",
+                                "Layer6" = "#FF7F00")) +
   labs(x = "t-stats BayesSpace Cluster 7", 
        y = "t-stats Manual Annotations WM",
        title = "t-stat Correlation") +
