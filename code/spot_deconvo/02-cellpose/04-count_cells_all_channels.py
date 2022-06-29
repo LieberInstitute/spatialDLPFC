@@ -269,16 +269,31 @@ df = df[df.area > area_threshold]
 #   Explore how fluorescence of each channel is distributed
 #-------------------------------------------------------------------------------
 
+#   Histograms of raw fluorescence values in each channel
 plt.clf()
 fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(10, 10))
 for i, channel in enumerate(cell_types.keys()):
-    axs[i].hist(df[channel], bins = 50)
+    axs[i].hist(df[channel], bins = 100)
     axs[i].set_title(channel)
 
 # plt.show()
 plt.savefig(
     os.path.join(
-        plot_dir, f'fluor_histograms_{sample_id_img}.{plot_file_type}'
+        plot_dir, f'fluor_histograms_raw_{sample_id_img}.{plot_file_type}'
+    )
+)
+
+#   Histograms of trimmed fluorescence values in each channel (above a
+#   "noise cutoff")
+plt.clf()
+fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(10, 10))
+for i, channel in enumerate(cell_types.keys()):
+    axs[i].hist(df[channel][df[channel] > noise_cutoff], bins = 30)
+    axs[i].set_title(channel + ' (trimmed)')
+
+plt.savefig(
+    os.path.join(
+        plot_dir, f'fluor_histograms_trimmed_{sample_id_img}.{plot_file_type}'
     )
 )
 
