@@ -1,5 +1,6 @@
 library(spatialLIBD)
 library(ggplot2)
+library(ggpubr)
 
 k = 7
 load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
@@ -99,10 +100,10 @@ colnames(dat_small)[15] <- "Layer"
 
 save(dat_small, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_spatial_registration/t_cor_plot_top_genes_k7.rda")
 
-#from Louise's code https://github.com/LieberInstitute/goesHyde_mdd_rnaseq/blob/2bb13a25fad8d1260ef38a8f073be4387c1f9ed0/differential_expression/code/utils.R#L51-L59
+#make plot
 pdf(file = here::here("plots","07_spatial_registration","ggplot_t_cor_k7_wm_colored.pdf"))
-ggplot(dat_small, aes(x = dat_small[,7], y = WM, color = Layer)) +
-  geom_point(alpha = 0.7, size = 0.8) +
+ggplot(dat_small, aes(x = dat_small[,7], y = WM)) +
+  geom_point(aes(color =Layer),alpha = 0.7, size = 1) +
   scale_color_manual(values = c("WM" = "#1A1A1A",
                                 "Layer1"="#F0027F",
                                 "Layer2"="#377EB8",
@@ -115,7 +116,9 @@ ggplot(dat_small, aes(x = dat_small[,7], y = WM, color = Layer)) +
        title = "t-stat Correlation") +
   theme_bw() +
   geom_smooth(method=lm, se=FALSE, colour = "#00BA38") +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),text = element_text(size = 20), axis.text = element_text(size = 25))
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),text = element_text(size = 20), axis.text = element_text(size = 25))+
+  guides(colour = guide_legend(override.aes = list(size=3))) +
+  stat_cor(mapping = aes(x = dat_small[,7], y = WM),method = "pearson", label.x = -8, label.y = 10)
 dev.off()
 
 
