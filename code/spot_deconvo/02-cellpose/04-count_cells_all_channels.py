@@ -309,25 +309,6 @@ temp = (df['neun'] < noise_cutoff) & \
 bad_perc = round(100 * np.sum(temp) / len(temp), 1) # ~5%
 print(f"{bad_perc}% of nuclei don't have a clear cell type.")
 
-#   Look at a few random examples of "bad cells". Generally, it looks like GFAP
-#   and TMEM119 dominate but are still quite low in intensity. This possibly
-#   shows that we aren't looking at a large enough region around the nucleus,
-#   but looking at the image ROIs show a diverse number of scenarios
-num_bad_examples = 5
-indices = np.random.randint(len(temp[temp]), size=num_bad_examples)
-for i in range(num_bad_examples):
-    print(f'Intensities for "bad cell" {i}:')
-
-    bad_index = temp[temp].index[indices[i]]
-    print(df.loc[bad_index][cell_types.keys()])
-
-    fig = plot_roi(imgs, props, bad_index)
-    fig.savefig(
-        os.path.join(
-            plot_dir, f'bad_cell_{i+1}_{sample_id_img}.{plot_file_type}'
-        )
-    )
-
 #-------------------------------------------------------------------------------
 #   Call cell types
 #-------------------------------------------------------------------------------
@@ -399,7 +380,12 @@ for cell_type in df['cell_type'].unique():
         df[df['cell_type'] == cell_type].index,
         examples_per_type, replace = False
     )
-
+    
+    #   Print numeric intensities for these cells
+    print(f'Intensities for {examples_per_type} random {cell_type} cells:')
+    print(df.loc[indices][cell_types.keys()])
+    
+    #   Plot intensities
     for i in indices:
         plt.close('all')
         fig = plot_roi(imgs, props, i)
