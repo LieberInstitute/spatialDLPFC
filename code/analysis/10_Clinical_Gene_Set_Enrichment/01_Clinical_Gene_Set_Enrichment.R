@@ -138,7 +138,7 @@ birnbaum = read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/An
 ens2 = select(org.Hs.eg.db,
               columns = c("ENSEMBL", "ENTREZID"),
               keys = as.character(unique(birnbaum$`EntrezGene ID`)))
-birnbaum$ensemblID = ens2$ENSEMBL[match(birnbaum$`EntrezGene ID`, ens2$ENTREZID)]
+birnbaum$ensemblID = ens2$ENSEMBL[match(birnbaum$`EntrezGene ID`, ens2$ENTREZID)] #need to add ensembl ID to birnbaum data
 
 birnbaum_geneList = split(birnbaum$ensemblID, birnbaum$`Gene Set`)
 names(birnbaum_geneList) = gsub(" ", ".", names(birnbaum_geneList))
@@ -232,6 +232,18 @@ twas_geneList = list(TWAS_BS2_SCZ.Up = tt_dlpfc$ensemblID[tt_dlpfc$TWAS.Z > 0 & 
 #### file = /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx
 #############
 sn_rna_seq_MDD = as.data.frame(read_excel("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx", sheet = "Supplementary Table 32"))
+
+mdd_geneList = with(
+  sn_rna_seq_MDD,
+  list(
+    # DE_PE_ASD.Up = ensembl_gene_id[ASD.t.value > 0 & ASD.fdr < 0.05],
+    # DE_PE_ASD.Down = ensembl_gene_id[ASD.t.value < 0 & ASD.fdr < 0.05],
+    # DE_PE_BD.Up = ensembl_gene_id[BD.t.value > 0 & BD.fdr < 0.05],
+    # DE_PE_BD.Down = ensembl_gene_id[BD.t.value < 0 & BD.fdr < 0.05],
+    # DE_PE_SCZ.Up = ensembl_gene_id[SCZ.t.value > 0 & SCZ.fdr < 0.05],
+    # DE_PE_SCZ.Down = ensembl_gene_id[SCZ.t.value < 0 & SCZ.fdr < 0.05]
+  )
+)
 
 ##############
 ### snRNAseq ASD
