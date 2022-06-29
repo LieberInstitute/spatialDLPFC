@@ -393,7 +393,7 @@ plt.savefig(
 #-------------------------------------------------------------------------------
 
 #   Count cell types in each spot
-for cell_type in cell_types.values():
+for cell_type in df['cell_type'].unique():
     raw[cell_type] = df[
         df['cell_type'] == cell_type
     ].groupby('idx')['idx'].count().astype(int)
@@ -401,14 +401,14 @@ for cell_type in cell_types.values():
 #   Some spots will have no cells (and NaN values for this reason). Also count
 #   the total number of cells per spot
 raw.fillna(0, inplace=True)
-raw['n_cells'] = raw[[x for x in cell_types.values()]].sum(axis=1)
+raw['n_cells'] = raw[[x for x in df['cell_type'].unique()]].sum(axis=1)
 
 #   Print number of cells of each type
-for cell_type in cell_types.values():
+for cell_type in df['cell_type'].unique():
     print(f'Total number of {cell_type} cells: {raw[cell_type].sum()}')
 
 #   Correct the data type
-for column_name in list(cell_types.values()) + ['n_cells']:
+for column_name in list(df['cell_type'].unique()) + ['n_cells']:
     raw[column_name] = raw[column_name].astype(int)
 
 #   Print some quick stats about the cell counts per spot
