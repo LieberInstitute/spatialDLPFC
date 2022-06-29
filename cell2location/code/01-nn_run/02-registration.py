@@ -51,6 +51,10 @@ N_CELLS_PER_SPOT = 3
 #   For spatial mapping model: tutorial recommends 20 as default but to try 200
 detection_alpha = 20
 
+#   Number of epochs used to train each portion of the model
+epochs_signature = 400 # default: 250
+epochs_spatial = 30000
+
 ################################################################################
 #   Function definitions
 ################################################################################
@@ -120,10 +124,10 @@ RegressionModel.setup_anndata(
 mod = RegressionModel(adata_ref)
 RegressionModel.view_anndata_setup(mod)
 
-mod.train(max_epochs=250, use_gpu=True)
+mod.train(max_epochs=epochs_signature, use_gpu=True)
 
 adata_ref, mod = post_training(
-    mod, adata_ref, 'adata_ref', 250,
+    mod, adata_ref, 'adata_ref', epochs_signature,
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
@@ -172,7 +176,7 @@ mod = cell2location.models.Cell2location(
 cell2location.models.Cell2location.view_anndata_setup(mod)
 
 mod.train(
-    max_epochs=30000,
+    max_epochs=epochs_spatial,
     # train using full data (batch_size=None)
     batch_size=None,
     # use all data points in training because
@@ -182,7 +186,7 @@ mod.train(
 )
 
 adata_vis, mod = post_training(
-    mod, adata_vis, 'adata_vis', 30000,
+    mod, adata_vis, 'adata_vis', epochs_spatial,
     {'num_samples': 1000, 'batch_size': mod.adata.n_obs, 'use_gpu': True},
     'spatial_mapping_training_history'
 )
