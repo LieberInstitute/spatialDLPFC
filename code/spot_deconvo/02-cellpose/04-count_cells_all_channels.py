@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+from numpy.random import default_rng
 import pandas as pd
 import seaborn as sns
 import tifffile
@@ -387,6 +388,27 @@ plt.savefig(
         f'classified_intensity_comparison_{sample_id_img}.{plot_file_type}'
     )
 )
+
+#   Next, plot 5 nuclei of each called cell type for visual inspection
+rng = default_rng()
+examples_per_type = 5
+
+for cell_type in df['cell_type'].unique():
+    #   Randomly pick 5 distinct rows for this cell type
+    indices = rng.choice(
+        df[df['cell_type'] == cell_type].index,
+        examples_per_type, replace = False
+    )
+
+    for i in indices:
+        plt.close('all')
+        fig = plot_roi(imgs, props, i)
+        fig.savefig(
+            os.path.join(
+                plot_dir, f'{cell_type}_{i}_{sample_id_img}.{plot_file_type}'
+            )
+        )
+
 
 #-------------------------------------------------------------------------------
 #   Count cells per spot and print some related statistics
