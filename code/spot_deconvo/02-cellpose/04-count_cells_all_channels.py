@@ -351,6 +351,16 @@ for channel in cell_types.keys():
 temp['max_channel'] = [temp.columns[np.argmax(temp.loc[i])] for i in temp.index]
 df['cell_type'] = [cell_types[x] for x in temp['max_channel']]
 
+#   For now, assume all cells with low fluorescence in all channels are a cell
+#   type not measured by a marker/ image channel
+df.loc[
+    (df['neun'] < noise_cutoff) &
+    (df['olig2'] < noise_cutoff) &
+    (df['tmem119'] < noise_cutoff) &
+    (df['gfap'] < noise_cutoff),
+    'cell_type'
+] = 'other'
+
 #-------------------------------------------------------------------------------
 #   Verify how well the deconvolution method performed
 #-------------------------------------------------------------------------------
@@ -414,7 +424,7 @@ print(f"Max number of cells per spot: {np.max(raw['n_cells'])}")
 #   Use more informative column names for output
 df.rename(
     columns = {
-        'area': 'nucleus_area_with_donut', 'x': 'centroid_x', 'y': 'centroid_y',
+        'area': 'nucleus_area', 'x': 'centroid_x', 'y': 'centroid_y',
         'dist': 'dist_to_nearest_spot'
     },
     inplace = True
