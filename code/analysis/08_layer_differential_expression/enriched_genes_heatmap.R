@@ -72,6 +72,50 @@ pheatmap(
 )
 dev.off()
 
+# Plot heatmap of logcounts for clusters and samples
+pdf(file = here::here("plots","08_layer_differential_expression","top5_enrichment_heatmap_clusRows.pdf"), width = 8, height = 8)
+pheatmap(
+  exprs_heatmap,
+  cluster_rows = TRUE,
+  cluster_cols = FALSE,
+  show_colnames = FALSE,
+  color = inferno(20),
+  annotation_col = annotation_col,
+  annotation_colors = ann_colors,
+  fontsize_row = 9,
+  main = "logcounts from enrichment model of 5 genes/cluster",
+)
+dev.off()
+
+# Plot heatmap of logcounts for clusters and samples
+pdf(file = here::here("plots","08_layer_differential_expression","top5_enrichment_heatmap_clusCols.pdf"), width = 8, height = 8)
+pheatmap(
+  exprs_heatmap,
+  cluster_rows = FALSE,
+  cluster_cols = TRUE,
+  show_colnames = FALSE,
+  color = inferno(20),
+  annotation_col = annotation_col,
+  annotation_colors = ann_colors,
+  fontsize_row = 9,
+  main = "logcounts from enrichment model of 5 genes/cluster",
+)
+dev.off()
+
+# Plot heatmap of logcounts for clusters and samples
+pdf(file = here::here("plots","08_layer_differential_expression","top5_enrichment_heatmap_noClus.pdf"), width = 8, height = 8)
+pheatmap(
+  exprs_heatmap,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  show_colnames = FALSE,
+  color = inferno(20),
+  annotation_col = annotation_col,
+  annotation_colors = ann_colors,
+  fontsize_row = 9,
+  main = "logcounts from enrichment model of 5 genes/cluster",
+)
+dev.off()
 
 ## Reproducibility information
 print("Reproducibility information:")
