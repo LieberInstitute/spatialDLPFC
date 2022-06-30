@@ -344,7 +344,6 @@ pMat < 0.05 / nrow(pMat)
 pMat < 0.001
 round(-log10(pMat),1)
 
-# > pMat < 0.05 / nrow(pMat)
 # 1     2     3     4     5     6     7     8
 # Gene_Birnbaum_SCZ.SNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 # Gene_Birnbaum_SCZ.PGC.GWAS      FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
@@ -375,6 +374,8 @@ round(-log10(pMat),1)
 # TWAS_PE_ASD.Down                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 # TWAS_PE_SCZBD.Up                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 # TWAS_PE_SCZBD.Down              FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# DE_ASD_RNA.Up                   FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
+# DE_ASD_RNA.Down                 FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE
 # 9
 # Gene_Birnbaum_SCZ.SNV           FALSE
 # Gene_Birnbaum_SCZ.PGC.GWAS      FALSE
@@ -405,6 +406,8 @@ round(-log10(pMat),1)
 # TWAS_PE_ASD.Down                FALSE
 # TWAS_PE_SCZBD.Up                FALSE
 # TWAS_PE_SCZBD.Down              FALSE
+# DE_ASD_RNA.Up                    TRUE
+# DE_ASD_RNA.Down                 FALSE
 # > pMat < 0.001
 # 1     2     3     4     5     6     7     8
 # Gene_Birnbaum_SCZ.SNV           FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
@@ -436,6 +439,8 @@ round(-log10(pMat),1)
 # TWAS_PE_ASD.Down                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 # TWAS_PE_SCZBD.Up                FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 # TWAS_PE_SCZBD.Down              FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+# DE_ASD_RNA.Up                   FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
+# DE_ASD_RNA.Down                 FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
 # 9
 # Gene_Birnbaum_SCZ.SNV           FALSE
 # Gene_Birnbaum_SCZ.PGC.GWAS      FALSE
@@ -466,6 +471,8 @@ round(-log10(pMat),1)
 # TWAS_PE_ASD.Down                FALSE
 # TWAS_PE_SCZBD.Up                FALSE
 # TWAS_PE_SCZBD.Down              FALSE
+# DE_ASD_RNA.Up                    TRUE
+# DE_ASD_RNA.Down                 FALSE
 # > round(-log10(pMat),1)
 # 1    2    3    4    5    6    7    8    9
 # Gene_Birnbaum_SCZ.SNV            0.1  0.3  0.1  0.3  0.8  0.9  0.6  0.3  0.4
@@ -497,6 +504,8 @@ round(-log10(pMat),1)
 # TWAS_PE_ASD.Down                 0.0  0.0  0.3  1.3  0.2  0.0  0.4  0.9  0.5
 # TWAS_PE_SCZBD.Up                 0.1  0.1  0.3  0.8  1.1  0.3  1.2  1.2  0.8
 # TWAS_PE_SCZBD.Down               0.6  0.1  0.2  0.0  0.6  0.6  0.3  0.2  0.3
+# DE_ASD_RNA.Up                    0.1  1.6 12.0  3.5  7.7  0.9 17.8  0.9  3.0
+# DE_ASD_RNA.Down                  0.6  0.9  1.5  3.4  2.9  1.4  2.5  1.8  1.4
 
 # #######################
 # # FDR < 0.05 version ##
@@ -599,7 +608,8 @@ enrichLong_ASD = enrichLong[enrichLong$ID %in%
                               c("Gene_SFARI_all", "Gene_Satterstrom_ASC102.2018",
                                 "Gene_Satterstrom_ASD53", "Gene_Satterstrom_DDID49",
                                 "DE_PE_ASD.Down", "DE_PE_ASD.Up",
-                                "TWAS_PE_ASD.Up", "TWAS_PE_ASD.Down"),]
+                                "TWAS_PE_ASD.Up", "TWAS_PE_ASD.Down",
+                                "DE_ASD_RNA.Up","DE_ASD_RNA.Down"),]
 enrichLong_ASD$ID2 =  as.character(droplevels(enrichLong_ASD$Set))
 enrichLong_ASD$ID2[enrichLong_ASD$ID2 == "all"] = "SFARI"
 enrichLong_ASD$ID2[enrichLong_ASD$ID2 == "ASC102.2018"] = "ASC102"
@@ -615,7 +625,6 @@ enrichLong_ASD$LayerFac = factor(as.character(enrichLong_ASD$Layer),
 enrichLong_ASD = enrichLong_ASD[order(enrichLong_ASD$ID2, enrichLong_ASD$LayerFac),]
 
 ### custom heatmap
-
 midpoint = function(x) x[-length(x)] + diff(x)/2
 
 customLayerEnrichment = function(enrichTab , groups, xlabs, 
