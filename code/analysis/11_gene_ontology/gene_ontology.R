@@ -1,7 +1,5 @@
 ################################################
-# spatial_DG_lifespan project
-# GO enrichment & plotting from modeling results
-# Anthony Ramnauth, June 08 2022
+# Gene Ontoloyg from https://github.com/LieberInstitute/spatial_DG_lifespan/blob/main/code/Pseudobulk/all_gene_ontology_pseudobulk.R
 ################################################
 
 suppressPackageStartupMessages({
@@ -16,7 +14,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
 })
 
-modeling_results <- readRDS(file = here::here("processed-data","pseudobulk_spe","modeling_results.rds"))
+load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression","parsed_modeling_results_k9.Rdata"))
 
 enriched_model <- modeling_results$enrichment
 
@@ -45,6 +43,9 @@ list_7 <- enriched_model %>%
 
 list_8 <- enriched_model %>%
   dplyr::select(gene, ensembl, fdr_8, t_stat_8)
+
+list_9 <- enriched_model %>%
+  dplyr::select(gene, ensembl, fdr_9, t_stat_9)
 
 top_list_1 <- list_1 %>%
   filter(fdr_1 < 0.05) %>%
@@ -84,14 +85,14 @@ top_list_3 <- list_3 %>%
   dplyr::select(gene, t_stat_3)
 
 ## feature 1: numeric vector
-GCL = top_list_3[,2]
+clust_3 = top_list_3[,2]
 ## feature 2: named vector
-names(GCL) = as.character(top_list_3[,1])
+names(clust_3) = as.character(top_list_3[,1])
 # final vector
-GCL <- names(GCL)
-GCL = bitr(GCL, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+clust_3 <- names(clust_3)
+clust_3 = bitr(clust_3, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
 # Warning message:
-# In bitr(GCL, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
+# In bitr(clust_3, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
 #   2.86% of input gene IDs are fail to map...
 
 top_list_4 <- list_4 %>%
@@ -100,12 +101,12 @@ top_list_4 <- list_4 %>%
   dplyr::select(gene, t_stat_4)
 
 ## feature 1: numeric vector
-SGZ = top_list_4[,2]
+clust_4 = top_list_4[,2]
 ## feature 2: named vector
-names(SGZ) = as.character(top_list_4[,1])
+names(clust_4) = as.character(top_list_4[,1])
 # final vector
-SGZ <- names(SGZ)
-SGZ = bitr(SGZ, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+clust_4 <- names(clust_4)
+clust_4 = bitr(clust_4, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
 
 top_list_5 <- list_5 %>%
   filter(fdr_5 < 0.05) %>%
@@ -113,14 +114,14 @@ top_list_5 <- list_5 %>%
   dplyr::select(gene, t_stat_5)
 
 ## feature 1: numeric vector
-CA4 = top_list_5[,2]
+clust_5 = top_list_5[,2]
 ## feature 2: named vector
-names(CA4) = as.character(top_list_5[,1])
+names(clust_5) = as.character(top_list_5[,1])
 # final vector
-CA4 <- names(CA4)
-CA4 = bitr(CA4, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+clust_5 <- names(clust_5)
+clust_5 = bitr(clust_5, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
 # Warning message:
-# In bitr(CA4, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
+# In bitr(clust_5, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
 #   1.79% of input gene IDs are fail to map...
 
 top_list_6 <- list_6 %>%
@@ -129,14 +130,14 @@ top_list_6 <- list_6 %>%
   dplyr::select(gene, t_stat_6)
 
 ## feature 1: numeric vector
-CA3 = top_list_6[,2]
+clust_6 = top_list_6[,2]
 ## feature 2: named vector
-names(CA3) = as.character(top_list_6[,1])
+names(clust_6) = as.character(top_list_6[,1])
 # final vector
-CA3 <- names(CA3)
-CA3 = bitr(CA3, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+clust_6 <- names(clust_6)
+clust_6 = bitr(clust_6, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
 # Warning message:
-# In bitr(CA3, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
+# In bitr(clust_6, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
 #   2.84% of input gene IDs are fail to map...
 
 list_7 <- list_7 %>%
@@ -146,14 +147,14 @@ top_list_7 <- head(list_7, 20) %>%
   dplyr::select(gene, t_stat_7)
 
 ## feature 1: numeric vector
-ML = top_list_7[,2]
+clust_7 = top_list_7[,2]
 ## feature 2: named vector
-names(ML) = as.character(top_list_7[,1])
+names(clust_7) = as.character(top_list_7[,1])
 # final vector
-ML <- names(ML)
-ML = bitr(ML, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+clust_7 <- names(clust_7)
+clust_7 = bitr(clust_7, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
 # Warning message:
-# In bitr(ML, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
+# In bitr(clust_7, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
 #   5% of input gene IDs are fail to map...
 
 top_list_8 <- list_8 %>%
@@ -172,11 +173,26 @@ clust_8 = bitr(clust_8, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.d
 # In bitr(clust_8, fromType = "SYMBOL", toType = "ENTREZID", OrgDb = "org.Hs.eg.db") :
 #   2.48% of input gene IDs are fail to map...
 
-# Make a list for comparing cluster ontologies
-clust_compare <- list(clust_1$ENTREZID, clust_2$ENTREZID, GCL$ENTREZID, SGZ$ENTREZID,
-                      CA4$ENTREZID, CA3$ENTREZID, ML$ENTREZID, clust_8$ENTREZID)
+top_list_9 <- list_9 %>%
+  filter(fdr_9 < 0.05) %>%
+  dplyr::arrange(desc(t_stat_9)) %>%
+  dplyr::select(gene, t_stat_9)
 
-names(clust_compare) <- c("clust_1", "clust_2", "GCL", "SGZ", "CA4", "CA3", "ML", "clust_8")
+## feature 1: numeric vector
+clust_9 = top_list_9[,2]
+## feature 2: named vector
+names(clust_9) = as.character(top_list_9[,1])
+# final vector
+clust_9 <- names(clust_9)
+clust_9 = bitr(clust_9, fromType="SYMBOL", toType="ENTREZID", OrgDb="org.Hs.eg.db")
+
+
+
+# Make a list for comparing cluster ontologies
+clust_compare <- list(clust_1$ENTREZID, clust_2$ENTREZID, clust_3$ENTREZID, clust_4$ENTREZID,
+                      clust_5$ENTREZID, clust_6$ENTREZID, clust_7$ENTREZID, clust_8$ENTREZID, clust_9$ENTREZID)
+
+names(clust_compare) <- c("clust_1", "clust_2", "clust_3", "clust_4", "clust_5", "clust_6", "clust_7", "clust_8","clust_9")
 
 ## GO Gene Over Representation Analysis for enrichment in sub-ontologies
 
@@ -234,7 +250,7 @@ clust_2_BP <- enrichGO(gene = clust_2$ENTREZID,
                        readable = TRUE,
 )
 
-GCL_CC <- enrichGO(gene = GCL$ENTREZID,
+clust_3_CC <- enrichGO(gene = clust_3$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "CC",
                    pAdjustMethod = "fdr",
@@ -243,7 +259,7 @@ GCL_CC <- enrichGO(gene = GCL$ENTREZID,
                    readable = TRUE,
 )
 
-GCL_MF <- enrichGO(gene = GCL$ENTREZID,
+clust_3_MF <- enrichGO(gene = clust_3$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "MF",
                    pAdjustMethod = "fdr",
@@ -252,7 +268,7 @@ GCL_MF <- enrichGO(gene = GCL$ENTREZID,
                    readable = TRUE,
 )
 
-GCL_BP <- enrichGO(gene = GCL$ENTREZID,
+clust_3_BP <- enrichGO(gene = clust_3$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "BP",
                    pAdjustMethod = "fdr",
@@ -261,7 +277,7 @@ GCL_BP <- enrichGO(gene = GCL$ENTREZID,
                    readable = TRUE,
 )
 
-SGZ_CC <- enrichGO(gene = SGZ$ENTREZID,
+clust_4_CC <- enrichGO(gene = clust_4$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "CC",
                    pAdjustMethod = "fdr",
@@ -270,7 +286,7 @@ SGZ_CC <- enrichGO(gene = SGZ$ENTREZID,
                    readable = TRUE,
 )
 
-SGZ_MF <- enrichGO(gene = SGZ$ENTREZID,
+clust_4_MF <- enrichGO(gene = clust_4$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "MF",
                    pAdjustMethod = "fdr",
@@ -279,7 +295,7 @@ SGZ_MF <- enrichGO(gene = SGZ$ENTREZID,
                    readable = TRUE,
 )
 
-SGZ_BP <- enrichGO(gene = SGZ$ENTREZID,
+clust_4_BP <- enrichGO(gene = clust_4$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "BP",
                    pAdjustMethod = "fdr",
@@ -288,7 +304,7 @@ SGZ_BP <- enrichGO(gene = SGZ$ENTREZID,
                    readable = TRUE,
 )
 
-CA4_CC <- enrichGO(gene = CA4$ENTREZID,
+clust_5_CC <- enrichGO(gene = clust_5$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "CC",
                    pAdjustMethod = "fdr",
@@ -297,7 +313,7 @@ CA4_CC <- enrichGO(gene = CA4$ENTREZID,
                    readable = TRUE,
 )
 
-CA4_MF <- enrichGO(gene = CA4$ENTREZID,
+clust_5_MF <- enrichGO(gene = clust_5$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "MF",
                    pAdjustMethod = "fdr",
@@ -306,7 +322,7 @@ CA4_MF <- enrichGO(gene = CA4$ENTREZID,
                    readable = TRUE,
 )
 
-CA4_BP <- enrichGO(gene = CA4$ENTREZID,
+clust_5_BP <- enrichGO(gene = clust_5$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "BP",
                    pAdjustMethod = "fdr",
@@ -315,7 +331,7 @@ CA4_BP <- enrichGO(gene = CA4$ENTREZID,
                    readable = TRUE,
 )
 
-CA3_CC <- enrichGO(gene = CA3$ENTREZID,
+clust_6_CC <- enrichGO(gene = clust_6$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "CC",
                    pAdjustMethod = "fdr",
@@ -324,7 +340,7 @@ CA3_CC <- enrichGO(gene = CA3$ENTREZID,
                    readable = TRUE,
 )
 
-CA3_MF <- enrichGO(gene = CA3$ENTREZID,
+clust_6_MF <- enrichGO(gene = clust_6$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "MF",
                    pAdjustMethod = "fdr",
@@ -333,7 +349,7 @@ CA3_MF <- enrichGO(gene = CA3$ENTREZID,
                    readable = TRUE,
 )
 
-CA3_BP <- enrichGO(gene = CA3$ENTREZID,
+clust_6_BP <- enrichGO(gene = clust_6$ENTREZID,
                    OrgDb = org.Hs.eg.db,
                    ont = "BP",
                    pAdjustMethod = "fdr",
@@ -342,7 +358,7 @@ CA3_BP <- enrichGO(gene = CA3$ENTREZID,
                    readable = TRUE,
 )
 
-ML_CC <- enrichGO(gene = ML$ENTREZID,
+clust_7_CC <- enrichGO(gene = clust_7$ENTREZID,
                   OrgDb = org.Hs.eg.db,
                   ont = "CC",
                   pAdjustMethod = "fdr",
@@ -351,7 +367,7 @@ ML_CC <- enrichGO(gene = ML$ENTREZID,
                   readable = TRUE,
 )
 
-ML_MF <- enrichGO(gene = ML$ENTREZID,
+clust_7_MF <- enrichGO(gene = clust_7$ENTREZID,
                   OrgDb = org.Hs.eg.db,
                   ont = "MF",
                   pAdjustMethod = "fdr",
@@ -360,7 +376,7 @@ ML_MF <- enrichGO(gene = ML$ENTREZID,
                   readable = TRUE,
 )
 
-ML_BP <- enrichGO(gene = ML$ENTREZID,
+clust_7_BP <- enrichGO(gene = clust_7$ENTREZID,
                   OrgDb = org.Hs.eg.db,
                   ont = "BP",
                   pAdjustMethod = "fdr",
@@ -388,6 +404,33 @@ clust_8_MF <- enrichGO(gene = clust_8$ENTREZID,
 )
 
 clust_8_BP <- enrichGO(gene = clust_8$ENTREZID,
+                       OrgDb = org.Hs.eg.db,
+                       ont = "BP",
+                       pAdjustMethod = "fdr",
+                       pvalueCutoff = 0.05,
+                       qvalueCutoff  = 0.05,
+                       readable = TRUE,
+)
+
+clust_9_CC <- enrichGO(gene = clust_9$ENTREZID,
+                       OrgDb = org.Hs.eg.db,
+                       ont = "CC",
+                       pAdjustMethod = "fdr",
+                       pvalueCutoff = 0.05,
+                       qvalueCutoff  = 0.05,
+                       readable = TRUE,
+)
+
+clust_9_MF <- enrichGO(gene = clust_9$ENTREZID,
+                       OrgDb = org.Hs.eg.db,
+                       ont = "MF",
+                       pAdjustMethod = "fdr",
+                       pvalueCutoff = 0.05,
+                       qvalueCutoff  = 0.05,
+                       readable = TRUE,
+)
+
+clust_9_BP <- enrichGO(gene = clust_9$ENTREZID,
                        OrgDb = org.Hs.eg.db,
                        ont = "BP",
                        pAdjustMethod = "fdr",
@@ -429,17 +472,17 @@ comp_BP <- compareCluster(clust_compare,
 )
 
 save(clust_1_CC, clust_1_MF, clust_1_BP, clust_2_CC, clust_2_MF, clust_2_BP,
-     GCL_CC, GCL_MF, GCL_BP, SGZ_CC, SGZ_MF, SGZ_BP, CA4_CC, CA4_MF, CA4_BP,
-     CA3_CC, CA3_MF, CA3_BP, ML_CC, ML_MF, ML_BP, clust_8_CC, clust_8_MF, clust_8_BP,
+     clust_3_CC, clust_3_MF, clust_3_BP, clust_4_CC, clust_4_MF, clust_4_BP, clust_5_CC, clust_5_MF, clust_5_BP,
+     clust_6_CC, clust_6_MF, clust_6_BP, clust_7_CC, clust_7_MF, clust_7_BP, clust_8_CC, clust_8_MF, clust_8_BP,
      comp_CC, comp_MF, comp_BP,
-     file = here::here("processed-data","pseudobulk_spe", "gene_ontologies", "All_samples_enrichedGO.Rdata"))
+     file = here::here("processed-data","rdata","spe","11_gene_ontology", "All_samples_enrichedGO.Rdata"))
 
 ## Barplots of subontologies
 
 options(ggrepel.max.overlaps = Inf)
 
 # For Cluster 1
-pdf(file = here::here("plots","pseudobulked","clust_1_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_1_GO.pdf"), width = 16, height = 10)
 
 barplot(clust_1_CC, showCategory=20, x= "GeneRatio") +
   ggtitle("cluster_1 Cellular Compartment")
@@ -480,7 +523,7 @@ emapplot(clust_1_BPp, showCategory = 20, color = "p.adjust",
 dev.off()
 
 # For Cluster 2
-pdf(file = here::here("plots","pseudobulked","clust_2_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_2_GO.pdf"), width = 16, height = 10)
 
 barplot(clust_2_CC, showCategory=20, x= "GeneRatio") +
   ggtitle("cluster_2 Cellular Compartment")
@@ -520,219 +563,219 @@ emapplot(clust_2_BPp, showCategory = 20, color = "p.adjust",
 
 dev.off()
 
-# For GCL
+# For clust_3
 
-pdf(file = here::here("plots","pseudobulked","GCL_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_3_GO.pdf"), width = 16, height = 10)
 
-barplot(GCL_CC, showCategory=20, x= "GeneRatio") +
-  ggtitle("GCL Cellular Compartment")
-barplot(GCL_MF, showCategory=20, x= "GeneRatio") +
-  ggtitle("GCL Molecular Function")
-barplot(GCL_BP, showCategory=20, x= "GeneRatio") +
-  ggtitle("GCL Biological Process")
+barplot(clust_3_CC, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_3 Cellular Compartment")
+barplot(clust_3_MF, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_3 Molecular Function")
+barplot(clust_3_BP, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_3 Biological Process")
 
-GCL_CCx <- setReadable(GCL_CC, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(GCL_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+clust_3_CCx <- setReadable(clust_3_CC, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_3_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("GCL Cellular Compartment Network")
-GCL_MFx <- setReadable(GCL_MF, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(GCL_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_3 Cellular Compartment Network")
+clust_3_MFx <- setReadable(clust_3_MF, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_3_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("GCL Molecular Function Network")
-GCL_BPx <- setReadable(GCL_BP, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(GCL_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_3 Molecular Function Network")
+clust_3_BPx <- setReadable(clust_3_BP, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_3_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("GCL Biological Process Network")
+  ggtitle("clust_3 Biological Process Network")
 
-GCL_CCp <- pairwise_termsim(GCL_CC)
-emapplot(GCL_CCp, showCategory = 20, color = "p.adjust",
+clust_3_CCp <- pairwise_termsim(clust_3_CC)
+emapplot(clust_3_CCp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("GCL Cellular Compartment Modules")
-GCL_MFp <- pairwise_termsim(GCL_MF)
-emapplot(GCL_MFp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_3 Cellular Compartment Modules")
+clust_3_MFp <- pairwise_termsim(clust_3_MF)
+emapplot(clust_3_MFp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("GCL Molecular Function Modules")
-GCL_BPp <- pairwise_termsim(GCL_BP)
-emapplot(GCL_BPp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_3 Molecular Function Modules")
+clust_3_BPp <- pairwise_termsim(clust_3_BP)
+emapplot(clust_3_BPp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("GCL Biological Process Modules")
+  ggtitle("clust_3 Biological Process Modules")
 
 dev.off()
 
-# For SGZ
+# For clust_4
 
-pdf(file = here::here("plots","pseudobulked","SGZ_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_4_GO.pdf"), width = 16, height = 10)
 
-barplot(SGZ_CC, showCategory=20, x= "GeneRatio") +
-  ggtitle("SGZ Cellular Compartment")
-barplot(SGZ_MF, showCategory=20, x= "GeneRatio") +
-  ggtitle("SGZ Molecular Function")
-barplot(SGZ_BP, showCategory=20, x= "GeneRatio") +
-  ggtitle("SGZ Biological Process")
+barplot(clust_4_CC, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_4 Cellular Compartment")
+barplot(clust_4_MF, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_4 Molecular Function")
+barplot(clust_4_BP, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_4 Biological Process")
 
-SGZ_CCx <- setReadable(SGZ_CC, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(SGZ_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+clust_4_CCx <- setReadable(clust_4_CC, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_4_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("SGZ Cellular Compartment Network")
-SGZ_MFx <- setReadable(SGZ_MF, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(SGZ_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_4 Cellular Compartment Network")
+clust_4_MFx <- setReadable(clust_4_MF, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_4_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("SGZ Molecular Function Network")
-SGZ_BPx <- setReadable(SGZ_BP, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(SGZ_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_4 Molecular Function Network")
+clust_4_BPx <- setReadable(clust_4_BP, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_4_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("SGZ Biological Process Network")
+  ggtitle("clust_4 Biological Process Network")
 
-SGZ_CCp <- pairwise_termsim(SGZ_CC)
-emapplot(SGZ_CCp, showCategory = 20, color = "p.adjust",
+clust_4_CCp <- pairwise_termsim(clust_4_CC)
+emapplot(clust_4_CCp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("SGZ Cellular Compartment Modules")
-SGZ_MFp <- pairwise_termsim(SGZ_MF)
-emapplot(SGZ_MFp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_4 Cellular Compartment Modules")
+clust_4_MFp <- pairwise_termsim(clust_4_MF)
+emapplot(clust_4_MFp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("SGZ Molecular Function Modules")
-SGZ_BPp <- pairwise_termsim(SGZ_BP)
-emapplot(SGZ_BPp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_4 Molecular Function Modules")
+clust_4_BPp <- pairwise_termsim(clust_4_BP)
+emapplot(clust_4_BPp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("SGZ Biological Process Modules")
+  ggtitle("clust_4 Biological Process Modules")
 
 dev.off()
 
-# For CA4
+# For clust_5
 
-pdf(file = here::here("plots","pseudobulked","CA4_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_5_GO.pdf"), width = 16, height = 10)
 
-barplot(CA4_CC, showCategory=20, x= "GeneRatio") +
-  ggtitle("CA4 Cellular Compartment")
-barplot(CA4_MF, showCategory=20, x= "GeneRatio") +
-  ggtitle("CA4 Molecular Function")
-barplot(CA4_BP, showCategory=20, x= "GeneRatio") +
-  ggtitle("CA4 Biological Process")
+barplot(clust_5_CC, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_5 Cellular Compartment")
+barplot(clust_5_MF, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_5 Molecular Function")
+barplot(clust_5_BP, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_5 Biological Process")
 
-CA4_CCx <- setReadable(CA4_CC, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(CA4_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+clust_5_CCx <- setReadable(clust_5_CC, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_5_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("CA4 Cellular Compartment Network")
-CA4_MFx <- setReadable(CA4_MF, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(CA4_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_5 Cellular Compartment Network")
+clust_5_MFx <- setReadable(clust_5_MF, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_5_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("CA4 Molecular Function Network")
-CA4_BPx <- setReadable(CA4_BP, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(CA4_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_5 Molecular Function Network")
+clust_5_BPx <- setReadable(clust_5_BP, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_5_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("CA4 Biological Process Network")
+  ggtitle("clust_5 Biological Process Network")
 
-CA4_CCp <- pairwise_termsim(CA4_CC)
-emapplot(CA4_CCp, showCategory = 20, color = "p.adjust",
+clust_5_CCp <- pairwise_termsim(clust_5_CC)
+emapplot(clust_5_CCp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("CA4 Cellular Compartment Modules")
-CA4_MFp <- pairwise_termsim(CA4_MF)
-emapplot(CA4_MFp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_5 Cellular Compartment Modules")
+clust_5_MFp <- pairwise_termsim(clust_5_MF)
+emapplot(clust_5_MFp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("CA4 Molecular Function Modules")
-CA4_BPp <- pairwise_termsim(CA4_BP)
-emapplot(CA4_BPp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_5 Molecular Function Modules")
+clust_5_BPp <- pairwise_termsim(clust_5_BP)
+emapplot(clust_5_BPp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("CA4 Biological Process Modules")
+  ggtitle("clust_5 Biological Process Modules")
 
 dev.off()
 
-# For CA3
+# For clust_6
 
-pdf(file = here::here("plots","pseudobulked","CA3_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_6_GO.pdf"), width = 16, height = 10)
 
-barplot(CA3_CC, showCategory=20, x= "GeneRatio") +
-  ggtitle("CA3 Cellular Compartment")
-barplot(CA3_MF, showCategory=20, x= "GeneRatio") +
-  ggtitle("CA3 Molecular Function")
-barplot(CA3_BP, showCategory=20, x= "GeneRatio") +
-  ggtitle("CA3 Biological Process")
+barplot(clust_6_CC, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_6 Cellular Compartment")
+barplot(clust_6_MF, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_6 Molecular Function")
+barplot(clust_6_BP, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_6 Biological Process")
 
-CA3_CCx <- setReadable(CA3_CC, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(CA3_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+clust_6_CCx <- setReadable(clust_6_CC, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_6_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("CA3 Cellular Compartment Network")
-CA3_MFx <- setReadable(CA3_MF, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(CA3_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_6 Cellular Compartment Network")
+clust_6_MFx <- setReadable(clust_6_MF, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_6_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("CA3 Molecular Function Network")
-CA3_BPx <- setReadable(CA3_BP, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(CA3_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_6 Molecular Function Network")
+clust_6_BPx <- setReadable(clust_6_BP, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_6_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("CA3 Biological Process Network")
+  ggtitle("clust_6 Biological Process Network")
 
-CA3_CCp <- pairwise_termsim(CA3_CC)
-emapplot(CA3_CCp, showCategory = 20, color = "p.adjust",
+clust_6_CCp <- pairwise_termsim(clust_6_CC)
+emapplot(clust_6_CCp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("CA3 Cellular Compartment Modules")
-CA3_MFp <- pairwise_termsim(CA3_MF)
-emapplot(CA3_MFp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_6 Cellular Compartment Modules")
+clust_6_MFp <- pairwise_termsim(clust_6_MF)
+emapplot(clust_6_MFp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("CA3 Molecular Function Modules")
-CA3_BPp <- pairwise_termsim(CA3_BP)
-emapplot(CA3_BPp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_6 Molecular Function Modules")
+clust_6_BPp <- pairwise_termsim(clust_6_BP)
+emapplot(clust_6_BPp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("CA3 Biological Process Modules")
+  ggtitle("clust_6 Biological Process Modules")
 
 dev.off()
 
 # For Molecular Layer
 
-pdf(file = here::here("plots","pseudobulked","ML_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_7_GO.pdf"), width = 16, height = 10)
 
-barplot(ML_CC, showCategory=20, x= "GeneRatio") +
-  ggtitle("ML Cellular Compartment")
-barplot(ML_MF, showCategory=20, x= "GeneRatio") +
-  ggtitle("ML Molecular Function")
-barplot(ML_BP, showCategory=20, x= "GeneRatio") +
-  ggtitle("ML Biological Process")
+barplot(clust_7_CC, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_7 Cellular Compartment")
+barplot(clust_7_MF, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_7 Molecular Function")
+barplot(clust_7_BP, showCategory=20, x= "GeneRatio") +
+  ggtitle("clust_7 Biological Process")
 
-ML_CCx <- setReadable(ML_CC, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(ML_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+clust_7_CCx <- setReadable(clust_7_CC, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_7_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("ML Cellular Compartment Network")
-ML_MFx <- setReadable(ML_MF, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(ML_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_7 Cellular Compartment Network")
+clust_7_MFx <- setReadable(clust_7_MF, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_7_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("ML Molecular Function Network")
-ML_BPx <- setReadable(ML_BP, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(ML_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+  ggtitle("clust_7 Molecular Function Network")
+clust_7_BPx <- setReadable(clust_7_BP, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_7_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
          shadow_text = "category", layout = "kk") +
-  ggtitle("ML Biological Process Network")
+  ggtitle("clust_7 Biological Process Network")
 
-ML_CCp <- pairwise_termsim(ML_CC)
-emapplot(ML_CCp, showCategory = 20, color = "p.adjust",
+clust_7_CCp <- pairwise_termsim(clust_7_CC)
+emapplot(clust_7_CCp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("ML Cellular Compartment Modules")
-ML_MFp <- pairwise_termsim(ML_MF)
-emapplot(ML_MFp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_7 Cellular Compartment Modules")
+clust_7_MFp <- pairwise_termsim(clust_7_MF)
+emapplot(clust_7_MFp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("ML Molecular Function Modules")
-ML_BPp <- pairwise_termsim(ML_BP)
-emapplot(ML_BPp, showCategory = 20, color = "p.adjust",
+  ggtitle("clust_7 Molecular Function Modules")
+clust_7_BPp <- pairwise_termsim(clust_7_BP)
+emapplot(clust_7_BPp, showCategory = 20, color = "p.adjust",
          cex_label_category = 0.5, layout = "kk") +
-  ggtitle("ML Biological Process Modules")
+  ggtitle("clust_7 Biological Process Modules")
 
 dev.off()
 
 # For Cluster 8
 
-pdf(file = here::here("plots","pseudobulked","clust_8_GO.pdf"), width = 16, height = 10)
+pdf(file = here::here("plots","11_gene_ontology","clust_8_GO.pdf"), width = 16, height = 10)
 
 barplot(clust_8_CC, showCategory=20, x= "GeneRatio") +
   ggtitle("cluster_8 Cellular Compartment")
@@ -772,29 +815,71 @@ emapplot(clust_8_BPp, showCategory = 20, color = "p.adjust",
 
 dev.off()
 
+# For Cluster 9
+
+pdf(file = here::here("plots","11_gene_ontology","clust_9_GO.pdf"), width = 16, height = 10)
+
+barplot(clust_9_CC, showCategory=20, x= "GeneRatio") +
+  ggtitle("cluster_9 Cellular Compartment")
+barplot(clust_9_MF, showCategory=20, x= "GeneRatio") +
+  ggtitle("cluster_9 Molecular Function")
+barplot(clust_9_BP, showCategory=20, x= "GeneRatio") +
+  ggtitle("cluster_9 Biological Process")
+
+clust_9_CCx <- setReadable(clust_9_CC, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_9_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+         cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
+         shadow_text = "category", layout = "kk") +
+  ggtitle("cluster_9 Cellular Compartment Network")
+clust_9_MFx <- setReadable(clust_9_MF, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_9_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+         cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
+         shadow_text = "category", layout = "kk") +
+  ggtitle("cluster_9 Molecular Function Network")
+clust_9_BPx <- setReadable(clust_9_BP, 'org.Hs.eg.db', 'ENTREZID')
+cnetplot(clust_9_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+         cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
+         shadow_text = "category", layout = "kk") +
+  ggtitle("cluster_9 Biological Process Network")
+
+clust_9_CCp <- pairwise_termsim(clust_9_CC)
+emapplot(clust_9_CCp, showCategory = 20, color = "p.adjust",
+         cex_label_category = 0.5, layout = "kk") +
+  ggtitle("cluster_9 Cellular Compartment Modules")
+clust_9_MFp <- pairwise_termsim(clust_9_MF)
+emapplot(clust_9_MFp, showCategory = 20, color = "p.adjust",
+         cex_label_category = 0.5, layout = "kk") +
+  ggtitle("cluster_9 Molecular Function Modules")
+clust_9_BPp <- pairwise_termsim(clust_9_BP)
+emapplot(clust_9_BPp, showCategory = 20, color = "p.adjust",
+         cex_label_category = 0.5, layout = "kk") +
+  ggtitle("cluster_9 Biological Process Modules")
+
+dev.off()
+
 # For comparing clusters
 
-pdf(file = here::here("plots","pseudobulked","all_comparative_GO.pdf"), width = 16, height = 14)
+pdf(file = here::here("plots","11_gene_ontology","all_comparative_GO.pdf"), width = 18, height = 14)
 
-dotplot(comp_CC, showCategory=8, label_format = 50) +
-  ggtitle("Top 8 Comparative GO Cellular Compartment")
-dotplot(comp_MF, showCategory=8, label_format = 50) +
-  ggtitle("Top 8 Comparative GO Molecular Function")
-dotplot(comp_BP, showCategory=8, label_format = 50) +
-  ggtitle("Top 8 Comparative GO Biological Process")
+dotplot(comp_CC, showCategory=9, label_format = 50) +
+  ggtitle("Top 9 Comparative GO Cellular Compartment")
+dotplot(comp_MF, showCategory=9, label_format = 50) +
+  ggtitle("Top 9 Comparative GO Molecular Function")
+dotplot(comp_BP, showCategory=9, label_format = 50) +
+  ggtitle("Top 9 Comparative GO Biological Process")
 
 comp_CC <- pairwise_termsim(comp_CC)
-emapplot(comp_CC, showCategory = 8, color = "p.adjust",
+emapplot(comp_CC, showCategory = 9, color = "p.adjust",
          pie = "count", cex_category = 3, label_format = 20) +
-  ggtitle("Top 8 Comparative GO Cellular Compartment Modules")
+  ggtitle("Top 9 Comparative GO Cellular Compartment Modules")
 comp_MF <- pairwise_termsim(comp_MF)
-emapplot(comp_MF, showCategory = 8, color = "p.adjust",
+emapplot(comp_MF, showCategory = 9, color = "p.adjust",
          pie = "count", cex_category = 3, label_format = 20) +
-  ggtitle("Top 8 Comparative GO Molecular Function Modules")
+  ggtitle("Top 9 Comparative GO Molecular Function Modules")
 comp_BP <- pairwise_termsim(comp_BP)
-emapplot(comp_BP, showCategory = 8, color = "p.adjust",
+emapplot(comp_BP, showCategory = 9, color = "p.adjust",
          pie = "count", cex_category = 3, label_format = 20) +
-  ggtitle("Top 8 Comparative GO Biological Process Modules")
+  ggtitle("Top 9 Comparative GO Biological Process Modules")
 
 dev.off()
 
