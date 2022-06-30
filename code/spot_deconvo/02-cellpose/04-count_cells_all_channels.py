@@ -89,8 +89,10 @@ def plot_roi(img, props, indices, vmax: int = 128, pad: int = 5):
         roi = props[idx]["image"]
         
         axs[j].imshow(np.pad(roi, (pad, pad), mode="constant", constant_values=0), aspect="equal")
-        axs[j].set_title("Dilated mask")
         axs[j].grid(False)
+        if j < 6:
+            axs[j].set_title("Dilated mask")
+        
         j += 1
         
         for i in range(1, 6):
@@ -103,11 +105,13 @@ def plot_roi(img, props, indices, vmax: int = 128, pad: int = 5):
                 vmax=vmax,
                 aspect="equal",
             )
-            axs[j].set_title(names[i])
+            
+            if j < 6:
+                axs[j].set_title(names[i])
+            
             axs[j].grid(False)
             j += 1
     
-    fig.tight_layout()
     return fig
 
 #   Perform a dilation-like transformation on 'img' by total size
@@ -405,11 +409,13 @@ for cell_type in df['cell_type'].unique():
     
     #   Plot intensities
     fig = plot_roi(imgs, props, indices)
+    plt.suptitle(f'Cells classified as {cell_type}')
     fig.savefig(
         os.path.join(
             plot_dir, f'{cell_type}_{sample_id_img}.{plot_file_type}'
         )
     )
+    plt.close('all')
 
 
 #-------------------------------------------------------------------------------
