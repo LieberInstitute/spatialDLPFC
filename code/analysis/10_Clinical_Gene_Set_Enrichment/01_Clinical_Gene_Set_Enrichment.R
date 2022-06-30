@@ -231,10 +231,16 @@ twas_geneList = list(TWAS_BS2_SCZ.Up = tt_dlpfc$ensemblID[tt_dlpfc$TWAS.Z > 0 & 
 ####sup table 32 is DEGs
 #### file = /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx
 #############
-sn_rna_seq_MDD = as.data.frame(read_excel("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx", sheet = "Supplementary Table 32"))
+mdd = as.data.frame(read_excel("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx", sheet = "Supplementary Table 32", skip = 2, ))
+
+#need to somehow get gene_id or ensemblID
+# ens4 = select(org.Hs.eg.db,
+#               columns = c("ENSEMBL", "ENTREZID","SYMBOL"),
+#               keytypes = "SYMBOL",
+#               keys = as.character(unique(mdd$Gene)))
 
 mdd_geneList = with(
-  sn_rna_seq_MDD,
+  mdd,
   list(
     # DE_PE_ASD.Up = ensembl_gene_id[ASD.t.value > 0 & ASD.fdr < 0.05],
     # DE_PE_ASD.Down = ensembl_gene_id[ASD.t.value < 0 & ASD.fdr < 0.05],
@@ -252,6 +258,12 @@ mdd_geneList = with(
 ### data S3 is marker genes
 ### file = /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/NIHMS1053005-supplement-Data_S4.xls
 #############
+
+asd_rnaseq = as.data.frame(read_excel("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/NIHMS1053005-supplement-Data_S4.xls", sheet = "ASD_DEGs" ))
+asd_rnaseq = clean_names(asd_rnaseq)
+asdRNA_geneList = list(DE_ASD_RNA.Up = asd_rnaseq$gene_id[asd_rnaseq$fold_change > 0 & asd_rnaseq$q_value < 0.05],
+                   DE_ASD_RNA.Down = asd_rnaseq$gene_id[asd_rnaseq$fold_chang < 0 & asd_rnaseq$q_value < 0.05])
+
 
 ############
 ###https://www.medrxiv.org/content/10.1101/2020.11.06.20225342v1.full
@@ -280,7 +292,8 @@ geneList = c(
   pe_geneList,
   #bs2_geneList,
   ds_geneList,
-  twas_geneList
+  twas_geneList,
+  asdRNA_geneList
 )
 
 ## filter for those present in spatial data
