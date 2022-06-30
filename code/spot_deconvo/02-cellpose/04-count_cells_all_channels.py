@@ -75,27 +75,38 @@ plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 #   Functions
 ################################################################################
 
-def plot_roi(img, props, idx: int, vmax: int = 128, nrows: int = 3, ncols: int = 2, pad: int = 5):
-    bbox = props[idx]["bbox"]
-    roi = props[idx]["image"]
-    fig, axs = plt.subplots(nrows=nrows, ncols=ncols, figsize=(8, 8))
+def plot_roi(img, props, indices, vmax: int = 128, pad: int = 5):
+    #   Set up the plot
+    fig, axs = plt.subplots(
+        nrows=len(indices), ncols=6, figsize=(18, len(indices) * 3)
+    )
     axs = axs.flatten()
-    axs[0].imshow(np.pad(roi, (pad, pad), mode="constant", constant_values=0), aspect="equal")
-    axs[0].set_title("Mask")
-    axs[0].grid(False)
-    for i in range(1, 6):
-        axs[i].imshow(
-            img[
-                i,
-                max(0, bbox[0] - pad) : min(img.shape[1], bbox[2] + pad),
-                max(0, bbox[1] - pad) : min(img.shape[2], bbox[3] + pad),
-            ],
-            vmax=vmax,
-            aspect="equal",
-        )
-        axs[i].set_title(names[i])
-        axs[i].grid(False)
-
+    
+    #   Loop through each nucleus, each of which will be a row in the final plot
+    j = 0
+    for idx in indices:
+        bbox = props[idx]["bbox"]
+        roi = props[idx]["image"]
+        
+        axs[j].imshow(np.pad(roi, (pad, pad), mode="constant", constant_values=0), aspect="equal")
+        axs[j].set_title("Dilated mask")
+        axs[j].grid(False)
+        j += 1
+        
+        for i in range(1, 6):
+            axs[j].imshow(
+                img[
+                    i,
+                    max(0, bbox[0] - pad) : min(img.shape[1], bbox[2] + pad),
+                    max(0, bbox[1] - pad) : min(img.shape[2], bbox[3] + pad),
+                ],
+                vmax=vmax,
+                aspect="equal",
+            )
+            axs[j].set_title(names[i])
+            axs[j].grid(False)
+            j += 1
+    
     fig.tight_layout()
     return fig
 
@@ -150,6 +161,8 @@ def balanced_dilation(img, dilation_radius, chunk_size, verbose = False):
 ################################################################################
 
 # os.environ['SGE_TASK_ID'] = '1'
+
+rng = default_rng()
 
 #-------------------------------------------------------------------------------
 #   Read in sample info and adjust paths for this particular sample ID
@@ -222,15 +235,8 @@ df = pd.DataFrame(its)
 props = regionprops(expanded_masks)
 
 #-------------------------------------------------------------------------------
-#   Exploratory plots: plot an example ROI and the distribution of masks over
-#   spots
+#   Exploratory plot: show the distribution of masks over spots
 #-------------------------------------------------------------------------------
-
-fig = plot_roi(imgs, props, 400) # 400 here is an arbitrarily chosen index
-fig.savefig(
-    os.path.join(plot_dir, 'random_roi_{}.{}'.format(sample_id_img, plot_file_type)),
-    bbox_inches='tight'
-)
 
 #   Plot mask spatial distribution vs. spot distribution; there should be
 #   quite a bit of overlap
@@ -265,6 +271,18 @@ df = df[df.dist < px_dist]
 frac_kept = round(100 * np.sum(df.area > area_threshold) / len(df.area), 1)
 print(f'Keeping {frac_kept}% of masks, which met a minimum area threshold.')
 df = df[df.area > area_threshold]
+
+#-------------------------------------------------------------------------------
+#   Exploratory plot: show 5 random nuclei
+#-------------------------------------------------------------------------------
+
+indices = rng.choice(df.index, 5, replace = False)
+
+fig = plot_roi(imgs, props, indices)
+fig.savefig(
+    os.path.join(plot_dir, 'random_rois_{}.{}'.format(sample_id_img, plot_file_type)),
+    bbox_inches='tight'
+)
 
 #-------------------------------------------------------------------------------
 #   Explore how fluorescence of each channel is distributed
@@ -371,9 +389,9 @@ plt.savefig(
 )
 
 #   Next, plot 5 nuclei of each called cell type for visual inspection
-rng = default_rng()
 examples_per_type = 5
 
+plt.close('all')
 for cell_type in df['cell_type'].unique():
     #   Randomly pick 5 distinct rows for this cell type
     indices = rng.choice(
@@ -386,14 +404,12 @@ for cell_type in df['cell_type'].unique():
     print(df.loc[indices][cell_types.keys()])
     
     #   Plot intensities
-    for i in indices:
-        plt.close('all')
-        fig = plot_roi(imgs, props, i)
-        fig.savefig(
-            os.path.join(
-                plot_dir, f'{cell_type}_{i}_{sample_id_img}.{plot_file_type}'
-            )
+    fig = plot_roi(imgs, props, indices)
+    fig.savefig(
+        os.path.join(
+            plot_dir, f'{cell_type}_{sample_id_img}.{plot_file_type}'
         )
+    )
 
 
 #-------------------------------------------------------------------------------
