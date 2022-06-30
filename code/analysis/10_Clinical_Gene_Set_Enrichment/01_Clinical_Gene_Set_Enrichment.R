@@ -233,11 +233,11 @@ twas_geneList = list(TWAS_BS2_SCZ.Up = tt_dlpfc$ensemblID[tt_dlpfc$TWAS.Z > 0 & 
 #############
 mdd = as.data.frame(read_excel("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/41593_2020_621_MOESM3_ESM.xlsx", sheet = "Supplementary Table 32", skip = 2, ))
 
-#need to somehow get gene_id or ensemblID
-# ens4 = select(org.Hs.eg.db,
-#               columns = c("ENSEMBL", "ENTREZID","SYMBOL"),
-#               keytypes = "SYMBOL",
-#               keys = as.character(unique(mdd$Gene)))
+# need to somehow get gene_id or ensemblID
+ens4 = select(org.Hs.eg.db,
+              columns = c("ENSEMBL", "ENTREZID","SYMBOL"),
+              keytypes = "SYMBOL",
+              keys = as.character(unique(mdd$Gene)))
 
 mdd_geneList = with(
   mdd,
@@ -657,11 +657,11 @@ customLayerEnrichment = function(enrichTab , groups, xlabs,
 
 pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/10_clinical_gene_set_enrichment/asd_geneSet_heatmap.pdf",w=6)
 par(mar=c(8,4.5,2.5,1), cex.axis=2,cex.lab=2)
-groups = unique(as.character(enrichLong_ASD$ID))[1:6]
+groups = unique(as.character(enrichLong_ASD$ID))[1:7]
 xlabs  = as.character(enrichLong_ASD$ID2[match(groups, enrichLong_ASD$ID)])
 customLayerEnrichment(enrichTab, groups,xlabs, enrichOnly=TRUE)
-abline(v=4,lwd=3)
-text(x = 3, y = 142, c("ASD"), xpd=TRUE,cex=2.5,font=2)
+#abline(v=4,lwd=3)
+text(x = 4, y = 165, c("ASD"), xpd=TRUE,cex=2.5,font=2)
 
 dev.off()
 
