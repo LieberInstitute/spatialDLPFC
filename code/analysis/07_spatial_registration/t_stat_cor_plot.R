@@ -118,7 +118,7 @@ ggplot(dat_small, aes(x = dat_small[,7], y = WM)) +
   geom_smooth(method=lm, se=FALSE, colour = "#00BA38") +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),text = element_text(size = 20), axis.text = element_text(size = 25))+
   guides(colour = guide_legend(override.aes = list(size=3))) +
-  stat_cor(mapping = aes(x = dat_small[,7], y = WM),method = "pearson", label.x = -8, label.y = 10)
+  stat_cor(mapping = aes(x = dat_small[,7], y = WM),method = "pearson", label.x = -10, label.y = 16, size = 7)
 dev.off()
 
 
