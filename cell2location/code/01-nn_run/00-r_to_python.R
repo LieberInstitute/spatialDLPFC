@@ -28,7 +28,7 @@ marker_path_out = here(
 
 cell_types_to_drop = c('Endo', 'Macrophage', 'Mural', 'Tcell')
 
-n_markers_per_type = 25
+n_markers_per_type = 100
 
 ###############################################################################
 #   Functions
