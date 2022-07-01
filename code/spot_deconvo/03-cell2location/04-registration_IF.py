@@ -54,19 +54,18 @@ plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 #   https://github.com/BayraktarLab/cell2location/blob/master/docs/images/Note_on_selecting_hyperparameters.pdf
 N_CELLS_PER_SPOT = 5
 
+#   For spatial mapping model: tutorial recommends 20 as default but to try 200
+detection_alpha = 20
+
+#   Number of epochs used to train each portion of the model
+epochs_signature = 400 # default: 250
+epochs_spatial = 30000
+
 ################################################################################
 #   Function definitions
 ################################################################################
 
-def perform_regression(
-    mod, adata, adata_name, max_epochs, lr, sample_kwargs, plot_name
-):
-    # Use all data for training (validation not implemented yet, train_size=1)
-    mod.train(
-        max_epochs=max_epochs, batch_size=sample_kwargs['batch_size'],
-        train_size=1, lr=lr, use_gpu=True
-    )
-
+def post_training(mod, adata, adata_name, max_epochs, sample_kwargs, plot_name):
     # plot ELBO loss history during training, removing first 10% of epochs from
     # the plot
     mod.plot_history(int(max_epochs / 10))
@@ -130,8 +129,10 @@ RegressionModel.setup_anndata(
 mod = RegressionModel(adata_ref)
 RegressionModel.view_anndata_setup(mod)
 
-adata_ref, mod = perform_regression(
-    mod, adata_ref, 'adata_ref', 250, 0.002,
+mod.train(max_epochs=epochs_signature, use_gpu=True)
+
+adata_ref, mod = post_training(
+    mod, adata_ref, 'adata_ref', epochs_signature,
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
@@ -174,13 +175,23 @@ mod = cell2location.models.Cell2location(
     N_cells_per_location=N_CELLS_PER_SPOT,
     # hyperparameter controlling normalisation of
     # within-experiment variation in RNA detection:
-    detection_alpha=20 # default: 200
+    detection_alpha=detection_alpha
 )
 
 cell2location.models.Cell2location.view_anndata_setup(mod)
 
-adata_vis, mod = perform_regression(
-    mod, adata_vis, 'adata_vis', 30000, None,
+mod.train(
+    max_epochs=epochs_spatial,
+    # train using full data (batch_size=None)
+    batch_size=None,
+    # use all data points in training because
+    # we need to estimate cell abundance at all locations
+    train_size=1,
+    use_gpu=True
+)
+
+adata_vis, mod = post_training(
+    mod, adata_vis, 'adata_vis', epochs_spatial,
     {'num_samples': 1000, 'batch_size': mod.adata.n_obs, 'use_gpu': True},
     'spatial_mapping_training_history'
 )
