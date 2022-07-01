@@ -43,7 +43,7 @@ clusters_path = pyhere.here(
 cells_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'cell_metrics.csv'
 )
-plot_dir = pyhere.here("plots", "spot_deconvo", "02-cellpose", "count_cells_with_GFAP")
+plot_dir = pyhere.here("plots", "spot_deconvo", "02-cellpose", "count_cells_no_GFAP")
 
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 
@@ -55,8 +55,7 @@ names = {0: "junk", 1: "dapi", 2: "gfap", 3: "neun", 4: "olig2", 5: "tmem119"}
 cell_types = {
     "neun": "neuron",
     "olig2": "oligo",
-    "tmem119": "micro",
-    "gfap": "astro"
+    "tmem119": "micro"
 }
 m_per_px = 0.497e-6
 spot_radius = 65e-6
@@ -225,7 +224,7 @@ its = {
     names[i]: regionprops_table(
         expanded_masks, intensity_image=imgs[i], properties=["intensity_mean"]
     )["intensity_mean"]
-    for i in range(2, 6)
+    for i in (1, 3, 4, 5)
 }
 
 #   Create a table containing the centroids and areas of each mask
@@ -294,7 +293,7 @@ fig.savefig(
 
 #   Histograms of raw fluorescence values in each channel
 plt.clf()
-fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(10, 10))
+fig, axs = plt.subplots(nrows=len(cell_types), ncols=1, figsize=(10, 10))
 for i, channel in enumerate(cell_types.keys()):
     axs[i].hist(df[channel], bins = 100)
     axs[i].set_title(channel)
@@ -309,7 +308,7 @@ plt.savefig(
 #   Histograms of trimmed fluorescence values in each channel (above a
 #   "noise cutoff")
 plt.clf()
-fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(10, 10))
+fig, axs = plt.subplots(nrows=len(cell_types), ncols=1, figsize=(10, 10))
 for i, channel in enumerate(cell_types.keys()):
     axs[i].hist(df[channel][df[channel] > noise_cutoff], bins = 30)
     axs[i].set_title(channel + ' (trimmed)')
@@ -324,11 +323,10 @@ plt.savefig(
 #   intensity in all channels)
 temp = (df['neun'] < noise_cutoff) & \
     (df['olig2'] < noise_cutoff) & \
-    (df['tmem119'] < noise_cutoff) & \
-    (df['gfap'] < noise_cutoff)
+    (df['tmem119'] < noise_cutoff)
 
 #   However, some nuclei don't have a clear cell type with this cutoff
-bad_perc = round(100 * np.sum(temp) / len(temp), 1) # ~5%
+bad_perc = round(100 * np.sum(temp) / len(temp), 1) # ~15%
 print(f"{bad_perc}% of nuclei don't have a clear cell type.")
 
 #-------------------------------------------------------------------------------
@@ -360,8 +358,7 @@ df['cell_type'] = [cell_types[x] for x in temp['max_channel']]
 df.loc[
     (df['neun'] < noise_cutoff) &
     (df['olig2'] < noise_cutoff) &
-    (df['tmem119'] < noise_cutoff) &
-    (df['gfap'] < noise_cutoff),
+    (df['tmem119'] < noise_cutoff),
     'cell_type'
 ] = 'other'
 
@@ -375,7 +372,7 @@ df.loc[
 #   the definition of classification itself: e.g. neurons will generally have
 #   higher neun intensity (that's what made us call them neurons)
 plt.clf()
-fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(10, 10))
+fig, axs = plt.subplots(nrows=len(cell_types), ncols=1, figsize=(10, 10))
 plt.suptitle(f'Weighted mean intensity comparison')
 for i, channel in enumerate(cell_types.keys()):
     a = temp[temp['max_channel'] == channel]
