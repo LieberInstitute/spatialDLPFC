@@ -215,54 +215,55 @@ adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
 #   Visualization
 ################################################################################
 
-#   TODO:
-#       1. possibly change number of cell types + related choices
-
+#   Loop through each sample and produce plots for each
 for sample_id in adata_vis.obs['sample'].cat.categories:
         #   Subset to this sample
     slide = select_slide(adata_vis, sample_id)
 
     cell_types = adata_ref.obs[cell_type_var].cat.categories
 
-    #   Plot 8 cell types separately for this sample
-    sc.pl.spatial(
-        slide, cmap='magma',
-        # show first 8 cell types
-        color=cell_types[:8],
-        ncols=4, size=1.3,
-        img_key='hires',
-        # limit color scale at 99.2% quantile of cell abundance
-        vmin=0, vmax='p99.2'
-    )
-    f = plt.gcf()
-    f.savefig(
-        os.path.join(
-            plot_dir, f'individual_cell_types_{sample_id}.{plot_file_type}'
-        ),
-        bbox_inches='tight'
-    )
-    plt.close(f)
+    #   Plot cell types individually for this sample
+    with mpl.rc_context({'axes.facecolor':  'black', 'figure.figsize': [4.5, 5]}):
+        sc.pl.spatial(
+            slide, cmap='magma',
+            color=cell_types,
+            ncols=int(len(cell_types) / 2),
+            size=1.3,
+            img_key='hires',
+            # limit color scale at 99.2% quantile of cell abundance
+            vmin=0, vmax='p99.2'
+        )
+        f = plt.gcf()
+        f.savefig(
+            os.path.join(
+                plot_dir, f'individual_cell_types_{sample_id}.{plot_file_type}'
+            ),
+            bbox_inches='tight'
+        )
+        plt.close(f)
 
-    fig = plot_spatial(
-        adata=slide,
-        # labels to show on a plot
-        color=cell_types[:6], labels=cell_types[:6],
-        show_img=True,
-        # 'fast' (white background) or 'dark_background'
-        style='fast',
-        # limit color scale at 99.2% quantile of cell abundance
-        max_color_quantile=0.992,
-        # size of locations (adjust depending on figure size)
-        circle_diameter=6,
-        colorbar_position='right'
-    )
-    fig.savefig(
-        os.path.join(
-            plot_dir, f'multi_cell_types_{sample_id}.{plot_file_type}'
-        ),
-        bbox_inches='tight'
-    )
-    plt.close(fig)
+    #   Plot all cell types on the same spatial grid for this sample
+    with mpl.rc_context({'figure.figsize': (15, 15)}):
+        fig = plot_spatial(
+            adata=slide,
+            # labels to show on a plot
+            color=cell_types, labels=cell_types,
+            show_img=True,
+            # 'fast' (white background) or 'dark_background'
+            style='fast',
+            # limit color scale at 99.2% quantile of cell abundance
+            max_color_quantile=0.992,
+            # size of locations (adjust depending on figure size)
+            circle_diameter=6,
+            colorbar_position='right'
+        )
+        fig.savefig(
+            os.path.join(
+                plot_dir, f'multi_cell_types_{sample_id}.{plot_file_type}'
+            ),
+            bbox_inches='tight'
+        )
+        plt.close(fig)
 
 ################################################################################
 #   Export deconvo results
