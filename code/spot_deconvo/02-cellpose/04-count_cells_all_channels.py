@@ -43,7 +43,7 @@ clusters_path = pyhere.here(
 cells_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'cell_metrics.csv'
 )
-plot_dir = pyhere.here("plots", "spot_deconvo", "02-cellpose")
+plot_dir = pyhere.here("plots", "spot_deconvo", "02-cellpose", "count_cells_with_GFAP")
 
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 
