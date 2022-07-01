@@ -71,7 +71,7 @@ vis_clus_p_AS <-
       scale_fill_manual(values = colors) +
       xlim(0, ncol(img)) +
       ylim(nrow(img), 0) +
-      xlab("") + ylab("") +
+      xlab("") + ylab("") +s
       labs(fill = NULL) +
       guides(fill = guide_legend(override.aes = list(size = 3))) +
       ggtitle(title) +
@@ -126,7 +126,7 @@ vis_clus_AS <- function(spe,
   )
 }
 
-pdf(file = here::here("plots","03_BayesSpace",paste0("polychrome_vis_clus_bayesSpace_harmony_",k,".pdf")))
+pdf(file = here::here("plots","03_BayesSpace",paste0("polychrome_vis_clus_bayesSpace_harmony_square",k,".pdf")))
 for (i in seq_along(sample_ids)){
   my_plot <- vis_clus(
     spe = spe,
