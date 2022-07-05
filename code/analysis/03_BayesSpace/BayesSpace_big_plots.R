@@ -71,7 +71,7 @@ vis_clus_p_AS <-
       scale_fill_manual(values = colors) +
       xlim(0, ncol(img)) +
       ylim(nrow(img), 0) +
-      xlab("") + ylab("") +s
+      xlab("") + ylab("") +
       labs(fill = NULL) +
       guides(fill = guide_legend(override.aes = list(size = 3))) +
       ggtitle(title) +
