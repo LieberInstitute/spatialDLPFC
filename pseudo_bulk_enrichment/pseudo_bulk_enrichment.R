@@ -13,19 +13,6 @@ library(RColorBrewer)
 library(lattice)
 library(edgeR)
 
-# mat_formula = ~ 0 + bayesSpace_harmony_9 + region + age + sex
-# foo <- function(sce, var_oi, covars, block_var = NULL) { #must specify in documentation that the second element of the formula is the cluster label, and the first element is zero
-#
-#   terms <- attributes(terms(fo))$term.labels
-#   pd <- colData(sce)[ , c(terms[!grepl(":", terms)], block_var) ]
-#
-#   sce_pseudo <- aggregateAcrossCells(sce, pd)
-#
-#   ## then model
-#
-#   ## then re-arrange results
-# }
-
 var_oi = "bayesSpace_harmony_9"
 covars = c("region","age","sex")
 
@@ -54,9 +41,6 @@ computeEnrichment <- function(spe,var_oi,covars){
   # logical   21059    7857
   
   spe_pseudo <- spe_pseudo[which(rowData(spe_pseudo)$filter_expr),]
-  
-  
-  #spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL) #change this to use calcNormFactors from edgeR
   
   #spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL) #change this to use calcNormFactors from edgeR
   x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo), log = TRUE, prior.count = 1)
@@ -151,16 +135,7 @@ computeEnrichment <- function(spe,var_oi,covars){
     'Pval10-8sig' = colSums(pvals0_contrasts_cluster < 1e-8 &
                               t0_contrasts_cluster > 0)
   )
-  
-  # FDRsig Pval10.6sig Pval10.8sig
-  # 1  12608         178          71
-  # 2    498         171          68
-  # 3     52           6           2
-  # 4  18978       13168        6562
-  # 5  16379         182          67
-  # 6      5           0           0
-  # 7     61           9           3
-  
+
   
   f_merge <- function(p, fdr, t) {
     colnames(p) <- paste0('p_value_', colnames(p))
@@ -186,18 +161,11 @@ computeEnrichment <- function(spe,var_oi,covars){
   return(results_specificity)
 }
 
-
-#saveRDS(results_specificity, file = here::here("pseudo_bulk_enrichment","results_specificity.RDS"))
-#stop here
-
-
 ## Related to https://github.com/LieberInstitute/spatialLIBD/commit/92c382b08599b61076e2b5cfa08544705c82c971
 specificity_stats <- results_specificity[, grep("^t_stat", colnames(results_specificity))]
 #rownames(specificity_stats) <- results_specificity$ensembl
 #colnames(specificity_stats) <- gsub("^t_stat_", "", colnames(specificity_stats))
 head(specificity_stats)
-
-
 
 modeling_results = fetch_data(type = "modeling_results")
 cor <- layer_stat_cor(
