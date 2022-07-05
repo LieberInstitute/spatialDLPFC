@@ -200,8 +200,10 @@ colData(sce)$sex <- as.factor(colData(sce)$sex)
 colnames(colData(sce))[1] <- "sample_id"
 
 results_specificity <- computeEnrichment(sce,var_oi,covars)
+save(results_specificity,file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/12_spatial_registration_sc/results_specificity.RDS")
 
 specificity_stats <- results_specificity[, grep("^t_stat", colnames(results_specificity))]
+colnames(specificity_stats) <- gsub("^t_stat_", "", colnames(specificity_stats))
 
 modeling_results = fetch_data(type = "modeling_results")
 cor <- layer_stat_cor(
@@ -212,6 +214,49 @@ cor <- layer_stat_cor(
   top_n = NULL
 )
 
-pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc")
-layer_stat_cor_plot(cor, max = 1)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_v_manual.pdf")
+layer_stat_cor_plot(cor, max = 0.7)
+dev.off()
+
+#load my k = 9 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k9.Rdata")
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_v_spatialk9.pdf")
+layer_stat_cor_plot(cor, max = 0.6)
+dev.off()
+
+#load my k = 16 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k16.Rdata")
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_v_spatialk16.pdf")
+layer_stat_cor_plot(cor, max = 0.7)
+dev.off()
+
+#load my k = 16 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k28.Rdata")
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_v_spatialk28.pdf")
+layer_stat_cor_plot(cor, max = 0.8)
 dev.off()
