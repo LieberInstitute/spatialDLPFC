@@ -28,6 +28,11 @@ scale_path = file.path(
     sample_id, 'scalefactors_json.json'
 )
 
+plot_path = here(
+    "tangram_libd", "plots", "03_nn_run", "DLPFC",
+    paste0("my_spot_deconvo_fig_", sample_id, ".pdf")
+)
+
 spatial_coords_names = c('pxl_row_in_fullres', 'pxl_col_in_fullres')
 
 #   Fetch and subset SPE to this sample
@@ -58,7 +63,7 @@ df_list = list()
 i = 1
 for (barcode in rownames(clusters)) {
     for (cell_type in cell_types) {
-        for (j in 1:clusters[barcode, cell_type]) {
+        for (j in seq_len(clusters[barcode, cell_type])) {
             df_list[[i]] = c(
                 barcode,
                 as.numeric(clusters[barcode, spatial_coords_names]),
@@ -101,3 +106,7 @@ p = ggplot(df_long) +
         ),
         size = 0.15, width = 4, height = 4
     )
+
+pdf(plot_path)
+print(p)
+dev.off()
