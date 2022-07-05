@@ -12,6 +12,7 @@ computeEnrichment <- function(spe,var_oi,covars){
   mat_formula <- eval(str2expression(paste("~","0","+",var_oi,"+",paste(covars, collapse=" + "))))
   
   ## Pseudo-bulk for our current BayesSpace cluster results
+  message("Make psuedobulk object")
   spe_pseudo <- aggregateAcrossCells(
     spe,
     DataFrame(
@@ -19,21 +20,29 @@ computeEnrichment <- function(spe,var_oi,covars){
       sample_id = spe$sample_id
     )
   )
-  
+
+  # class: SingleCellExperiment 
+  # dim: 36601 483 
+  # metadata(1): Samples
+  # assays(1): counts
+  # rownames(36601): MIR1302-2HG FAM138A ... AC007325.4 AC007325.2
+  # rowData names(7): source type ... gene_type binomial_deviance
+  # colnames: NULL
+  # colData names(33): sample_id Barcode ... sample_id ncells
+  # reducedDimNames(4): GLMPCA_approx TSNE UMAP HARMONY
+  # mainExpName: NULL
+  # altExpNames(0):
+ 
   ###############################
-  
-  #find a good expression cutoff using edgeR::filterByExpr https://rdrr.io/bioc/edgeR/man/filterByExpr.html
+  message("Filter lowly expressed genes")
   rowData(spe_pseudo)$filter_expr <- filterByExpr(spe_pseudo)
   summary(rowData(spe_pseudo)$filter_expr)
-  # Mode   FALSE    TRUE
-  # logical   21059    7857
+  # Mode   FALSE    TRUE 
+  # logical   31057    5544 
   
   spe_pseudo <- spe_pseudo[which(rowData(spe_pseudo)$filter_expr),]
-  
-  
-  #spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL) #change this to use calcNormFactors from edgeR
-  
-  #spe_pseudo <- logNormCounts(spe_pseudo,size.factors = NULL) #change this to use calcNormFactors from edgeR
+
+  message("Normalize expression")
   x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo), log = TRUE, prior.count = 1)
   ## Verify that the gene order hasn't changed
   stopifnot(identical(rownames(x), rownames(spe_pseudo)))
@@ -52,16 +61,6 @@ computeEnrichment <- function(spe,var_oi,covars){
   #####################
   ## Build a group model
   
-  
-  #tell user in documentation to make sure their columns are converted to either factors or numerics as appropriate
-  #convert variables to factors
-  # colData(spe_pseudo)[[cluster]] <- as.factor(colData(spe_pseudo)[[cluster]])
-  # colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
-  # colData(spe_pseudo)$age <- as.numeric(colData(spe_pseudo)$age)
-  # colData(spe_pseudo)$sex <- as.factor(colData(spe_pseudo)$sex)
-  # colData(spe_pseudo)$diagnosis <- as.factor(colData(spe_pseudo)$diagnosis)
-  # colData(spe_pseudo)$subject <- as.factor(colData(spe_pseudo)$subject)
-  
   ### access different elements of formula and check to see if they're in colData(spe_pseudo)
   terms <- attributes(terms(mat_formula))$term.labels
   terms <- terms[!grepl(":", terms)]
@@ -72,7 +71,7 @@ computeEnrichment <- function(spe,var_oi,covars){
   }
   
   #create matrix where the rownames are the sample:clusters and the columns are the other variables (spatial.cluster + region + age + sex)
-  
+  message("Create model matrix")
   mod<- model.matrix(mat_formula,
                      data = colData(spe_pseudo)) #binarizes factors
   
@@ -85,6 +84,7 @@ computeEnrichment <- function(spe,var_oi,covars){
   ## Next for each layer test that layer vs the rest
   cluster_idx <- splitit(colData(spe_pseudo)[,var_oi])
   
+  message("run enrichment statistics")
   eb0_list_cluster <- lapply(cluster_idx, function(x) {
     res <- rep(0, ncol(spe_pseudo))
     res[x] <- 1
@@ -105,6 +105,7 @@ computeEnrichment <- function(spe,var_oi,covars){
   })
   
   
+  message("extract and reformat enrichment results")
   ##########
   ## Extract the p-values
   pvals0_contrasts_cluster <- sapply(eb0_list_cluster, function(x) {
@@ -116,7 +117,9 @@ computeEnrichment <- function(spe,var_oi,covars){
     x$t[, 2, drop = FALSE]
   })
   rownames(t0_contrasts_cluster) = rownames(mat_filter)
+  
   fdrs0_contrasts_cluster = apply(pvals0_contrasts_cluster, 2, p.adjust, 'fdr')
+  rownames(fdrs0_contrasts_cluster) = rownames(mat_filter)
   
   data.frame(
     'FDRsig' = colSums(fdrs0_contrasts_cluster < 0.05 &
@@ -128,13 +131,35 @@ computeEnrichment <- function(spe,var_oi,covars){
   )
   
   # FDRsig Pval10.6sig Pval10.8sig
-  # 1  12608         178          71
-  # 2    498         171          68
-  # 3     52           6           2
-  # 4  18978       13168        6562
-  # 5  16379         182          67
-  # 6      5           0           0
-  # 7     61           9           3
+  # Astro            992         187         107
+  # Endo.Mural_01    448          71          36
+  # Endo.Mural_02    909         106          41
+  # Excit_01         382          19           6
+  # Excit_02         205           4           1
+  # Excit_03         133          10           3
+  # Excit_04         131           9           1
+  # Excit_05          20           0           0
+  # Excit_06         293          32           9
+  # Excit_07         190          16           7
+  # Excit_08         253          22           2
+  # Excit_09        1359         238          63
+  # Excit_10        1354         392         224
+  # Excit_11           0           0           0
+  # Excit_12           0           0           0
+  # Excit_13         234          13           3
+  # Excit_14          17           0           0
+  # Excit_15          14           0           0
+  # Inhib_01          17           2           0
+  # Inhib_02         287          37          14
+  # Inhib_03          48           3           0
+  # Inhib_04         381          73          35
+  # Inhib_05         254          26           6
+  # Inhib_06         183          32           6
+  # Micro           1341         245         147
+  # Oligo_01         439          11           8
+  # Oligo_02        1291         296         178
+  # Oligo_03         731         128          66
+  # OPC              849         134          70
   
   
   f_merge <- function(p, fdr, t) {
@@ -158,6 +183,7 @@ computeEnrichment <- function(spe,var_oi,covars){
   #object to return
   results_specificity <-as.data.frame(results_specificity@listData)
   rownames(results_specificity) <- results_specificity$ensembl
+  message("return enrichment results")
   return(results_specificity)
 }
 
@@ -167,6 +193,7 @@ load(file = "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/pro
 var_oi = "cellType_hc"
 covars = c("region","age","sex")
 
+rownames(sce)<-rowData(sce)$gene_id #have to make row names of object the ensembl id instead of gene names
 colData(sce)$region <- as.factor(colData(sce)$region)
 colData(sce)$age <- as.numeric(colData(sce)$age)
 colData(sce)$sex <- as.factor(colData(sce)$sex)
@@ -184,4 +211,7 @@ cor <- layer_stat_cor(
   reverse = FALSE,
   top_n = NULL
 )
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc")
 layer_stat_cor_plot(cor, max = 1)
+dev.off()
