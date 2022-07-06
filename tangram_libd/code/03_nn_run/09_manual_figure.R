@@ -102,10 +102,13 @@ p = ggplot(df_long) +
     geom_jitter(
         aes_string(
             x = spatial_coords_names[1], y = spatial_coords_names[2],
-            color = 'cell_type'
+            fill = 'cell_type'
         ),
-        size = 0.15, width = 4, height = 4
-    )
+        size = 0.45, width = 4, height = 4, color = "black", shape = 21,
+        stroke = 0.05
+    ) +
+    scale_fill_hue(l = 80, name = "Cell type") +
+    guides(fill = guide_legend(override.aes = list(size = 5)))
 
 pdf(plot_path)
 print(p)

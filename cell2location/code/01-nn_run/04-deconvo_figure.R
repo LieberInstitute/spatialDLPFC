@@ -116,7 +116,8 @@ p = ggplot(df_long) +
         size = 0.45, width = 4, height = 4, color = "black", shape = 21,
         stroke = 0.05
     ) +
-    scale_fill_hue(l=80)
+    scale_fill_hue(l = 80, name = "Cell type") +
+    guides(fill = guide_legend(override.aes = list(size = 5)))
 
 pdf(plot_path)
 print(p)
