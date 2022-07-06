@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
   library(viridis)
   library(dplyr)
   library(sessioninfo)
+  library(tidyr)
 })
 
 # Load SPE
@@ -63,16 +64,19 @@ cluster_specific_indices = mapply(function(t, p, f) {
 as.data.frame(t_stat),
 as.data.frame(pvals),
 as.data.frame(fdrs))
+
+#cluster_specific_indices <- gather(as.data.frame(cluster_specific_indices),t_stat,index,t_stat_1:t_stat_9,factor_key = TRUE)
+#turn it into a long dataframe with a column for index and a column for cluster
 cluster_ind = unique(as.numeric(cluster_specific_indices))
 
 # Add logcounts from indexed from top genes
 exprs_heatmap <- assays(spe_pseudo)[[2]][cluster_ind,]
 rownames(exprs_heatmap) <- rowData(spe_pseudo)$gene_name[cluster_ind]
-#colnames(exprs_heatmap) = paste("logcount", 1:16, sep = "")
 
 # Add column/sample annotations for pheatmap
 cluster_labels <- as.vector(c(rep("Cluster_1", 28), rep("Cluster_2", 30), rep("Cluster_3", 30), rep("Cluster_4", 30),
-                              rep("Cluster_5", 30), rep("Cluster_6", 30), rep("Cluster_7", 30), rep("Cluster_8", 30),rep("Cluster_9",30)))
+                              rep("Cluster_5", 30), rep("Cluster_6", 30), rep("Cluster_7", 30), rep("Cluster_8", 30),
+                              rep("Cluster_9",30)))
 
 annotation_col <- data.frame(BayesSpace = factor(c(cluster_labels)))
 rownames(annotation_col) = colnames(exprs_heatmap)
@@ -80,6 +84,11 @@ ann_colors = list(BayesSpace = brewer.pal(9, "Set1"))
 names(ann_colors$BayesSpace) <- unique(annotation_col$BayesSpace)
 
 # Add row/gene annotations
+gene_labels <- as.vector(c(rep("Cluster_1", 5), rep("Cluster_2", 5), rep("Cluster_3", 5), rep("Cluster_4", 5),
+                                     rep("Cluster_5", 5), rep("Cluster_6", 5), rep("Cluster_7", 5), rep("Cluster_8", 5),
+                                     rep("Cluster_9",4)))
+annotation_row <- data.frame(Genes = factor(c(gene_labels)))
+rownames(annotation_row) = rownames(exprs_heatmap)
 
 # Plot heatmap of logcounts for clusters and samples
 pdf(file = here::here("plots","08_layer_differential_expression","top5_enrichment_heatmap.pdf"), width = 8, height = 8)
@@ -136,6 +145,7 @@ pheatmap(
   color = inferno(20),
   annotation_col = annotation_col,
   annotation_colors = ann_colors,
+  annotation_row = annotation_row,
   fontsize_row = 9,
   main = "logcounts from enrichment model of 5 genes/cluster",
 )
