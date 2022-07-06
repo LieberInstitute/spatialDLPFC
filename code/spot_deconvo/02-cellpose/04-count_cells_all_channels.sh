@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "count_cells_all_channels"
-#$ -o ../../../processed-data/spot_deconvo/02-cellpose/04-count_cells_all_channels_nogfap.log
-#$ -e ../../../processed-data/spot_deconvo/02-cellpose/04-count_cells_all_channels_nogfap.log
+#$ -o ../../../processed-data/spot_deconvo/02-cellpose/04-count_cells_all_channels_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/02-cellpose/04-count_cells_all_channels_$TASK_ID.log
 #$ -l bluejay,mf=20G,h_vmem=20G
 #$ -t 1
 #$ -tc 1
