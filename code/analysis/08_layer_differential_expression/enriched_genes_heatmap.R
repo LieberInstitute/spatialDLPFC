@@ -30,9 +30,31 @@ rownames(pvals) = rownames(mat)
 t_stat <- modeling_results$enrichment[,grep("[f|t]_stat_", colnames(modeling_results$enrichment))]
 rownames(t_stat) = rownames(mat)
 
-#Extract the FDRs
+# Extract the FDRs
 fdrs <- modeling_results$enrichment[,grep("fdr", colnames(modeling_results$enrichment))]
 rownames(fdrs) = rownames(mat)
+
+#get ensembl ids of mitochondrial genes
+drop_mt <- rownames(rowData(spe_pseudo)[grep("^MT",rowData(spe_pseudo)$gene_name),])
+length(drop_mt)
+# [1] 13
+
+dim(spe_pseudo)
+# [1] 12225   268
+spe_pseudo <- spe_pseudo[!(rownames(spe_pseudo)%in%drop_mt),]
+dim(spe_pseudo)
+# [1] 12212   268
+
+dim(mat)
+# [1] 12225   268
+mat <- mat[!(rownames(mat)%in%drop_mt),]
+dim(mat)
+# [1] 12212   268
+
+pvals <- pvals[!(rownames(pvals)%in%drop_mt),]
+t_stat <- t_stat[!(rownames(t_stat)%in%drop_mt),]
+fdrs <- fdrs[!(rownames(fdrs)%in%drop_mt),]
+
 
 ### pick top 10 genes per cluster:sample
 cluster_specific_indices = mapply(function(t, p, f) {
@@ -48,7 +70,7 @@ exprs_heatmap <- assays(spe_pseudo)[[2]][cluster_ind,]
 rownames(exprs_heatmap) <- rowData(spe_pseudo)$gene_name[cluster_ind]
 #colnames(exprs_heatmap) = paste("logcount", 1:16, sep = "")
 
-# Add annotations for pheatmap
+# Add column/sample annotations for pheatmap
 cluster_labels <- as.vector(c(rep("Cluster_1", 28), rep("Cluster_2", 30), rep("Cluster_3", 30), rep("Cluster_4", 30),
                               rep("Cluster_5", 30), rep("Cluster_6", 30), rep("Cluster_7", 30), rep("Cluster_8", 30),rep("Cluster_9",30)))
 
@@ -56,6 +78,8 @@ annotation_col <- data.frame(BayesSpace = factor(c(cluster_labels)))
 rownames(annotation_col) = colnames(exprs_heatmap)
 ann_colors = list(BayesSpace = brewer.pal(9, "Set1"))
 names(ann_colors$BayesSpace) <- unique(annotation_col$BayesSpace)
+
+# Add row/gene annotations
 
 # Plot heatmap of logcounts for clusters and samples
 pdf(file = here::here("plots","08_layer_differential_expression","top5_enrichment_heatmap.pdf"), width = 8, height = 8)
