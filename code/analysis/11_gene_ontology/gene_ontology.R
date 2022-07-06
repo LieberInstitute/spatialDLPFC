@@ -16,7 +16,12 @@ suppressPackageStartupMessages({
 
 load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression","parsed_modeling_results_k9.Rdata"))
 
+#load mito genes to drop
+load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/mito_genes.rda")
+
 enriched_model <- modeling_results$enrichment
+rownames(enriched_model)<-enriched_model$ensembl
+enriched_model <- enriched_model[!(rownames(enriched_model)%in%drop_mt),]
 
 ## Create named vector of gene lists with ENTREZID (works best) for GO (ranking by t-statistic)
 
