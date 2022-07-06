@@ -264,6 +264,11 @@ for sample_id in adata_vis.obs['sample'].cat.categories:
 #   Export deconvo results
 ################################################################################
 
+#   For export, use mean cell abundances (not 5% quantile)
+adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
+    'means_cell_abundance_w_sf'
+]
+
 clusters = adata_vis.obs[
     ['sample'] + list(adata_vis.uns['mod']['factor_names'])
 ]
@@ -273,7 +278,7 @@ clusters_by_id = clusters.groupby('sample')
 
 for sample_id in adata_vis.obs['sample'].cat.categories:
     clusters_subset = clusters_by_id.get_group(sample_id)
-
+    
     Path(os.path.join(processed_dir, sample_id)).mkdir(
         parents=True, exist_ok=True
     )
