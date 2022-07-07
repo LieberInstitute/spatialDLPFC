@@ -74,7 +74,10 @@ exprs_heatmap <- assays(spe_pseudo)[[2]][cluster_ind,]
 rownames(exprs_heatmap) <- rowData(spe_pseudo)$gene_name[cluster_ind]
 
 #subtract mean and divide by standard deviation 
-exprs_heatmap <- apply(exprs_heatmap,1,function(exprs_heatmap) (exprs_heatmap-mean(exprs_heatmap))/sd(exprs_heatmap))
+#exprs_heatmap <- apply(exprs_heatmap,1,function(exprs_heatmap) (exprs_heatmap-mean(exprs_heatmap))/sd(exprs_heatmap))
+e2 <- sweep(exprs_heatmap, 1, STATS = rowMeans(exprs_heatmap), FUN = "-")
+e3 <- sweep(e2, 1, STATS = apply(exprs_heatmap, 1, sd), FUN = "/")
+exprs_heatmap <-e3
 
 # Add column/sample annotations for pheatmap
 cluster_labels <- as.vector(c(rep("Cluster_1", 28), rep("Cluster_2", 30), rep("Cluster_3", 30), rep("Cluster_4", 30),
