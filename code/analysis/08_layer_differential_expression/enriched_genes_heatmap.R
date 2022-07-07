@@ -73,12 +73,15 @@ cluster_ind = unique(as.numeric(cluster_specific_indices))
 exprs_heatmap <- assays(spe_pseudo)[[2]][cluster_ind,]
 rownames(exprs_heatmap) <- rowData(spe_pseudo)$gene_name[cluster_ind]
 
+#subtract mean and divide by standard deviation 
+exprs_heatmap <- apply(exprs_heatmap,1,function(exprs_heatmap) (exprs_heatmap-mean(exprs_heatmap))/sd(exprs_heatmap))
+
 # Add column/sample annotations for pheatmap
 cluster_labels <- as.vector(c(rep("Cluster_1", 28), rep("Cluster_2", 30), rep("Cluster_3", 30), rep("Cluster_4", 30),
                               rep("Cluster_5", 30), rep("Cluster_6", 30), rep("Cluster_7", 30), rep("Cluster_8", 30),
                               rep("Cluster_9",30)))
 
-annotation_col <- data.frame(BayesSpace = factor(c(cluster_labels)))
+annotation_col <- data.frame(Cluster = factor(c(cluster_labels)))
 rownames(annotation_col) = colnames(exprs_heatmap)
 ann_colors = list(BayesSpace = brewer.pal(9, "Set1"))
 names(ann_colors$BayesSpace) <- unique(annotation_col$BayesSpace)
@@ -87,7 +90,7 @@ names(ann_colors$BayesSpace) <- unique(annotation_col$BayesSpace)
 gene_labels <- as.vector(c(rep("Cluster_1", 5), rep("Cluster_2", 5), rep("Cluster_3", 5), rep("Cluster_4", 5),
                                      rep("Cluster_5", 5), rep("Cluster_6", 5), rep("Cluster_7", 5), rep("Cluster_8", 5),
                                      rep("Cluster_9",4)))
-annotation_row <- data.frame(Genes = factor(c(gene_labels)))
+annotation_row <- data.frame(Cluster = factor(c(gene_labels)))
 rownames(annotation_row) = rownames(exprs_heatmap)
 
 # Plot heatmap of logcounts for clusters and samples
