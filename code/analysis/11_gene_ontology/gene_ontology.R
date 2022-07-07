@@ -738,45 +738,45 @@ dev.off()
 
 # For Molecular Layer
 
-pdf(file = here::here("plots","11_gene_ontology","clust_7_GO.pdf"), width = 16, height = 10)
-
-barplot(clust_7_CC, showCategory=20, x= "GeneRatio") +
-  ggtitle("clust_7 Cellular Compartment")
-barplot(clust_7_MF, showCategory=20, x= "GeneRatio") +
-  ggtitle("clust_7 Molecular Function")
-barplot(clust_7_BP, showCategory=20, x= "GeneRatio") +
-  ggtitle("clust_7 Biological Process")
-
-clust_7_CCx <- setReadable(clust_7_CC, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(clust_7_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
-         cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
-         shadow_text = "category", layout = "kk") +
-  ggtitle("clust_7 Cellular Compartment Network")
-clust_7_MFx <- setReadable(clust_7_MF, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(clust_7_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
-         cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
-         shadow_text = "category", layout = "kk") +
-  ggtitle("clust_7 Molecular Function Network")
-clust_7_BPx <- setReadable(clust_7_BP, 'org.Hs.eg.db', 'ENTREZID')
-cnetplot(clust_7_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
-         cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
-         shadow_text = "category", layout = "kk") +
-  ggtitle("clust_7 Biological Process Network")
-
-clust_7_CCp <- pairwise_termsim(clust_7_CC)
-emapplot(clust_7_CCp, showCategory = 20, color = "p.adjust",
-         cex_label_category = 0.5, layout = "kk") +
-  ggtitle("clust_7 Cellular Compartment Modules")
-clust_7_MFp <- pairwise_termsim(clust_7_MF)
-emapplot(clust_7_MFp, showCategory = 20, color = "p.adjust",
-         cex_label_category = 0.5, layout = "kk") +
-  ggtitle("clust_7 Molecular Function Modules")
-clust_7_BPp <- pairwise_termsim(clust_7_BP)
-emapplot(clust_7_BPp, showCategory = 20, color = "p.adjust",
-         cex_label_category = 0.5, layout = "kk") +
-  ggtitle("clust_7 Biological Process Modules")
-
-dev.off()
+# pdf(file = here::here("plots","11_gene_ontology","clust_7_GO.pdf"), width = 16, height = 10)
+# 
+# barplot(clust_7_CC, showCategory=20, x= "GeneRatio") +
+#   ggtitle("clust_7 Cellular Compartment")
+# barplot(clust_7_MF, showCategory=20, x= "GeneRatio") +
+#   ggtitle("clust_7 Molecular Function")
+# barplot(clust_7_BP, showCategory=20, x= "GeneRatio") +
+#   ggtitle("clust_7 Biological Process")
+# 
+# clust_7_CCx <- setReadable(clust_7_CC, 'org.Hs.eg.db', 'ENTREZID')
+# cnetplot(clust_7_CCx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+#          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
+#          shadow_text = "category", layout = "kk") +
+#   ggtitle("clust_7 Cellular Compartment Network")
+# clust_7_MFx <- setReadable(clust_7_MF, 'org.Hs.eg.db', 'ENTREZID')
+# cnetplot(clust_7_MFx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+#          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
+#          shadow_text = "category", layout = "kk") +
+#   ggtitle("clust_7 Molecular Function Network")
+# clust_7_BPx <- setReadable(clust_7_BP, 'org.Hs.eg.db', 'ENTREZID')
+# cnetplot(clust_7_BPx, showCategory = 20, colorEdge = TRUE, cex_category = 0.2,
+#          cex_gene = 0.1, cex_label_category = 0.4, cex_label_gene = 0.2,
+#          shadow_text = "category", layout = "kk") +
+#   ggtitle("clust_7 Biological Process Network")
+# 
+# clust_7_CCp <- pairwise_termsim(clust_7_CC)
+# emapplot(clust_7_CCp, showCategory = 20, color = "p.adjust",
+#          cex_label_category = 0.5, layout = "kk") +
+#   ggtitle("clust_7 Cellular Compartment Modules")
+# clust_7_MFp <- pairwise_termsim(clust_7_MF)
+# emapplot(clust_7_MFp, showCategory = 20, color = "p.adjust",
+#          cex_label_category = 0.5, layout = "kk") +
+#   ggtitle("clust_7 Molecular Function Modules")
+# clust_7_BPp <- pairwise_termsim(clust_7_BP)
+# emapplot(clust_7_BPp, showCategory = 20, color = "p.adjust",
+#          cex_label_category = 0.5, layout = "kk") +
+#   ggtitle("clust_7 Biological Process Modules")
+# 
+# dev.off()
 
 # For Cluster 8
 
