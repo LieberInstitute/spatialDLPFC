@@ -36,7 +36,7 @@ fdrs <- modeling_results$enrichment[,grep("fdr", colnames(modeling_results$enric
 rownames(fdrs) = rownames(mat)
 
 #get ensembl ids of mitochondrial genes
-drop_mt <- rownames(rowData(spe_pseudo)[grep("^MT",rowData(spe_pseudo)$gene_name),])
+drop_mt <- rownames(rowData(spe_pseudo)[grep("MT-",rowData(spe_pseudo)$gene_name),])
 length(drop_mt)
 # [1] 13
 
