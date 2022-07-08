@@ -1,3 +1,6 @@
+#   Given mean fluorescence intensities for each nucleus, classify cell types
+#   present in each spot.
+
 import os
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,18 +8,10 @@ from numpy.random import default_rng
 import pandas as pd
 import seaborn as sns
 import tifffile
-from scipy.spatial import KDTree
 from scipy import ndimage
 from skimage.measure import regionprops, regionprops_table
 import pyhere
 from pathlib import Path
-
-#   Build upon Richard's method (as seen in 02-count_cells.py) to develop a
-#   more robust approach to calling cell types in Visium-IF data. In particular,
-#       1. incorporate the GFAP channel and associated cell type
-#       2. call cell types for each nucleus, such that the sum of cells of every
-#          type is equal to the total number of cells in the spot (not true in
-#          the previous approach!)
 
 ################################################################################
 #   Variable definitions
@@ -30,13 +25,17 @@ sample_info_path = pyhere.here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
 )
 img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
-mask_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', 'masks', '{}_mask.npy'
+expanded_mask_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'expanded_masks.npy'
 )
 spot_path = pyhere.here(
     'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
     'tissue_positions_list.csv'
 )
+df_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df.csv'
+)
+
 clusters_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
 )
@@ -59,10 +58,6 @@ cell_types = {
 }
 m_per_px = 0.497e-6
 spot_radius = 65e-6
-area_threshold = 200
-
-dilation_radius = 15
-dilation_chunk_size = 6
 
 #   Mean fluorescence below this value will be considered an indication of an 
 #   absence of the given cell type
@@ -113,52 +108,6 @@ def plot_roi(img, props, indices, vmax: int = 128, pad: int = 25):
     
     return fig
 
-#   Perform a dilation-like transformation on 'img' by total size
-#   'dilation_radius'. The whole transformation actually involves a series
-#    of dilations by size [chunk_size / 2] followed by inversion. The idea
-#   is to expand each mask equally without bias towards masks with larger-valued
-#   labels (in case of overlap, which frequently happens)
-def balanced_dilation(img, dilation_radius, chunk_size, verbose = False):
-    assert chunk_size % 2 == 0, 'chunk_size must be even'
-    assert 2 * dilation_radius % chunk_size == 0, 'cannot break this radius into chunks'
-    
-    num_chunks =  int(2 * dilation_radius / chunk_size)
-    dilation_chunked = int(dilation_radius / num_chunks)
-    assert num_chunks % 2 == 1, 'must use an odd number of chunks'
-    
-    #   We'll use -1 * MAX_VALUE as a placeholder, assumed to be smaller than
-    #   all elements in 'img'. Check this assumption
-    MAX_VALUE = 2 ** 31 - 1
-    assert(np.all(img < MAX_VALUE))
-    
-    expanded_masks = img.copy().astype(np.int32)
-    
-    for i in range(num_chunks):
-        if verbose:
-            print(f'Dilating by {dilation_chunked} pixels...')
-        
-        #   Make sure zero-valued elements are always treated as the smallest
-        #   value possible for dilation
-        zero_indices = expanded_masks == 0
-        expanded_masks[zero_indices] = -1 * MAX_VALUE
-        
-        expanded_masks = ndimage.grey_dilation(
-            expanded_masks,
-            size = (dilation_chunked, dilation_chunked)
-        )
-        
-        #   Return "zero-valued" elements to a true value of 0
-        zero_indices = expanded_masks == -1 * MAX_VALUE
-        expanded_masks[zero_indices] = 0
-        
-        if i < num_chunks - 1:
-            if verbose:
-                print('Inverting...')
-            
-            expanded_masks *= -1
-    
-    return expanded_masks.astype(img.dtype)
-
 ################################################################################
 #   Analysis
 ################################################################################
@@ -166,6 +115,25 @@ def balanced_dilation(img, dilation_radius, chunk_size, verbose = False):
 # os.environ['SGE_TASK_ID'] = '1'
 
 rng = default_rng()
+
+img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
+expanded_mask_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'expanded_masks.npy'
+)
+spot_path = pyhere.here(
+    'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
+    'tissue_positions_list.csv'
+)
+df_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df.csv'
+)
+
+clusters_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
+)
+cells_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'cell_metrics.csv'
+)
 
 #-------------------------------------------------------------------------------
 #   Read in sample info and adjust paths for this particular sample ID
@@ -184,14 +152,16 @@ sample_id_img = sample_ids_img[int(os.environ['SGE_TASK_ID']) - 1]
 img_path = str(img_path).format(sample_id_img)
 clusters_path = str(clusters_path).format(sample_id_img)
 cells_path = str(cells_path).format(sample_id_img)
-mask_path = str(mask_path).format(sample_id_img)
+expanded_mask_path = str(expanded_mask_path).format(sample_id_img)
+df_path = str(df_path).format(sample_id_img)
+
 sample_id_spot = sample_ids_spot[int(os.environ['SGE_TASK_ID']) - 1]
 spot_path = str(spot_path).format(sample_id_spot)
 
 Path(clusters_path).parents[0].mkdir(parents=True, exist_ok=True)
 
 #-------------------------------------------------------------------------------
-#   Read in spot data
+#   Read in spot data and other inputs
 #-------------------------------------------------------------------------------
 
 #   Read in all spot data
@@ -206,74 +176,11 @@ raw = raw.iloc[raw.included[raw.included == 1].index].reset_index().drop(
     columns=["included", "index"]
 )
 
-#-------------------------------------------------------------------------------
-#   Quantify mean fluorescence for each channel at each nucleus
-#-------------------------------------------------------------------------------
-
-#   Load multi-channel image and masks from segmenting DAPI channel
 imgs = tifffile.imread(img_path)
-masks = np.load(mask_path)
+df = pd.read_csv(df_path)
+expanded_masks = np.load(expanded_masks_path, expanded_masks)
 
-#   Dilate the original masks
-expanded_masks = balanced_dilation(masks, dilation_radius, dilation_chunk_size)
-
-#   Quantify the mean image fluorescence intensity at each nucleus
-#   identified by segmenting the DAPI channel. This is done for each
-#   (non-lipofuscin, non-DAPI) channel
-its = {
-    names[i]: regionprops_table(
-        expanded_masks, intensity_image=imgs[i], properties=["intensity_mean"]
-    )["intensity_mean"]
-    for i in (1, 3, 4, 5)
-}
-
-#   Create a table containing the centroids and areas of each mask
-#   (nucleus), and add this info to the intensities table
-general = regionprops_table(masks, properties=["centroid", "area"])
-its["area"] = general["area"]
-its["x"] = general["centroid-0"]
-its["y"] = general["centroid-1"]
-
-df = pd.DataFrame(its)
 props = regionprops(expanded_masks)
-
-#-------------------------------------------------------------------------------
-#   Exploratory plot: show the distribution of masks over spots
-#-------------------------------------------------------------------------------
-
-#   Plot mask spatial distribution vs. spot distribution; there should be
-#   quite a bit of overlap
-plt.clf()
-plt.scatter(raw["x"], raw["y"], 2)
-plt.scatter(df["y"], df["x"], 2)
-plt.savefig(
-    os.path.join(
-        plot_dir, f'mask_spot_overlap_{sample_id_img}.{plot_file_type}'
-    )
-)
-
-#-------------------------------------------------------------------------------
-#   Filter masks that are too small or not within a spot
-#-------------------------------------------------------------------------------
-
-# Build KD tree for nearest neighbor search.
-kd = KDTree(raw[["x", "y"]])
-
-#   For each mask, assign a distance to the nearest spot ('dist') and index of
-#   that spot in 'df' ('idx'). Add this info to 'df'
-dist, idx = kd.query(df[["x", "y"]])
-dist = pd.DataFrame({"dist": dist, "idx": idx})
-df = pd.concat([df, dist], axis=1)
-
-# Filters out masks that are smaller than a threshold and
-# masks whose centroid is farther than the spot radius (aka not inside the
-# spot).
-px_dist = spot_radius / m_per_px  # meter per px.
-df = df[df.dist < px_dist]
-
-frac_kept = round(100 * np.sum(df.area > area_threshold) / len(df.area), 1)
-print(f'Keeping {frac_kept}% of masks, which met a minimum area threshold.')
-df = df[df.area > area_threshold]
 
 #-------------------------------------------------------------------------------
 #   Exploratory plot: show 5 random nuclei
@@ -298,7 +205,6 @@ for i, channel in enumerate(cell_types.keys()):
     axs[i].hist(df[channel], bins = 100)
     axs[i].set_title(channel)
 
-# plt.show()
 plt.savefig(
     os.path.join(
         plot_dir, f'fluor_histograms_raw_{sample_id_img}.{plot_file_type}'
