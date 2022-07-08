@@ -78,13 +78,14 @@ computeEnrichment <- function(spe,var_oi,covars){
   
   
   ## get duplicate correlation #http://web.mit.edu/~r/current/arch/i386_linux26/lib/R/library/limma/html/dupcor.html
+  message("Run dupllicateCorrelation()")
   corfit <- duplicateCorrelation(mat_filter, mod,
                                  block = spe_pseudo$sample_id)
   
   ## Next for each layer test that layer vs the rest
   cluster_idx <- splitit(colData(spe_pseudo)[,var_oi])
   
-  message("run enrichment statistics")
+  message("Run enrichment statistics")
   eb0_list_cluster <- lapply(cluster_idx, function(x) {
     res <- rep(0, ncol(spe_pseudo))
     res[x] <- 1
@@ -313,17 +314,119 @@ dev.off()
 #subset snRNAseq data to just excitatory clusters
 dim(sce)
 # [1] 36601 77604
-
 sce <- sce[,grep("Excit",sce$cellType_hc)]
 dim(sce)
 # [1] 36601 24809
-
+sce$cellType_hc <- droplevels(sce$cellType_hc)
 results_specificity_excit <- computeEnrichment(sce,var_oi,covars)
 save(results_specificity_excit,file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/12_spatial_registration_sc/results_specificity_excit.RDS")
-
 specificity_stats <- results_specificity_excit[, grep("^t_stat", colnames(results_specificity_excit))]
 colnames(specificity_stats) <- gsub("^t_stat_", "", colnames(specificity_stats))
 
 
+#vs manual annotations
+modeling_results = fetch_data(type = "modeling_results")
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_manual.pdf")
+layer_stat_cor_plot(cor, max = 0.7)
+dev.off()
+
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = 100
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_manual_top_100.pdf")
+layer_stat_cor_plot(cor, max = 0.7)
+dev.off()
+
+#load my k = 9 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k9.Rdata")
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_spatialk9.pdf")
+layer_stat_cor_plot(cor, max = 0.6)
+dev.off()
+
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = 100
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_spatialk9_top_100.pdf")
+layer_stat_cor_plot(cor, max = 0.6)
+dev.off()
+
+#load my k = 16 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k16.Rdata")
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_spatialk16.pdf")
+layer_stat_cor_plot(cor, max = 0.7)
+dev.off()
+
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = 100
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_spatialk16_top_100.pdf")
+layer_stat_cor_plot(cor, max = 0.7)
+dev.off()
+
+#load my k = 16 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k28.Rdata")
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_spatialk28.pdf")
+layer_stat_cor_plot(cor, max = 0.8)
+dev.off()
+
+cor <- layer_stat_cor(
+  specificity_stats,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = 100
+)
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/12_spatial_registration_sc/spatial_registration_plot_sc_excit_v_spatialk28_top_100.pdf")
+layer_stat_cor_plot(cor, max = 0.8)
+dev.off()
 
 
