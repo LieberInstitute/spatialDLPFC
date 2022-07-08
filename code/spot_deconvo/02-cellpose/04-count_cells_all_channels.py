@@ -74,7 +74,7 @@ plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 #   Functions
 ################################################################################
 
-def plot_roi(img, props, indices, vmax: int = 128, pad: int = 5):
+def plot_roi(img, props, indices, vmax: int = 128, pad: int = 25):
     #   Set up the plot
     fig, axs = plt.subplots(
         nrows=len(indices), ncols=6, figsize=(18, len(indices) * 3)
