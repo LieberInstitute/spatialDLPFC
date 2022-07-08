@@ -98,17 +98,29 @@ for (colname in spatial_coords_names) {
 df_long[[spatial_coords_names[2]]] = dim(img)[2] -
     df_long[[spatial_coords_names[2]]]
 
+#   Improve plotting speed and file size by keeping a copy of just the spots.
+#   Get spot radius in high-res pixels
+spots = df_long[match(unique(df_long$barcode), df_long$barcode),]
+spots$spot_radius = scale_json$spot_diameter_fullres * 
+    scale_json$tissue_hires_scalef / 2
+
 #   Create the deconvolution figure
-p = ggplot(df_long) +
+p = ggplot() +
+    #   The high-res image as the plot's background
     annotation_custom(
         rasterGrob(
             img, width = unit(1,"npc"), height = unit(1,"npc")
         ),
         -Inf, Inf, -Inf, Inf
     ) +
+    #   The axes should exactly span the pixel range of the image, and pixels
+    #   should be squares
     scale_x_continuous(limits = c(0, dim(img)[1]), expand = c(0, 0)) +
     scale_y_continuous(limits = c(0, dim(img)[2]), expand = c(0, 0)) +
+    coord_fixed() +
+    #   Plot the individual cells, jittered within a spot
     geom_jitter(
+        data = df_long,
         aes_string(
             x = spatial_coords_names[1], y = spatial_coords_names[2],
             fill = 'cell_type'
@@ -116,6 +128,16 @@ p = ggplot(df_long) +
         size = 0.45, width = 4, height = 4, color = "black", shape = 21,
         stroke = 0.05
     ) +
+    #   Plot empty circles for each spot (to show the spot grid)
+    geom_circle(
+        data = spots,
+        mapping = aes_string(
+            x0 = spatial_coords_names[1], y0 = spatial_coords_names[2],
+            r = 'spot_radius'
+        ),
+        size = 0.1
+    ) +
+    #   Brighten colors and improve legend
     scale_fill_hue(l = 80, name = "Cell type") +
     guides(fill = guide_legend(override.aes = list(size = 5)))
 
