@@ -20,7 +20,8 @@ spe_IF_in = here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
 )
 spe_nonIF_in = here(
-    "processed-data","rdata", "spe", "01_build_spe", "spe_final.Rdata"
+    "processed-data", "rdata", "spe", "01_build_spe",
+    "spe_filtered_final_with_clusters.Rdata"
 )
 
 sce_out = here(
@@ -65,7 +66,7 @@ write_anndata = function(sce, out_path) {
                 
                 return()
             },
-            env = zellkonverterAnnDataEnv,
+            env = zellkonverterAnnDataEnv(),
             sce = sce,
             filename = out_path
         )
