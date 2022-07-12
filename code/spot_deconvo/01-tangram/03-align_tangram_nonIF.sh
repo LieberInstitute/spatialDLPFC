@@ -38,6 +38,8 @@ export CUDA_VISIBLE_DEVICES=$(
     echo "$avail_gpus" | head -n $NUM_GPUS | paste -sd ","
 )
 
+echo "Chose GPU(s): $CUDA_VISIBLE_DEVICES"
+
 ###############################################################################
 #   Submit the python script
 ###############################################################################
