@@ -27,14 +27,14 @@ import json
 
 plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "IF")
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo", "01-tangram", "IF"
+    "processed-data", "spot_deconvo", "01-tangram", "IF"
 )
 
-sc_path_in = pyhere.here(processed_dir, 'sce.h5ad')
+sc_path_in = pyhere.here(os.path.dirname(processed_dir), 'sce.h5ad')
 sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
 sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
-marker_path = pyhere.here(processed_dir, 'markers.txt')
+marker_path = pyhere.here(os.path.dirname(processed_dir), 'markers.txt')
 id_path_out = pyhere.here(processed_dir, 'sample_ids.txt')
 
 #   Directory containing hires image and a JSON containing scale factors and
@@ -49,13 +49,11 @@ spaceranger_dir = pyhere.here(
 #   Dataset-specific variables
 #-------------------------------------------------------------------------------
 
-#   These variable names have not been verified!! TODO
-
 #   Variable name in ad_sp.obs to color by in deconvolution-related plots
-cluster_var_plots = 'Cluster'
+cluster_var_plots = '10x_kmeans_9_clusters'
 
 #   Variable name in ad_sc.obs representing cell type
-cell_type_var = 'cellType'
+cell_type_var = 'cellType_broad_hc'
 
 #   Variable name in both ad_sc.var and ad_sp.var containing Ensembl gene ID and
 #   variable name in ad_sp.var containing gene symbol
@@ -70,7 +68,7 @@ select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
 ]
 
-spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
+spatial_coords_names = ['pxl_row_in_fullres', 'pxl_col_in_fullres']
 
 #   If True, important per-spot cell counts from a 'clusters.csv' file.
 #   Otherwise it is assumed the object already contains cell counts that will be
@@ -91,13 +89,7 @@ ad_sp = sc.read_h5ad(sp_path_in)
 
 ad_sp.obs[sample_id_var] = ad_sp.obs[sample_id_var].astype('category')
 
-#   Write sample IDs to a file so we don't have to load the entire spatial
-#   AnnData into memory to see all IDs
-with open(id_path_out, 'w') as f:
-    for id in ad_sp.obs[sample_id_var].categories:
-        f.writelines(id + '\n')
-
-sample_name = ad_sp.obs[sample_id_var].categories[
+sample_name = ad_sp.obs[sample_id_var].unique()[
     int(os.environ['SGE_TASK_ID']) - 1
 ]
 print('Subsetting to just sample {}.'.format(sample_name))
@@ -164,14 +156,11 @@ assert img_arr.shape == (2000, 2000, 3), img_arr.shape
 
 ad_sp.uns['spatial'][sample_name]['images'] = { 'hires': img_arr }
 
-#   Tangram expects spatial coords in a very specific format
+#   Correct how spatialCoords are stored. Currently, they are a pandas
+#   DataFrame, with the columns potentially in the wrong order (depending on the
+#   version of SpatialExperiment used in R). We need them as a numpy array.
 ad_sp.obsm['spatial'] = np.array(
-    list(
-        zip(
-            ad_sp.obs[spatial_coords_names[0]],
-            ad_sp.obs[spatial_coords_names[1]]
-        )
-    )
+    ad_sp.obsm['spatial'][spatial_coords_names]
 )
 
 #-------------------------------------------------------------------------------
