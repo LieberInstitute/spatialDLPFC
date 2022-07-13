@@ -92,10 +92,10 @@ gc()
 reducedDims(spe_IF)$spatial = spatialCoords(spe_IF)
 reducedDims(spe_nonIF)$spatial = spatialCoords(spe_nonIF)
 
-print('Converting all 3 objects to AnnDatas...')
-write_anndata(sce, sce_out)
-write_anndata(spe_IF, spe_IF_out)
-write_anndata(spe_nonIF, spe_nonIF_out)
+# print('Converting all 3 objects to AnnDatas...')
+# write_anndata(sce, sce_out)
+# write_anndata(spe_IF, spe_IF_out)
+# write_anndata(spe_nonIF, spe_nonIF_out)
 gc()
 
 ###############################################################################
@@ -112,16 +112,12 @@ rownames(sce) = rowData(sce)$gene_id
 
 print('Determining and writing markers...')
 marker_stats = get_mean_ratio2(
-    sce, cellType_col = 'cellType_broad_hc', assay_name = 'logcounts',
-    add_symbol = TRUE
+    sce, cellType_col = 'cellType_broad_hc', assay_name = 'logcounts'
 )
 
 #   Take top N marker genes for each (non-rare) cell type
 marker_stats = marker_stats %>% 
-    filter(
-        (rank_ratio <= n_markers_per_type) & 
-        !(Symbol %in% c("MRC1","LINC00278"))
-    )
+    filter(rank_ratio <= n_markers_per_type)
 
 markers_scratch = marker_stats$gene
 
