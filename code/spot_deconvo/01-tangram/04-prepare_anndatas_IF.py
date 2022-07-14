@@ -41,8 +41,7 @@ id_path_out = pyhere.here(processed_dir, 'sample_ids.txt')
 #   spot size for a given sample. Here '{}' will be replaced by a single
 #   sample name
 spaceranger_dir = pyhere.here(
-    'processed-data', 'rerun_spaceranger', '01_spaceranger_IF', '{}', 'outs',
-    'spatial'
+    'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial'
 )
 
 #-------------------------------------------------------------------------------
@@ -131,30 +130,29 @@ ad_sp.obs[cluster_var_plots] = ad_sp.obs[cluster_var_plots].astype('category')
 
 #   Path to JSON from spaceranger including spot size for this sample
 json_path = pyhere.here(
-    spaceranger_dir.format(sample_name), 'scalefactors_json.json'
+    str(spaceranger_dir).format(sample_name), 'scalefactors_json.json'
 )
 
 with open(json_path) as f: 
     json_data = json.load(f)
 
-#   Store scalefactors in AnnData as squidpy expects
-ad_sp.uns['spatial'] = {
-    sample_name: {
-        'scalefactors': json_data
-    }
-}
-
 #   Read in high-res image as numpy array with values in [0, 1] rather than
-#   [0, 255] (note that it isn't verified the original range is [0, 255]!). 
-#   Then attach to AnnData object. TODO: verify the range of the image!!
+#   [0, 255], then attach to AnnData object.
 img_path = str(
-    pyhere.here(spaceranger_dir.format(sample_name), 'tissue_hires_image.png')
+    pyhere.here(
+        str(spaceranger_dir).format(sample_name), 'tissue_hires_image.png'
+    )
 )
 
 img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
-assert img_arr.shape == (2000, 2000, 3), img_arr.shape
 
-ad_sp.uns['spatial'][sample_name]['images'] = { 'hires': img_arr }
+#   Store image and scalefactors in AnnData as squidpy expects
+ad_sp.uns['spatial'] = {
+    sample_name: {
+        'scalefactors': json_data,
+        'images' : { 'hires' : img_arr }
+    }
+}
 
 #   Correct how spatialCoords are stored. Currently, they are a pandas
 #   DataFrame, with the columns potentially in the wrong order (depending on the
@@ -168,17 +166,18 @@ ad_sp.obsm['spatial'] = np.array(
 #-------------------------------------------------------------------------------
 
 if IMPORT_CELL_COUNTS:
-    cell_counts_path = cell_counts_path.format(sample_name)
+    cell_counts_path = str(cell_counts_path).format(sample_name)
 
     #   Read in counts, whose associated barcodes should match the spatial
     #   AnnData's
     cell_counts = pd.read_csv(cell_counts_path)
     cell_counts['key'].index = pd.Series(
-        [x.split('_')[1] for x in cell_counts['key']]
+        [x.split('_')[0] for x in cell_counts['key']]
     )
-    assert all(ad_sp.obs['key'] == cell_counts['key'])
-
-    ad_sp.obs[cell_count_var] = cell_counts['cell_count']
+    
+    cell_counts['n_cells'].index = cell_counts['key'].index
+    ad_sp.obs[cell_count_var] = cell_counts['n_cells']
+    assert not any(ad_sp.obs[cell_count_var].isna())
 
 #-------------------------------------------------------------------------------
 #   Save AnnDatas
@@ -196,5 +195,5 @@ Path(os.path.join(processed_dir, sample_name)).mkdir(
 #   ordering. Therefore, while it's a bit wasteful to save many "copies" of
 #   'ad_sc' as done here, it simplifies code later by avoiding several order-
 #   related complications that would need manual resolution
-ad_sp.write_h5ad(sp_path_out.format(sample_name))
-ad_sc.write_h5ad(sc_path_out.format(sample_name))
+ad_sp.write_h5ad(str(sp_path_out).format(sample_name))
+ad_sc.write_h5ad(str(sc_path_out).format(sample_name))
