@@ -138,10 +138,11 @@ sample_ids_spot = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
 sample_id_img = sample_ids_img[int(os.environ['SGE_TASK_ID']) - 1]
 img_path = str(img_path).format(sample_id_img)
 mask_path = str(mask_path).format(sample_id_img)
-out_df_path = str(out_df_path).format(sample_id_img)
-out_masks_path = str(out_masks_path).format(sample_id_img)
+
 sample_id_spot = sample_ids_spot[int(os.environ['SGE_TASK_ID']) - 1]
 spot_path = str(spot_path).format(sample_id_spot)
+out_df_path = str(out_df_path).format(sample_id_spot)
+out_masks_path = str(out_masks_path).format(sample_id_spot)
 
 Path(out_df_path).parents[0].mkdir(parents=True, exist_ok=True)
 
