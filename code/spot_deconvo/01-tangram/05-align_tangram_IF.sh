@@ -3,7 +3,7 @@
 #$ -N "align_tangram_IF"
 #$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_$TASK_ID.log
-#$ -l caracol,mf=64G,h_vmem=64G
+#$ -l caracol,mf=128G,h_vmem=128G
 #$ -t 1
 #$ -tc 1
 
