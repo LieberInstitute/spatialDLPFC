@@ -3,8 +3,8 @@
 #$ -N "prepare_anndatas_IF"
 #$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/04-prepare_anndatas_IF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/04-prepare_anndatas_IF_$TASK_ID.log
-#$ -l bluejay,mf=10G,h_vmem=10G
-#$ -t 1
+#$ -l bluejay,mf=80G,h_vmem=80G,h_fsize=50G
+#$ -t 2-4
 #$ -tc 1
 
 echo "**** Job starts ****"
