@@ -1,0 +1,1 @@
+After attempting `cell2location` with a variety of settings and training genes, results continued to be meaningless (plots of cell-type distribution were just noise). This directory was created to test if there was a problem with the code itself (not the settings/inputs to `cell2location`) by trying to closely replicate the tutorial code using the tutorial data.

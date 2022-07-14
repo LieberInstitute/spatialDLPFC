@@ -1,3 +1,37 @@
+## Originally ignored files in spatialDLPFC
 .Rproj.user
 trash
 plots/
+
+
+#  Files to ignore, no matter where they are
+*.h5ad
+*.rda
+*.Rhistory
+*.xml
+*.iml
+
+*/code/*/__pycache__
+
+tangram_libd/raw-data
+
+tangram_libd/processed-data/03_nn_run/spatial_registration/*.Rdata
+
+spagcn/processed-data/*/*.csv
+spagcn/plots/*/coord_test*.jpg
+
+spagcn/raw-data/01-explore_test_data
+spagcn/processed-data/01-explore_test_data/151673_map.jpg
+
+spagcn/plots/03-our_data_analysis/*/coord_test.jpg
+spagcn/processed-data/03-our_data_analysis/*/adj.csv
+
+spagcn/raw-data/04-spatial_dlpfc
+spagcn/processed-data/04-spatial_dlpfc/*/adj.csv
+spagcn/plots/04-spatial_dlpfc/*/coord_test.jpg
+
+spagcn/processed-data/05-bayesspace_meta
+spagcn/plots/05-bayesspace_meta/*/*_clusters/*.png
+
+cell2location/processed-data
+cell2location/plots
