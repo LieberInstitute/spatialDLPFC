@@ -267,24 +267,26 @@ def classify_cells(df, cell_types, verbose = False):
         (df['tmem119'] < noise_cutoff),
         'cell_type'
     ] = 'other'
+    
+    return temp
 
 #   Number of cells that change from astrocyte to not astrocyte nor other when
 #   GFAP fluorescence is ignored (if GFAP fluorescence really does indicate the
 #   presence of astrocytes, this should rarely happen!)
 df_copy = df.copy()
 cell_types['gfap'] = 'astro'
-classify_cells(df_copy, cell_types)
+_ = classify_cells(df_copy, cell_types)
 df_copy = df_copy[df_copy['cell_type'] == 'astro']
 df_copy = df_copy[df_copy['gfap'] >= noise_cutoff]
 
 cell_types.pop('gfap')
-classify_cells(df_copy, cell_types)
+_ = classify_cells(df_copy, cell_types)
 df_copy.groupby('cell_type').count()
 
 # 1404! Either GFAP can't be trusted or the cutoff method is ineffective
 print(f'Number of cells that change from astrocyte to neither astrocyte nor other when GFAP fluorescence is ignored: {df_copy.shape[0]}')
 
-classify_cells(df, cell_types, True)
+temp = classify_cells(df, cell_types, True)
 
 #-------------------------------------------------------------------------------
 #   Verify how well the deconvolution method performed
