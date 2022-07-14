@@ -150,13 +150,13 @@ sample_ids_spot = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
 
 sample_id_img = sample_ids_img[int(os.environ['SGE_TASK_ID']) - 1]
 img_path = str(img_path).format(sample_id_img)
-clusters_path = str(clusters_path).format(sample_id_img)
-cells_path = str(cells_path).format(sample_id_img)
-expanded_mask_path = str(expanded_mask_path).format(sample_id_img)
-df_path = str(df_path).format(sample_id_img)
 
 sample_id_spot = sample_ids_spot[int(os.environ['SGE_TASK_ID']) - 1]
 spot_path = str(spot_path).format(sample_id_spot)
+df_path = str(df_path).format(sample_id_spot)
+clusters_path = str(clusters_path).format(sample_id_spot)
+cells_path = str(cells_path).format(sample_id_spot)
+expanded_mask_path = str(expanded_mask_path).format(sample_id_spot)
 
 Path(clusters_path).parents[0].mkdir(parents=True, exist_ok=True)
 
@@ -178,7 +178,7 @@ raw = raw.iloc[raw.included[raw.included == 1].index].reset_index().drop(
 
 imgs = tifffile.imread(img_path)
 df = pd.read_csv(df_path)
-expanded_masks = np.load(expanded_masks_path, expanded_masks)
+expanded_masks = np.load(expanded_mask_path)
 
 props = regionprops(expanded_masks)
 
@@ -239,34 +239,52 @@ print(f"{bad_perc}% of nuclei don't have a clear cell type.")
 #   Call cell types
 #-------------------------------------------------------------------------------
 
-#   Filtering out what we think are cells of a non-target type dramatically
-#   changes the mean intensity, which is a good sign (we get a clear signal for
-#   what intensity looks like in the target cell type)
-weights = {}
-for channel in cell_types.keys():
-    print(f'Mean for {channel} above cutoff: {np.mean(df[channel][df[channel] > noise_cutoff])}')
-    print(f'Mean for {channel} otherwise: {np.mean(df[channel])}')
-    weights[channel] = 1 / np.mean(df[channel][df[channel] > noise_cutoff])
+def classify_cells(df, cell_types, verbose = False):
+    weights = {}
+    for channel in cell_types.keys():
+        if verbose:
+            print(f'Mean for {channel} above cutoff: {np.mean(df[channel][df[channel] > noise_cutoff])}')
+            print(f'Mean for {channel} otherwise: {np.mean(df[channel])}')
+        
+        weights[channel] = 1 / np.mean(df[channel][df[channel] > noise_cutoff])
+    
+    
+    #   Weight the intensity of each channel inversely by the average intensity seen
+    #   in cells above the "noise cutoff". Then call cell types by choosing the
+    #   maximal weighted intensity across the 4 possible types
+    temp = df[[x for x in cell_types.keys()]].copy()
+    for channel in cell_types.keys():
+        temp[channel] *= weights[channel]
+    
+    temp['max_channel'] = [temp.columns[np.argmax(temp.loc[i])] for i in temp.index]
+    df['cell_type'] = [cell_types[x] for x in temp['max_channel']]
+    
+    #   For now, assume all cells with low fluorescence in all channels are a cell
+    #   type not measured by a marker/ image channel
+    df.loc[
+        (df['neun'] < noise_cutoff) &
+        (df['olig2'] < noise_cutoff) &
+        (df['tmem119'] < noise_cutoff),
+        'cell_type'
+    ] = 'other'
 
+#   Number of cells that change from astrocyte to not astrocyte nor other when
+#   GFAP fluorescence is ignored (if GFAP fluorescence really does indicate the
+#   presence of astrocytes, this should rarely happen!)
+df_copy = df.copy()
+cell_types['gfap'] = 'astro'
+classify_cells(df_copy, cell_types)
+df_copy = df_copy[df_copy['cell_type'] == 'astro']
+df_copy = df_copy[df_copy['gfap'] >= noise_cutoff]
 
-#   Weight the intensity of each channel inversely by the average intensity seen
-#   in cells above the "noise cutoff". Then call cell types by choosing the
-#   maximal weighted intensity across the 4 possible types
-temp = df[[x for x in cell_types.keys()]].copy()
-for channel in cell_types.keys():
-    temp[channel] *= weights[channel]
+cell_types.pop('gfap')
+classify_cells(df_copy, cell_types)
+df_copy.groupby('cell_type').count()
 
-temp['max_channel'] = [temp.columns[np.argmax(temp.loc[i])] for i in temp.index]
-df['cell_type'] = [cell_types[x] for x in temp['max_channel']]
+# 1404! Either GFAP can't be trusted or the cutoff method is ineffective
+print(f'Number of cells that change from astrocyte to neither astrocyte nor other when GFAP fluorescence is ignored: {df_copy.shape[0]}')
 
-#   For now, assume all cells with low fluorescence in all channels are a cell
-#   type not measured by a marker/ image channel
-df.loc[
-    (df['neun'] < noise_cutoff) &
-    (df['olig2'] < noise_cutoff) &
-    (df['tmem119'] < noise_cutoff),
-    'cell_type'
-] = 'other'
+classify_cells(df, cell_types, True)
 
 #-------------------------------------------------------------------------------
 #   Verify how well the deconvolution method performed
