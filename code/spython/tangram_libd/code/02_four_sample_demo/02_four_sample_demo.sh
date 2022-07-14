@@ -2,8 +2,8 @@
 #$ -cwd
 #$ -N "four_sample_demo"
 #$ -j y
-#$ -o /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_libd/processed-data/02_four_sample_demo/four_sample_demo_$TASK_ID.log
-#$ -e /dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spython/tangram_libd/processed-data/02_four_sample_demo/four_sample_demo_$TASK_ID.log
+#$ -o /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spython/tangram_libd/processed-data/02_four_sample_demo/four_sample_demo_$TASK_ID.log
+#$ -e /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spython/tangram_libd/processed-data/02_four_sample_demo/four_sample_demo_$TASK_ID.log
 #$ -l gpu,mf=64G,h_vmem=64G
 #$ -t 1-4
 #$ -tc 1
