@@ -73,9 +73,9 @@ do.call(rbind, lapply(seq_len(ncol(fdrs0_contrasts)), function(i) {
 #########################
 
 ##################################
-## Satterstrom et al, Cell 2020 ##    Doesn't work because the dataframe doesn't have the right column names for line 62, make issue
+## Satterstrom et al, Cell 2020 ##    
 ##################################
-asd_exome = read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/1-s2.0-S0896627312002863-mmc2.xlsx", 
+asd_exome = read_excel("/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/Analysis/Layer_Guesses/gene_sets/1-s2.0-S0092867419313984-mmc2.xlsx", 
                        sheet = 2)
 asd_exome = as.data.frame(asd_exome)
 
@@ -166,7 +166,7 @@ pe_geneList = with(
 )
 
 #################
-## brainseq  ####  doesn't work
+## brainseq  ####  
 #################
 
 ## DLPFC RiboZero
@@ -288,9 +288,9 @@ asdRNA_geneList = list(DE_ASD_RNA.Up = asd_rnaseq$gene_id[asd_rnaseq$fold_change
 geneList = c(
   birnbaum_geneList,
   asd_sfari_geneList,
-  #asd_exome_geneList,
+  asd_exome_geneList,
   pe_geneList,
-  #bs2_geneList,
+  bs2_geneList,
   ds_geneList,
   twas_geneList,
   asdRNA_geneList
@@ -332,7 +332,8 @@ enrichTab$ID = rownames(enrichTab)
 enrichTab$SetSize = sapply(geneList_present, length)
 
 ### save a copy as a supp table
-enrichTabOut = enrichTab[,c(25, 22:24,26, 1:21)]
+#enrichTabOut = enrichTab[,c(25, 22:24,26, 1:21)]
+enrichTabOut = enrichTab
 write.csv(enrichTabOut, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/10_clinical_gene_set_enrichment/SupplementaryTableXX_clinical_enrichment.csv",row.names=FALSE)
 
 ## look at enrichment
@@ -547,14 +548,12 @@ round(-log10(pMat),1)
 
 ## summary stats from genes
 enrichTab["Gene_SFARI_all",]
-
-#these don't work right now
 enrichTab["Gene_Satterstrom_ASC102.2018",]
 enrichTab["Gene_Satterstrom_ASD53",]
 enrichTab["Gene_Satterstrom_DDID49",]
 
 ## Satterstrom deep dive
-#also doesnt' work right now
+# not applicable right now
 sat_102_l2= which(t0_contrasts[,"Layer2"] > 0 & fdrs0_contrasts[,"Layer2"] < 0.1 & 
                     rownames(t0_contrasts) %in% geneList_present$Gene_Satterstrom_ASC102.2018)
 rowData(sce_layer)$gene_name[sat_102_l2]
@@ -603,13 +602,13 @@ max(enrichLongSort$P[enrichLongSort$FDR < 0.05] )
 enrichLong$P_thresh = enrichLong$P
 enrichLong$P_thresh[enrichLong$P_thresh < 2.2e-16] = 2.2e-16
 
-### ASD focus
+### ASD focus  
 enrichLong_ASD = enrichLong[enrichLong$ID %in% 
                               c("Gene_SFARI_all", "Gene_Satterstrom_ASC102.2018",
                                 "Gene_Satterstrom_ASD53", "Gene_Satterstrom_DDID49",
                                 "DE_PE_ASD.Down", "DE_PE_ASD.Up",
                                 "TWAS_PE_ASD.Up", "TWAS_PE_ASD.Down",
-                                "DE_ASD_RNA.Up","DE_ASD_RNA.Down"),]
+                                "DE_ASD_RNA.Up","DE_ASD_RNA.Down"),] #why doesn't this list include the BirnBaum asd sets?
 enrichLong_ASD$ID2 =  as.character(droplevels(enrichLong_ASD$Set))
 enrichLong_ASD$ID2[enrichLong_ASD$ID2 == "all"] = "SFARI"
 enrichLong_ASD$ID2[enrichLong_ASD$ID2 == "ASC102.2018"] = "ASC102"
@@ -617,6 +616,8 @@ enrichLong_ASD$ID2[enrichLong_ASD$ID == "DE_PE_ASD.Up"] = "DE.Up"
 enrichLong_ASD$ID2[enrichLong_ASD$ID == "DE_PE_ASD.Down"] = "DE.Down"
 enrichLong_ASD$ID2[enrichLong_ASD$ID == "TWAS_PE_ASD.Up"] = "TWAS.Up"
 enrichLong_ASD$ID2[enrichLong_ASD$ID == "TWAS_PE_ASD.Down"] = "TWAS.Down"
+enrichLong_ASD$ID2[enrichLong_ASD$ID == "DE_ASD_RNA.Up"] = "Velmeshev.Up"
+enrichLong_ASD$ID2[enrichLong_ASD$ID == "DE_ASD_RNA.Down"] = "Velmeshev.Down"
 enrichLong_ASD$ID2 = factor(enrichLong_ASD$ID2, unique(enrichLong_ASD$ID2))
 
 #need to get these two lines working
@@ -657,7 +658,7 @@ customLayerEnrichment = function(enrichTab , groups, xlabs,
 
 pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/10_clinical_gene_set_enrichment/asd_geneSet_heatmap.pdf",w=6)
 par(mar=c(8,4.5,2.5,1), cex.axis=2,cex.lab=2)
-groups = unique(as.character(enrichLong_ASD$ID))[1:7]
+groups = unique(as.character(enrichLong_ASD$ID))[1:10]
 xlabs  = as.character(enrichLong_ASD$ID2[match(groups, enrichLong_ASD$ID)])
 customLayerEnrichment(enrichTab, groups,xlabs, enrichOnly=TRUE)
 #abline(v=4,lwd=3)
@@ -668,18 +669,17 @@ dev.off()
 
 pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/10_clinical_gene_set_enrichment/sczd_geneSet_heatmap.pdf",w=8)
 par(mar=c(8,4.5,2.5,1), cex.axis=2,cex.lab=2)
-
-# groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
-#           "DE_BS2_SCZ.Up", "DE_BS2_SCZ.Down", 
-#           "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
-#           "TWAS_PE_SCZ.Down")
-groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
+groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down",
+          "DE_BS2_SCZ.Up", "DE_BS2_SCZ.Down",
           "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
           "TWAS_PE_SCZ.Down")
+# groups =c("DE_PE_SCZ.Up", "DE_PE_SCZ.Down", 
+#           "TWAS_BS2_SCZ.Up", "TWAS_BS2_SCZ.Down", "TWAS_PE_SCZ.Up",
+#           "TWAS_PE_SCZ.Down")
 xlabs = ss(gsub("_SCZ", "", groups), "_", 2)
 customLayerEnrichment(enrichTab, groups,xlabs, enrichOnly=TRUE)
 abline(v=4,lwd=3)
-text(x = c(2,6), y = 142, c("SCZD-DE", "SCZD-TWAS"), xpd=TRUE,cex=2.5,font=2)
+text(x = c(2,6), y = 162, c("SCZD-DE", "SCZD-TWAS"), xpd=TRUE,cex=2.5,font=2)
 dev.off()
 
 
