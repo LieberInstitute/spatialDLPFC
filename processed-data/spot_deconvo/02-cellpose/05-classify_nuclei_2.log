@@ -1,0 +1,54 @@
+**** Job starts ****
+Thu Jul 14 17:07:23 EDT 2022
+**** JHPCE info ****
+User: neagles
+Job id: 1318290
+Job name: classify_nuclei
+Hostname: compute-100.cm.cluster
+Task id: 2
+Loading LIBD module for cellpose/2.0
+27.5% of nuclei don't have a clear cell type.
+Number of cells that change from astrocyte to neither astrocyte nor other when GFAP fluorescence is ignored: 3148
+Mean for neun above cutoff: 32.093241133514496
+Mean for neun otherwise: 14.652069690347984
+Mean for olig2 above cutoff: 18.526934563460987
+Mean for olig2 otherwise: 3.2744256590141494
+Mean for tmem119 above cutoff: 9.030599021855572
+Mean for tmem119 otherwise: 2.8613325194782697
+Intensities for 5 random other cells:
+          neun     olig2   tmem119
+9824  0.000000  0.000000  0.919444
+3697  0.000000  0.000000  0.000000
+829   0.000000  1.723772  0.102258
+2075  0.039683  0.000000  2.393424
+5757  0.412000  0.000000  1.690667
+Intensities for 5 random neuron cells:
+           neun     olig2   tmem119
+7857  50.466029  0.000000  3.336842
+1641  26.220588  0.093487  2.350840
+1447  22.282337  3.019471  1.333797
+3486  21.616250  0.335000  0.711250
+230   34.505474  0.004562  2.113139
+Intensities for 5 random micro cells:
+           neun      olig2    tmem119
+372    0.000000   0.000000  15.622857
+1047   0.001323   0.006614  16.838624
+5898   0.000000   0.000000   3.928643
+7473   0.000000  12.772436  10.086538
+7678  11.907576   0.624242   5.392424
+Intensities for 5 random oligo cells:
+          neun      olig2   tmem119
+8422  0.000000  17.177469  0.729938
+9125  0.378671  10.120556  0.465224
+432   1.288557  18.449005  3.365672
+9000  0.000000  10.176638  0.277778
+8337  0.108466  13.310847  0.242063
+Total number of other cells: 2820.0
+Total number of neuron cells: 4075.0
+Total number of micro cells: 2010.0
+Total number of oligo cells: 1345.0
+Percentage of spots with at least one cell: 86.2%
+Mean number of cells per spot: 2.868
+Max number of cells per spot: 14
+**** Job ends ****
+Thu Jul 14 17:08:44 EDT 2022

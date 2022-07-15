@@ -1,0 +1,54 @@
+**** Job starts ****
+Fri Jul  1 10:28:05 EDT 2022
+**** JHPCE info ****
+User: neagles
+Job id: 1269317
+Job name: count_cells_all_channels
+Hostname: compute-095.cm.cluster
+Task id: 1
+Loading LIBD module for cellpose/2.0
+Keeping 52.6% of masks, which met a minimum area threshold.
+15.4% of nuclei don't have a clear cell type.
+Mean for neun above cutoff: 34.75636550168502
+Mean for neun otherwise: 16.24999479478829
+Mean for olig2 above cutoff: 17.207949566822005
+Mean for olig2 otherwise: 4.409055013227851
+Mean for tmem119 above cutoff: 10.3973871332719
+Mean for tmem119 otherwise: 4.898472169724659
+Intensities for 5 random micro cells:
+            neun      olig2    tmem119
+516     0.057579  16.211516  10.439483
+3177    0.000000   0.000000  15.527446
+11635   0.000000   0.000000   3.178434
+6673    0.000000   0.000000  17.125668
+622    11.998559   0.000000  20.440922
+Intensities for 5 random neuron cells:
+            neun     olig2   tmem119
+6617   24.986223  0.032147  7.152698
+12733  63.903456  0.092968  0.334923
+2576   64.374011  0.349153  0.728814
+9435    4.078341  0.042627  0.127880
+9650   55.870574  0.290598  0.252747
+Intensities for 5 random other cells:
+           neun  olig2   tmem119
+13278  1.276879    0.0  0.231208
+13961  0.000000    0.0  0.000000
+6225   0.000000    0.0  0.132097
+8876   0.000000    0.0  0.313770
+5896   0.000000    0.0  1.205584
+Intensities for 5 random oligo cells:
+           neun      olig2   tmem119
+328    0.015848  12.633914  5.697306
+9507   0.549223  47.281520  9.948187
+1197   2.201331  15.903494  3.452579
+1495   0.000000   3.367107  0.453744
+10487  3.649800  20.001332  9.066578
+Total number of micro cells: 1877.0
+Total number of neuron cells: 2775.0
+Total number of other cells: 1044.0
+Total number of oligo cells: 1093.0
+Percentage of spots with at least one cell: 82.1%
+Mean number of cells per spot: 2.29
+Max number of cells per spot: 10
+**** Job ends ****
+Fri Jul  1 10:29:41 EDT 2022

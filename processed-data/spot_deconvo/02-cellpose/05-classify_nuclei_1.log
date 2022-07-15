@@ -1,0 +1,54 @@
+**** Job starts ****
+Thu Jul 14 17:05:07 EDT 2022
+**** JHPCE info ****
+User: neagles
+Job id: 1318282
+Job name: classify_nuclei
+Hostname: compute-124.cm.cluster
+Task id: 1
+Loading LIBD module for cellpose/2.0
+15.4% of nuclei don't have a clear cell type.
+Number of cells that change from astrocyte to neither astrocyte nor other when GFAP fluorescence is ignored: 1404
+Mean for neun above cutoff: 34.75636550168502
+Mean for neun otherwise: 16.24999479478829
+Mean for olig2 above cutoff: 17.207949566822005
+Mean for olig2 otherwise: 4.409055013227851
+Mean for tmem119 above cutoff: 10.3973871332719
+Mean for tmem119 otherwise: 4.898472169724659
+Intensities for 5 random micro cells:
+           neun     olig2    tmem119
+437    2.421851  0.000000   3.327769
+4900  12.715215  0.501951   5.420026
+142    0.000000  8.860163   7.291057
+2216   0.000000  0.000000  41.459542
+2296   0.000000  0.027894  24.165969
+Intensities for 5 random neuron cells:
+           neun     olig2   tmem119
+2798  51.058824  0.385504  1.392857
+4896  35.442786  0.000000  0.931592
+4335   4.078341  0.042627  0.127880
+1940  28.523344  0.000000  0.790445
+6285  23.988361  1.032008  3.877789
+Intensities for 5 random other cells:
+          neun  olig2   tmem119
+4974  2.736636    0.0  2.707953
+4251  2.807640    0.0  0.106412
+3936  0.000000    0.0  1.596923
+2663  0.000000    0.0  1.829132
+5019  0.000000    0.0  1.356502
+Intensities for 5 random oligo cells:
+          neun      olig2   tmem119
+35    0.000000  13.278750  4.742500
+2990  0.000000  15.565789  1.820175
+3718  1.969799  17.657718  0.872483
+5085  0.000000  40.833583  6.841079
+818   0.000000  14.932271  3.301461
+Total number of micro cells: 1877.0
+Total number of neuron cells: 2775.0
+Total number of other cells: 1044.0
+Total number of oligo cells: 1093.0
+Percentage of spots with at least one cell: 82.1%
+Mean number of cells per spot: 2.29
+Max number of cells per spot: 10
+**** Job ends ****
+Thu Jul 14 17:06:04 EDT 2022
