@@ -29,11 +29,12 @@ stopifnot(length(tests$enrichment) == k)
 #stopifnot(length(tests$pairwise) == choose(k, 2) * 2) this doesn't work. not sure why.
 
 sig_genes <- sig_genes_extract_all(
-  n = 5000, #only extract the top 5000 significant genes or else it's too big
+  n = 4000, #only extract the top 5000 significant genes or else it's too big
   modeling_results = modeling_results,
   sce_layer = spe_pseudo
 )
 
+#subset genes after for fdr less than 0.05.  Create this smaller sig_genes in different script and just load it here. 
 lobstr::obj_size(modeling_results) / 1024^3
 #0.03099124 B
 lobstr::obj_size(sig_genes) / 1024^3
