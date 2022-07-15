@@ -1,4 +1,4 @@
-setwd("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spython/")
+setwd("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spython/")
 
 suppressPackageStartupMessages(library("basilisk"))
 suppressPackageStartupMessages(library("SingleCellExperiment"))
