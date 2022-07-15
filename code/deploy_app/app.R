@@ -26,7 +26,7 @@ k <- 9
 tests <- lapply(modeling_results, function(x) { colnames(x)[grep("stat", colnames(x))]})
 stopifnot(length(tests$anova) == 1) ## assuming only noWM
 stopifnot(length(tests$enrichment) == k)
-#stopifnot(length(tests$pairwise) == choose(k, 2) * 2) this doesn't work. not sure why.
+stopifnot(length(tests$pairwise) == choose(k, 2))
 
 sig_genes <- sig_genes_extract_all(
   n = nrow(spe_pseudo),
