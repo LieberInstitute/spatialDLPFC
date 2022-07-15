@@ -79,7 +79,7 @@ spe ## TODO: update the output below
 #> altExpNames(0):
 
 ### Note the memory size
-lobstr::object_size(spe) / 1024^3
+lobstr::object_size(spe) 
 #> 2.08 GB ## TODO: update this
 
 ### Remake the logo image with histology information

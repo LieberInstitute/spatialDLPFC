@@ -35,9 +35,9 @@ sig_genes <- sig_genes_extract_all(
 )
 
 #subset genes after for fdr less than 0.05.  Create this smaller sig_genes in different script and just load it here.
-#lobstr::obj_size(modeling_results) / 1024^3
+#lobstr::obj_size(modeling_results) 
 #0.03099124 B
-#lobstr::obj_size(sig_genes) / 1024^3
+#lobstr::obj_size(sig_genes) 
 #0.7587798 B
 
 dim(sig_genes)
