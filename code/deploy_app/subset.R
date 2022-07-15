@@ -72,6 +72,10 @@ sig_genes <- sig_genes_extract_all(
     sce_layer = spe_pseudo
 )
 
+## Check that we have the right number of tests.
+## the + 1 at the end assumes only noWM
+stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
+
 lobstr::obj_size(sig_genes)
 # 423.73 MB
 
@@ -84,10 +88,6 @@ dim(sig_genes)
 # [1] 342449     12
 lobstr::obj_size(sig_genes)
 # 148.92 MB
-
-## Check that we have the right number of tests.
-## the + 1 at the end assumes only noWM
-stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
 
 ## Extract FDR < 5%
 ## From
