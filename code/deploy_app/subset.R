@@ -76,18 +76,27 @@ sig_genes <- sig_genes_extract_all(
 ## the + 1 at the end assumes only noWM
 stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
 
+## Fix the pairwise colors
+sig_genes$test <- gsub("BayesSpace", "", sig_genes$test)
+
 lobstr::obj_size(sig_genes)
 # 423.73 MB
 
 dim(sig_genes)
 # [1] 1002450      12
 
-## Subset sig_genes
-sig_genes <- subset(sig_genes, fdr < 0.05)
-dim(sig_genes)
-# [1] 342449     12
+## Drop parts we don't need to reduce the memory
+sig_genes$in_rows <- NULL
+sig_genes$in_rows_top20 <- NULL
 lobstr::obj_size(sig_genes)
-# 148.92 MB
+# 78.87 MB
+
+# ## Subset sig_genes
+# sig_genes <- subset(sig_genes, fdr < 0.05)
+# dim(sig_genes)
+# # [1] 342449     10
+# lobstr::obj_size(sig_genes)
+# # 28.37 MB
 
 ## Extract FDR < 5%
 ## From

@@ -21,7 +21,11 @@ lobstr::obj_size(spe_pseudo)
 # 75.50 MB
 
 #load modeling results for k16 clustering/pseudobulking
-load(here("code", "deploy_app_k16", "parsed_modeling_results_k16.Rdata"),
+load(here(
+    "code",
+    "deploy_app_k16",
+    "parsed_modeling_results_k16.Rdata"
+),
     verbose = TRUE)
 lobstr::obj_size(modeling_results)
 # 33.28 MB
@@ -31,7 +35,10 @@ spe_pseudo$spatialLIBD <- spe_pseudo$BayesSpace
 
 ## Check that we have the right number of tests
 k <- 16
-tests <- lapply(modeling_results, function(x) { colnames(x)[grep("stat", colnames(x))]})
+tests <-
+    lapply(modeling_results, function(x) {
+        colnames(x)[grep("stat", colnames(x))]
+    })
 stopifnot(length(tests$anova) == 1) ## assuming only noWM
 stopifnot(length(tests$enrichment) == k)
 stopifnot(length(tests$pairwise) == choose(k, 2))
@@ -46,18 +53,27 @@ sig_genes <- sig_genes_extract_all(
 ## the + 1 at the end assumes only noWM
 stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
 
+## Fix the pairwise colors
+sig_genes$test <- gsub("BayesSpace", "", sig_genes$test)
+
 lobstr::obj_size(sig_genes)
 # 2.77 GB
 
 dim(sig_genes)
 # [1] 2463859      12
 
-## Subset sig_genes
-sig_genes <- subset(sig_genes, fdr < 0.05)
-dim(sig_genes)
-# [1] 679801     12
+## Drop parts we don't need to reduce the memory
+sig_genes$in_rows <- NULL
+sig_genes$in_rows_top20 <- NULL
 lobstr::obj_size(sig_genes)
-# 774.81 MB
+# 199.40 MB
+
+# ## Subset sig_genes
+# sig_genes <- subset(sig_genes, fdr < 0.05)
+# dim(sig_genes)
+# # [1] 679801     10
+# lobstr::obj_size(sig_genes)
+# # 59.64 MB
 
 ## Extract FDR < 5%
 ## From
@@ -74,7 +90,8 @@ lobstr::obj_size(sig_genes)
 # z <- fix_csv(as.data.frame(subset(sig_genes, fdr < 0.05)))
 # write.csv(z, file = file.path(dir_rdata, "Visium_IF_AD_wholegenome_model_results_FDR5perc.csv"))
 
-save(sig_genes, file = here::here("code", "deploy_app_k16", "sig_genes_subset_k16.Rdata"))
+save(sig_genes,
+    file = here::here("code", "deploy_app_k16", "sig_genes_subset_k16.Rdata"))
 
 ## Reproducibility information
 print('Reproducibility information:')
