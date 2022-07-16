@@ -4,26 +4,26 @@ library(scran)
 
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
-#load pseudobulked object created from preliminary_analysis.R
-load(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("sce_pseudobulk_bayesSpace_k",k,".Rdata")))
+# load pseudobulked object created from preliminary_analysis.R
+load(file = here::here("processed-data", "rdata", "spe", "pseudo_bulked_spe", paste0("sce_pseudobulk_bayesSpace_k", k, ".Rdata")))
 
 
-#http://bioconductor.org/books/3.14/OSCA.multisample/multi-sample-comparisons.html#creating-pseudo-bulk-samples
+# http://bioconductor.org/books/3.14/OSCA.multisample/multi-sample-comparisons.html#creating-pseudo-bulk-samples
 
 
-#loop through with pseudoBulkDGE
+# loop through with pseudoBulkDGE
 dim(spe_pseudo)
-spe_pseudo <- spe_pseudo[,spe_pseudo$ncells >= 10]
+spe_pseudo <- spe_pseudo[, spe_pseudo$ncells >= 10]
 dim(spe_pseudo)
 
-head(model.matrix(~factor(region) + factor(subject),as.data.frame(colData(spe_pseudo)))) #;ppl at rclub session on model matrix
-#possibly have to loop through other coefficients other than region such as subject, age, 
-de.results <- pseudoBulkDGE(spe_pseudo,  #tells it to do it one cluster at a time. to do it globally, don't need label.
-                            label=spe_pseudo$subject, 
-                            design=~factor(BayesSpace) + factor(subject),
-                            coef = "factor(BayesSpace)1" #comes from topTable from limma, specifies the coefficient you want to do the t-test on
+head(model.matrix(~ factor(region) + factor(subject), as.data.frame(colData(spe_pseudo)))) # ;ppl at rclub session on model matrix
+# possibly have to loop through other coefficients other than region such as subject, age,
+de.results <- pseudoBulkDGE(spe_pseudo, # tells it to do it one cluster at a time. to do it globally, don't need label.
+    label = spe_pseudo$subject,
+    design = ~ factor(BayesSpace) + factor(subject),
+    coef = "factor(BayesSpace)1" # comes from topTable from limma, specifies the coefficient you want to do the t-test on
 )
-#this is pairwise comparison. can see how they did it before with limma for the pilot study. 
+# this is pairwise comparison. can see how they did it before with limma for the pilot study.
 
 head(de.results[[1]])
 # DataFrame with 6 rows and 5 columns
@@ -39,7 +39,7 @@ head(de.results[[1]])
 dim(de.results[[1]])
 table(de.results[[1]]$FDR < 0.05)
 
-rowData(spe_pseudo)[which(de.results[[1]]$FDR < 0.05),]
-de.results[[1]][which(de.results[[1]]$FDR < 0.05),]
+rowData(spe_pseudo)[which(de.results[[1]]$FDR < 0.05), ]
+de.results[[1]][which(de.results[[1]]$FDR < 0.05), ]
 
-save(de.results, file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("de_results_layer_k",k,".Rdata")))
+save(de.results, file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("de_results_layer_k", k, ".Rdata")))

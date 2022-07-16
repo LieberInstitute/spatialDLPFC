@@ -1,115 +1,116 @@
 #   Generate a deconvolution figure very similar to Fig4a from the Tangram
 #   paper
 
-library('here')
-library('ggplot2')
-library('png')
-library('spatialLIBD')
-library('jaffelab')
-library('rjson')
-library('grid')
+library("here")
+library("ggplot2")
+library("png")
+library("spatialLIBD")
+library("jaffelab")
+library("rjson")
+library("grid")
 
-sample_id = '151508'
+sample_id <- "151508"
 
-img_path = here(
+img_path <- here(
     "tangram_libd", "raw-data", "03_nn_run", "hires_histology",
     paste0(sample_id, ".png")
 )
 
-clusters_path = here(
+clusters_path <- here(
     "cell2location", "processed-data", "01-nn_run", sample_id, "clusters.csv"
 )
 
-scale_path = file.path(
-    '/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X',
-    sample_id, 'scalefactors_json.json'
+scale_path <- file.path(
+    "/dcl02/lieber/ajaffe/SpatialTranscriptomics/HumanPilot/10X",
+    sample_id, "scalefactors_json.json"
 )
 
-plot_path = here(
+plot_path <- here(
     "cell2location", "plots", "01-nn_run",
     paste0("my_spot_deconvo_fig_", sample_id, ".pdf")
 )
 
-spatial_coords_names = c('pxl_row_in_fullres', 'pxl_col_in_fullres')
+spatial_coords_names <- c("pxl_row_in_fullres", "pxl_col_in_fullres")
 
 #   Fetch and subset SPE to this sample
-spe = fetch_data(type = 'spe')
-spe = spe[,spe$sample_id == sample_id]
+spe <- fetch_data(type = "spe")
+spe <- spe[, spe$sample_id == sample_id]
 
 #   Read in image, cell counts, and image scale factors
-img = readPNG(img_path)
-clusters = read.csv(clusters_path)
-scale_json = fromJSON(file = scale_path)
+img <- readPNG(img_path)
+clusters <- read.csv(clusters_path)
+scale_json <- fromJSON(file = scale_path)
 
-clusters$barcode = ss(clusters$key, '_', 2)
+clusters$barcode <- ss(clusters$key, "_", 2)
 stopifnot(all(clusters$barcode == rownames(spatialCoords(spe))))
-clusters = cbind(clusters, spatialCoords(spe))
+clusters <- cbind(clusters, spatialCoords(spe))
 
 #   Infer the cell types used
-cell_types = colnames(clusters)[
-    ! (colnames(clusters) %in% c(
-        'key', 'sample', 'barcode', spatial_coords_names
-        )
+cell_types <- colnames(clusters)[
+    !(colnames(clusters) %in% c(
+        "key", "sample", "barcode", spatial_coords_names
+    )
     )
 ]
 
 #   Just for quick visualization purposes, round C2L outputs to integer
 #   counts. There might be a better method to do this
 for (cell_type in cell_types) {
-    clusters[[cell_type]] = round(clusters[[cell_type]], 0)
+    clusters[[cell_type]] <- round(clusters[[cell_type]], 0)
 }
 
 print(
     paste(
-        'After rounding, each spot contains',
+        "After rounding, each spot contains",
         mean(rowSums(clusters[, cell_types])),
-        'cells on average'
+        "cells on average"
     )
 )
 
-#   Make a long data frame, where each row is a cell 
-df_list = list()
-i = 1
+#   Make a long data frame, where each row is a cell
+df_list <- list()
+i <- 1
 for (barcode in rownames(clusters)) {
     for (cell_type in cell_types) {
         for (j in seq_len(clusters[barcode, cell_type])) {
-            df_list[[i]] = c(
+            df_list[[i]] <- c(
                 barcode,
                 as.numeric(clusters[barcode, spatial_coords_names]),
                 cell_type
             )
-            i = i + 1
+            i <- i + 1
         }
     }
 }
 
-df_long = data.frame(do.call(rbind, df_list))
-colnames(df_long) = c('barcode', spatial_coords_names, 'cell_type')
+df_long <- data.frame(do.call(rbind, df_list))
+colnames(df_long) <- c("barcode", spatial_coords_names, "cell_type")
 
 #   Make sure spatialCoords are numeric, and scaled to represent
 #   high-resolution pixels
 for (colname in spatial_coords_names) {
-    df_long[, colname] =  scale_json$tissue_hires_scalef * 
+    df_long[, colname] <- scale_json$tissue_hires_scalef *
         as.numeric(df_long[, colname])
 }
 
 #   Reverse y coord of spatialCoords(spe) to agree with the coordinate system
 #   ggplot2 is using
-df_long[[spatial_coords_names[2]]] = dim(img)[2] -
+df_long[[spatial_coords_names[2]]] <- dim(img)[2] -
     df_long[[spatial_coords_names[2]]]
 
 #   Improve plotting speed and file size by keeping a copy of just the spots.
 #   Get spot radius in high-res pixels
-spots = df_long[match(unique(df_long$barcode), df_long$barcode),]
-spots$spot_radius = scale_json$spot_diameter_fullres * 
+spots <- df_long[match(unique(df_long$barcode), df_long$barcode), ]
+spots$spot_radius <- scale_json$spot_diameter_fullres *
     scale_json$tissue_hires_scalef / 2
 
 #   Create the deconvolution figure
-p = ggplot() +
+p <- ggplot() +
     #   The high-res image as the plot's background
     annotation_custom(
         rasterGrob(
-            img, width = unit(1,"npc"), height = unit(1,"npc")
+            img,
+            width = unit(1, "npc"), height = unit(1, "npc")
         ),
         -Inf, Inf, -Inf, Inf
     ) +
@@ -123,7 +124,7 @@ p = ggplot() +
         data = df_long,
         aes_string(
             x = spatial_coords_names[1], y = spatial_coords_names[2],
-            fill = 'cell_type'
+            fill = "cell_type"
         ),
         size = 0.45, width = 4, height = 4, color = "black", shape = 21,
         stroke = 0.05
@@ -133,7 +134,7 @@ p = ggplot() +
         data = spots,
         mapping = aes_string(
             x0 = spatial_coords_names[1], y0 = spatial_coords_names[2],
-            r = 'spot_radius'
+            r = "spot_radius"
         ),
         size = 0.1
     ) +

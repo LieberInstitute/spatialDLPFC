@@ -19,10 +19,10 @@ library(harmony)
 
 
 ## perform within and across?
-load(file=here::here("processed-data","rdata","spe","01_build_spe","spe_filtered_final.Rdata"))
+load(file = here::here("processed-data", "rdata", "spe", "01_build_spe", "spe_filtered_final.Rdata"))
 
-#semi_supervised 
-#adapted from Luka's script https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/SpatialDE_clustering.Rmd
+# semi_supervised
+# adapted from Luka's script https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/SpatialDE_clustering.Rmd
 # sample names
 sample_names <- paste0("sample_", unique(colData(spe)$sample_id))
 sample_names
@@ -36,14 +36,14 @@ sig_genes
 genes_pseudobulk <- sig_genes[, c("ensembl", "gene")]
 colnames(genes_pseudobulk) <- c("gene_id", "gene_name")
 dim(genes_pseudobulk)
-#[1] 490   2
+# [1] 490   2
 
-#remove duplicates (i.e. genes identified for multiple layers)
+# remove duplicates (i.e. genes identified for multiple layers)
 genes_pseudobulk <- distinct(genes_pseudobulk)
 dim(genes_pseudobulk)
 # [1] 198   2
 
-##Clustering
+## Clustering
 
 # -clustering on top 50 PCs on pseudobulk layer genes (from Leo's analyses; 198 genes)
 # -clustering on top 10 UMAPs on pseudobulk layer genes (from Leo's analyses; 198 genes)
@@ -52,12 +52,12 @@ dim(genes_pseudobulk)
 n_umap <- 10
 max_spatial <- 1
 n_neighbors <- 10
-n_clus <- 7 #changed from 8
+n_clus <- 7 # changed from 8
 
 d_plot <- data.frame()
 
-#filter out pseudobulk genes that aren't in data, removes 1 gene
-genes_pseudobulk <- genes_pseudobulk[which(genes_pseudobulk$gene_id %in% rownames(spe)),]
+# filter out pseudobulk genes that aren't in data, removes 1 gene
+genes_pseudobulk <- genes_pseudobulk[which(genes_pseudobulk$gene_id %in% rownames(spe)), ]
 
 # ---------------------------------------------
 # extract and calculate features (PCA and UMAP)
@@ -74,10 +74,10 @@ out_pca_pseudobulk <- prcomp(t(as.matrix(logcounts_pseudobulk)))$x[, 1:50]
 dims_pseudobulk_PCA <- out_pca_pseudobulk
 rownames(dims_pseudobulk_PCA) <- colnames(spe)
 dim(dims_pseudobulk_PCA)
-#[1] 298  50
+# [1] 298  50
 stopifnot(nrow(dims_pseudobulk_PCA) == ncol(spe))
 
-#add pseudobulk PCA to spe object 
+# add pseudobulk PCA to spe object
 reducedDims(spe)$pseudobulk_PCA <- dims_pseudobulk_PCA
 
 
@@ -94,23 +94,25 @@ stopifnot(nrow(dims_pseudobulk_UMAP) == ncol(spe))
 reducedDims(spe)$pseudobulk_UMAP <- dims_pseudobulk_UMAP
 
 
-###do harmony batch correction for PCA calculated using pseudobulk genes
-spe = RunHarmony(spe, "sample_id",reduction = "pseudobulk_PCA", verbose = F)
+### do harmony batch correction for PCA calculated using pseudobulk genes
+spe <- RunHarmony(spe, "sample_id", reduction = "pseudobulk_PCA", verbose = F)
 
-spe = runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
-colnames(reducedDim(spe, "UMAP.HARMONY")) = c("UMAP1", "UMAP2")
+spe <- runUMAP(spe, dimred = "HARMONY", name = "UMAP.HARMONY")
+colnames(reducedDim(spe, "UMAP.HARMONY")) <- c("UMAP1", "UMAP2")
 
 
-pdf(file=here::here("plots","04_semi_supervised_clustering","UMAP_pseudobulk_harmony_sample_id.pdf"))
-ggplot(data.frame(reducedDim(spe, "UMAP.HARMONY")),
-       aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))) +
-  geom_point() +
-  labs(color = "sample_id") +
-  theme_bw()
+pdf(file = here::here("plots", "04_semi_supervised_clustering", "UMAP_pseudobulk_harmony_sample_id.pdf"))
+ggplot(
+    data.frame(reducedDim(spe, "UMAP.HARMONY")),
+    aes(x = UMAP1, y = UMAP2, color = factor(spe$sample_id))
+) +
+    geom_point() +
+    labs(color = "sample_id") +
+    theme_bw()
 dev.off()
 
 Sys.time()
-save(spe, file = here::here("processed-data","rdata", "spe","01_build_spe","spe_filtered_final_pseudobulk.Rdata"))
+save(spe, file = here::here("processed-data", "rdata", "spe", "01_build_spe", "spe_filtered_final_pseudobulk.Rdata"))
 Sys.time()
 
 
@@ -122,50 +124,50 @@ Sys.time()
 
 # convenience function; note uses some external variables from above
 run_clustering <- function(input, method) {
-  dims_clus <- input
-  
-  set.seed(1234)
-  g <- buildSNNGraph(t(dims_clus), k = n_neighbors, d = ncol(dims_clus))
-  g_walk <- igraph::cluster_walktrap(g)
-  clus <- igraph::cut_at(g_walk, n = n_clus)
-  clus <- sort_clusters(clus)
-  
-  table(clus)
-  stopifnot(length(clus) == nrow(dims_clus))
-  
-  data.frame(
-    spot_name = as.character(rownames(dims_clus)), 
-    sample_name = as.character(colData(spe)$sample_id), 
-    method = as.character(method), 
-    cluster = as.numeric(clus),  
-    stringsAsFactors = FALSE
-  )
+    dims_clus <- input
+
+    set.seed(1234)
+    g <- buildSNNGraph(t(dims_clus), k = n_neighbors, d = ncol(dims_clus))
+    g_walk <- igraph::cluster_walktrap(g)
+    clus <- igraph::cut_at(g_walk, n = n_clus)
+    clus <- sort_clusters(clus)
+
+    table(clus)
+    stopifnot(length(clus) == nrow(dims_clus))
+
+    data.frame(
+        spot_name = as.character(rownames(dims_clus)),
+        sample_name = as.character(colData(spe)$sample_id),
+        method = as.character(method),
+        cluster = as.numeric(clus),
+        stringsAsFactors = FALSE
+    )
 }
 
 d_plot <- rbind(d_plot, run_clustering(reducedDim(spe, "HARMONY"), method = "pseudobulk_PCA"))
 d_plot <- rbind(d_plot, run_clustering(reducedDim(spe, "UMAP.HARMONY"), method = "pseudobulk_UMAP"))
 
-save(d_plot, file = here::here("processed-data","rdata","spe","clustering_results","d_plot_semi_supervised_across.Rdata"))
+save(d_plot, file = here::here("processed-data", "rdata", "spe", "clustering_results", "d_plot_semi_supervised_across.Rdata"))
 
 library(tidyr)
-#divide d_plot by method
-d_plot_wide <-as.data.frame(pivot_wider(d_plot, names_from = method, values_from = cluster))
-#make key and add to d_plot
-d_plot_wide$key <-gsub("sample_","", with(d_plot_wide,paste0(spot_name,"_",sample_name)))
-#drop two columns we used to make the key
+# divide d_plot by method
+d_plot_wide <- as.data.frame(pivot_wider(d_plot, names_from = method, values_from = cluster))
+# make key and add to d_plot
+d_plot_wide$key <- gsub("sample_", "", with(d_plot_wide, paste0(spot_name, "_", sample_name)))
+# drop two columns we used to make the key
 d_plot_wide$spot_name <- NULL
-d_plot_wide$sample_name <-NULL
+d_plot_wide$sample_name <- NULL
 
-#match keys and reorder
-#https://github.com/LieberInstitute/spatialLIBD/blob/master/R/cluster_import.R#L51-L64
+# match keys and reorder
+# https://github.com/LieberInstitute/spatialLIBD/blob/master/R/cluster_import.R#L51-L64
 merged_info <-
-  merge(
-    colData(spe),
-    d_plot_wide,
-    by = "key",
-    sort = FALSE,
-    all = TRUE
-  )
+    merge(
+        colData(spe),
+        d_plot_wide,
+        by = "key",
+        sort = FALSE,
+        all = TRUE
+    )
 m <- match(spe$key, merged_info$key)
 merged_info <- merged_info[m, ]
 spot_names <- rownames(colData(spe))
@@ -173,37 +175,36 @@ spot_names <- rownames(colData(spe))
 colData(spe) <- DataFrame(merged_info, check.names = FALSE)
 colnames(spe) <- spot_names
 
-##make plot
+## make plot
 sample_ids <- unique(colData(spe)$sample_id)
-cluster_colNames <- c("pseudobulk_PCA","pseudobulk_UMAP")
+cluster_colNames <- c("pseudobulk_PCA", "pseudobulk_UMAP")
 mycolors <- brewer.pal(7, "Dark2")
 
-pdf(file = here::here("plots","vis_clus_semi_supervised_across_samples.pdf"))
-for (i in seq_along(sample_ids)){
-  for(j in seq_along(cluster_colNames)){
-    my_plot <- vis_clus(
-      spe = spe,
-      clustervar = cluster_colNames[j],
-      sampleid = sample_ids[i],
-      colors =  mycolors,
-      ... = paste0(" ",cluster_colNames[j])
-    )
-    print(my_plot)
-  }
-  
+pdf(file = here::here("plots", "vis_clus_semi_supervised_across_samples.pdf"))
+for (i in seq_along(sample_ids)) {
+    for (j in seq_along(cluster_colNames)) {
+        my_plot <- vis_clus(
+            spe = spe,
+            clustervar = cluster_colNames[j],
+            sampleid = sample_ids[i],
+            colors = mycolors,
+            ... = paste0(" ", cluster_colNames[j])
+        )
+        print(my_plot)
+    }
 }
 dev.off()
 
 cluster_export(
-  spe,
-  "pseduobulk_PCA_across",
-  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+    spe,
+    "pseduobulk_PCA_across",
+    cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results")
 )
 
 cluster_export(
-  spe,
-  "pseduobulk_PCA_across",
-  cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results" )
+    spe,
+    "pseduobulk_PCA_across",
+    cluster_dir = here::here("processed-data", "rdata", "spe", "clustering_results")
 )
 
-with(colData(spe),addmargins(table(spatial.cluster,pseudobulk_PCA.y,sample_id)))
+with(colData(spe), addmargins(table(spatial.cluster, pseudobulk_PCA.y, sample_id)))

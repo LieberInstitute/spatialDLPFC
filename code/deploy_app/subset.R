@@ -37,7 +37,7 @@ lobstr::obj_size(spe)
 save(spe, file = here::here("code", "deploy_app", "spe_subset.Rdata"))
 
 
-#load the pseudobulked object spe_pseudo
+# load the pseudobulked object spe_pseudo
 spe_pseudo <-
     readRDS(
         here(
@@ -50,9 +50,10 @@ spe_pseudo <-
 lobstr::obj_size(spe_pseudo)
 # 56.91 MB
 
-#load modeling results for k9 clustering/pseudobulking
+# load modeling results for k9 clustering/pseudobulking
 load(here("code", "deploy_app", "parsed_modeling_results_k9.Rdata"),
-    verbose = TRUE)
+    verbose = TRUE
+)
 lobstr::obj_size(modeling_results)
 # 15.68 MB
 
@@ -61,7 +62,9 @@ spe_pseudo$spatialLIBD <- spe_pseudo$BayesSpace
 
 ## Check that we have the right number of tests
 k <- 9
-tests <- lapply(modeling_results, function(x) { colnames(x)[grep("stat", colnames(x))]})
+tests <- lapply(modeling_results, function(x) {
+    colnames(x)[grep("stat", colnames(x))]
+})
 stopifnot(length(tests$anova) == 1) ## assuming only noWM
 stopifnot(length(tests$enrichment) == k)
 stopifnot(length(tests$pairwise) == choose(k, 2))
@@ -116,7 +119,7 @@ lobstr::obj_size(sig_genes)
 save(sig_genes, file = here::here("code", "deploy_app", "sig_genes_subset.Rdata"))
 
 ## Reproducibility information
-print('Reproducibility information:')
+print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)

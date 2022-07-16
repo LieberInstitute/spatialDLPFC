@@ -64,54 +64,54 @@
 #'     top_n = 10
 #' ), max = 0.3)
 layer_stat_cor_plot_AS <-
-  function(cor_stats_layer,
-           max = 0.81,
-           min = -max,
-           layerHeights = NULL,
-           cex = 1.2) {
-    ## From https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/Layer_Guesses/dlpfc_snRNAseq_annotation.R
-    theSeq <- seq(min, max, by = 0.01)
-    my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
-    
-    ## Subset values
-    cor_stats_layer[cor_stats_layer <= min] <- min
-    cor_stats_layer[cor_stats_layer >= max] <- max
-    
-    ## Re-shape the matrix
-    mat_vals <- t(cor_stats_layer)
-    
-    ## Re-order and shorten names if they match our data
-    if (all(rownames(mat_vals) %in% c("WM", paste0("Layer", seq_len(6))))) {
-      rownames(mat_vals) <- gsub("ayer", "", rownames(mat_vals))
-      mat_vals <- mat_vals[c("WM", paste0("L", rev(seq_len(6)))), , drop = FALSE]
-      
-      ## Use our default layer heights also
-      if (is.null(layerHeights)) {
-        layerHeights <- c(0, 40, 55, 75, 85, 110, 120, 135)
-      }
+    function(cor_stats_layer,
+    max = 0.81,
+    min = -max,
+    layerHeights = NULL,
+    cex = 1.2) {
+        ## From https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/Layer_Guesses/dlpfc_snRNAseq_annotation.R
+        theSeq <- seq(min, max, by = 0.01)
+        my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
+
+        ## Subset values
+        cor_stats_layer[cor_stats_layer <= min] <- min
+        cor_stats_layer[cor_stats_layer >= max] <- max
+
+        ## Re-shape the matrix
+        mat_vals <- t(cor_stats_layer)
+
+        ## Re-order and shorten names if they match our data
+        if (all(rownames(mat_vals) %in% c("WM", paste0("Layer", seq_len(6))))) {
+            rownames(mat_vals) <- gsub("ayer", "", rownames(mat_vals))
+            mat_vals <- mat_vals[c("WM", paste0("L", rev(seq_len(6)))), , drop = FALSE]
+
+            ## Use our default layer heights also
+            if (is.null(layerHeights)) {
+                layerHeights <- c(0, 40, 55, 75, 85, 110, 120, 135)
+            }
+        }
+
+        ## From fields:::imagePlotInfo
+        midpoints <- seq(min, max, length.out = length(my.col))
+        delta <- (midpoints[2] - midpoints[1]) / 2
+        breaks <- c(midpoints[1] - delta, midpoints + delta)
+
+        legend_cuts <- seq(-1, 1, by = 0.1)
+        legend_cuts <- legend_cuts[legend_cuts >= min & legend_cuts <= max]
+        axis.args <- list(
+            at = legend_cuts,
+            labels = legend_cuts
+        )
+
+        layer_matrix_plot_AS(
+            matrix_values = mat_vals,
+            matrix_labels = NULL,
+            xlabs = NULL,
+            layerHeights = layerHeights,
+            mypal = my.col,
+            breaks = breaks,
+            axis.args = axis.args,
+            srt = 90,
+            cex = cex
+        )
     }
-    
-    ## From fields:::imagePlotInfo
-    midpoints <- seq(min, max, length.out = length(my.col))
-    delta <- (midpoints[2] - midpoints[1]) / 2
-    breaks <- c(midpoints[1] - delta, midpoints + delta)
-    
-    legend_cuts <- seq(-1, 1, by = 0.1)
-    legend_cuts <- legend_cuts[legend_cuts >= min & legend_cuts <= max]
-    axis.args <- list(
-      at = legend_cuts,
-      labels = legend_cuts
-    )
-    
-    layer_matrix_plot_AS(
-      matrix_values = mat_vals,
-      matrix_labels = NULL,
-      xlabs = NULL,
-      layerHeights = layerHeights,
-      mypal = my.col,
-      breaks = breaks,
-      axis.args = axis.args,
-      srt = 90,
-      cex = cex
-    )
-  }

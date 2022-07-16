@@ -16,37 +16,37 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("spatialLIBD"))
 suppressPackageStartupMessages(library("here"))
 
-sce_in = here(
+sce_in <- here(
     "tangram_libd", "raw-data", "03_nn_run", "SCE_DLPFC-n3_tran-etal.rda"
 )
-spe_out = here("cell2location", "processed-data", "01-nn_run", "spe.h5ad")
-sce_out = here("cell2location", "processed-data", "01-nn_run", "sce_dlpfc.h5ad")
+spe_out <- here("cell2location", "processed-data", "01-nn_run", "spe.h5ad")
+sce_out <- here("cell2location", "processed-data", "01-nn_run", "sce_dlpfc.h5ad")
 
-marker_path_out = here(
+marker_path_out <- here(
     "cell2location", "processed-data", "01-nn_run", "dlpfc_markers.txt"
 )
 
-cell_types_to_drop = c('Endo', 'Macrophage', 'Mural', 'Tcell')
+cell_types_to_drop <- c("Endo", "Macrophage", "Mural", "Tcell")
 
-n_markers_per_type = 100
+n_markers_per_type <- 100
 
 ###############################################################################
 #   Functions
 ###############################################################################
 
-write_anndata = function(sce, out_path) {
+write_anndata <- function(sce, out_path) {
     invisible(
         basiliskRun(
             fun = function(sce, filename) {
-                library('zellkonverter')
-                library('reticulate')
-                
+                library("zellkonverter")
+                library("reticulate")
+
                 # Convert SCE to AnnData:
                 adata <- SCE2AnnData(sce)
-                
+
                 #  Write AnnData object to disk
                 adata$write(filename = filename)
-                
+
                 return()
             },
             env = zellkonverterAnnDataEnv(),
@@ -64,54 +64,55 @@ write_anndata = function(sce, out_path) {
 dir.create(dirname(spe_out), recursive = TRUE, showWarnings = FALSE)
 
 #  snRNAseq and spatial objects, respectively
-print('Loading objects...')
+print("Loading objects...")
 load(sce_in, verbose = TRUE)
-spe = spatialLIBD::fetch_data("spe")
+spe <- spatialLIBD::fetch_data("spe")
 
-print('Cell types in single-cell originally:')
+print("Cell types in single-cell originally:")
 levels(sce.dlpfc.tran$cellType)
 
 #   Manually merge finer cell types into the standard broad categories
-sce.dlpfc.tran$cellType = as.character(sce.dlpfc.tran$cellType)
-sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Excit"] = "Excit"
-sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Inhib"] = "Inhib"
+sce.dlpfc.tran$cellType <- as.character(sce.dlpfc.tran$cellType)
+sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Excit"] <- "Excit"
+sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Inhib"] <- "Inhib"
 
 #   Drop rare cell types for single-cell data
-print('Distribution of cells to keep (FALSE) vs. drop (TRUE):')
+print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
 table(sce.dlpfc.tran$cellType %in% cell_types_to_drop)
-sce.dlpfc.tran = sce.dlpfc.tran[
-    , ! (sce.dlpfc.tran$cellType %in% cell_types_to_drop)
+sce.dlpfc.tran <- sce.dlpfc.tran[
+    , !(sce.dlpfc.tran$cellType %in% cell_types_to_drop)
 ]
-sce.dlpfc.tran$cellType = as.factor(sce.dlpfc.tran$cellType)
+sce.dlpfc.tran$cellType <- as.factor(sce.dlpfc.tran$cellType)
 
 #   Use Ensembl gene IDs for rownames (not gene symbol)
-rownames(sce.dlpfc.tran) = rowData(sce.dlpfc.tran)$gene_id
+rownames(sce.dlpfc.tran) <- rowData(sce.dlpfc.tran)$gene_id
 
 #  Append 'spatialCoords' slot to 'colData', since in
 #  conversion we're treating the spatialExperiment object as if it is a
 #  singleCellExperiment, which doesn't have that additional slot
-colData(spe) = cbind(colData(spe), spatialCoords(spe))
+colData(spe) <- cbind(colData(spe), spatialCoords(spe))
 
-print('Writing AnnDatas...')
+print("Writing AnnDatas...")
 write_anndata(sce.dlpfc.tran, sce_out)
-#write_anndata(spe, spe_out)
+# write_anndata(spe, spe_out)
 gc()
 
 ###############################################################################
 #  Find marker genes
 ###############################################################################
 
-print('Determining and writing markers...')
+print("Determining and writing markers...")
 
-marker_stats = get_mean_ratio2(
-    sce.dlpfc.tran, cellType_col = 'cellType', assay_name = 'logcounts'
+marker_stats <- get_mean_ratio2(
+    sce.dlpfc.tran,
+    cellType_col = "cellType", assay_name = "logcounts"
 )
 
 #   Take top N marker genes for each (non-rare) cell type
-marker_stats = marker_stats %>% 
+marker_stats <- marker_stats %>%
     filter(rank_ratio <= n_markers_per_type)
 
-markers_scratch = marker_stats$gene
+markers_scratch <- marker_stats$gene
 
 #   It's technically possible to find a single gene that is used as a "marker"
 #   for two different cell types via this method. Verify this is not the case,

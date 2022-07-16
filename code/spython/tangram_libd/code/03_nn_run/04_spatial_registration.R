@@ -86,8 +86,8 @@ length(unique(sce.dlpfc.tran$cellType))
 ## sum counts
 cIndexes <- splitit(sce.dlpfc.tran$PseudoSample)
 umiComb <- sapply(cIndexes, function(ii) {
-      rowSums(assays(sce.dlpfc.tran)$counts[, ii, drop = FALSE])
-  })
+    rowSums(assays(sce.dlpfc.tran)$counts[, ii, drop = FALSE])
+})
 
 ## filter pheno
 phenoComb <- colData(sce.dlpfc.tran)[
@@ -206,8 +206,8 @@ sce.dlpfc.tran$PseudoSample <-
 ## sum counts
 cIndexes <- splitit(sce.dlpfc.tran$PseudoSample)
 umiComb <- sapply(cIndexes, function(ii) {
-      rowSums(assays(sce.dlpfc.tran)$counts[, ii, drop = FALSE])
-  })
+    rowSums(assays(sce.dlpfc.tran)$counts[, ii, drop = FALSE])
+})
 
 ## filter pheno
 phenoComb <- colData(sce.dlpfc.tran)[
@@ -294,9 +294,8 @@ layer_stat_cor_plot(cor_stats_layer_top100, max = max(x[x != max(x)]))
 dev.off()
 
 ## Reproducibility information
-print('Reproducibility information:')
+print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
 session_info()
-

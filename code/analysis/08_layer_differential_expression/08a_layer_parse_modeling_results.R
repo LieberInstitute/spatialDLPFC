@@ -11,21 +11,21 @@
 
 # # Required libraries
 # library("getopt")
-# 
+#
 # ## Specify parameters
 # spec <- matrix(c(
 #   "spetype", "s", 2, "character", "SPE spetype: wholegenome or targeted",
 #   "help", "h", 0, "logical", "Display help"
 # ), byrow = TRUE, ncol = 5)
 # opt <- getopt(spec = spec)
-# 
+#
 # ## if help was asked for print a friendly message
 # ## and exit with a non-zero error code
 # if (!is.null(opt$help)) {
 #   cat(getopt(spec, usage = TRUE))
 #   q(status = 1)
 # }
-# 
+#
 # ## For testing
 # if (FALSE) {
 #   opt <- list(spetype = "wholegenome")
@@ -48,37 +48,40 @@ library("SingleCellExperiment")
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## Load the modeling results
-load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("cluster_modeling_results_k",k,".Rdata")),verbose = TRUE)
+load(file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("cluster_modeling_results_k", k, ".Rdata")), verbose = TRUE)
 
 ## load spe data
 spe_pseudo <-
-  readRDS(
-    file = here::here("processed-data",
-                      "rdata",
-                      "spe",
-                      "pseudo_bulked_spe",
-                      paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k",k,".RDS")))
+    readRDS(
+        file = here::here(
+            "processed-data",
+            "rdata",
+            "spe",
+            "pseudo_bulked_spe",
+            paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k", k, ".RDS")
+        )
+    )
 
 
 ## We don't want to model the pathology groups as integers / numeric
 ## so let's double check this
-#stopifnot(is.factor(spe_pseudo$path_groups) || is.character(spe_pseudo$path_groups))
+# stopifnot(is.factor(spe_pseudo$path_groups) || is.character(spe_pseudo$path_groups))
 
 ## Add APOe genotype info
-#spe_pseudo$APOe <- c("Br3854" = "E3/E4", "Br3873" = "E3/E3", "Br3880" = "E3/E3", "Br3874" = "E2/E3")[spe_pseudo$subject]
+# spe_pseudo$APOe <- c("Br3854" = "E3/E4", "Br3873" = "E3/E3", "Br3880" = "E3/E3", "Br3874" = "E2/E3")[spe_pseudo$subject]
 
 ## From
 ## https://github.com/LieberInstitute/HumanPilot/blob/879f11c7c57efd72334332b40feb3ad623e067c8/Analysis/Layer_Guesses/misc_numbers.R#L233-L246
 ## Extract the p-values
 pvals0_contrasts <- sapply(eb0_list, function(x) {
-  x$p.value[, 2, drop = FALSE]
+    x$p.value[, 2, drop = FALSE]
 })
 rownames(pvals0_contrasts) <- rownames(eb_contrasts)
 fdrs0_contrasts <- apply(pvals0_contrasts, 2, p.adjust, "fdr")
 
 ## Extract the t-stats
 t0_contrasts <- sapply(eb0_list, function(x) {
-  x$t[, 2, drop = FALSE]
+    x$t[, 2, drop = FALSE]
 })
 rownames(t0_contrasts) <- rownames(eb_contrasts)
 summary(fdrs0_contrasts < 0.05)
@@ -98,20 +101,20 @@ summary(fdrs0_contrasts < 0.05)
 ## From
 ## https://github.com/LieberInstitute/HumanPilot/blob/879f11c7c57efd72334332b40feb3ad623e067c8/Analysis/Layer_Guesses/misc_numbers.R#L302-L317
 f_merge <- function(p, fdr, t) {
-  colnames(p) <- paste0("p_value_", colnames(p))
-  colnames(fdr) <- paste0("fdr_", colnames(fdr))
-  colnames(t) <- paste0("t_stat_", colnames(t))
-  res <- as.data.frame(cbind(t, p, fdr))
-  res$ensembl <- rownames(res)
-  ## Check it's all in order
-  stopifnot(identical(rownames(res), rownames(spe_pseudo)))
-  res$gene <- rowData(spe_pseudo)$gene_name
-  rownames(res) <- NULL
-  return(res)
+    colnames(p) <- paste0("p_value_", colnames(p))
+    colnames(fdr) <- paste0("fdr_", colnames(fdr))
+    colnames(t) <- paste0("t_stat_", colnames(t))
+    res <- as.data.frame(cbind(t, p, fdr))
+    res$ensembl <- rownames(res)
+    ## Check it's all in order
+    stopifnot(identical(rownames(res), rownames(spe_pseudo)))
+    res$gene <- rowData(spe_pseudo)$gene_name
+    rownames(res) <- NULL
+    return(res)
 }
 
 results_specificity <-
-  f_merge(p = pvals0_contrasts, fdr = fdrs0_contrasts, t = t0_contrasts)
+    f_merge(p = pvals0_contrasts, fdr = fdrs0_contrasts, t = t0_contrasts)
 options(width = 400)
 head(results_specificity)
 #   t_stat_Ab+ t_stat_both t_stat_next_Ab+ t_stat_next_both t_stat_next_pT+ t_stat_none t_stat_pT+ p_value_Ab+ p_value_both p_value_next_Ab+ p_value_next_both p_value_next_pT+ p_value_none p_value_pT+   fdr_Ab+ fdr_both fdr_next_Ab+ fdr_next_both fdr_next_pT+  fdr_none   fdr_pT+         ensembl        gene
@@ -155,7 +158,7 @@ summary(fdrs_contrasts < 0.05)
 #  TRUE :3          TRUE :3
 
 results_pairwise <-
-  f_merge(p = pvals_contrasts, fdr = fdrs_contrasts, t = eb_contrasts$t)
+    f_merge(p = pvals_contrasts, fdr = fdrs_contrasts, t = eb_contrasts$t)
 colnames(results_pairwise)
 sort(colSums(fdrs_contrasts < 0.05))
 #       Abpos-both      Abpos-next_Abpos       Abpos-next_both
@@ -176,10 +179,10 @@ sort(colSums(fdrs_contrasts < 0.05))
 ## From
 ## https://github.com/LieberInstitute/HumanPilot/blob/879f11c7c57efd72334332b40feb3ad623e067c8/Analysis/Layer_Guesses/misc_numbers.R#L205-L215
 f_sig <- function(type, cut = 0.05) {
-  cbind(
-    "n" = addmargins(table(f_stats[[type]] < cut)),
-    "ratio" = addmargins(table(f_stats[[type]] < cut)) / nrow(f_stats)
-  )
+    cbind(
+        "n" = addmargins(table(f_stats[[type]] < cut)),
+        "ratio" = addmargins(table(f_stats[[type]] < cut)) / nrow(f_stats)
+    )
 }
 f_sig("noWM_fdr")
 #           n        ratio
@@ -191,17 +194,17 @@ f_sig("noWM_fdr")
 ## https://github.com/LieberInstitute/HumanPilot/blob/879f11c7c57efd72334332b40feb3ad623e067c8/Analysis/Layer_Guesses/misc_numbers.R#L383-L396
 ## Match the colnames to the new style
 f_rename <- function(x, old, new = old) {
-  old_patt <- paste0("_", old, "$")
-  i <- grep(old_patt, colnames(x))
-  tmp <- gsub(old_patt, "", colnames(x)[i])
-  tmp <- paste0(new, "_", tmp)
-  colnames(x)[i] <- tmp
-  return(x)
+    old_patt <- paste0("_", old, "$")
+    i <- grep(old_patt, colnames(x))
+    tmp <- gsub(old_patt, "", colnames(x)[i])
+    tmp <- paste0(new, "_", tmp)
+    colnames(x)[i] <- tmp
+    return(x)
 }
 results_anova <-
-  f_rename(f_rename(f_rename(
-    f_rename(f_stats, "f", "f_stat"), "p_value"
-  ), "fdr"), "Amean")
+    f_rename(f_rename(f_rename(
+        f_rename(f_stats, "f", "f_stat"), "p_value"
+    ), "fdr"), "Amean")
 head(results_anova)
 #   f_stat_noWM p_value_noWM  fdr_noWM noWM_AveExpr         ensembl        gene
 # 1   0.9810021    0.4502729 0.9763246    0.6515295 ENSG00000243485 MIR1302-2HG
@@ -212,23 +215,26 @@ head(results_anova)
 # 6   0.9722365    0.4559056 0.9763246    0.6494224 ENSG00000177757      FAM87B
 
 modeling_results <- list(
-  "anova" = results_anova,
-  "enrichment" = results_specificity,
-  "pairwise" = results_pairwise
+    "anova" = results_anova,
+    "enrichment" = results_specificity,
+    "pairwise" = results_pairwise
 )
 
 save(
-  modeling_results,
-  file = here::here("processed-data",
-                    "rdata",
-                    "spe",
-                    "08_layer_differential_expression",
-                    paste0("parsed_modeling_results_k",k,".Rdata")))
+    modeling_results,
+    file = here::here(
+        "processed-data",
+        "rdata",
+        "spe",
+        "08_layer_differential_expression",
+        paste0("parsed_modeling_results_k", k, ".Rdata")
+    )
+)
 
 
 # which(modeling_results$anova$fdr_noWM < 0.05)
 # summary(modeling_results$anova$fdr_noWM)
-# 
+#
 # length(which(modeling_results$enrichment$fdr_1 < 0.05))
 # length(which(modeling_results$enrichment$fdr_2 < 0.05))
 # length(which(modeling_results$enrichment$fdr_3 < 0.05))
@@ -238,15 +244,15 @@ save(
 # length(which(modeling_results$enrichment$fdr_7 < 0.05))
 # length(which(modeling_results$enrichment$fdr_8 < 0.05))
 # length(which(modeling_results$enrichment$fdr_9 < 0.05))
-# 
+#
 # cluster <- c(1:9)
 # genes <- c(9255,4051,1293,4739,2615,4422,3250,3332,417)
 # df <- data.frame(cluster, genes)
 # pdf(file = here::here("plots","08_layer_differential_expression","plot_enrichment_DEGs.pdf"))
 # plot(df$genes~df$cluster)
 # dev.off()
-# 
-# 
+#
+#
 # library(vioplot)
 # pdf(file = here::here("plots","08_layer_differential_expression","boxplot_num_enrichment_DEGs.pdf"))
 # x1 <- modeling_results$enrichment$fdr_1
@@ -258,11 +264,11 @@ save(
 # x7 <- modeling_results$enrichment$fdr_7
 # x8 <- modeling_results$enrichment$fdr_8
 # x9 <- modeling_results$enrichment$fdr_9
-# 
+#
 # vioplot(x1,x2,x3,x4,x5,x6,x7,x8,x9)
 # dev.off()
-# 
-# 
+#
+#
 # which(modeling_results$enrichment$p_value_1 < 0.05)
 # summary(modeling_results$pa$fdr_1)
 

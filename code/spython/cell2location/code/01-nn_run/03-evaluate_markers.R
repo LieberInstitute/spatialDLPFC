@@ -18,51 +18,52 @@ suppressPackageStartupMessages(library("gridExtra"))
 #   differences (particularly between (2) and the others). We'll now try
 #   method (3) and re-run C2L.
 
-sce_in = here(
+sce_in <- here(
     "tangram_libd", "raw-data", "03_nn_run", "SCE_DLPFC-n3_tran-etal.rda"
 )
 
-marker_path_ours = here(
+marker_path_ours <- here(
     "cell2location", "processed-data", "01-nn_run", "dlpfc_markers.txt"
 )
-marker_path_c2l = here(
+marker_path_c2l <- here(
     "cell2location", "processed-data", "01-nn_run", "dlpfc_markers_c2l.txt"
 )
 
-cell_types_to_drop = c('Endo', 'Macrophage', 'Mural', 'Tcell')
+cell_types_to_drop <- c("Endo", "Macrophage", "Mural", "Tcell")
 
 load(sce_in, verbose = TRUE)
 
 #   Manually merge finer cell types into the standard broad categories
-sce.dlpfc.tran$cellType = as.character(sce.dlpfc.tran$cellType)
-sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Excit"] = "Excit"
-sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Inhib"] = "Inhib"
+sce.dlpfc.tran$cellType <- as.character(sce.dlpfc.tran$cellType)
+sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Excit"] <- "Excit"
+sce.dlpfc.tran$cellType[substr(sce.dlpfc.tran$cellType, 1, 5) == "Inhib"] <- "Inhib"
 
 #   Drop rare cell types
-sce.dlpfc.tran = sce.dlpfc.tran[, ! (sce.dlpfc.tran$cellType %in% cell_types_to_drop)]
-sce.dlpfc.tran$cellType = as.factor(sce.dlpfc.tran$cellType)
+sce.dlpfc.tran <- sce.dlpfc.tran[, !(sce.dlpfc.tran$cellType %in% cell_types_to_drop)]
+sce.dlpfc.tran$cellType <- as.factor(sce.dlpfc.tran$cellType)
 
 #   Use Ensembl gene IDs for rownames (not gene symbol)
-rownames(sce.dlpfc.tran) = rowData(sce.dlpfc.tran)$gene_id
+rownames(sce.dlpfc.tran) <- rowData(sce.dlpfc.tran)$gene_id
 
 #   Read in both sets of marker genes
-markers_ours = readLines(marker_path_ours)
-markers_c2l = readLines(marker_path_c2l) # 16926 genes!
+markers_ours <- readLines(marker_path_ours)
+markers_c2l <- readLines(marker_path_c2l) # 16926 genes!
 
 #   None of our markers are used for C2L training genes!
 table(markers_ours %in% marker_path_c2l)
 
 #   Compare markers generated from scratch vs. from Louise's object
-marker_stats = get_mean_ratio2(
-    sce.dlpfc.tran, cellType_col = 'cellType', assay_name = 'logcounts'
+marker_stats <- get_mean_ratio2(
+    sce.dlpfc.tran,
+    cellType_col = "cellType", assay_name = "logcounts"
 )
 
 #   Take top N marker genes for each (non-rare) cell type
 n_genes <- 100
-marker_stats = marker_stats %>% 
+marker_stats <- marker_stats %>%
     filter(rank_ratio <= n_genes)
 
-markers_scratch = marker_stats$gene
+markers_scratch <- marker_stats$gene
 
 #   It's technically possible to find a single gene that is used as a "marker"
 #   for two different cell types via this method. Verify this is not the case,
@@ -80,22 +81,22 @@ table(markers_scratch %in% markers_c2l)
 #   Plot expression across cell types for the worst marker we'll use for each
 #   target cell type. This can visually verify we're not picking too many
 #   markers
-sce_marker = sce.dlpfc.tran[markers_scratch,]
-plot_list = list()
+sce_marker <- sce.dlpfc.tran[markers_scratch, ]
+plot_list <- list()
 for (target in levels(marker_stats$cellType.target)) {
-    this_marker = marker_stats$gene[
-        marker_stats$cellType.target == target & 
-        marker_stats$rank_ratio == n_genes
+    this_marker <- marker_stats$gene[
+        marker_stats$cellType.target == target &
+            marker_stats$rank_ratio == n_genes
     ]
-    
-    temp = data.frame(
-        'expression' = assays(sce_marker)$logcounts[this_marker,],
-        'cell_type' = sce_marker$cellType
+
+    temp <- data.frame(
+        "expression" = assays(sce_marker)$logcounts[this_marker, ],
+        "cell_type" = sce_marker$cellType
     )
-    
-    plot_list[[target]] = ggplot(temp) + 
+
+    plot_list[[target]] <- ggplot(temp) +
         geom_boxplot(aes(x = cell_type, y = expression)) +
-        labs(title = paste0(this_marker, ': worst marker for ', target))
+        labs(title = paste0(this_marker, ": worst marker for ", target))
 }
 
 do.call("grid.arrange", c(plot_list, ncol = 1))

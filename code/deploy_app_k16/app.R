@@ -12,15 +12,15 @@ options(repos = BiocManager::repositories())
 
 ## Load the spe object
 load("spe_subset.Rdata", verbose = TRUE)
-#load the pseudobulked object spe_pseudo
+# load the pseudobulked object spe_pseudo
 spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k16.RDS")
-#load modeling results for k9 clustering/pseudobulking
-load("parsed_modeling_results_k16.Rdata",verbose = TRUE)
+# load modeling results for k9 clustering/pseudobulking
+load("parsed_modeling_results_k16.Rdata", verbose = TRUE)
 load("sig_genes_subset_k16.Rdata", verbose = TRUE)
 
 spe$BayesSpace <- spe$bayesSpace_harmony_16
 vars <- colnames(colData(spe))
-#https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
+# https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
 
 ## Deploy the website
 spatialLIBD::run_app(
@@ -29,7 +29,7 @@ spatialLIBD::run_app(
     modeling_results = modeling_results,
     sig_genes = sig_genes,
     title = "spatialDLPFC_k16, Spangler et al, 2022",
-    spe_discrete_vars = c( #this is the variables for the spe object not the spe_pseudo object
+    spe_discrete_vars = c( # this is the variables for the spe object not the spe_pseudo object
         vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
         vars[grep("bayesSpace_harmony", vars)],

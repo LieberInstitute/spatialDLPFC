@@ -5,9 +5,10 @@ library("sessioninfo")
 
 ## Load the spe object
 load(here::here("code", "deploy_app", "spe_subset.Rdata"),
-    verbose = TRUE)
+    verbose = TRUE
+)
 
-#load the pseudobulked object spe_pseudo
+# load the pseudobulked object spe_pseudo
 spe_pseudo <-
     readRDS(
         here(
@@ -20,13 +21,14 @@ spe_pseudo <-
 lobstr::obj_size(spe_pseudo)
 # 75.50 MB
 
-#load modeling results for k16 clustering/pseudobulking
+# load modeling results for k16 clustering/pseudobulking
 load(here(
     "code",
     "deploy_app_k16",
     "parsed_modeling_results_k16.Rdata"
 ),
-    verbose = TRUE)
+verbose = TRUE
+)
 lobstr::obj_size(modeling_results)
 # 33.28 MB
 
@@ -91,10 +93,11 @@ lobstr::obj_size(sig_genes)
 # write.csv(z, file = file.path(dir_rdata, "Visium_IF_AD_wholegenome_model_results_FDR5perc.csv"))
 
 save(sig_genes,
-    file = here::here("code", "deploy_app_k16", "sig_genes_subset_k16.Rdata"))
+    file = here::here("code", "deploy_app_k16", "sig_genes_subset_k16.Rdata")
+)
 
 ## Reproducibility information
-print('Reproducibility information:')
+print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)
