@@ -4,8 +4,8 @@
 #$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/06-deconvo_figure_IF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/06-deconvo_figure_IF_$TASK_ID.log
 #$ -l mf=10G,h_vmem=10G
-#$ -t 1
-#$ -tc 1
+#$ -t 2-4
+#$ -tc 3
 
 echo "**** Job starts ****"
 date

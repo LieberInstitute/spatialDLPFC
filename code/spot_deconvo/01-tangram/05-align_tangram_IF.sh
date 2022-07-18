@@ -4,7 +4,7 @@
 #$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_$TASK_ID.log
 #$ -l caracol,mf=128G,h_vmem=128G
-#$ -t 1
+#$ -t 2-4
 #$ -tc 1
 
 echo "**** Job starts ****"

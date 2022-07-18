@@ -3,7 +3,7 @@
 #$ -N "prepare_anndata_IF"
 #$ -o ../../../processed-data/spot_deconvo/03-cell2location/03-prepare_anndata_IF.log
 #$ -e ../../../processed-data/spot_deconvo/03-cell2location/03-prepare_anndata_IF.log
-#$ -l bluejay,mf=20G,h_vmem=20G,h_fsize=50G
+#$ -l mf=80G,h_vmem=80G,h_fsize=50G
 
 echo "**** Job starts ****"
 date
@@ -13,7 +13,7 @@ echo "Job id: ${JOB_ID}"
 echo "Job name: ${JOB_NAME}"
 echo "Hostname: ${HOSTNAME}"
 
-module load tangram/1.0.2
+module load cell2location/0.8a0
 python 03-prepare_anndata_IF.py
 
 echo "**** Job ends ****"
