@@ -1,8 +1,9 @@
 library("spatialLIBD")
-library("markdown") ## Hm... to avoid this error
+library("markdown")## Hm... to avoid this error
 # 2021-11-11T05:30:49.941401+00:00 shinyapps[5096402]: Listening on http://127.0.0.1:32863
 # 2021-11-11T05:30:50.218127+00:00 shinyapps[5096402]: Warning: Error in loadNamespace: there is no package called ‘markdown’
 # 2021-11-11T05:30:50.222437+00:00 shinyapps[5096402]:   111: <Anonymous>
+library(Polychrome)
 
 ## spatialLIBD uses golem
 options("golem.app.prod" = TRUE)
@@ -17,6 +18,14 @@ spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k16
 # load modeling results for k9 clustering/pseudobulking
 load("parsed_modeling_results_k16.Rdata", verbose = TRUE)
 load("sig_genes_subset_k16.Rdata", verbose = TRUE)
+
+#add hex codes for bayesSpace colors to spe object
+colors_bayesSpace <- Polychrome::palette36.colors(28)
+names(colors_bayesSpace) <- c(1:28)
+spe$bayesSpace_colors <-"NA"
+for(i in 1:length(colors_bayesSpace)){
+  spe$bayesSpace_colors[which(spe$bayesSpace_harmony_16 == i)] = colors_bayesSpace[i]
+}
 
 spe$BayesSpace <- spe$bayesSpace_harmony_16
 vars <- colnames(colData(spe))
