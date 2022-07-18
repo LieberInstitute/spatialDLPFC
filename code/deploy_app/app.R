@@ -3,6 +3,7 @@ library("markdown") ## Hm... to avoid this error
 # 2021-11-11T05:30:49.941401+00:00 shinyapps[5096402]: Listening on http://127.0.0.1:32863
 # 2021-11-11T05:30:50.218127+00:00 shinyapps[5096402]: Warning: Error in loadNamespace: there is no package called ‘markdown’
 # 2021-11-11T05:30:50.222437+00:00 shinyapps[5096402]:   111: <Anonymous>
+library(Polychrome)
 
 ## spatialLIBD uses golem
 options("golem.app.prod" = TRUE)
@@ -21,6 +22,13 @@ load("sig_genes_subset.Rdata", verbose = TRUE)
 spe$BayesSpace <- spe$bayesSpace_harmony_9
 vars <- colnames(colData(spe))
 # https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
+
+colors_bayesSpace <- Polychrome::palette36.colors(28)
+names(colors_bayesSpace) <- c(1:28)
+spe$bayesSpace_harmony_9_colors <-"NA"
+for(i in 1:length(colors_bayesSpace)){
+  spe$bayesSpace_harmony_9_colors[which(spe$bayesSpace_harmony_9 == i)] = colors_bayesSpace[i]
+}
 
 ## Deploy the website
 spatialLIBD::run_app(
