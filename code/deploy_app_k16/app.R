@@ -22,9 +22,9 @@ load("sig_genes_subset_k16.Rdata", verbose = TRUE)
 #add hex codes for bayesSpace colors to spe object
 colors_bayesSpace <- Polychrome::palette36.colors(28)
 names(colors_bayesSpace) <- c(1:28)
-spe$bayesSpace_colors <-"NA"
+spe$bayesSpace_harmony_16_colors <-"NA"
 for(i in 1:length(colors_bayesSpace)){
-  spe$bayesSpace_colors[which(spe$bayesSpace_harmony_16 == i)] = colors_bayesSpace[i]
+  spe$bayesSpace_harmony_16_colors[which(spe$bayesSpace_harmony_16 == i)] = colors_bayesSpace[i]
 }
 
 spe$BayesSpace <- spe$bayesSpace_harmony_16
