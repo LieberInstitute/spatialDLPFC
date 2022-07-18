@@ -400,7 +400,7 @@ df.to_csv(cells_path, float_format="%.3f")
 #-------------------------------------------------------------------------------
 
 #   Make compatible with spatialLIBD 'clusters.csv' format
-raw.index = raw['barcode'] + '_' + sample_id_img
+raw.index = raw['barcode'] + '_' + sample_id_spot
 raw.index.name = 'key'
 raw.drop(['row', 'col', 'x', 'y', 'barcode'], axis = 1, inplace = True)
 

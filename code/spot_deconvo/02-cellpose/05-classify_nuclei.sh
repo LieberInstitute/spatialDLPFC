@@ -4,8 +4,8 @@
 #$ -o ../../../processed-data/spot_deconvo/02-cellpose/05-classify_nuclei_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/02-cellpose/05-classify_nuclei_$TASK_ID.log
 #$ -l mf=20G,h_vmem=20G
-#$ -t 2-4
-#$ -tc 1
+#$ -t 1-4
+#$ -tc 4
 
 echo "**** Job starts ****"
 date
