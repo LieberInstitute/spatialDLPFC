@@ -23,7 +23,7 @@ rsconnect::deployApp(
         "parsed_modeling_results_k9.Rdata",
         "sig_genes_subset.Rdata"
     ),
-    appName = "spatialDLPFC_Spangler2022",
+    appName = "k9_spatialDLPFC_Spangler2022",
     account = "libd",
     server = "shinyapps.io"
 )
