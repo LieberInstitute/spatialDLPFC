@@ -162,17 +162,18 @@ adata_vis.obsm['spatial'] = np.array(
 #-------------------------------------------------------------------------------
 
 if IMPORT_CELL_COUNTS:
-    cell_counts_path = cell_counts_path.format(sample_name)
+    cell_counts = pd.DataFrame()
 
-    #   Read in counts, whose associated barcodes should match the spatial
-    #   AnnData's
-    cell_counts = pd.read_csv(cell_counts_path)
-    cell_counts['key'].index = pd.Series(
-        [x.split('_')[1] for x in cell_counts['key']]
-    )
-    assert all(ad_sp.obs['key'] == cell_counts['key'])
+    for sample_id in adata_vis.obs['sample'].cat.categories:
+        this_path = str(cell_counts_path).format(sample_id)
+        
+        #   Read in counts, whose associated barcodes should match the spatial
+        #   AnnData's
+        cell_counts = pd.concat((cell_counts, pd.read_csv(this_path)))
 
-    ad_sp.obs[cell_count_var] = cell_counts['cell_count']
+    cell_counts['n_cells'].index = cell_counts['key']
+    adata_vis.obs[cell_count_var] = cell_counts['n_cells']
+    assert not any(adata_vis.obs[cell_count_var].isna())
 
 #-------------------------------------------------------------------------------
 #   Save AnnDatas
