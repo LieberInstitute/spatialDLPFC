@@ -25,10 +25,14 @@ vars <- colnames(colData(spe))
 
 colors_bayesSpace <- Polychrome::palette36.colors(28)
 names(colors_bayesSpace) <- c(1:28)
-spe$bayesSpace_harmony_9_colors <-"NA"
-for(i in 1:length(colors_bayesSpace)){
-  spe$bayesSpace_harmony_9_colors[which(spe$bayesSpace_harmony_9 == i)] = colors_bayesSpace[i]
-}
+# spe$bayesSpace_harmony_9_colors <-"NA"
+m <- match(as.character(spe$bayesSpace_harmony_9), names(colors_bayesSpace))
+stopifnot(all(!is.na(m)))
+spe$BayesSpace_colors <- spe$bayesSpace_harmony_9_colors <- colors_bayesSpace[m]
+# 
+# for(i in 1:length(colors_bayesSpace)){
+#   spe$bayesSpace_harmony_9_colors[which(spe$bayesSpace_harmony_9 == i)] = colors_bayesSpace[i]
+# }
 
 ## Deploy the website
 spatialLIBD::run_app(
@@ -45,7 +49,8 @@ spatialLIBD::run_app(
         "graph_based_PCA_within",
         "PCA_SNN_k10_k7",
         "Harmony_SNN_k10_k7",
-        "BayesSpace"
+        "BayesSpace",
+        "BayesSpace_colors"
     ),
     spe_continuous_vars = c(
         "sum_umi",
