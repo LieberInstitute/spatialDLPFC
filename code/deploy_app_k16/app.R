@@ -30,6 +30,10 @@ m <- match(as.character(spe$bayesSpace_harmony_16), names(colors_bayesSpace))
 stopifnot(all(!is.na(m)))
 spe$BayesSpace_colors <- spe$bayesSpace_harmony_16_colors <- colors_bayesSpace[m]
 
+## Drop BayesSpace from the pairwise names. This gets reflected on
+## the "Gene Set Enrichment" and "Spatial registration" tabs.
+colnames(modeling_results$pairwise) <- gsub("BayesSpace", "", colnames(modeling_results$pairwise))
+
 ## Deploy the website
 spatialLIBD::run_app(
     spe,
