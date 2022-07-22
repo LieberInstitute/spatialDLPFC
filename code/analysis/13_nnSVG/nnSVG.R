@@ -77,7 +77,7 @@ for (s in seq_along(sample_ids)) {
   spe_subS <- logNormCounts(spe_subS)
   
   # create model matrix for BayesSpace clusters covariates
-  X <- model.matrix(~ colData(spe_subS)$bayesSpace_harmony_8)
+  X <- model.matrix(~ colData(spe_subS)$bayesSpace_harmony_9)
   dim(X)
   head(X)
   stopifnot(nrow(X) == ncol(spe_subS))
