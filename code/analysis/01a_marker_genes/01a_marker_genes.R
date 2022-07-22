@@ -273,10 +273,22 @@ new_markers <-
   c("CLDN5",
     "C1QL2",
     "APOE",
-    "MSX1"
+    "MSX1",
+    "SPARC"
   )
 new_markers<- rowData(spe)$gene_search[match(new_markers, rowData(spe)$gene_name)]
 samples <- unique(spe$sample_id)
+
+
+for (i in new_markers) {
+  vis_grid_gene(
+    spe = spe,
+    geneid = i,
+    pdf = here::here("plots", "01a_marker_genes", paste0(gsub("; ", "_", i), ".pdf")),
+    assayname = "counts"
+  )
+}
+
 for (i in length(new_markers)) {
   pdf(file = here::here("plots", "01a_marker_genes", paste0("vis_genes_new_markers_", ".pdf")))
   for (j in length(samples)) {
