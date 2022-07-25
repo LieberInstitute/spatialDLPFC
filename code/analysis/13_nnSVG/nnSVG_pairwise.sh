@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=100G,h_vmem=100G,h_fsize=100G
+#$ -l caracol,mem_free=150G,h_vmem=150G,h_fsize=150G
 #$ -N nnSVG_pairwise
 #$ -o logs/nnSVG_pairwise$TASK_ID.txt
 #$ -e logs/nnSVG_pairwise.$TASK_ID.txt
