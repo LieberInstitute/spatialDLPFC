@@ -61,10 +61,10 @@ for (s in seq_along(sample_ids)) {
 }
 
 # directory to save whole tissue results
-dir_outputs <- here("processed-data", "rdata","spe", "13_nnSVG", "whole_tissue")
+dir_outputs <- here("processed-data", "rdata","spe", "13_nnSVG", "pairwise")
 
 # save whole tissue nnSVG results
-fn_out <- file.path(dir_outputs, "DG_nnSVG_results")
+fn_out <- file.path(dir_outputs, paste0(pairs[job,1],"_",pairs[job,2]))
 saveRDS(res_list, paste0(fn_out, ".rds"))
 save(res_list, file = paste0(fn_out, ".RData"))
 
