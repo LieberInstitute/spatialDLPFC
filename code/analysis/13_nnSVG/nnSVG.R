@@ -51,7 +51,7 @@ for (s in seq_along(sample_ids)) {
 }
 
 # directory to save whole tissue results
-dir_outputs <- here("processed-data", "nnSVG", "whole_tissue")
+dir_outputs <- here("processed-data", "rdata","spe", "13_nnSVG", "whole_tissue")
 
 # save whole tissue nnSVG results
 fn_out <- file.path(dir_outputs, "DG_nnSVG_results")
@@ -92,7 +92,7 @@ for (s in seq_along(sample_ids)) {
 
 
 # directory to save bayesspace informed results
-dir_outputs <- here("processed-data", "nnSVG", "BayesSpace")
+dir_outputs <- here("processed-data", "rdata","spe", "13_nnSVG", "BayesSpace")
 
 # save bayesspace nnSVG results
 fn_out <- file.path(dir_outputs, "DG_BayesSpace_nnSVG_results")
