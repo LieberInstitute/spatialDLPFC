@@ -27,32 +27,29 @@ from pathlib import Path
 ################################################################################
 
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo" "03-cell2location", "IF"
+    "processed-data", "spot_deconvo", "03-cell2location", "IF"
 )
 plot_dir = pyhere.here(
     "plots", "spot_deconvo" "03-cell2location", "IF"
 )
 
 sp_path = os.path.join(processed_dir, 'adata_vis_orig.h5ad')
-sc_path = os.path.join(processed_dir, 'adata_ref.h5ad')
-
+sc_path = os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 
 # create paths and names to results folders for reference regression and
 # cell2location models
 ref_run_name = f'{processed_dir}/reference_signatures'
 run_name = f'{processed_dir}/cell2location_map'
 
-#   TODO: adjust these as appropriate!
-
 #   Naming conventions used for different columns in the spatial AnnData
-cell_type_var = 'cellType'    # in single-cell only
+cell_type_var = 'cellType_broad_hc'    # in single-cell only
 
-plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+plot_file_type = 'pdf'
 
 #   Default is 30 in tutorial, but 5 is recommended as an initial guess for
 #   Visium data:
 #   https://github.com/BayraktarLab/cell2location/blob/master/docs/images/Note_on_selecting_hyperparameters.pdf
-N_CELLS_PER_SPOT = 5
+# N_CELLS_PER_SPOT = 5
 
 #   For spatial mapping model: tutorial recommends 20 as default but to try 200
 detection_alpha = 20
@@ -121,7 +118,7 @@ adata_ref = sc.read_h5ad(sc_path)
 #   was changed, given the info here: https://github.com/BayraktarLab/cell2location/issues/145#issuecomment-1107410480
 RegressionModel.setup_anndata(
     adata = adata_ref,
-    batch_key = 'donor', # tried 'processBatch' as well with poor results
+    batch_key = 'subject',
     labels_key = cell_type_var
 )
 
@@ -172,7 +169,7 @@ mod = cell2location.models.Cell2location(
     adata_vis, cell_state_df=inf_aver,
     # the expected average cell abundance: tissue-dependent
     # hyper-prior which can be estimated from paired histology:
-    N_cells_per_location=N_CELLS_PER_SPOT,
+    N_cells_per_location= adata_vis.obs['cell_count'], # N_CELLS_PER_SPOT,
     # hyperparameter controlling normalisation of
     # within-experiment variation in RNA detection:
     detection_alpha=detection_alpha
