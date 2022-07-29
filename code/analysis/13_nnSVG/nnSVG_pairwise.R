@@ -43,8 +43,8 @@ for (s in seq_along(sample_ids)) {
   spe_sub <- spe[, ix]
   
   # subset for pair of BayesSpace clusters
-  cx <- colData(spe)$bayesSpace_harmony_16 %in% c(pairs[job,1],pairs[job,2])
-  spe_sub <- spe[, cx]
+  cx <- colData(spe_sub)$bayesSpace_harmony_16 %in% c(pairs[job,1],pairs[job,2])
+  spe_sub <- spe_sub[, cx]
   
   # run nnSVG filtering for mitochondrial gene and low-expressed genes
   spe_sub <- filter_genes(spe_sub)
