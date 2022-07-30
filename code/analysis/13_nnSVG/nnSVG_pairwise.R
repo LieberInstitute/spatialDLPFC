@@ -54,8 +54,10 @@ for (s in seq_along(sample_ids)) {
   
   # run nnSVG
   set.seed(12345)
+  message("running nnSVG")
+  Sys.time()
   spe_sub <- nnSVG(spe_sub, n_threads = 8)
-  
+  Sys.time()
   # store whole tissue results
   res_list[[s]] <- rowData(spe_sub)
 }
