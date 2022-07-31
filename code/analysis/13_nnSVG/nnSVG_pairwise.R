@@ -30,6 +30,7 @@ sample_ids <- unique(spe$sample_id)
 x <- c(1:16)
 y <-c(1:16)
 pairs <- expand.grid(x = x, y = y)
+pairs <- pairs[c(64,73,109,183,189,192),]
 #256 pairs
 
 # Run nnSVG once per sample whole tissue and store lists of top SVGs
@@ -46,6 +47,11 @@ for (s in seq_along(sample_ids)) {
   cx <- colData(spe_sub)$bayesSpace_harmony_16 %in% c(pairs[job,1],pairs[job,2])
   spe_sub <- spe_sub[, cx]
   
+  #if less than 60 spots in spe_sub, next 
+  if(ncol(spe_sub)<65){
+    next
+  }
+  
   # run nnSVG filtering for mitochondrial gene and low-expressed genes
   spe_sub <- filter_genes(spe_sub)
   
@@ -55,9 +61,9 @@ for (s in seq_along(sample_ids)) {
   # run nnSVG
   set.seed(12345)
   message("running nnSVG")
-  Sys.time()
+  message(Sys.time())
   spe_sub <- nnSVG(spe_sub, n_threads = 8)
-  Sys.time()
+  message(Sys.time())
   # store whole tissue results
   res_list[[s]] <- rowData(spe_sub)
 }
@@ -69,6 +75,7 @@ dir_outputs <- here("processed-data", "rdata","spe", "13_nnSVG", "pairwise")
 fn_out <- file.path(dir_outputs, paste0(pairs[job,1],"_",pairs[job,2]))
 saveRDS(res_list, paste0(fn_out, ".rds"))
 save(res_list, file = paste0(fn_out, ".RData"))
+message("results saved")
 
 
 ## Reproducibility information
