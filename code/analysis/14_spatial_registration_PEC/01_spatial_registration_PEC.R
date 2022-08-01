@@ -161,9 +161,10 @@ colData(sce)$anno <- as.factor(colData(sce)$anno)
 colData(sce)$demux_type <- as.factor(colData(sce)$demux_type)
 colnames(colData(sce))[9] <- "sample_id"
 names(assays(sce)) <- "counts"
+#should save sce version here
 
 results_specificity <- computeEnrichment(sce, var_oi, covars)
-save(results_specificity, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/12_spatial_registration_sc/results_specificity.RDS")
+save(results_specificity, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/results_specificity.RDS")
 
 specificity_stats <- results_specificity[, grep("^t_stat", colnames(results_specificity))]
 colnames(specificity_stats) <- gsub("^t_stat_", "", colnames(specificity_stats))
