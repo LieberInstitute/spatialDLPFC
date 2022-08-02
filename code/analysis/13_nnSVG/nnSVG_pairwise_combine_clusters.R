@@ -65,8 +65,8 @@ for (s in seq_along(sample_ids)) {
   message("finished adding results to results object")
 }
 
-saveRDS(res_list, file = paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise/res_list_merged_pairs",".rds"))
-save(res_list, file = paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise/res_list_merged_pairs",".Rdata"))
+saveRDS(res_list, file = paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise/res_list_merged_pairs.rds"))
+save(res_list, file = paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise/res_list_merged_pairs.Rdata"))
 message("results saved")
 
 
