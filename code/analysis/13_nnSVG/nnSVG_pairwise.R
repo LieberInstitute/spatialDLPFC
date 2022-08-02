@@ -1,7 +1,4 @@
-################################################################
-# spatial_DG_lifespan project
-# nnSVG per Capture Area, Average ranks, & BayesSpace covariates
-# Anthony Ramnauth, July 11 2022
+# Code adapted from Anthony Ramnauth, July 11 2022
 ################################################################
 
 
@@ -66,15 +63,12 @@ for (s in seq_along(sample_ids)) {
   message(Sys.time())
   # store whole tissue results
   res_list[[s]] <- rowData(spe_sub)
+  message("finished adding results to results object")
+  saveRDS(res_list, paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise/",sample_ids[s],pairs[job,1],"_",pairs[job,2],"_res_list_subset.rds"))
 }
 
-# directory to save whole tissue results
-dir_outputs <- here("processed-data", "rdata","spe", "13_nnSVG", "pairwise")
-
-# save whole tissue nnSVG results
-fn_out <- file.path(dir_outputs, paste0(pairs[job,1],"_",pairs[job,2]))
-saveRDS(res_list, paste0(fn_out, ".rds"))
-save(res_list, file = paste0(fn_out, ".RData"))
+saveRDS(res_list, file = paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise/res_list_subset",pairs[job,1],"_",pairs[job,2],".rds"))
+save(res_list, file = paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise/res_list_subset",pairs[job,1],"_",pairs[job,2],".Rdata"))
 message("results saved")
 
 
