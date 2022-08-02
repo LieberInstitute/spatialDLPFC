@@ -61,7 +61,7 @@ meta_df <- data.frame(
     "tissue" = "dorsolateral prefrontal cortex",
     "isPostMortem" = TRUE,
     "BrodmannArea" = NA,
-    "nucleicAcidSource" = stop(), # need to ask about this
+    "nucleicAcidSource" = NA,
     "cellType" = NA,
     "reprogrammedCellType" = NA,
     "terminalDifferentiationPoint" = NA,

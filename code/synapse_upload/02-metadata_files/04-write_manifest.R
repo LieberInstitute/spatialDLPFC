@@ -72,7 +72,9 @@ num_fastq <- length(fastq_naming$new_path)
 #  Populate a data frame
 meta_df <- data.frame(
     "path" = paths,
-    "parent" = stop(), # need to ask this
+    "parent" = c(
+        rep('syn32383331', num_metadata), rep('syn32383329', num_fastq)
+    ),
     "individualID" = pd$subject[
         match(fastq_naming$sample_id, pd$sample_id_correct)
     ],
@@ -89,7 +91,7 @@ meta_df <- data.frame(
         rep("csv", num_metadata), rep("fastq", num_fastq)
     ),
     "consortium" = "PEC",
-    "study" = stop(), # need to ask this
+    "study" = "LIBD_U01_DLPFC",
     "grant" = stop(), # need to ask this
     "resourceType" = "experimentalData",
     "dataType" = NA,
