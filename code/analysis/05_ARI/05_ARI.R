@@ -4,6 +4,7 @@ library("spatialLIBD")
 library(tidyr)
 library(ggplot2)
 library("ggpubr")
+library(viridis)
 
 # plot ARI for pilot data comparing different clustering algorithms to Kristen's manual annnotations
 
@@ -121,8 +122,11 @@ save(ari.df.long, file = here::here("processed-data", "rdata", "pilot_dlpfc_data
 # dev.off()
 
 pdf(here::here("plots", "05_ARI", "ggboxplot_pilot_data_ARI_clustering_across.pdf"))
-ggboxplot(ari.df.long, x = "method", y = "ari", color = "general_method", palette = "Dark", add = "jitter", shape = "method", repel = TRUE, font.label = list(size = 5), legend = "none", ggtheme = theme_pubr(base_size = 30), ylab = "Adjusted Rand Index", xlab = "Clustering Method") +
-    font("xy.text", size = 9.5) +
+ggboxplot(ari.df.long, x = "method", y = "ari", color = "general_method",
+          palette = viridis(3), add = "jitter", repel = TRUE, 
+          font.label = list(size = 10), legend = "none", ggtheme = theme_pubr(base_size = 20), 
+          ylab = "Adjusted Rand Index", xlab = "Clustering Method", size = 1) +
+    font("xy.text", size = 11) +
     font("xlab", size = 16) +
     font("ylab", size = 16)
 dev.off()
