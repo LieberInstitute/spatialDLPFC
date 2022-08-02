@@ -1,11 +1,11 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=150G,h_vmem=150G,h_fsize=150G
+#$ -l mem_free=150G,h_vmem=150G,h_fsize=150G
 #$ -N nnSVG_pairwise
 #$ -o logs/nnSVG_pairwise.$TASK_ID.txt
 #$ -e logs/nnSVG_pairwise.$TASK_ID.txt
 #$ -m e
-#$ -t 3-4
+#$ -t 5-6
 #$ -tc 4
 
 echo "**** Job starts ****"

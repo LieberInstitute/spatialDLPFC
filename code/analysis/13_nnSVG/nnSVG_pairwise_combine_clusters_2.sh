@@ -1,12 +1,11 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=150G,h_vmem=150G,h_fsize=150G
-#$ -N nnSVG_pairwise
-#$ -o logs/nnSVG_pairwise.$TASK_ID.txt
-#$ -e logs/nnSVG_pairwise.$TASK_ID.txt
+#$ -l mem_free=150G,h_vmem=150G,h_fsize=150G
+#$ -N nnSVG_pairwise_combine_2
+#$ -o logs/nnSVG_pairwise_combine_clusters_2.$TASK_ID.txt
+#$ -e logs/nnSVG_pairwise_combine_clusters_2.$TASK_ID.txt
 #$ -m e
-#$ -t 3-4
-#$ -tc 4
+
 
 echo "**** Job starts ****"
 date
@@ -25,7 +24,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript nnSVG_pairwise.R
+Rscript nnSVG_pairwise_combine_clusters_2.R
 
 echo "**** Job ends ****"
 date
