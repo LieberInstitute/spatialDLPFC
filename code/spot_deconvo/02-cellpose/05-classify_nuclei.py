@@ -56,8 +56,6 @@ cell_types = {
     "olig2": "oligo",
     "tmem119": "micro"
 }
-m_per_px = 0.497e-6
-spot_radius = 65e-6
 
 #   Mean fluorescence below this value will be considered an indication of an 
 #   absence of the given cell type
