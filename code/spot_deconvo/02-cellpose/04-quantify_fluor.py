@@ -15,6 +15,7 @@ from scipy import ndimage
 from skimage.measure import regionprops, regionprops_table
 import pyhere
 from pathlib import Path
+import json
 
 ################################################################################
 #   Variable definitions
@@ -34,6 +35,10 @@ mask_path = pyhere.here(
 spot_path = pyhere.here(
     'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
     'tissue_positions_list.csv'
+)
+scale_path = pyhere.here(
+    'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
+    'scalefactors_json.json'
 )
 out_df_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df.csv'
@@ -55,8 +60,6 @@ cell_types = {
     "olig2": "oligo",
     "tmem119": "micro"
 }
-m_per_px = 0.497e-6
-spot_radius = 65e-6
 area_threshold = 200
 
 dilation_radius = 15
@@ -146,6 +149,11 @@ out_masks_path = str(out_masks_path).format(sample_id_spot)
 
 Path(out_df_path).parents[0].mkdir(parents=True, exist_ok=True)
 
+#   Path to JSON from spaceranger including spot size for this sample
+json_path = str(scale_path).format(sample_id_spot)
+with open(json_path) as f: 
+    json_data = json.load(f)
+
 #-------------------------------------------------------------------------------
 #   Read in spot data
 #-------------------------------------------------------------------------------
@@ -224,11 +232,12 @@ df = pd.concat([df, dist], axis=1)
 # Filters out masks that are smaller than a threshold and
 # masks whose centroid is farther than the spot radius (aka not inside the
 # spot).
-px_dist = spot_radius / m_per_px  # meter per px.
-df = df[df.dist < px_dist]
+frac_kept = round(100 * np.sum(df.dist < json_data['spot_diameter_fullres'] / 2) / len(df.dist), 1)
+print(f'Keeping {frac_kept}% of masks, which were within spots covered by tissue.')
+df = df[df.dist < json_data['spot_diameter_fullres'] / 2]
 
 frac_kept = round(100 * np.sum(df.area > area_threshold) / len(df.area), 1)
-print(f'Keeping {frac_kept}% of masks, which met a minimum area threshold.')
+print(f'Keeping {frac_kept}% of remaning masks, which met a minimum area threshold.')
 df = df[df.area > area_threshold]
 
 #-------------------------------------------------------------------------------
