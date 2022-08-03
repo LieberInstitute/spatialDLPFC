@@ -21,7 +21,7 @@ fastq_naming_path <- here(
 )
 
 write_path <- here(
-    "processed-data", "synapse_upload", "02-metadata_files", "biospecimen.csv"
+    "processed-data", "synapse_upload", "02-metadata_files", "manifest.tsv"
 )
 
 ###############################################################################
@@ -75,24 +75,27 @@ meta_df <- data.frame(
     "parent" = c(
         rep('syn32383331', num_metadata), rep('syn32383329', num_fastq)
     ),
-    "individualID" = pd$subject[
-        match(fastq_naming$sample_id, pd$sample_id_correct)
-    ],
-    "specimenID" = fastq_naming$sample_id,
+    "individualID" = c(
+        rep(NA, num_metadata),
+        pd$subject[
+            match(fastq_naming$sample_id, pd$sample_id_correct)
+        ]
+    ),
+    "specimenID" = c(rep(NA, num_metadata), fastq_naming$sample_id),
     "isMultiIndividual" = c(
         rep(NA, num_metadata), rep(FALSE, num_fastq)
     ),
     "isMultiSpecimen" = c(
         rep(NA, num_metadata), rep(FALSE, num_fastq)
     ),
-    "assay" = stop(), # need to ask this
-    "libraryID" = libraryID,
+    "assay" = NA, # TODO: need this!
+    "libraryID" = NA,
     "fileFormat" = c(
         rep("csv", num_metadata), rep("fastq", num_fastq)
     ),
     "consortium" = "PEC",
     "study" = "LIBD_U01_DLPFC",
-    "grant" = stop(), # need to ask this
+    "grant" = NA, # TODO: need this!
     "resourceType" = "experimentalData",
     "dataType" = NA,
     "dataSubtype" = c(
