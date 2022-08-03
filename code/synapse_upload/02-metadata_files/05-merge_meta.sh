@@ -20,6 +20,10 @@ sc_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed
 
 mkdir -p $dest_dir
 
+rm -f $dest_dir/assay_scrnaSeq.csv
+rm -f $dest_dir/assay_TODO.csv
+rm -f $dest_dir/individual.csv
+
 cp $sc_dir/assay.csv $dest_dir/assay_scrnaSeq.csv
 cp $spatial_dir/assay.csv $dest_dir/assay_TODO.csv
 
