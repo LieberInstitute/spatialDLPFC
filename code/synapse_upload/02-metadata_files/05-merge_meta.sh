@@ -18,6 +18,8 @@ dest_dir=../../../processed-data/synapse_upload/02-metadata_files/combined
 spatial_dir=../../../processed-data/synapse_upload/02-metadata_files
 sc_dir=/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/04_synapse_upload
 
+mkdir -p $dest_dir
+
 cp $sc_dir/assay.csv $dest_dir/assay_scrnaSeq.csv
 cp $spatial_dir/assay.csv $dest_dir/assay_TODO.csv
 

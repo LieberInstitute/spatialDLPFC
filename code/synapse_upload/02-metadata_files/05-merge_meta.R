@@ -13,9 +13,8 @@ out_dir = here(
     "processed-data", "synapse_upload", "02-metadata_files", "combined"
 )
 
-dir.create(out_dir, showWarnings = FALSE)
-
-#   (Copy assays files and individual file in the shell script wrapper)
+#   Note: assays files and individual file are already copied in the shell
+#   script wrapper
 
 ################################################################################
 #   Biospecimen
