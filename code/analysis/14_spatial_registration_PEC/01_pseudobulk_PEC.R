@@ -32,7 +32,7 @@ message("Make psuedobulk object")
 spe_pseudo <- aggregateAcrossCells(
   sce,
   DataFrame(
-    BayesSpace = sce$anno,
+    Anno = sce$anno,
     sample_id = sce$sample_id
   )
 )
@@ -57,6 +57,18 @@ rm(x)
 
 #save pseudobulked object
 save(spe_pseudo, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/CMC_spe_pseudo.rda")
+#load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/CMC_spe_pseudo.rda")
+mat <- assays(spe_pseudo)$logcounts
+
+mod <- with(
+  colData(spe_pseudo),
+  model.matrix(~ 0 + anno)
+)
+colnames(mod) <- gsub("anno", "", colnames(mod))
+
+corfit <- duplicateCorrelation(mat, mod,
+                               block = spe_pseudo$sample_id
+)
 
 #######################
 ###load DevBrain dataset 
