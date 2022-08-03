@@ -29,24 +29,10 @@ write_path <- here(
 
 fastq_naming <- read.csv(fastq_naming_path)
 
-#   Load phenotype data and take the first row for each sample ID
+#   Load phenotype data and take the first row for each donor
 load(spe_path, verbose = TRUE)
 pd <- colData(spe)
-pd <- pd[match(unique(pd$sample_id), pd$sample_id), ]
-
-#   Sample IDs have slight differences between spaceranger data and the SPE
-#   object. We'll use the former as the "correct IDs"
-pd$sample_id_correct <- sapply(
-    pd$sample_id,
-    function(id) {
-        #   Find the 1 sample ID in the spaceranger table corresponding to this
-        #   SPE sample ID
-        index <- grep(id, unique(fastq_naming$sample_id))
-        stopifnot(length(index) == 1)
-
-        return(unique(fastq_naming$sample_id)[index])
-    }
-)
+pd <- pd[match(unique(pd$subject), pd$subject), ]
 
 #   Tweak phenotype data to fit Synapse conventions
 pd$sex[pd$sex == "M"] <- "male"
