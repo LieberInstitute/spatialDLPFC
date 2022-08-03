@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=150G,h_vmem=100G,h_fsize=150G
+#$ -l bluejay,mem_free=150G,h_vmem=150G,h_fsize=150G
 #$ -N nnSVG_pairwise_combine
 #$ -o logs/nnSVG_pairwise_combine_clusters.$TASK_ID.txt
 #$ -e logs/nnSVG_pairwise_combine_clusters.$TASK_ID.txt
