@@ -27,15 +27,17 @@ import json
 
 plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "nonIF")
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo", "01-tangram", "nonIF"
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF"
 )
 
-sc_path_in = pyhere.here(processed_dir, 'sce.h5ad')
+sc_path_in = pyhere.here(os.path.dirname(processed_dir), 'sce.h5ad')
 sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
 sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 marker_path = pyhere.here(processed_dir, 'markers.txt')
-id_path_out = pyhere.here(processed_dir, 'sample_ids.txt')
+sample_info_path = pyhere.here(
+    'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
+)
 
 #   Directory containing hires image and a JSON containing scale factors and
 #   spot size for a given sample. Here '{}' will be replaced by a single
@@ -49,17 +51,17 @@ spaceranger_dir = pyhere.here(
 #-------------------------------------------------------------------------------
 
 #   Variable name in ad_sp.obs to color by in deconvolution-related plots
-cluster_var_plots = 'Cluster'
+cluster_var_plots = 'bayesSpace_harmony_9'
 
 #   Variable name in ad_sc.obs representing cell type
-cell_type_var = 'cellType'
+cell_type_var = 'cellType_broad_hc'
 
 #   Variable name in both ad_sc.var and ad_sp.var containing Ensembl gene ID and
 #   variable name in ad_sp.var containing gene symbol
 ensembl_id_var = 'gene_id'
 gene_symbol_var = 'gene_name'
 
-#   Variable name in ad_sp containing sample ID
+#   Variable name in ad_sp.obs containing sample ID
 sample_id_var = 'sample_id'
 
 #  Genes we want to plot predicted vs. actual expression for
@@ -67,11 +69,21 @@ select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
 ]
 
-spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
+spatial_coords_names = ['pxl_row_in_fullres', 'pxl_col_in_fullres']
 
 ################################################################################
 #   Preprocessing
 ################################################################################
+
+#   Different naming conventions are used between sample IDs in ad_sp vs. in
+#   file paths for spaceranger files. Compute the spaceranger ID for this sample
+sample_info = pd.read_excel(sample_info_path)
+sample_info['spaceranger_id'] = [
+    str(x).split('/')[-1] for x in sample_info['spaceranger file path']
+]
+spaceranger_id = sample_info[
+    sample_info['sample name'] == sample_name
+]['spaceranger_id'][0]
 
 #  Load AnnDatas and list of marker genes
 print('Loading AnnDatas...')
@@ -79,13 +91,7 @@ ad_sp = sc.read_h5ad(sp_path_in)
 
 ad_sp.obs[sample_id_var] = ad_sp.obs[sample_id_var].astype('category')
 
-#   Write sample IDs to a file so we don't have to load the entire spatial
-#   AnnData into memory to see all IDs
-with open(id_path_out, 'w') as f:
-    for id in ad_sp.obs[sample_id_var].categories:
-        f.writelines(id + '\n')
-
-sample_name = ad_sp.obs[sample_id_var].categories[
+sample_name = ad_sp.obs[sample_id_var].unique()[
     int(os.environ['SGE_TASK_ID']) - 1
 ]
 print('Subsetting to just sample {}.'.format(sample_name))
@@ -127,39 +133,35 @@ ad_sp.obs[cluster_var_plots] = ad_sp.obs[cluster_var_plots].astype('category')
 
 #   Path to JSON from spaceranger including spot size for this sample
 json_path = pyhere.here(
-    spaceranger_dir.format(sample_name), 'scalefactors_json.json'
+    spaceranger_dir.format(spaceranger_id), 'scalefactors_json.json'
 )
 
 with open(json_path) as f: 
     json_data = json.load(f)
 
-#   Store scalefactors in AnnData as squidpy expects
-ad_sp.uns['spatial'] = {
-    sample_name: {
-        'scalefactors': json_data
-    }
-}
-
 #   Read in high-res image as numpy array with values in [0, 1] rather than
-#   [0, 255] (note that it isn't verified the original range is [0, 255]!). 
-#   Then attach to AnnData object
+#   [0, 255], then attach to AnnData object.
 img_path = str(
-    pyhere.here(spaceranger_dir.format(sample_name), 'tissue_hires_image.png')
+    pyhere.here(
+        str(spaceranger_dir).format(spaceranger_id), 'tissue_hires_image.png'
+    )
 )
 
 img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
-assert img_arr.shape == (2000, 2000, 3), img_arr.shape
 
-ad_sp.uns['spatial'][sample_name]['images'] = { 'hires': img_arr }
+#   Store image and scalefactors in AnnData as squidpy expects
+ad_sp.uns['spatial'] = {
+    sample_name: {
+        'scalefactors': json_data,
+        'images' : { 'hires' : img_arr }
+    }
+}
 
-#   Tangram expects spatial coords in a very specific format
+#   Correct how spatialCoords are stored. Currently, they are a pandas
+#   DataFrame, with the columns potentially in the wrong order (depending on the
+#   version of SpatialExperiment used in R). We need them as a numpy array.
 ad_sp.obsm['spatial'] = np.array(
-    list(
-        zip(
-            ad_sp.obs[spatial_coords_names[0]],
-            ad_sp.obs[spatial_coords_names[1]]
-        )
-    )
+    ad_sp.obsm['spatial'][spatial_coords_names]
 )
 
 #-------------------------------------------------------------------------------
@@ -178,5 +180,5 @@ Path(os.path.join(processed_dir, sample_name)).mkdir(
 #   ordering. Therefore, while it's a bit wasteful to save many "copies" of
 #   'ad_sc' as done here, it simplifies code later by avoiding several order-
 #   related complications that would need manual resolution
-ad_sp.write_h5ad(sp_path_out.format(sample_name))
-ad_sc.write_h5ad(sc_path_out.format(sample_name))
+ad_sp.write_h5ad(str(sp_path_out).format(sample_name))
+ad_sc.write_h5ad(str(sc_path_out).format(sample_name))
