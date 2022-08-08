@@ -15,7 +15,7 @@ from PIL import Image
 
 #   We use some modified tangram code to circumvent the need for image
 #   segmentation, instead just relying on per-spot cell counts
-os.chdir(pyhere("code", "spot_deconvo", "01-tangram"))
+os.chdir(pyhere.here("code", "spot_deconvo", "01-tangram"))
 import custom_tg_code as ctg
 
 ################################################################################
@@ -28,7 +28,7 @@ import custom_tg_code as ctg
 
 plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "nonIF")
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo", "01-tangram", "nonIF"
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF"
 )
 sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_in = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
@@ -39,12 +39,12 @@ id_path = pyhere.here(processed_dir, 'sample_ids.txt')
 #-------------------------------------------------------------------------------
 
 #   Variable name in ad_sp.obs containing cell counts
-cell_count_var = 'cell_count'
+cell_count_var = 'count'
 
 #   Variable name in ad_sc.obs representing cell type
-cell_type_var = 'cellType'
+cell_type_var = 'cellType_broad_hc'
 
-plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+plot_file_type = 'pdf'
 
 ################################################################################
 #   Deconvolution
@@ -64,8 +64,8 @@ with open(id_path, 'r') as f:
 sample_name = sample_names[int(os.environ['SGE_TASK_ID']) - 1]
 print('Only using spatial sample {}.'.format(sample_name))
 
-ad_sp = sc.read_h5ad(sp_path_in.format(sample_name))
-ad_sc = sc.read_h5ad(sc_path_in.format(sample_name))
+ad_sp = sc.read_h5ad(str(sp_path_in).format(sample_name))
+ad_sc = sc.read_h5ad(str(sc_path_in).format(sample_name))
 
 SCALE_FACTOR = ad_sp.uns['spatial'][sample_name]['scalefactors']['tissue_hires_scalef']
 
