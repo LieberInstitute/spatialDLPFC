@@ -92,16 +92,6 @@ gc()
 reducedDims(spe_IF)$spatial <- spatialCoords(spe_IF)
 reducedDims(spe_nonIF)$spatial <- spatialCoords(spe_nonIF)
 
-# print('Converting all 3 objects to AnnDatas...')
-# write_anndata(sce, sce_out)
-# write_anndata(spe_IF, spe_IF_out)
-# write_anndata(spe_nonIF, spe_nonIF_out)
-gc()
-
-###############################################################################
-#  Find marker genes
-###############################################################################
-
 #   Drop rare cell types for single-cell data
 print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
 table(sce$cellType_broad_hc == "Endo.Mural")
@@ -109,6 +99,16 @@ sce <- sce[, !(sce$cellType_broad_hc == "Endo.Mural")]
 
 #   Use Ensembl gene IDs for rownames (not gene symbol)
 rownames(sce) <- rowData(sce)$gene_id
+
+print('Converting all 3 objects to AnnDatas...')
+write_anndata(sce, sce_out)
+write_anndata(spe_IF, spe_IF_out)
+write_anndata(spe_nonIF, spe_nonIF_out)
+gc()
+
+###############################################################################
+#  Find marker genes
+###############################################################################
 
 print("Determining and writing markers...")
 marker_stats <- get_mean_ratio2(
