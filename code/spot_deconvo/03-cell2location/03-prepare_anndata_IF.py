@@ -56,7 +56,7 @@ sample_id_var = 'sample_id'          # in spatial object only
 ensembl_id_var = 'gene_id'           # in both spatial and single-cell objects
 gene_symbol_var = 'gene_name'        # in both spatial and single-cell objects
 cell_type_var = 'cellType_broad_hc'  # in single-cell only
-spatial_coords_names = ['pxl_row_in_fullres', 'pxl_col_in_fullres']
+spatial_coords_names = ['pxl_col_in_fullres', 'pxl_row_in_fullres']
 
 plot_file_type = 'pdf' # 'pdf' is also supported for higher-quality plots
 

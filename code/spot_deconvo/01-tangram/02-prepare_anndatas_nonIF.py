@@ -69,7 +69,7 @@ select_genes_names = [
     'SNAP25', 'MBP', 'PCP4', 'CCK', 'RORB', 'ENC1', 'CARTPT', 'NR4A2', 'RELN'
 ]
 
-spatial_coords_names = ['pxl_row_in_fullres', 'pxl_col_in_fullres']
+spatial_coords_names = ['pxl_col_in_fullres', 'pxl_row_in_fullres']
 
 ################################################################################
 #   Preprocessing

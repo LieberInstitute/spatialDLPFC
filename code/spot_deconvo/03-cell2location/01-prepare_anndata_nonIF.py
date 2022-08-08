@@ -25,14 +25,14 @@ import json
 ################################################################################
 
 sc_path = pyhere.here(
-    "processed_data", "spot_deconvo", "01-tangram", "nonIF", "sce.h5ad"
+    "processed-data", "spot_deconvo", "01-tangram", "sce.h5ad"
 )
 sp_path = pyhere.here(
-    "processed_data", "spot_deconvo", "01-tangram", "nonIF", "spe.h5ad"
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "spe.h5ad"
 )
 
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo" "03-cell2location", "nonIF"
+    "processed-data", "spot_deconvo", "03-cell2location", "nonIF"
 )
 plot_dir = pyhere.here(
     "plots", "spot_deconvo" "03-cell2location", "nonIF"
@@ -47,16 +47,22 @@ spaceranger_dir = pyhere.here(
     'processed-data', 'rerun_spaceranger', '{}', 'outs', 'spatial'
 )
 
-#   TODO: check these below!
+marker_path = pyhere.here(
+    "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
+)
+
+sample_info_path = pyhere.here(
+    'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
+)
 
 #   Naming conventions used for different columns in the spatial AnnData
-sample_id_var = 'sample_id'   # in spatial object only
-ensembl_id_var = 'gene_id'    # in both spatial and single-cell objects
-gene_symbol_var = 'gene_name' # in both spatial and single-cell objects
-cell_type_var = 'cellType'    # in single-cell only
-spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
+sample_id_var = 'sample_id'          # in spatial object only
+ensembl_id_var = 'gene_id'           # in both spatial and single-cell objects
+gene_symbol_var = 'gene_name'        # in both spatial and single-cell objects
+cell_type_var = 'cellType_broad_hc'  # in single-cell only
+spatial_coords_names = ['pxl_col_in_fullres', 'pxl_row_in_fullres']
 
-plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+plot_file_type = 'pdf'
 
 ################################################################################
 #   Preprocessing
@@ -68,6 +74,13 @@ adata_vis = sc.read_h5ad(sp_path)
 adata_ref = sc.read_h5ad(sc_path)
 
 adata_vis.obs['sample'] = adata_vis.obs[sample_id_var]
+
+#   Different naming conventions are used between sample IDs in adata_vis vs. in
+#   file paths for spaceranger files. Compute the corresponding spaceranger IDs
+sample_info = pd.read_excel(sample_info_path)
+sample_info['spaceranger_id'] = [
+    str(x).split('/')[-1] for x in sample_info['spaceranger file path']
+]
 
 # rename genes to ENSEMBL
 adata_vis.var['SYMBOL'] = adata_vis.var[gene_symbol_var]
@@ -94,20 +107,9 @@ adata_ref.var.index = adata_ref.var[ensembl_id_var]
 adata_ref.var_names = adata_ref.var[ensembl_id_var]
 adata_ref.var.index.name = None
 
-#   Subset to specific genes
-selected = filter_genes(
-    adata_ref, cell_count_cutoff=5, cell_percentage_cutoff2=0.03,
-    nonz_mean_cutoff=1.12
-)
-
-#   This code to save plot doesn't work! TODO
-f = plt.gcf()
-f.savefig(
-    os.path.join(
-        plot_dir, f'cell_annotation.{plot_file_type}'
-    ),
-    bbox_inches='tight'
-)
+#   Subset to marker genes
+with open(marker_path, 'r') as f:
+    selected = f.read().splitlines()
 
 adata_ref = adata_ref[:, selected].copy()
 
@@ -118,43 +120,43 @@ adata_ref = adata_ref[:, selected].copy()
 adata_vis.uns['spatial'] = {}
 
 for sample_id in adata_vis.obs['sample'].cat.categories:
+    spaceranger_id = sample_info[
+        sample_info['sample name'] == sample_id
+    ]['spaceranger_id'].values[0]
+    
     #   Path to JSON from spaceranger including spot size for this sample
     json_path = pyhere.here(
-        spaceranger_dir.format(sample_name), 'scalefactors_json.json'
+        str(spaceranger_dir).format(spaceranger_id), 'scalefactors_json.json'
     )
-
+    
     with open(json_path) as f: 
         json_data = json.load(f)
-
-    #   Store scalefactors in AnnData as cell2location expects
-    adata_vis.uns['spatial'][sample_id] = {
-        'scalefactors': json_data
-    }
-
+    
     #   Read in high-res image as numpy array with values in [0, 1] rather than
-    #   [0, 255] (note that it isn't verified the original range is [0, 255]!). 
-    #   Then attach to AnnData object
+    #   [0, 255], then attach to AnnData object
     img_path = str(
-        pyhere.here(spaceranger_dir.format(sample_name), 'tissue_hires_image.png')
+        pyhere.here(
+            str(spaceranger_dir).format(spaceranger_id),
+            'tissue_hires_image.png'
+        )
     )
-
     img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
-    assert img_arr.shape == (2000, 2000, 3), img_arr.shape
-
-    adata_vis.uns['spatial'][sample_id]['images'] = { 'hires': img_arr }
+    
+    #   Store image and scalefactors in AnnData as squidpy expects
+    adata_vis.uns['spatial'][sample_id] = {
+        'scalefactors': json_data,
+        'images' : { 'hires' : img_arr }
+    }
 
 #-------------------------------------------------------------------------------
 #   Attach spatialCoords to spatial AnnData
 #-------------------------------------------------------------------------------
 
-#   Squidpy expects spatial coords in a very specific format
+#   Correct how spatialCoords are stored. Currently, they are a pandas
+#   DataFrame, with the columns potentially in the wrong order (depending on the
+#   version of SpatialExperiment used in R). We need them as a numpy array.
 adata_vis.obsm['spatial'] = np.array(
-    list(
-        zip(
-            adata_vis.obs[spatial_coords_names[0]],
-            adata_vis.obs[spatial_coords_names[1]]
-        )
-    )
+    adata_vis.obsm['spatial'][spatial_coords_names]
 )
 
 #-------------------------------------------------------------------------------
