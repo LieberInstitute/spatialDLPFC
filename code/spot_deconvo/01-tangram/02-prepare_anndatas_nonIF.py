@@ -36,7 +36,7 @@ sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 marker_path = pyhere.here(os.path.dirname(processed_dir), 'markers.txt')
 sample_info_path = pyhere.here(
-    'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
+    "processed-data", "spot_deconvo", "nonIF_ID_table.csv"
 )
 
 #   Directory containing hires image and a JSON containing scale factors and
@@ -86,14 +86,11 @@ sample_name = ad_sp.obs[sample_id_var].unique()[
 ]
 
 #   Different naming conventions are used between sample IDs in ad_sp vs. in
-#   file paths for spaceranger files. Compute the spaceranger ID for this sample
-sample_info = pd.read_excel(sample_info_path)
-sample_info['spaceranger_id'] = [
-    str(x).split('/')[-1] for x in sample_info['spaceranger file path']
-]
+#   file paths for spaceranger files. Grab the spaceranger ID for this sample
+sample_info = pd.read_csv(sample_info_path)
 spaceranger_id = sample_info[
-    sample_info['sample name'] == sample_name
-]['spaceranger_id'][0]
+    sample_info['short_id'] == sample_name
+]['long_id'][0]
 
 print('Subsetting to just sample {}.'.format(sample_name))
 ad_sp = ad_sp[ad_sp.obs[sample_id_var] == sample_name, :]

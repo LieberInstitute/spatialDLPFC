@@ -52,7 +52,7 @@ marker_path = pyhere.here(
 )
 
 sample_info_path = pyhere.here(
-    'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
+    "processed-data", "spot_deconvo", "nonIF_ID_table.csv"
 )
 
 #   Naming conventions used for different columns in the spatial AnnData
@@ -77,10 +77,7 @@ adata_vis.obs['sample'] = adata_vis.obs[sample_id_var]
 
 #   Different naming conventions are used between sample IDs in adata_vis vs. in
 #   file paths for spaceranger files. Compute the corresponding spaceranger IDs
-sample_info = pd.read_excel(sample_info_path)
-sample_info['spaceranger_id'] = [
-    str(x).split('/')[-1] for x in sample_info['spaceranger file path']
-]
+sample_info = pd.read_csv(sample_info_path)
 
 # rename genes to ENSEMBL
 adata_vis.var['SYMBOL'] = adata_vis.var[gene_symbol_var]
@@ -121,8 +118,8 @@ adata_vis.uns['spatial'] = {}
 
 for sample_id in adata_vis.obs['sample'].cat.categories:
     spaceranger_id = sample_info[
-        sample_info['sample name'] == sample_id
-    ]['spaceranger_id'].values[0]
+        sample_info['short_id'] == sample_id
+    ]['long_id'].values[0]
     
     #   Path to JSON from spaceranger including spot size for this sample
     json_path = pyhere.here(
