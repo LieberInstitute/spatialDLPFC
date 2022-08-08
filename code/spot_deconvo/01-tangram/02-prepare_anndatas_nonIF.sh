@@ -3,7 +3,7 @@
 #$ -N "prepare_anndatas_nonIF"
 #$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_$TASK_ID.log
-#$ -l bluejay,mf=10G,h_vmem=10G
+#$ -l bluejay,mf=80G,h_vmem=80G,h_fsize=50G
 #$ -t 1
 #$ -tc 1
 

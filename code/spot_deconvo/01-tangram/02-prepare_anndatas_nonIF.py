@@ -34,7 +34,7 @@ sc_path_in = pyhere.here(os.path.dirname(processed_dir), 'sce.h5ad')
 sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
 sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
-marker_path = pyhere.here(processed_dir, 'markers.txt')
+marker_path = pyhere.here(os.path.dirname(processed_dir), 'markers.txt')
 sample_info_path = pyhere.here(
     'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
 )
@@ -75,6 +75,16 @@ spatial_coords_names = ['pxl_row_in_fullres', 'pxl_col_in_fullres']
 #   Preprocessing
 ################################################################################
 
+#  Load AnnDatas and list of marker genes
+print('Loading AnnDatas...')
+ad_sp = sc.read_h5ad(sp_path_in)
+
+ad_sp.obs[sample_id_var] = ad_sp.obs[sample_id_var].astype('category')
+
+sample_name = ad_sp.obs[sample_id_var].unique()[
+    int(os.environ['SGE_TASK_ID']) - 1
+]
+
 #   Different naming conventions are used between sample IDs in ad_sp vs. in
 #   file paths for spaceranger files. Compute the spaceranger ID for this sample
 sample_info = pd.read_excel(sample_info_path)
@@ -85,15 +95,6 @@ spaceranger_id = sample_info[
     sample_info['sample name'] == sample_name
 ]['spaceranger_id'][0]
 
-#  Load AnnDatas and list of marker genes
-print('Loading AnnDatas...')
-ad_sp = sc.read_h5ad(sp_path_in)
-
-ad_sp.obs[sample_id_var] = ad_sp.obs[sample_id_var].astype('category')
-
-sample_name = ad_sp.obs[sample_id_var].unique()[
-    int(os.environ['SGE_TASK_ID']) - 1
-]
 print('Subsetting to just sample {}.'.format(sample_name))
 ad_sp = ad_sp[ad_sp.obs[sample_id_var] == sample_name, :]
 
@@ -133,7 +134,7 @@ ad_sp.obs[cluster_var_plots] = ad_sp.obs[cluster_var_plots].astype('category')
 
 #   Path to JSON from spaceranger including spot size for this sample
 json_path = pyhere.here(
-    spaceranger_dir.format(spaceranger_id), 'scalefactors_json.json'
+    str(spaceranger_dir).format(spaceranger_id), 'scalefactors_json.json'
 )
 
 with open(json_path) as f: 
