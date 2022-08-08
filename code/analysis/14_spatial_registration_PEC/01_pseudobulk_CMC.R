@@ -28,6 +28,8 @@ names(assays(sce)) <- "counts"
 #save sce here because it takes so long to convert the h5AD file
 saveRDS(sce,file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/CMC_sce.rds")
 
+sce$anno <- droplevels(sce$anno)
+
 message("Make psuedobulk object")
 spe_pseudo <- aggregateAcrossCells(
   sce,
@@ -70,48 +72,4 @@ corfit <- duplicateCorrelation(mat, mod,
                                block = spe_pseudo$sample_id
 )
 
-#######################
-###load DevBrain dataset 
-########################
-sce.dev.brain <- readH5AD(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version2/DevBrain/DevBrain-snRNAseq_annotated.h5ad")
-
-# identify annotation/cluster labels
-rowData(sce.dev.brain)$gene_name <- rownames(rowData(sce.dev.brain)) #save gene name as column of rowData
-rownames(sce.dev.brain) <- rowData(sce.dev.brain)$featureid # have to make row names of object the ensembl id instead of gene names
-colData(sce.dev.brain)$anno <- as.factor(colData(sce.dev.brain)$anno)
-colnames(colData(sce.dev.brain))[7] <- "sample_id"
-names(assays(sce.dev.brain)) <- "counts"
-
-#save sce here because it takes so long to convert the h5AD file
-saveRDS(sce.dev.brain,file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/DevBrain_sce.rds")
-
-message("Make psuedobulk object")
-spe_pseudo <- aggregateAcrossCells(
-  sce.dev.brain,
-  DataFrame(
-    Anno = sce.dev.brain$anno,
-    sample_id = sce.dev.brain$sample_id
-  )
-)
-colnames(spe_pseudo) <- paste0(spe_pseudo$sample_id, "_", spe_pseudo$anno)
-
-message("Filter lowly expressed genes")
-rowData(spe_pseudo)$filter_expr <- filterByExpr(spe_pseudo)
-summary(rowData(spe_pseudo)$filter_expr)
-
-spe_pseudo <- spe_pseudo[which(rowData(spe_pseudo)$filter_expr), ]
-
-message("Normalize expression")
-x <- edgeR::cpm(edgeR::calcNormFactors(spe_pseudo), log = TRUE, prior.count = 1)
-## Verify that the gene order hasn't changed
-stopifnot(identical(rownames(x), rownames(spe_pseudo)))
-## Fix the column names. DGEList will have samples names as Sample1 Sample2 etc
-dimnames(x) <- dimnames(spe_pseudo)
-## Store the log normalized counts on the SingleCellExperiment object
-logcounts(spe_pseudo) <- x
-## We don't need this 'x' object anymore
-rm(x)
-
-#save pseudobulked object
-saveRDS(spe_pseudo, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/DevBrain_spe_pseudo.rds")
 
