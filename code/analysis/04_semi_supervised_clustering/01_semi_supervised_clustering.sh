@@ -22,7 +22,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript 02_graph_based_clustering.R
+Rscript 04_semi_supervised_clustering.R
 
 echo "**** Job ends ****"
 date
