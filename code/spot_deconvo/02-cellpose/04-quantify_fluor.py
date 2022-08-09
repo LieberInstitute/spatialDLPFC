@@ -212,7 +212,7 @@ df = pd.DataFrame(its)
 #   quite a bit of overlap
 plt.clf()
 plt.scatter(raw["x"], raw["y"], 2)
-plt.scatter(df["y"], df["x"], 2)
+plt.scatter(df["x"], df["y"], 2)
 plt.savefig(
     os.path.join(
         plot_dir, f'mask_spot_overlap_{sample_id_img}.{plot_file_type}'
