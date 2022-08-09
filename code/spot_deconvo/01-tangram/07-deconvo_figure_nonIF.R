@@ -60,7 +60,7 @@ plot_path <- here(
     "my_spot_deconvo_fig.pdf"
 )
 
-spatial_coords_names <- c("pxl_row_in_fullres", "pxl_col_in_fullres")
+spatial_coords_names <- c("pxl_col_in_fullres", "pxl_row_in_fullres")
 
 dir.create(dirname(plot_path), recursive = TRUE, showWarnings = FALSE)
 
@@ -70,7 +70,6 @@ spe <- spe[, spe$sample_id == sample_id]
 
 #   Read in image, cell counts, and image scale factors
 img <- readPNG(img_path)
-img <- aperm(img, c(2, 1, 3))
 clusters <- read.csv(clusters_path)
 scale_json <- fromJSON(file = scale_path)
 
