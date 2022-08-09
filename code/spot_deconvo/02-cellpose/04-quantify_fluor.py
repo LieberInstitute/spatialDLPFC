@@ -60,7 +60,10 @@ cell_types = {
     "olig2": "oligo",
     "tmem119": "micro"
 }
-area_threshold = 200
+
+#   Nucleus area, in number of pixels, below which a cell is ignored. Tested by
+#   eye
+area_threshold = 60
 
 dilation_radius = 15
 dilation_chunk_size = 6
@@ -237,7 +240,7 @@ print(f'Keeping {frac_kept}% of masks, which were within spots covered by tissue
 df = df[df.dist < json_data['spot_diameter_fullres'] / 2]
 
 frac_kept = round(100 * np.sum(df.area > area_threshold) / len(df.area), 1)
-print(f'Keeping {frac_kept}% of remaning masks, which met a minimum area threshold.')
+print(f'Keeping {frac_kept}% of remaining masks, which met a minimum area threshold.')
 df = df[df.area > area_threshold]
 
 #-------------------------------------------------------------------------------
