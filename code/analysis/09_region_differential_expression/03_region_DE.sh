@@ -26,7 +26,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript 09_region_DE.R
+Rscript 03_region_DE.R
 
 echo "**** Job ends ****"
 date
