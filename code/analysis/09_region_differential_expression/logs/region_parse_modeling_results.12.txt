@@ -213,3 +213,218 @@ Sum   10259 1.000000000
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
 Tue Aug  2 15:02:29 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Thu Aug 11 22:08:08 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 1561912
+Job name: region_parse_modeling_results
+Hostname: compute-068.cm.cluster
+Task id: 12
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading objects:
+  f_stats
+  eb0_list
+  eb_contrasts
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+  anterior         middle        posterior      
+ Mode :logical   Mode :logical   Mode :logical  
+ FALSE:6393      FALSE:7894      FALSE:7841     
+ TRUE :1678      TRUE :177       TRUE :230      
+Loading required package: SpatialExperiment
+  t_stat_anterior t_stat_middle t_stat_posterior p_value_anterior p_value_middle p_value_posterior fdr_anterior fdr_middle fdr_posterior         ensembl      gene
+1      -1.9389788     0.6419820       1.29428473     5.332078e-02    0.521312088        0.19643454 1.534779e-01 0.89444239     0.5572769 ENSG00000228794 LINC01128
+2      -0.7285388    -0.5796484       1.30935256     4.667791e-01    0.562530893        0.19128808 6.399480e-01 0.90454875     0.5529678 ENSG00000188976     NOC2L
+3      -3.1202621     1.4548302       1.64130095     1.959588e-03    0.146627392        0.10164809 1.540003e-02 0.66821564     0.4299357 ENSG00000188290      HES4
+4      -1.6167603     2.1368952      -0.50336385     1.068459e-01    0.033310925        0.61503036 2.463867e-01 0.37444634     0.8492575 ENSG00000187608     ISG15
+5      -5.0621317     3.0667253       1.88324341     6.765888e-07    0.002335487        0.06051013 3.208754e-05 0.08452786     0.3459496 ENSG00000188157      AGRN
+6       0.5713205    -0.5116688      -0.06193915     5.681552e-01    0.609210881        0.95064723 7.211752e-01 0.92260728     0.9820039 ENSG00000078808      SDF4
+[1] 8071    3
+ regionanterior-regionmiddle regionanterior-regionposterior regionmiddle-regionposterior
+ Mode :logical               Mode :logical                  Mode :logical               
+ FALSE:7342                  FALSE:7115                     FALSE:8057                  
+ TRUE :729                   TRUE :956                      TRUE :14                    
+ [1] "t_stat_regionanterior-regionmiddle"     "t_stat_regionanterior-regionposterior"  "t_stat_regionmiddle-regionposterior"    "p_value_regionanterior-regionmiddle"    "p_value_regionanterior-regionposterior" "p_value_regionmiddle-regionposterior"   "fdr_regionanterior-regionmiddle"        "fdr_regionanterior-regionposterior"     "fdr_regionmiddle-regionposterior"      
+[10] "ensembl"                                "gene"                                  
+  regionmiddle-regionposterior    regionanterior-regionmiddle regionanterior-regionposterior 
+                            14                            729                            956 
+         n        ratio
+FALSE    6 0.0007434023
+TRUE  8065 0.9992565977
+Sum   8071 1.0000000000
+  f_stat_noWM p_value_noWM     fdr_noWM noWM_AveExpr         ensembl      gene
+1   10.745030 4.821447e-17 7.724076e-17     4.492812 ENSG00000228794 LINC01128
+2   11.791302 9.489388e-19 1.661724e-18     5.412556 ENSG00000188976     NOC2L
+3   18.695232 2.985984e-29 8.304575e-29     6.012170 ENSG00000188290      HES4
+4   10.065923 6.403154e-16 9.728889e-16     5.411361 ENSG00000187608     ISG15
+5    7.902105 2.904700e-12 3.612858e-12     3.942095 ENSG00000188157      AGRN
+6   15.654636 8.737461e-25 2.035798e-24     6.237443 ENSG00000078808      SDF4
+[1] "Reproducibility information:"
+[1] "2022-08-11 22:08:29 EDT"
+   user  system elapsed 
+ 14.100   1.101  18.819 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R Under development (unstable) (2021-11-06 r81149)
+ os       CentOS Linux 7 (Core)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2022-08-11
+ pandoc   2.11.0.4 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ beachmat               2.12.0   2022-04-26 [2] Bioconductor
+ Biobase              * 2.56.0   2022-04-26 [2] Bioconductor
+ BiocGenerics         * 0.42.0   2022-04-26 [2] Bioconductor
+ BiocParallel           1.30.3   2022-06-05 [2] Bioconductor
+ bitops                 1.0-7    2021-04-24 [2] CRAN (R 4.2.0)
+ cli                    3.3.0    2022-04-25 [2] CRAN (R 4.2.0)
+ codetools              0.2-18   2020-11-04 [3] CRAN (R 4.2.0)
+ DelayedArray           0.22.0   2022-04-26 [2] Bioconductor
+ DelayedMatrixStats     1.18.0   2022-04-26 [2] Bioconductor
+ dqrng                  0.3.0    2021-05-01 [2] CRAN (R 4.2.0)
+ DropletUtils           1.16.0   2022-04-26 [2] Bioconductor
+ edgeR                  3.38.4   2022-08-07 [2] Bioconductor
+ GenomeInfoDb         * 1.32.3   2022-08-09 [2] Bioconductor
+ GenomeInfoDbData       1.2.8    2022-04-16 [2] Bioconductor
+ GenomicRanges        * 1.48.0   2022-04-26 [2] Bioconductor
+ HDF5Array              1.24.2   2022-08-02 [2] Bioconductor
+ here                 * 1.0.1    2020-12-13 [1] CRAN (R 4.2.0)
+ IRanges              * 2.30.0   2022-04-26 [2] Bioconductor
+ lattice                0.20-45  2021-09-22 [3] CRAN (R 4.2.0)
+ limma                * 3.52.2   2022-06-19 [2] Bioconductor
+ locfit                 1.5-9.6  2022-07-11 [2] CRAN (R 4.2.0)
+ magick                 2.7.3    2021-08-18 [2] CRAN (R 4.2.0)
+ magrittr               2.0.3    2022-03-30 [2] CRAN (R 4.2.0)
+ Matrix                 1.4-1    2022-03-23 [3] CRAN (R 4.2.0)
+ MatrixGenerics       * 1.8.1    2022-06-26 [2] Bioconductor
+ matrixStats          * 0.62.0   2022-04-19 [2] CRAN (R 4.2.0)
+ R.methodsS3            1.8.2    2022-06-13 [2] CRAN (R 4.2.0)
+ R.oo                   1.25.0   2022-06-12 [2] CRAN (R 4.2.0)
+ R.utils                2.12.0   2022-06-28 [2] CRAN (R 4.2.0)
+ Rcpp                   1.0.9    2022-07-08 [2] CRAN (R 4.2.0)
+ RCurl                  1.98-1.8 2022-07-30 [2] CRAN (R 4.2.0)
+ rhdf5                  2.40.0   2022-04-26 [2] Bioconductor
+ rhdf5filters           1.8.0    2022-04-26 [2] Bioconductor
+ Rhdf5lib               1.18.2   2022-05-15 [2] Bioconductor
+ rjson                  0.2.21   2022-01-09 [2] CRAN (R 4.2.0)
+ rprojroot              2.0.3    2022-04-02 [2] CRAN (R 4.2.0)
+ S4Vectors            * 0.34.0   2022-04-26 [2] Bioconductor
+ scuttle                1.6.2    2022-05-15 [2] Bioconductor
+ sessioninfo          * 1.2.2    2021-12-06 [2] CRAN (R 4.2.0)
+ SingleCellExperiment * 1.18.0   2022-04-26 [2] Bioconductor
+ sparseMatrixStats      1.8.0    2022-04-26 [2] Bioconductor
+ SpatialExperiment    * 1.6.1    2022-08-09 [2] Bioconductor
+ SummarizedExperiment * 1.26.1   2022-04-29 [2] Bioconductor
+ XVector                0.36.0   2022-04-26 [2] Bioconductor
+ zlibbioc               1.42.0   2022-04-26 [2] Bioconductor
+
+ [1] /users/aspangle/R/devel
+ [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/site-library
+ [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu Aug 11 22:08:30 EDT 2022
