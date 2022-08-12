@@ -25,7 +25,7 @@ spe_pseudo <-
             "rdata",
             "spe",
             "pseudo_bulked_spe",
-            paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k", k, ".RDS")
+            paste0("spe_pseudobulk_bayesSpace_normalized_filtered_region_k", k, ".RDS")
         )
     )
 

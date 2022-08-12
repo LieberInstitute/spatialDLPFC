@@ -26,7 +26,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript 09a_region_parse_modeling_results.R
+Rscript 04_region_parse_modeling_results.R
 
 echo "**** Job ends ****"
 date
