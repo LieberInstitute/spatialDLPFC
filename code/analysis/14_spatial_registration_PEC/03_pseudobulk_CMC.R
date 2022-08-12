@@ -116,6 +116,13 @@ data.frame(
                             t0_contrasts_cluster > 0)
 )
 
+save(pvals0_contrasts_cluster,
+     t0_contrasts_cluster,
+     fdrs0_contrasts_cluster, 
+     file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/CMC_modeling_results.rda"
+)
+
+
 # vs manual annotations
 modeling_results <- fetch_data(type = "modeling_results")
 cor <- layer_stat_cor(
