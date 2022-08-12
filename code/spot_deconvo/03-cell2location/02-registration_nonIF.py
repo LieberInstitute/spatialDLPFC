@@ -27,32 +27,20 @@ from pathlib import Path
 ################################################################################
 
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo" "03-cell2location", "nonIF"
+    "processed-data", "spot_deconvo", "03-cell2location", "nonIF"
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo" "03-cell2location", "nonIF"
+    "plots", "spot_deconvo", "03-cell2location", "nonIF"
 )
 
 sp_path = os.path.join(processed_dir, 'adata_vis_orig.h5ad')
-sc_path = os.path.join(processed_dir, 'adata_ref.h5ad')
-
-
-# create paths and names to results folders for reference regression and
-# cell2location models
-ref_run_name = f'{processed_dir}/reference_signatures'
-run_name = f'{processed_dir}/cell2location_map'
+sc_path = os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 
 #   TODO: adjust these as appropriate!
 
-#   Naming conventions used for different columns in the spatial AnnData
-cell_type_var = 'cellType'    # in single-cell only
-
-plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
-
-#   Default is 30 in tutorial, but 5 is recommended as an initial guess for
-#   Visium data:
-#   https://github.com/BayraktarLab/cell2location/blob/master/docs/images/Note_on_selecting_hyperparameters.pdf
-N_CELLS_PER_SPOT = 5
+cell_type_var = 'cellType_broad_hc'    # in single-cell only
+cell_count_var = 'count'               # in spatial only
+plot_file_type = 'pdf'
 
 #   For spatial mapping model: tutorial recommends 20 as default but to try 200
 detection_alpha = 20
@@ -121,7 +109,7 @@ adata_ref = sc.read_h5ad(sc_path)
 #   was changed, given the info here: https://github.com/BayraktarLab/cell2location/issues/145#issuecomment-1107410480
 RegressionModel.setup_anndata(
     adata = adata_ref,
-    batch_key = 'donor', # tried 'processBatch' as well with poor results
+    batch_key = 'subject',
     labels_key = cell_type_var
 )
 
@@ -133,12 +121,6 @@ mod.train(max_epochs=epochs_signature, use_gpu=True)
 
 adata_ref, mod = post_training(
     mod, adata_ref, 'adata_ref', epochs_signature,
-    {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
-    'cell_signature_training_history'
-)
-
-adata_ref, mod = perform_regression(
-    mod, adata_ref, 'adata_ref', 250, 0.002,
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
@@ -172,13 +154,25 @@ cell2location.models.Cell2location.setup_anndata(
 )
 
 # create and train the model
+
 #   Note that 'detection_alpha' was changed from its default following:
-#   https://twitter.com/vitaliikl/status/1526510089514926081
+#   https://twitter.com/vitaliikl/status/1526510089514926081.
+#
+#   Although we have cell counts at each spot, and the tutorial claims to
+#   support providing these, the authors clarify use of per-spot counts is not
+#   officially supported. After following the instructions here:
+#   https://github.com/BayraktarLab/cell2location/issues/103#issuecomment-993583464
+#   I encountered an error, and so we'll just use average counts (a scalar).
+#
+# N_CELLS_PER_SPOT = np.array(
+#     adata_vis.obs[cell_count_var], dtype=np.float32
+# ).reshape((adata_vis.shape[0], 1))
+
 mod = cell2location.models.Cell2location(
     adata_vis, cell_state_df=inf_aver,
     # the expected average cell abundance: tissue-dependent
     # hyper-prior which can be estimated from paired histology:
-    N_cells_per_location=N_CELLS_PER_SPOT,
+    N_cells_per_location = float(np.mean(adata_vis.obs[cell_count_var])), # N_CELLS_PER_SPOT,
     # hyperparameter controlling normalisation of
     # within-experiment variation in RNA detection:
     detection_alpha=detection_alpha
