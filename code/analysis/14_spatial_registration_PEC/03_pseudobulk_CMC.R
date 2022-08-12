@@ -72,4 +72,89 @@ corfit <- duplicateCorrelation(mat, mod,
                                block = spe_pseudo$sample_id
 )
 
+cluster_idx <- splitit(spe_pseudo$anno)
+
+message("Run enrichment statistics")
+eb0_list_cluster <- lapply(cluster_idx, function(x) {
+  res <- rep(0, ncol(spe_pseudo))
+  res[x] <- 1
+  m <- with(
+    colData(spe_pseudo),
+    model.matrix(~ res)
+  )
+  eBayes(
+    lmFit(
+      mat,
+      design = m,
+      block = spe_pseudo$sample_id,
+      correlation = corfit$consensus.correlation
+    )
+  )
+})
+
+message("extract and reformat enrichment results")
+##########
+## Extract the p-values
+
+pvals0_contrasts_cluster <- sapply(eb0_list_cluster, function(x) {
+  x$p.value[, 2, drop = FALSE]
+})
+rownames(pvals0_contrasts_cluster) <- rownames(mat)
+
+t0_contrasts_cluster <- sapply(eb0_list_cluster, function(x) {
+  x$t[, 2, drop = FALSE]
+})
+rownames(t0_contrasts_cluster) <- rownames(mat)
+fdrs0_contrasts_cluster <- apply(pvals0_contrasts_cluster, 2, p.adjust, "fdr")
+
+data.frame(
+  "FDRsig" = colSums(fdrs0_contrasts_cluster < 0.05 &
+                       t0_contrasts_cluster > 0),
+  "Pval10-6sig" = colSums(pvals0_contrasts_cluster < 1e-6 &
+                            t0_contrasts_cluster > 0),
+  "Pval10-8sig" = colSums(pvals0_contrasts_cluster < 1e-8 &
+                            t0_contrasts_cluster > 0)
+)
+
+# vs manual annotations
+modeling_results <- fetch_data(type = "modeling_results")
+cor <- layer_stat_cor(
+  t0_contrasts_cluster,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+
+
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/14_spatial_registration_PEC/CMC/spatial_registration_plot_CMC_v_manual.pdf")
+layer_stat_cor_plot(cor)
+dev.off()
+
+# load my k = 9 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k9.Rdata")
+cor <- layer_stat_cor(
+  t0_contrasts_cluster,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/14_spatial_registration_PEC/CMC/spatial_registration_plot_CMC_v_k9.pdf")
+layer_stat_cor_plot(cor)
+dev.off()
+
+# load my k = 16 modeling results
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k16.Rdata")
+cor <- layer_stat_cor(
+  t0_contrasts_cluster,
+  modeling_results,
+  model_type = names(modeling_results)[2],
+  reverse = FALSE,
+  top_n = NULL
+)
+pdf("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/14_spatial_registration_PEC/CMC/spatial_registration_plot_CMC_v_k16.pdf")
+layer_stat_cor_plot(cor)
+dev.off()
+
 

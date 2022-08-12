@@ -35,7 +35,7 @@ processed_dir = pyhere.here(
     "processed-data", "spot_deconvo", "03-cell2location", "nonIF"
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo" "03-cell2location", "nonIF"
+    "plots", "spot_deconvo", "03-cell2location", "nonIF"
 )
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(processed_dir).mkdir(parents=True, exist_ok=True)

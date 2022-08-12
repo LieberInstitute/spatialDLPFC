@@ -25,7 +25,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript nnSVG_pairwise_combine_clusters_12_16.R
+Rscript 07_nnSVG_pairwise_combine_clusters_12_16.R
 
 echo "**** Job ends ****"
 date

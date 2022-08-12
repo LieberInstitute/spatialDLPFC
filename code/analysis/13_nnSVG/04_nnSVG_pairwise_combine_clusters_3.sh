@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=15G,h_vmem=15G,h_fsize=200G
+#$ -l mem_free=25G,h_vmem=25G,h_fsize=200G
 #$ -N nnSVG_pairwise_combine_3
 #$ -o logs/nnSVG_pairwise_combine_clusters_3.$TASK_ID.txt
 #$ -e logs/nnSVG_pairwise_combine_clusters_3.$TASK_ID.txt
@@ -25,7 +25,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript nnSVG_pairwise_combine_clusters_3.R
+Rscript 04_nnSVG_pairwise_combine_clusters_3.R
 
 echo "**** Job ends ****"
 date
