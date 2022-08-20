@@ -5,8 +5,8 @@ source("token.R")
 
 options(repos = BiocManager::repositories())
 rsconnect::deployApp(
-    appFiles = c("app.R", "sce_for_iSEE_LS.rda", "initial.R"),
-    appName = "LS_mm_2022",
+    appFiles = c("app.R", "spe_pseudobulk_bayesSpace_normalized_filtered_region_k9.RDS", "initial.R"),
+    appName = "Spangler2022_pseudobulk_cluster_k09",
     account = "libd",
     server = "shinyapps.io"
 )
