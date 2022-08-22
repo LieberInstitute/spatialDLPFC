@@ -1,10 +1,18 @@
 library('ggplot2')
+library('ggcorrplot')
+library('scatterpie')
 library('SPOTlight')
 library('SingleCellExperiment')
 library('SpatialExperiment')
 library('scater')
 library('scran')
 library('here')
+library('NMF')
+library('sessioninfo')
+
+################################################################################
+#   Variable definitions
+################################################################################
 
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
 spe_in <- here(
@@ -22,18 +30,29 @@ processed_dir = here(
     "processed-data", "spot_deconvo", "04-spotlight", "IF"
 )
 
+#   Column names in colData(sce)
 cell_type_var = 'cellType_broad_hc'
+
+#   Column names in rowData(sce)
+ensembl_id_var = 'gene_id'
+symbol_var = 'gene_name'
 
 #   Used for downsampling single-cell object prior to training
 n_cells_per_type <- 100
+
+################################################################################
+#   Preprocessing
+################################################################################
 
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 
 #   Load objects
 load(sce_in, verbose = TRUE)
-spe_IF <- readRDS(spe_in)
+spe <- readRDS(spe_in)
 gc()
+
+rownames(sce) = rowData(sce)[[ensembl_id_var]]
 
 #   Drop rare cell types for single-cell data
 print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
@@ -60,7 +79,7 @@ colLabels(sce) <- colData(sce)[[cell_type_var]]
 
 # Get vector indicating which genes are neither ribosomal or mitochondrial
 #   The regular expression in the tutorial appears to be bad, and was fixed here
-genes <- !grepl(pattern = "^(Rp[ls]|MT-)", x = rownames(sce)) # "^Rp[l|s]|Mt"
+genes <- !grepl(pattern = "^(Rp[ls]|MT-)", x = rowData(sce)[[symbol_var]]) # "^Rp[l|s]|Mt"
 
 # Compute marker genes
 mgs <- scoreMarkers(sce, subset.row = genes)
@@ -87,6 +106,10 @@ idx <- split(seq(ncol(sce)), sce[[cell_type_var]])
 cs_keep <- lapply(idx, function(i) sample(i, min(length(i), n_cells_per_type)))
 sce <- sce[, unlist(cs_keep)]
 
+################################################################################
+#   Train model and deconvolve cell types
+################################################################################
+
 #   Train model
 mod_ls <- trainNMF(
     x = sce,
@@ -104,3 +127,104 @@ res <- runDeconvolution(
     mod = mod_ls[["mod"]],
     ref = mod_ls[["topic"]]
 )
+
+res <- SPOTlight(
+    x = sce,
+    y = spe,
+    groups = as.character(sce[[cell_type_var]]),
+    mgs = mgs_df,
+    hvg = hvg,
+    weight_id = "mean.AUC",
+    group_id = "cluster",
+    gene_id = "gene"
+)
+
+################################################################################
+#   Visualization
+################################################################################
+
+#   Extract deconvolution matrix and NMF model fit
+mat <- res$mat
+mod <- res$NMF
+
+pdf(file.path(plot_dir, 'topic_profiles.pdf'))
+plotTopicProfiles(
+    x = mod,
+    y = sce[[cell_type_var]],
+    facet = FALSE,
+    min_prop = 0.01,
+    ncol = 1
+) +
+    theme(aspect.ratio = 1)
+
+plotTopicProfiles(
+    x = mod,
+    y = sce[[cell_type_var]],
+    facet = TRUE,
+    min_prop = 0.01,
+    ncol = 6
+)
+dev.off()
+
+sign <- basis(mod)
+colnames(sign) <- paste0("Topic", seq_len(ncol(sign)))
+
+pdf(file.path(plot_dir, 'visualizations.pdf'))
+plotCorrelationMatrix(mat)
+plotInteractions(mat, which = "heatmap", metric = "prop")
+plotInteractions(mat, which = "heatmap", metric = "jaccard")
+plotInteractions(mat, which = "network")
+dev.off()
+
+ct <- colnames(mat)
+mat[mat < 0.1] <- 0
+
+# Define color palette
+# (here we use 'paletteMartin' from the 'colorBlindness' package)
+paletteMartin <- c(
+    "#000000", "#004949", "#009292", "#ff6db6", "#ffb6db", 
+    "#490092", "#006ddb", "#b66dff", "#6db6ff", "#b6dbff", 
+    "#920000", "#924900", "#db6d00", "#24ff24", "#ffff6d"
+)
+
+pal <- colorRampPalette(paletteMartin)(length(ct))
+names(pal) <- ct
+
+spe$res_ss <- res[[2]][colnames(spe)]
+xy <- spatialCoords(spe)
+spe$x <- xy[, 1]
+spe$y <- xy[, 2]
+
+#   Split spatial-related plots by sample
+for (sample_id in unique(spe$sample_id)) {
+    this_sample_indices = which(spe$sample_id == sample_id)
+    temp_spe = spe[, this_sample_indices]
+    temp_mat = mat[this_sample_indices,]
+    
+    #   Scatterpie
+    pdf(file.path(plot_dir, paste0('scatterpie_', sample_id, '.pdf')))
+    plotSpatialScatterpie(
+        x = temp_spe,
+        y = temp_mat,
+        cell_types = colnames(temp_mat),
+        img = FALSE,
+        scatterpie_alpha = 1,
+        pie_scale = 0.4
+    ) +
+        scale_fill_manual(
+            values = pal,
+            breaks = names(pal)
+        )
+    dev.off()
+    
+    #   Residuals
+    pdf(file.path(plot_dir, paste0('residuals_', sample_id, '.pdf')))
+    ggcells(temp_spe, aes(x, y, color = res_ss)) +
+        geom_point() +
+        scale_color_viridis_c() +
+        coord_fixed() +
+        theme_bw()
+    dev.off()
+}
+
+session_info()
