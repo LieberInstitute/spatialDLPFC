@@ -7,7 +7,7 @@ library("scuttle")
 library("SpatialExperiment")
 
 #load("sce_for_iSEE_LS.rda", verbose = TRUE)# load the pseudobulked object spe_pseudo
-spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_region_k16.RDS")
+spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_region_k28.RDS")
 
 ## Make unique gene names
 rownames(spe_pseudo) <-
@@ -34,7 +34,7 @@ spe_pseudo <- registerAppOptions(spe_pseudo, color.maxlevels = length(colData(sp
 
 iSEE(
     spe_pseudo,
-    appTitle = "Spangler2022_pseudobulk_cluster_k16",
+    appTitle = "Spangler2022_pseudobulk_cluster_k28",
      initial = initial,
      colormap = ExperimentColorMap(colData = list(
         # subject = function(n) {
