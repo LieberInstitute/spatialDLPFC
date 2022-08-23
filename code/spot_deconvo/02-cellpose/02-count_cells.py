@@ -58,8 +58,13 @@ plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
 ################################################################################
 
 def setup():
+    #   Load multi-channel image and masks from segmenting DAPI channel
     imgs = tifffile.imread(img_path)
     masks = np.load(mask_path)
+
+    #   Quantify the mean image fluorescence intensity at each nucleus
+    #   identified by segmenting the DAPI channel. This is done for each
+    #   (non-lipofuscin) channel
     its = {
         names[i]: regionprops_table(masks, intensity_image=imgs[i], properties=["intensity_mean"])[
             "intensity_mean"
@@ -67,6 +72,8 @@ def setup():
         for i in range(2, 6)
     }
 
+    #   Create a table containing the centroids and areas of each mask
+    #   (nucleus), and add this info to the intensities table
     general = regionprops_table(masks, properties=["centroid", "area"])
     its["area"] = general["area"]
     its["x"] = general["centroid-0"]
@@ -152,12 +159,19 @@ pad = 5
 
 # Plot ROI - sanity check
 plot_roi(4)
-plt.scatter(raw["x"], raw["y"], 2)
-plt.scatter(df["y"], df["x"], 2)
-f = plt.gcf()
-f.savefig(
+fig.savefig(
     os.path.join(plot_dir, 'roi_{}.{}'.format(sample_id_img, plot_file_type)),
     bbox_inches='tight'
+)
+
+#   Plot mask spatial distribution vs. spot distribution; there should be
+#   quite a bit of overlap
+plt.scatter(raw["x"], raw["y"], 2)
+plt.scatter(df["y"], df["x"], 2)
+plt.savefig(
+    os.path.join(
+        plot_dir, f'mask_spot_overlap_{sample_id_img}.{plot_file_type}'
+    )
 )
 
 # ### Process ROI properties.
@@ -166,22 +180,17 @@ f.savefig(
 #
 # Builds a $k$-d tree to assign masks to spots.
 
-props = regionprops_table(
-    masks,
-    intensity_image=target[5, :, :],
-    properties=(
-        "centroid", "area", "intensity_max", "intensity_mean", "intensity_min"
-    ),
-)
-
 # Build KD tree for nearest neighbor search.
 kd = KDTree(raw[["x", "y"]])
 
+#   For each mask, assign a distance to the nearest spot ('dist') and index of
+#   that spot in 'df' ('idx'). Add this info to 'df', now called 'combi'
 dist, idx = kd.query(df[["x", "y"]])
 dist = pd.DataFrame({"dist": dist, "idx": idx})
 combi = pd.concat([df, dist], axis=1)
 
-# Threshold
+#   Create boolean columns where the values for each channel name are True
+#   if the mean intensity for that channel is sufficiently high
 for name, t in thresholds.items():
     combi[f"N_{name}"] = combi[name] > t
 
@@ -198,14 +207,14 @@ plt.savefig(
 # Filters out masks that are smaller than a threshold and
 # masks whose centroid is farther than the spot radius (aka not inside the
 # spot).
-
 px_dist = spot_radius / m_per_px  # meter per px.
 filtered = combi[(combi.area > area_threshold) & (combi.dist < px_dist)]
 
+#   For each channel, count how many nuclei per spot have sufficiently high
+#   mean intensity. Note that a nucleus can be "counted" for multiple channels,
+#   or even for none
 summed = filtered[[f"N_{name}" for name in thresholds] + \
     ["idx"]].groupby("idx").sum().astype(int)
-means = filtered[[f"{name}" for name in thresholds] + \
-    ["idx"]].groupby("idx").mean()
 
 # Export
 out = pd.concat(

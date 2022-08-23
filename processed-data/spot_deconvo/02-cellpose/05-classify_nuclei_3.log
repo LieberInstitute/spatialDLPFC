@@ -1,0 +1,54 @@
+**** Job starts ****
+Mon Jul 18 14:43:16 EDT 2022
+**** JHPCE info ****
+User: neagles
+Job id: 1377388
+Job name: classify_nuclei
+Hostname: compute-048.cm.cluster
+Task id: 3
+Loading LIBD module for cellpose/2.0
+27.9% of nuclei don't have a clear cell type.
+Number of cells that change from astrocyte to neither astrocyte nor other when GFAP fluorescence is ignored: 4438
+Mean for neun above cutoff: 24.549485333708553
+Mean for neun otherwise: 8.37257137500117
+Mean for olig2 above cutoff: 25.35316635531449
+Mean for olig2 otherwise: 6.863043118259003
+Mean for tmem119 above cutoff: 10.923342632594778
+Mean for tmem119 otherwise: 4.368610060858931
+Intensities for 5 random oligo cells:
+          neun      olig2   tmem119
+1381   0.00000  17.496635  0.177658
+2902   0.00000  20.348837  5.873256
+12561  0.02651  32.855670  1.097202
+66     0.00000  33.744361  5.253133
+12478  0.00000  27.468401  1.074349
+Intensities for 5 random other cells:
+           neun     olig2   tmem119
+2624   0.007538  0.030151  1.335427
+11143  0.000000  0.040541  1.152027
+11311  2.599752  0.157373  0.229244
+14788  0.000000  0.180406  2.659498
+12927  1.333680  0.503119  0.497921
+Intensities for 5 random neuron cells:
+            neun     olig2   tmem119
+13103  36.541417  0.001200  2.978391
+9068    6.984281  1.377267  2.660218
+12222  47.215343  0.000000  0.620458
+14118  14.308244  0.075269  0.158901
+5981   22.765957  0.921986  1.726950
+Intensities for 5 random micro cells:
+          neun     olig2    tmem119
+8141  0.000000  0.844737  26.497368
+3564  0.076659  3.541190   4.784897
+9577  0.000000  0.000000  26.766234
+6845  4.634391  0.946578   4.759599
+6003  3.865471  0.236173   6.588939
+Total number of oligo cells: 3112.0
+Total number of other cells: 4459.0
+Total number of neuron cells: 4558.0
+Total number of micro cells: 3860.0
+Percentage of spots with at least one cell: 96.0%
+Mean number of cells per spot: 3.702
+Max number of cells per spot: 15
+**** Job ends ****
+Mon Jul 18 14:45:28 EDT 2022

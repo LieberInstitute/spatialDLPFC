@@ -25,14 +25,14 @@ import json
 ################################################################################
 
 sc_path = pyhere.here(
-    "processed_data", "spot_deconvo", "01-tangram", "IF", "sce.h5ad"
+    "processed-data", "spot_deconvo", "01-tangram", "sce.h5ad"
 )
 sp_path = pyhere.here(
-    "processed_data", "spot_deconvo", "01-tangram", "IF", "spe.h5ad"
+    "processed-data", "spot_deconvo", "01-tangram", "IF", "spe.h5ad"
 )
 
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo" "03-cell2location", "IF"
+    "processed-data", "spot_deconvo", "03-cell2location", "IF"
 )
 plot_dir = pyhere.here(
     "plots", "spot_deconvo" "03-cell2location", "IF"
@@ -44,20 +44,21 @@ Path(processed_dir).mkdir(parents=True, exist_ok=True)
 #   spot size for a given sample. Here '{}' will be replaced by a single
 #   sample name
 spaceranger_dir = pyhere.here(
-    'processed-data', 'rerun_spaceranger', '01_spaceranger_IF', '{}', 'outs',
-    'spatial'
+    'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial'
 )
 
-#   TODO: check these below!
+marker_path = pyhere.here(
+    "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
+)
 
 #   Naming conventions used for different columns in the spatial AnnData
-sample_id_var = 'sample_id'   # in spatial object only
-ensembl_id_var = 'gene_id'    # in both spatial and single-cell objects
-gene_symbol_var = 'gene_name' # in both spatial and single-cell objects
-cell_type_var = 'cellType'    # in single-cell only
-spatial_coords_names = ('pxl_row_in_fullres', 'pxl_col_in_fullres')
+sample_id_var = 'sample_id'          # in spatial object only
+ensembl_id_var = 'gene_id'           # in both spatial and single-cell objects
+gene_symbol_var = 'gene_name'        # in both spatial and single-cell objects
+cell_type_var = 'cellType_broad_hc'  # in single-cell only
+spatial_coords_names = ['pxl_col_in_fullres', 'pxl_row_in_fullres']
 
-plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+plot_file_type = 'pdf' # 'pdf' is also supported for higher-quality plots
 
 #   If True, important per-spot cell counts from a 'clusters.csv' file.
 #   Otherwise it is assumed the object already contains cell counts that will be
@@ -104,20 +105,9 @@ adata_ref.var.index = adata_ref.var[ensembl_id_var]
 adata_ref.var_names = adata_ref.var[ensembl_id_var]
 adata_ref.var.index.name = None
 
-#   Subset to specific genes
-selected = filter_genes(
-    adata_ref, cell_count_cutoff=5, cell_percentage_cutoff2=0.03,
-    nonz_mean_cutoff=1.12
-)
-
-#   This code to save plot doesn't work! TODO
-f = plt.gcf()
-f.savefig(
-    os.path.join(
-        plot_dir, f'cell_annotation.{plot_file_type}'
-    ),
-    bbox_inches='tight'
-)
+#   Subset to marker genes
+with open(marker_path, 'r') as f:
+    selected = f.read().splitlines()
 
 adata_ref = adata_ref[:, selected].copy()
 
@@ -130,41 +120,41 @@ adata_vis.uns['spatial'] = {}
 for sample_id in adata_vis.obs['sample'].cat.categories:
     #   Path to JSON from spaceranger including spot size for this sample
     json_path = pyhere.here(
-        spaceranger_dir.format(sample_name), 'scalefactors_json.json'
+        str(spaceranger_dir).format(sample_id), 'scalefactors_json.json'
     )
-
+    
     with open(json_path) as f: 
         json_data = json.load(f)
-
+    
     #   Store scalefactors in AnnData as cell2location expects
     adata_vis.uns['spatial'][sample_id] = {
         'scalefactors': json_data
     }
-
+    
     #   Read in high-res image as numpy array with values in [0, 1] rather than
-    #   [0, 255] (note that it isn't verified the original range is [0, 255]!). 
-    #   Then attach to AnnData object
+    #   [0, 255], then attach to AnnData object
     img_path = str(
-        pyhere.here(spaceranger_dir.format(sample_name), 'tissue_hires_image.png')
+        pyhere.here(
+            str(spaceranger_dir).format(sample_id), 'tissue_hires_image.png'
+        )
     )
-
     img_arr = np.array(Image.open(img_path), dtype = np.float32) / 256
-    assert img_arr.shape == (2000, 2000, 3), img_arr.shape
-
-    adata_vis.uns['spatial'][sample_id]['images'] = { 'hires': img_arr }
+    
+    #   Store image and scalefactors in AnnData as squidpy expects
+    adata_vis.uns['spatial'][sample_id] = {
+        'scalefactors': json_data,
+        'images' : { 'hires' : img_arr }
+    }
 
 #-------------------------------------------------------------------------------
 #   Attach spatialCoords to spatial AnnData
 #-------------------------------------------------------------------------------
 
-#   Squidpy expects spatial coords in a very specific format
+#   Correct how spatialCoords are stored. Currently, they are a pandas
+#   DataFrame, with the columns potentially in the wrong order (depending on the
+#   version of SpatialExperiment used in R). We need them as a numpy array.
 adata_vis.obsm['spatial'] = np.array(
-    list(
-        zip(
-            adata_vis.obs[spatial_coords_names[0]],
-            adata_vis.obs[spatial_coords_names[1]]
-        )
-    )
+    adata_vis.obsm['spatial'][spatial_coords_names]
 )
 
 #-------------------------------------------------------------------------------
@@ -172,17 +162,18 @@ adata_vis.obsm['spatial'] = np.array(
 #-------------------------------------------------------------------------------
 
 if IMPORT_CELL_COUNTS:
-    cell_counts_path = cell_counts_path.format(sample_name)
+    cell_counts = pd.DataFrame()
 
-    #   Read in counts, whose associated barcodes should match the spatial
-    #   AnnData's
-    cell_counts = pd.read_csv(cell_counts_path)
-    cell_counts['key'].index = pd.Series(
-        [x.split('_')[1] for x in cell_counts['key']]
-    )
-    assert all(ad_sp.obs['key'] == cell_counts['key'])
+    for sample_id in adata_vis.obs['sample'].cat.categories:
+        this_path = str(cell_counts_path).format(sample_id)
+        
+        #   Read in counts, whose associated barcodes should match the spatial
+        #   AnnData's
+        cell_counts = pd.concat((cell_counts, pd.read_csv(this_path)))
 
-    ad_sp.obs[cell_count_var] = cell_counts['cell_count']
+    cell_counts['n_cells'].index = cell_counts['key']
+    adata_vis.obs[cell_count_var] = cell_counts['n_cells']
+    assert not any(adata_vis.obs[cell_count_var].isna())
 
 #-------------------------------------------------------------------------------
 #   Save AnnDatas

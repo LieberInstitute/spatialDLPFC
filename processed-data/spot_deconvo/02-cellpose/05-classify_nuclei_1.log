@@ -1,0 +1,54 @@
+**** Job starts ****
+Mon Jul 18 14:42:33 EDT 2022
+**** JHPCE info ****
+User: neagles
+Job id: 1377388
+Job name: classify_nuclei
+Hostname: compute-115.cm.cluster
+Task id: 1
+Loading LIBD module for cellpose/2.0
+15.4% of nuclei don't have a clear cell type.
+Number of cells that change from astrocyte to neither astrocyte nor other when GFAP fluorescence is ignored: 1404
+Mean for neun above cutoff: 34.75636550168502
+Mean for neun otherwise: 16.24999479478829
+Mean for olig2 above cutoff: 17.207949566822005
+Mean for olig2 otherwise: 4.409055013227851
+Mean for tmem119 above cutoff: 10.3973871332719
+Mean for tmem119 otherwise: 4.898472169724659
+Intensities for 5 random micro cells:
+          neun      olig2    tmem119
+1934  0.000000   2.543956   4.532967
+1279  0.000000   6.377588  20.523752
+4205  0.000000   0.049231   4.609231
+2514  2.022002  16.541254  34.214521
+2661  0.009245   0.000000  16.126348
+Intensities for 5 random neuron cells:
+           neun     olig2   tmem119
+6180  38.548280  0.285239  0.039956
+913   54.222339  0.150685  0.503688
+6687  19.907586  0.046897  0.057931
+1660  55.633508  1.382199  0.268325
+5579  64.122249  1.630807  0.079462
+Intensities for 5 random other cells:
+          neun     olig2   tmem119
+6572  0.000000  0.016238  1.562923
+5332  0.000000  0.000000  1.378223
+6233  1.606218  0.427461  0.038860
+2066  0.000000  0.000000  2.465789
+6066  0.000000  0.000000  1.109948
+Intensities for 5 random oligo cells:
+          neun      olig2    tmem119
+273   0.000000  17.386686  10.415014
+385   0.000000   6.147247   1.029449
+1890  0.000000  21.442804   9.505535
+4132  0.000000  14.644444   1.902778
+970   1.891803  25.439344   1.070492
+Total number of micro cells: 1877.0
+Total number of neuron cells: 2775.0
+Total number of other cells: 1044.0
+Total number of oligo cells: 1093.0
+Percentage of spots with at least one cell: 82.1%
+Mean number of cells per spot: 2.29
+Max number of cells per spot: 10
+**** Job ends ****
+Mon Jul 18 14:45:06 EDT 2022

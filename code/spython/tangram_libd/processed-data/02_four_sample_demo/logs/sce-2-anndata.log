@@ -1,0 +1,190 @@
+**** Job starts ****
+Fri May 28 11:14:08 EDT 2021
+**** JHPCE info ****
+User: neagles
+Job id: 6124631
+Job name: sce-to-anndata
+Hostname: compute-097.cm.cluster
+Task id: undefined
+Loading conda_R/4.0.x
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV
+  2) stata/16          7) JHPCE_CENTOS7_DEFAULT_ENV
+  3) JHPCE_tools/1.0   8) conda/3-4.6.14
+  4) sge/8.1.9         9) conda_R/4.0.x
+  5) gcc/4.4.7
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: parallel
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:parallel’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:base’:
+
+    expand.grid
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Bioconductor version '3.12' is out-of-date; the current release version '3.13'
+  is available with R version '4.1'; see https://bioconductor.org/install
+
+Attaching package: 'data.table'
+
+The following object is masked from 'package:SummarizedExperiment':
+
+    shift
+
+The following object is masked from 'package:GenomicRanges':
+
+    shift
+
+The following object is masked from 'package:IRanges':
+
+    shift
+
+The following objects are masked from 'package:S4Vectors':
+
+    first, second
+
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+✔ ggplot2 3.3.3     ✔ purrr   0.3.4
+✔ tibble  3.1.1     ✔ dplyr   1.0.5
+✔ tidyr   1.1.3     ✔ stringr 1.4.0
+✔ readr   1.4.0     ✔ forcats 0.5.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::between()    masks data.table::between()
+✖ dplyr::collapse()   masks IRanges::collapse()
+✖ dplyr::combine()    masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()      masks matrixStats::count()
+✖ dplyr::desc()       masks IRanges::desc()
+✖ tidyr::expand()     masks S4Vectors::expand()
+✖ dplyr::filter()     masks stats::filter()
+✖ dplyr::first()      masks data.table::first(), S4Vectors::first()
+✖ dplyr::lag()        masks stats::lag()
+✖ dplyr::last()       masks data.table::last()
+✖ ggplot2::Position() masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()     masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()     masks S4Vectors::rename()
+✖ dplyr::slice()      masks IRanges::slice()
+✖ purrr::transpose()  masks data.table::transpose()
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spython
+Loading required package: rafalib
+2021-05-28 11:14:57 the suggested expression cutoff is 0.31
+2021-05-28 11:15:23 the suggested expression cutoff is 0.37
+[1] "Unique markers: 160 of 198 (80.8%)."
+[1] "Median ratio: 1.07650381467585"
+  [1] "PLP1"      "MOBP"      "TF"        "MBP"       "SCD"       "CNP"      
+  [7] "CLDND1"    "QKI"       "QDPR"      "GPRC5B"    "TRIM2"     "SORT1"    
+ [13] "PTMA"      "SLC24A2"   "APLP1"     "LANCL1"    "DNAJC6"    "FEZ1"     
+ [19] "EPS15"     "MAP4"      "YWHAQ"     "GPM6B"     "RTN4"      "TUBA1A"   
+ [25] "CLASP2"    "SPOCK1"    "FTH1"      "HNRNPA2B1" "GNAO1"     "HSP90AA1" 
+ [31] "DDX17"     "SREBF2"    "HNRNPDL"   "GFAP"      "NDRG2"     "SLC1A2"   
+ [37] "SLC1A3"    "ATP1A2"    "GLUL"      "MT3"       "CLU"       "TTYH1"    
+ [43] "CST3"      "ZFAND5"    "CAMK2G"    "C1orf61"   "GPM6A"     "SPARCL1"  
+ [49] "GABBR1"    "CPE"       "CIRBP"     "CKB"       "ERI3"      "ABR"      
+ [55] "CTNND2"    "DDAH1"     "HTRA1"     "MGLL"      "PSD3"      "SLC6A1"   
+ [61] "TIMP2"     "RAB3C"     "SNRPN"     "ATP1B1"    "SPOCK2"    "GNAS"     
+ [67] "SLC22A17"  "SV2A"      "CALY"      "CANX"      "DPP6"      "ARNT2"    
+ [73] "MAP1A"     "INPP5F"    "TMSB4X"    "PPP2CB"    "ARL6IP5"   "DLGAP1"   
+ [79] "SEZ6L2"    "SCAMP5"    "NSG2"      "COX6C"     "GOT1"      "GAPDH"    
+ [85] "PNMA2"     "HSPA8"     "MAGED1"    "APLP2"     "NDUFA4"    "MAP7D1"   
+ [91] "SLC17A7"   "NRGN"      "SV2B"      "ENC1"      "NGEF"      "CHN1"     
+ [97] "CABP1"     "TMSB10"    "LMO4"      "DIRAS2"    "NELL2"     "SNCA"     
+[103] "GDA"       "MAST3"     "PHACTR1"   "CAMK2A"    "SH3GL2"    "WASF1"    
+[109] "LMO3"      "NECAB1"    "ARPP19"    "PRKCB"     "ATP2B1"    "OLFM1"    
+[115] "FBXW7"     "GAP43"     "SSBP3"     "CAMKK2"    "SLC39A10"  "SCN3B"    
+[121] "PPP3CA"    "PPP2R2C"   "BASP1"     "CAPZB"     "SORL1"     "FTL"      
+[127] "RAC1"      "ITM2B"     "RAB1A"     "MARCKS"    "MEF2C"     "PSAP"     
+[133] "DDX5"      "GNB1"      "RAB2A"     "MAP2K1"    "ACTR2"     "TCF25"    
+[139] "EVL"       "MAPK1"     "ATXN10"    "PIK3R1"    "ITFG1"     "UBE2D3"   
+[145] "GTF2I"     "APOD"      "SCD5"      "CD81"      "MARCKSL1"  "S100B"    
+[151] "CHL1"      "RPL13"     "ITM2C"     "TSPAN3"    "NCAM1"     "ACTG1"    
+[157] "NRXN2"     "NRCAM"     "ATCAY"     "SCG3"     
+[[1]]
+
+pdf 
+  2 
+Note: using the 'counts' assay as the X matrix
+/users/neagles/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
+  if is_string_dtype(df[key]) and not is_categorical(df[key])
+Note: using the 'counts' assay as the X matrix
+/users/neagles/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
+  if is_string_dtype(df[key]) and not is_categorical(df[key])
+... storing 'barcode_id' as categorical
+... storing 'sample_name' as categorical
+... storing 'subject' as categorical
+... storing 'region' as categorical
+... storing 'feature_type' as categorical
+**** Job ends ****
+Fri May 28 11:16:14 EDT 2021

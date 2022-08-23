@@ -3,6 +3,7 @@ library("markdown") ## Hm... to avoid this error
 # 2021-11-11T05:30:49.941401+00:00 shinyapps[5096402]: Listening on http://127.0.0.1:32863
 # 2021-11-11T05:30:50.218127+00:00 shinyapps[5096402]: Warning: Error in loadNamespace: there is no package called ‘markdown’
 # 2021-11-11T05:30:50.222437+00:00 shinyapps[5096402]:   111: <Anonymous>
+library(Polychrome)
 
 ## spatialLIBD uses golem
 options("golem.app.prod" = TRUE)
@@ -12,50 +13,30 @@ options(repos = BiocManager::repositories())
 
 ## Load the spe object
 load("spe_subset.Rdata", verbose = TRUE)
-#load the pseudobulked object spe_pseudo
+# load the pseudobulked object spe_pseudo
 spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS")
-#load modeling results for k9 clustering/pseudobulking
-load("parsed_modeling_results_k9.Rdata",verbose = TRUE)
-
-
-## For sig_genes_extract_all() to work https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L37-L44
-spe_pseudo$spatialLIBD <- spe_pseudo$BayesSpace
-
-## Check that we have the right number of tests
-k <- 9
-tests <- lapply(modeling_results, function(x) { colnames(x)[grep("stat", colnames(x))]})
-stopifnot(length(tests$anova) == 1) ## assuming only noWM
-stopifnot(length(tests$enrichment) == k)
-stopifnot(length(tests$pairwise) == choose(k, 2) * 2)
-
-sig_genes <- sig_genes_extract_all(
-  n = nrow(spe_pseudo),
-  modeling_results = modeling_results,
-  sce_layer = spe_pseudo
-)
-
-## Check that we have the right number of tests.
-## the + 1 at the end assumes only noWM
-# stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
-
-## Extract FDR < 5%
-## From
-## https://github.com/LieberInstitute/brainseq_phase2/blob/be2b7f972bb2a0ede320633bf06abe1d4ef2c067/supp_tabs/create_supp_tables.R#L173-L181
-# fix_csv <- function(df) {
-#   for (i in seq_len(ncol(df))) {
-#     if (any(grepl(",", df[, i]))) {
-#       message(paste(Sys.time(), "fixing column", colnames(df)[i]))
-#       df[, i] <- gsub(",", ";", df[, i])
-#     }
-#   }
-#   return(df)
-# }
-# z <- fix_csv(as.data.frame(subset(sig_genes, fdr < 0.05)))
-# write.csv(z, file = file.path(dir_rdata, "Visium_IF_AD_wholegenome_model_results_FDR5perc.csv"))
+# load modeling results for k9 clustering/pseudobulking
+load("parsed_modeling_results_k9.Rdata", verbose = TRUE)
+load("sig_genes_subset.Rdata", verbose = TRUE)
 
 spe$BayesSpace <- spe$bayesSpace_harmony_9
 vars <- colnames(colData(spe))
-#https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
+# https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
+
+colors_bayesSpace <- Polychrome::palette36.colors(28)
+names(colors_bayesSpace) <- c(1:28)
+# spe$bayesSpace_harmony_9_colors <-"NA"
+m <- match(as.character(spe$bayesSpace_harmony_9), names(colors_bayesSpace))
+stopifnot(all(!is.na(m)))
+spe$BayesSpace_colors <- spe$bayesSpace_harmony_9_colors <- colors_bayesSpace[m]
+#
+# for(i in 1:length(colors_bayesSpace)){
+#   spe$bayesSpace_harmony_9_colors[which(spe$bayesSpace_harmony_9 == i)] = colors_bayesSpace[i]
+# }
+
+## Drop BayesSpace from the pairwise names. This gets reflected on
+## the "Gene Set Enrichment" and "Spatial registration" tabs.
+colnames(modeling_results$pairwise) <- gsub("BayesSpace", "", colnames(modeling_results$pairwise))
 
 ## Deploy the website
 spatialLIBD::run_app(
@@ -64,7 +45,7 @@ spatialLIBD::run_app(
     modeling_results = modeling_results,
     sig_genes = sig_genes,
     title = "spatialDLPFC, Spangler et al, 2022",
-    spe_discrete_vars = c( #this is the variables for the spe object not the spe_pseudo object
+    spe_discrete_vars = c( # this is the variables for the spe object not the spe_pseudo object
         vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
         vars[grep("bayesSpace_harmony", vars)],
@@ -72,7 +53,8 @@ spatialLIBD::run_app(
         "graph_based_PCA_within",
         "PCA_SNN_k10_k7",
         "Harmony_SNN_k10_k7",
-        "BayesSpace"
+        "BayesSpace",
+        "BayesSpace_colors"
     ),
     spe_continuous_vars = c(
         "sum_umi",

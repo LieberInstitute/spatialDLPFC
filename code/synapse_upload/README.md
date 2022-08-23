@@ -1,0 +1,1 @@
+This directory contains code to prepare for and execute the upload of single-cell and spatial data to synapse as part of PsychENCODE. The `03-download` directory is somehwat an exception, and it contains code to download external data (also from synapse/PsychENCODE), used in this project.

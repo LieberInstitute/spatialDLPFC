@@ -6,14 +6,16 @@ library("sessioninfo")
 round1 <-
     list.files(here("processed-data", "NextSeq"),
         pattern = "DLPFC",
-        full.names = TRUE)
+        full.names = TRUE
+    )
 round2_4 <-
     list.files(list.files(
         here("processed-data", "NextSeq"),
         pattern = "Round",
         full.names = TRUE
     ),
-        full.names = TRUE)
+    full.names = TRUE
+    )
 invocation_files <- file.path(c(round1, round2_4), "_invocation")
 invocation_files <- invocation_files[file.exists(invocation_files)]
 stopifnot(length(invocation_files) == length(unique(invocation_files)))
@@ -57,7 +59,6 @@ df <- do.call(rbind, lapply(invocation_files, function(i) {
             )[, 2]
         ), collapse = ",")
     )
-
 }))
 
 ## Use the directory names as the sample_ids to match the output
@@ -93,7 +94,7 @@ write.table(
 )
 
 ## Reproducibility information
-print('Reproducibility information:')
+print("Reproducibility information:")
 Sys.time()
 proc.time()
 options(width = 120)

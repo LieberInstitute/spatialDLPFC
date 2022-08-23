@@ -1,11 +1,11 @@
 library("rsconnect")
 
 ## Locate app_dir. Edit as needed
-app_dir <- here::here("code","analysis_IF", "02_shinyapp")
+app_dir <- here::here("code", "analysis_IF", "02_shinyapp")
 
 ## Or you can go to your shinyapps.io account and copy this
 ## Here we do this to keep our information hidden.
-source(file.path(app_dir,"token.R"))
+# source(file.path(app_dir, "token.R"))
 
 ## You need this to enable shinyapps to install Bioconductor packages
 options(repos = BiocManager::repositories())

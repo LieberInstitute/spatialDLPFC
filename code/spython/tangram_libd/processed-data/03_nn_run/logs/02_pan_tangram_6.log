@@ -1,0 +1,44 @@
+**** Job starts ****
+Mon Nov  8 11:55:11 EST 2021
+**** JHPCE info ****
+User: neagles
+Job id: 7531613
+Job name: pan_tangram_02
+Hostname: compute-117.cm.cluster
+Task id: 6
+Loading LIBD module for tangram/1.0.0
+Observation names are not unique. To make them unique, call `.obs_names_make_unique`.
+INFO:root:232 training genes are saved in `uns``training_genes` of both single cell and spatial Anndatas.
+INFO:root:18381 overlapped genes are saved in `uns``overlap_genes` of both single cell and spatial Anndatas.
+INFO:root:uniform based density prior is calculated and saved in `obs``uniform_density` of the spatial Anndata.
+INFO:root:rna count based density prior is calculated and saved in `obs``rna_count_based_density` of the spatial Anndata.
+INFO:root:Allocate tensors for mapping.
+INFO:root:Begin training with 232 genes and rna_count_based density_prior in cells mode...
+INFO:root:Printing scores every 100 epochs.
+INFO:root:Saving results..
+INFO:root:spatial prediction dataframe is saved in `obsm` `tangram_ct_pred` of the spatial AnnData.
+WARNING:root:Number of panels smaller than annotations. Increase `nrows`/`ncols`.
+Using tangram version: 1.0.0
+Gene ENSG00000153234 (SNAP25) is in the test set.
+Gene ENSG00000187094 (MBP) is in the test set.
+Gene ENSG00000164326 (PCP4) is in the test set.
+Gene ENSG00000171617 (CCK) is in the test set.
+Gene ENSG00000189056 (RORB) is in the training set.
+Gene ENSG00000198963 (ENC1) is in the test set.
+Gene ENSG00000197971 (CARTPT) is in the test set.
+Gene ENSG00000132639 (NR4A2) is in the test set.
+Gene ENSG00000183036 (RELN) is in the training set.
+Score: 0.165, KL reg: 0.129
+Score: 0.767, KL reg: 0.010
+Score: 0.792, KL reg: 0.006
+Score: 0.795, KL reg: 0.006
+Score: 0.797, KL reg: 0.006
+Score: 0.798, KL reg: 0.006
+Score: 0.798, KL reg: 0.005
+Score: 0.799, KL reg: 0.005
+Score: 0.799, KL reg: 0.005
+Score: 0.799, KL reg: 0.005
+Average test score: 0.2045
+Average training score: 0.7994
+**** Job ends ****
+Mon Nov  8 12:04:10 EST 2021

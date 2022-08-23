@@ -55,93 +55,93 @@
 #'     cex = 2
 #' )
 layer_matrix_plot_AS <-
-  function(matrix_values,
-           matrix_labels = NULL,
-           xlabs = NULL,
-           layerHeights = NULL,
-           mypal = c(
-             "white",
-             grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
-           ),
-           breaks = NULL,
-           axis.args = NULL,
-           srt = 45,
-           mar = c(8, 4 + (max(nchar(rownames(matrix_values))) %/% 3) * 0.5, 4, 2) + 0.1,
-           cex = 1.2) {
-    ## Create some default values in case the user didn't specify them
-    if (is.null(xlabs)) {
-      if (is.null(colnames(matrix_values))) {
-        xlabs <- paste0("V", seq_len(ncol(matrix_values)))
-      } else {
-        xlabs <- colnames(matrix_values)
-      }
-    }
-    
-    if (is.null(layerHeights)) {
-      layerHeights <- c(0, seq_len(nrow(matrix_values))) * 15
-    }
-    
-    if (is.null(matrix_labels)) {
-      ## Make an empty matrix of labels if none were specified
-      matrix_labels <-
-        matrix(
-          "",
-          ncol = ncol(matrix_values),
-          nrow = nrow(matrix_values),
-          dimnames = dimnames(matrix_values)
+    function(matrix_values,
+    matrix_labels = NULL,
+    xlabs = NULL,
+    layerHeights = NULL,
+    mypal = c(
+        "white",
+        grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
+    ),
+    breaks = NULL,
+    axis.args = NULL,
+    srt = 45,
+    mar = c(8, 4 + (max(nchar(rownames(matrix_values))) %/% 3) * 0.5, 4, 2) + 0.1,
+    cex = 1.2) {
+        ## Create some default values in case the user didn't specify them
+        if (is.null(xlabs)) {
+            if (is.null(colnames(matrix_values))) {
+                xlabs <- paste0("V", seq_len(ncol(matrix_values)))
+            } else {
+                xlabs <- colnames(matrix_values)
+            }
+        }
+
+        if (is.null(layerHeights)) {
+            layerHeights <- c(0, seq_len(nrow(matrix_values))) * 15
+        }
+
+        if (is.null(matrix_labels)) {
+            ## Make an empty matrix of labels if none were specified
+            matrix_labels <-
+                matrix(
+                    "",
+                    ncol = ncol(matrix_values),
+                    nrow = nrow(matrix_values),
+                    dimnames = dimnames(matrix_values)
+                )
+        }
+
+        ## Check inputs
+        stopifnot(length(layerHeights) == nrow(matrix_values) + 1)
+        stopifnot(length(xlabs) == ncol(matrix_values))
+        stopifnot(layerHeights[1] == 0)
+
+
+
+        ## For the y-axis labels
+        midpoint <- function(x) {
+            x[-length(x)] + diff(x) / 2
+        }
+
+        ## Make the plot
+        par(mar = mar)
+        fields::image.plot(
+            x = seq(0, ncol(matrix_values), by = 1),
+            y = layerHeights,
+            z = as.matrix(t(matrix_values)),
+            col = mypal,
+            xaxt = "n",
+            yaxt = "n",
+            xlab = "Cluster Registration",
+            ylab = "",
+            breaks = breaks,
+            nlevel = length(mypal),
+            axis.args = axis.args
+        )
+        axis(2,
+            rownames(matrix_labels),
+            at = midpoint(layerHeights),
+            las = 1,
+            cex.axis = 4
+        )
+        axis(1, rep("", ncol(matrix_values)), at = seq(0.5, ncol(matrix_values) - 0.5))
+        text(
+            x = seq(0.5, ncol(matrix_values) - 0.5),
+            y = -1 * max(nchar(xlabs)) / 2,
+            xlabs,
+            xpd = TRUE,
+            srt = srt,
+            cex = cex,
+            adj = 1
+        )
+        abline(h = layerHeights, v = c(0, seq_len(ncol(matrix_values))))
+        text(
+            x = rep(seq(0.5, ncol(matrix_values) - 0.5), each = nrow(matrix_values)),
+            y = rep(midpoint(layerHeights), ncol(matrix_values)),
+            as.character(matrix_labels),
+            cex = cex,
+            # cex = cex * 3 / 4,
+            font = 4
         )
     }
-    
-    ## Check inputs
-    stopifnot(length(layerHeights) == nrow(matrix_values) + 1)
-    stopifnot(length(xlabs) == ncol(matrix_values))
-    stopifnot(layerHeights[1] == 0)
-    
-    
-    
-    ## For the y-axis labels
-    midpoint <- function(x) {
-      x[-length(x)] + diff(x) / 2
-    }
-    
-    ## Make the plot
-    par(mar = mar)
-    fields::image.plot(
-      x = seq(0, ncol(matrix_values), by = 1),
-      y = layerHeights,
-      z = as.matrix(t(matrix_values)),
-      col = mypal,
-      xaxt = "n",
-      yaxt = "n",
-      xlab = "Cluster Registration",
-      ylab = "",
-      breaks = breaks,
-      nlevel = length(mypal),
-      axis.args = axis.args
-    )
-    axis(2,
-         rownames(matrix_labels),
-         at = midpoint(layerHeights),
-         las = 1,
-         cex.axis = 4
-    )
-    axis(1, rep("", ncol(matrix_values)), at = seq(0.5, ncol(matrix_values) - 0.5))
-    text(
-      x = seq(0.5, ncol(matrix_values) - 0.5),
-      y = -1 * max(nchar(xlabs)) / 2,
-      xlabs,
-      xpd = TRUE,
-      srt = srt,
-      cex = cex,
-      adj = 1
-    )
-    abline(h = layerHeights, v = c(0, seq_len(ncol(matrix_values))))
-    text(
-      x = rep(seq(0.5, ncol(matrix_values) - 0.5), each = nrow(matrix_values)),
-      y = rep(midpoint(layerHeights), ncol(matrix_values)),
-      as.character(matrix_labels),
-      cex = cex,
-      #cex = cex * 3 / 4,
-      font = 4
-    )
-  }

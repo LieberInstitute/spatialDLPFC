@@ -9,7 +9,7 @@ options(repos = BiocManager::repositories())
 
 ## Load the data (all paths are relative to this script's location)
 spe <- readRDS("spe.rds")
-#spe <- readRDS(here::here("processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"))
+# spe <- readRDS(here::here("processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"))
 spe$CellCount <- spe$counts
 vars <- colnames(colData(spe))
 

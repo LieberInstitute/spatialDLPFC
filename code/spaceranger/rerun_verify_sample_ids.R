@@ -33,8 +33,7 @@ sample_id <- c(
     "Round3/DLPFC_Br8667_ant_extra_reads",
     "Round3/DLPFC_Br8667_mid_manual_alignment_all",
     "Round3/DLPFC_Br8667_post_manual_alignment_all"
-
-  )
+)
 
 df <- read.table(here("code", "spaceranger", "spaceranger_parameters.txt"))
 stopifnot(all(basename(sample_id) %in% df$V1))

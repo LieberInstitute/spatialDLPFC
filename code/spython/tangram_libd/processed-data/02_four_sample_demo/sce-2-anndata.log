@@ -1,0 +1,447 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1
+**** Job starts ****
+Tue Jun  8 14:22:13 EDT 2021
+**** JHPCE info ****
+User: aseyedia
+Job id: 6340727
+Job name: sce-to-anndata
+Hostname: compute-096.cm.cluster
+Task id: undefined
+Unloading conda_R/4.1
+Loading conda_R/4.0.x
+
+The following have been reloaded with a version change:
+  1) conda_R/4.1 => conda_R/4.0.x
+
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/16          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.0.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: parallel
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:parallel’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:base’:
+
+    expand.grid
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Bioconductor version '3.12' is out-of-date; the current release version '3.13'
+  is available with R version '4.1'; see https://bioconductor.org/install
+
+Attaching package: 'data.table'
+
+The following object is masked from 'package:SummarizedExperiment':
+
+    shift
+
+The following object is masked from 'package:GenomicRanges':
+
+    shift
+
+The following object is masked from 'package:IRanges':
+
+    shift
+
+The following objects are masked from 'package:S4Vectors':
+
+    first, second
+
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
+✔ ggplot2 3.3.3     ✔ purrr   0.3.4
+✔ tibble  3.1.1     ✔ dplyr   1.0.6
+✔ tidyr   1.1.3     ✔ stringr 1.4.0
+✔ readr   1.4.0     ✔ forcats 0.5.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::between()    masks data.table::between()
+✖ dplyr::collapse()   masks IRanges::collapse()
+✖ dplyr::combine()    masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()      masks matrixStats::count()
+✖ dplyr::desc()       masks IRanges::desc()
+✖ tidyr::expand()     masks S4Vectors::expand()
+✖ dplyr::filter()     masks stats::filter()
+✖ dplyr::first()      masks data.table::first(), S4Vectors::first()
+✖ dplyr::lag()        masks stats::lag()
+✖ dplyr::last()       masks data.table::last()
+✖ ggplot2::Position() masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()     masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()     masks S4Vectors::rename()
+✖ dplyr::slice()      masks IRanges::slice()
+✖ purrr::transpose()  masks data.table::transpose()
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/spython
+Loading required package: rafalib
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... failed with repodata from current_repodata.json, will retry with next repodata source.
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /users/aseyedia/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env
+
+  added / updated specs:
+    - python=3.7.7
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    ca-certificates-2021.5.30  |       ha878542_0         136 KB  conda-forge
+    certifi-2021.5.30          |   py37h89c1867_0         141 KB  conda-forge
+    libgcc-ng-9.3.0            |      h2828fa1_19         7.8 MB  conda-forge
+    libgomp-9.3.0              |      h2828fa1_19         376 KB  conda-forge
+    libstdcxx-ng-9.3.0         |      h6de172a_19         4.0 MB  conda-forge
+    openssl-1.1.1k             |       h7f98852_0         2.1 MB  conda-forge
+    pip-21.1.2                 |     pyhd8ed1ab_0         1.1 MB  conda-forge
+    readline-8.1               |       h46c0cb4_0         295 KB  conda-forge
+    sqlite-3.35.5              |       h74cdb3f_0         1.4 MB  conda-forge
+    ------------------------------------------------------------
+                                           Total:        17.4 MB
+
+The following NEW packages will be INSTALLED:
+
+  _libgcc_mutex      conda-forge/linux-64::_libgcc_mutex-0.1-conda_forge
+  _openmp_mutex      conda-forge/linux-64::_openmp_mutex-4.5-1_gnu
+  ca-certificates    conda-forge/linux-64::ca-certificates-2021.5.30-ha878542_0
+  certifi            conda-forge/linux-64::certifi-2021.5.30-py37h89c1867_0
+  ld_impl_linux-64   conda-forge/linux-64::ld_impl_linux-64-2.35.1-hea4e1c9_2
+  libffi             conda-forge/linux-64::libffi-3.3-h58526e2_2
+  libgcc-ng          conda-forge/linux-64::libgcc-ng-9.3.0-h2828fa1_19
+  libgomp            conda-forge/linux-64::libgomp-9.3.0-h2828fa1_19
+  libstdcxx-ng       conda-forge/linux-64::libstdcxx-ng-9.3.0-h6de172a_19
+  ncurses            conda-forge/linux-64::ncurses-6.2-h58526e2_4
+  openssl            conda-forge/linux-64::openssl-1.1.1k-h7f98852_0
+  pip                conda-forge/noarch::pip-21.1.2-pyhd8ed1ab_0
+  python             pkgs/main/linux-64::python-3.7.7-hcff3b4d_5
+  python_abi         conda-forge/linux-64::python_abi-3.7-1_cp37m
+  readline           conda-forge/linux-64::readline-8.1-h46c0cb4_0
+  setuptools         conda-forge/linux-64::setuptools-49.6.0-py37h89c1867_3
+  sqlite             conda-forge/linux-64::sqlite-3.35.5-h74cdb3f_0
+  tk                 conda-forge/linux-64::tk-8.6.10-h21135ba_1
+  wheel              conda-forge/noarch::wheel-0.36.2-pyhd3deb0d_0
+  xz                 conda-forge/linux-64::xz-5.2.5-h516909a_1
+  zlib               conda-forge/linux-64::zlib-1.2.11-h516909a_1010
+
+
+
+Downloading and Extracting Packages
+libgomp-9.3.0        | 376 KB    |            |   0% libgomp-9.3.0        | 376 KB    | 4          |   4% libgomp-9.3.0        | 376 KB    | ########## | 100% 
+libgcc-ng-9.3.0      | 7.8 MB    |            |   0% libgcc-ng-9.3.0      | 7.8 MB    | ####9      |  50% libgcc-ng-9.3.0      | 7.8 MB    | ########## | 100% 
+pip-21.1.2           | 1.1 MB    |            |   0% pip-21.1.2           | 1.1 MB    | ########## | 100% 
+openssl-1.1.1k       | 2.1 MB    |            |   0% openssl-1.1.1k       | 2.1 MB    | ########## | 100% 
+certifi-2021.5.30    | 141 KB    |            |   0% certifi-2021.5.30    | 141 KB    | ########## | 100% 
+readline-8.1         | 295 KB    |            |   0% readline-8.1         | 295 KB    | ########## | 100% 
+libstdcxx-ng-9.3.0   | 4.0 MB    |            |   0% libstdcxx-ng-9.3.0   | 4.0 MB    | ########## | 100% 
+ca-certificates-2021 | 136 KB    |            |   0% ca-certificates-2021 | 136 KB    | ########## | 100% 
+sqlite-3.35.5        | 1.4 MB    |            |   0% sqlite-3.35.5        | 1.4 MB    | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 4.8.3
+  latest version: 4.10.1
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+#
+# To activate this environment, use
+#
+#     $ conda activate /users/aseyedia/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /users/aseyedia/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env
+
+  added / updated specs:
+    - python=3.7.7
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    ca-certificates-2021.5.25  |       h06a4308_1         112 KB
+    certifi-2021.5.30          |   py37h06a4308_0         139 KB
+    openssl-1.1.1k             |       h27cfd23_0         2.5 MB
+    ------------------------------------------------------------
+                                           Total:         2.8 MB
+
+The following packages will be SUPERSEDED by a higher-priority channel:
+
+  ca-certificates    conda-forge::ca-certificates-2021.5.3~ --> pkgs/main::ca-certificates-2021.5.25-h06a4308_1
+  certifi            conda-forge::certifi-2021.5.30-py37h8~ --> pkgs/main::certifi-2021.5.30-py37h06a4308_0
+  openssl            conda-forge::openssl-1.1.1k-h7f98852_0 --> pkgs/main::openssl-1.1.1k-h27cfd23_0
+
+
+
+Downloading and Extracting Packages
+certifi-2021.5.30    | 139 KB    |            |   0% certifi-2021.5.30    | 139 KB    | ########## | 100% 
+openssl-1.1.1k       | 2.5 MB    |            |   0% openssl-1.1.1k       | 2.5 MB    | ########## | 100% 
+ca-certificates-2021 | 112 KB    |            |   0% ca-certificates-2021 | 112 KB    | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 4.8.3
+  latest version: 4.10.1
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... failed with initial frozen solve. Retrying with flexible solve.
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /users/aseyedia/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env
+
+  added / updated specs:
+    - anndata=0.7.4
+    - h5py=2.10.0
+    - hdf5=1.10.5
+    - natsort=7.0.1
+    - numpy=1.19.1
+    - packaging=20.4
+    - pandas=1.1.2
+    - python=3.7.7
+    - scipy=1.5.2
+    - sqlite=3.33.0
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    importlib-metadata-4.5.0   |   py37h89c1867_0          31 KB  conda-forge
+    importlib_metadata-4.5.0   |       hd8ed1ab_0           3 KB  conda-forge
+    libblas-3.9.0              |       9_openblas          11 KB  conda-forge
+    libcblas-3.9.0             |       9_openblas          11 KB  conda-forge
+    libgfortran-ng-9.3.0       |      hff62375_19          22 KB  conda-forge
+    libgfortran5-9.3.0         |      hff62375_19         2.0 MB  conda-forge
+    liblapack-3.9.0            |       9_openblas          11 KB  conda-forge
+    libopenblas-0.3.15         |pthreads_h8fe5266_1         9.2 MB  conda-forge
+    six-1.16.0                 |     pyh6c4a22f_0          14 KB  conda-forge
+    typing_extensions-3.10.0.0 |     pyha770c72_0          28 KB  conda-forge
+    zipp-3.4.1                 |     pyhd8ed1ab_0          11 KB  conda-forge
+    ------------------------------------------------------------
+                                           Total:        11.3 MB
+
+The following NEW packages will be INSTALLED:
+
+  anndata            conda-forge/linux-64::anndata-0.7.4-py37h89c1867_1
+  h5py               conda-forge/linux-64::h5py-2.10.0-nompi_py37h513d04c_102
+  hdf5               conda-forge/linux-64::hdf5-1.10.5-nompi_h5b725eb_1114
+  importlib-metadata conda-forge/linux-64::importlib-metadata-4.5.0-py37h89c1867_0
+  importlib_metadata conda-forge/noarch::importlib_metadata-4.5.0-hd8ed1ab_0
+  libblas            conda-forge/linux-64::libblas-3.9.0-9_openblas
+  libcblas           conda-forge/linux-64::libcblas-3.9.0-9_openblas
+  libgfortran-ng     conda-forge/linux-64::libgfortran-ng-9.3.0-hff62375_19
+  libgfortran5       conda-forge/linux-64::libgfortran5-9.3.0-hff62375_19
+  liblapack          conda-forge/linux-64::liblapack-3.9.0-9_openblas
+  libopenblas        conda-forge/linux-64::libopenblas-0.3.15-pthreads_h8fe5266_1
+  natsort            conda-forge/noarch::natsort-7.0.1-py_0
+  numpy              conda-forge/linux-64::numpy-1.19.1-py37h7ea13bd_2
+  packaging          conda-forge/noarch::packaging-20.4-pyh9f0ad1d_0
+  pandas             conda-forge/linux-64::pandas-1.1.2-py37h3340039_0
+  pyparsing          conda-forge/noarch::pyparsing-2.4.7-pyh9f0ad1d_0
+  python-dateutil    conda-forge/noarch::python-dateutil-2.8.1-py_0
+  pytz               conda-forge/noarch::pytz-2021.1-pyhd8ed1ab_0
+  scipy              conda-forge/linux-64::scipy-1.5.2-py37h14a347d_2
+  six                conda-forge/noarch::six-1.16.0-pyh6c4a22f_0
+  typing_extensions  conda-forge/noarch::typing_extensions-3.10.0.0-pyha770c72_0
+  zipp               conda-forge/noarch::zipp-3.4.1-pyhd8ed1ab_0
+
+The following packages will be UPDATED:
+
+  ca-certificates    pkgs/main::ca-certificates-2021.5.25-~ --> conda-forge::ca-certificates-2021.5.30-ha878542_0
+
+The following packages will be SUPERSEDED by a higher-priority channel:
+
+  certifi            pkgs/main::certifi-2021.5.30-py37h06a~ --> conda-forge::certifi-2021.5.30-py37h89c1867_0
+  openssl              pkgs/main::openssl-1.1.1k-h27cfd23_0 --> conda-forge::openssl-1.1.1k-h7f98852_0
+
+The following packages will be DOWNGRADED:
+
+  sqlite                                  3.35.5-h74cdb3f_0 --> 3.33.0-h4cf870e_1
+
+
+
+Downloading and Extracting Packages
+libgfortran-ng-9.3.0 | 22 KB     |            |   0% libgfortran-ng-9.3.0 | 22 KB     | #######3   |  74% libgfortran-ng-9.3.0 | 22 KB     | ########## | 100% 
+libcblas-3.9.0       | 11 KB     |            |   0% libcblas-3.9.0       | 11 KB     | ########## | 100% 
+six-1.16.0           | 14 KB     |            |   0% six-1.16.0           | 14 KB     | ########## | 100% 
+libgfortran5-9.3.0   | 2.0 MB    |            |   0% libgfortran5-9.3.0   | 2.0 MB    | ########## | 100% 
+importlib-metadata-4 | 31 KB     |            |   0% importlib-metadata-4 | 31 KB     | ########## | 100% 
+typing_extensions-3. | 28 KB     |            |   0% typing_extensions-3. | 28 KB     | ########## | 100% 
+libopenblas-0.3.15   | 9.2 MB    |            |   0% libopenblas-0.3.15   | 9.2 MB    | ##5        |  25% libopenblas-0.3.15   | 9.2 MB    | #########3 |  93% libopenblas-0.3.15   | 9.2 MB    | ########## | 100% 
+importlib_metadata-4 | 3 KB      |            |   0% importlib_metadata-4 | 3 KB      | ########## | 100% 
+liblapack-3.9.0      | 11 KB     |            |   0% liblapack-3.9.0      | 11 KB     | ########## | 100% 
+zipp-3.4.1           | 11 KB     |            |   0% zipp-3.4.1           | 11 KB     | ########## | 100% 
+libblas-3.9.0        | 11 KB     |            |   0% libblas-3.9.0        | 11 KB     | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 4.8.3
+  latest version: 4.10.1
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+Note: using the 'counts' assay as the X matrix
+/users/aseyedia/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
+  if is_string_dtype(df[key]) and not is_categorical(df[key])
+... storing 'Symbol' as categorical
+Note: using the 'counts' assay as the X matrix
+/users/aseyedia/.cache/basilisk/1.2.1/zellkonverter-1.0.3/anndata_env/lib/python3.7/site-packages/anndata/_core/anndata.py:1192: FutureWarning: is_categorical is deprecated and will be removed in a future version.  Use is_categorical_dtype instead
+  if is_string_dtype(df[key]) and not is_categorical(df[key])
+... storing 'barcode_id' as categorical
+... storing 'sample_name' as categorical
+... storing 'subject' as categorical
+... storing 'region' as categorical
+... storing 'gene_name' as categorical
+... storing 'feature_type' as categorical
+2021-06-08 14:28:46 the suggested expression cutoff is 0.31
+2021-06-08 14:29:06 the suggested expression cutoff is 0.37
+null device 
+          1 
+[1] "Unique markers: 160 of 198 (80.8%)."
+[1] "Median ratio: 1.07650381467585"
+  [1] "PLP1"      "MOBP"      "TF"        "MBP"       "SCD"       "CNP"      
+  [7] "CLDND1"    "QKI"       "QDPR"      "GPRC5B"    "TRIM2"     "SORT1"    
+ [13] "PTMA"      "SLC24A2"   "APLP1"     "LANCL1"    "DNAJC6"    "FEZ1"     
+ [19] "EPS15"     "MAP4"      "YWHAQ"     "GPM6B"     "RTN4"      "TUBA1A"   
+ [25] "CLASP2"    "SPOCK1"    "FTH1"      "HNRNPA2B1" "GNAO1"     "HSP90AA1" 
+ [31] "DDX17"     "SREBF2"    "HNRNPDL"   "GFAP"      "NDRG2"     "SLC1A2"   
+ [37] "SLC1A3"    "ATP1A2"    "GLUL"      "MT3"       "CLU"       "TTYH1"    
+ [43] "CST3"      "ZFAND5"    "CAMK2G"    "C1orf61"   "GPM6A"     "SPARCL1"  
+ [49] "GABBR1"    "CPE"       "CIRBP"     "CKB"       "ERI3"      "ABR"      
+ [55] "CTNND2"    "DDAH1"     "HTRA1"     "MGLL"      "PSD3"      "SLC6A1"   
+ [61] "TIMP2"     "RAB3C"     "SNRPN"     "ATP1B1"    "SPOCK2"    "GNAS"     
+ [67] "SLC22A17"  "SV2A"      "CALY"      "CANX"      "DPP6"      "ARNT2"    
+ [73] "MAP1A"     "INPP5F"    "TMSB4X"    "PPP2CB"    "ARL6IP5"   "DLGAP1"   
+ [79] "SEZ6L2"    "SCAMP5"    "NSG2"      "COX6C"     "GOT1"      "GAPDH"    
+ [85] "PNMA2"     "HSPA8"     "MAGED1"    "APLP2"     "NDUFA4"    "MAP7D1"   
+ [91] "SLC17A7"   "NRGN"      "SV2B"      "ENC1"      "NGEF"      "CHN1"     
+ [97] "CABP1"     "TMSB10"    "LMO4"      "DIRAS2"    "NELL2"     "SNCA"     
+[103] "GDA"       "MAST3"     "PHACTR1"   "CAMK2A"    "SH3GL2"    "WASF1"    
+[109] "LMO3"      "NECAB1"    "ARPP19"    "PRKCB"     "ATP2B1"    "OLFM1"    
+[115] "FBXW7"     "GAP43"     "SSBP3"     "CAMKK2"    "SLC39A10"  "SCN3B"    
+[121] "PPP3CA"    "PPP2R2C"   "BASP1"     "CAPZB"     "SORL1"     "FTL"      
+[127] "RAC1"      "ITM2B"     "RAB1A"     "MARCKS"    "MEF2C"     "PSAP"     
+[133] "DDX5"      "GNB1"      "RAB2A"     "MAP2K1"    "ACTR2"     "TCF25"    
+[139] "EVL"       "MAPK1"     "ATXN10"    "PIK3R1"    "ITFG1"     "UBE2D3"   
+[145] "GTF2I"     "APOD"      "SCD5"      "CD81"      "MARCKSL1"  "S100B"    
+[151] "CHL1"      "RPL13"     "ITM2C"     "TSPAN3"    "NCAM1"     "ACTG1"    
+[157] "NRXN2"     "NRCAM"     "ATCAY"     "SCG3"     
+[[1]]
+
+null device 
+          1 
+**** Job ends ****
+Tue Jun  8 14:29:29 EDT 2021

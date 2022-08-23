@@ -20,9 +20,10 @@ rsconnect::deployApp(
         "app.R",
         "spe_subset.Rdata",
         "spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS",
-        "parsed_modeling_results_k9.Rdata"
+        "parsed_modeling_results_k9.Rdata",
+        "sig_genes_subset.Rdata"
     ),
-    appName = 'spatialDLPFC_Spangler2022',
-    account = 'libd',
-    server = 'shinyapps.io'
+    appName = "k9_spatialDLPFC_Spangler2022",
+    account = "libd",
+    server = "shinyapps.io"
 )

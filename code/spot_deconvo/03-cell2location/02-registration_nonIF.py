@@ -27,46 +27,33 @@ from pathlib import Path
 ################################################################################
 
 processed_dir = pyhere.here(
-    "processed_data", "spot_deconvo" "03-cell2location", "nonIF"
+    "processed-data", "spot_deconvo", "03-cell2location", "nonIF"
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo" "03-cell2location", "nonIF"
+    "plots", "spot_deconvo", "03-cell2location", "nonIF"
 )
 
 sp_path = os.path.join(processed_dir, 'adata_vis_orig.h5ad')
-sc_path = os.path.join(processed_dir, 'adata_ref.h5ad')
-
-
-# create paths and names to results folders for reference regression and
-# cell2location models
-ref_run_name = f'{processed_dir}/reference_signatures'
-run_name = f'{processed_dir}/cell2location_map'
+sc_path = os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 
 #   TODO: adjust these as appropriate!
 
-#   Naming conventions used for different columns in the spatial AnnData
-cell_type_var = 'cellType'    # in single-cell only
+cell_type_var = 'cellType_broad_hc'    # in single-cell only
+cell_count_var = 'count'               # in spatial only
+plot_file_type = 'pdf'
 
-plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+#   For spatial mapping model: tutorial recommends 20 as default but to try 200
+detection_alpha = 20
 
-#   Default is 30 in tutorial, but 5 is recommended as an initial guess for
-#   Visium data:
-#   https://github.com/BayraktarLab/cell2location/blob/master/docs/images/Note_on_selecting_hyperparameters.pdf
-N_CELLS_PER_SPOT = 5
+#   Number of epochs used to train each portion of the model
+epochs_signature = 400 # default: 250
+epochs_spatial = 30000
 
 ################################################################################
 #   Function definitions
 ################################################################################
 
-def perform_regression(
-    mod, adata, adata_name, max_epochs, lr, sample_kwargs, plot_name
-):
-    # Use all data for training (validation not implemented yet, train_size=1)
-    mod.train(
-        max_epochs=max_epochs, batch_size=sample_kwargs['batch_size'],
-        train_size=1, lr=lr, use_gpu=True
-    )
-
+def post_training(mod, adata, adata_name, max_epochs, sample_kwargs, plot_name):
     # plot ELBO loss history during training, removing first 10% of epochs from
     # the plot
     mod.plot_history(int(max_epochs / 10))
@@ -122,7 +109,7 @@ adata_ref = sc.read_h5ad(sc_path)
 #   was changed, given the info here: https://github.com/BayraktarLab/cell2location/issues/145#issuecomment-1107410480
 RegressionModel.setup_anndata(
     adata = adata_ref,
-    batch_key = 'donor', # tried 'processBatch' as well with poor results
+    batch_key = 'subject',
     labels_key = cell_type_var
 )
 
@@ -130,8 +117,10 @@ RegressionModel.setup_anndata(
 mod = RegressionModel(adata_ref)
 RegressionModel.view_anndata_setup(mod)
 
-adata_ref, mod = perform_regression(
-    mod, adata_ref, 'adata_ref', 250, 0.002,
+mod.train(max_epochs=epochs_signature, use_gpu=True)
+
+adata_ref, mod = post_training(
+    mod, adata_ref, 'adata_ref', epochs_signature,
     {'num_samples': 1000, 'batch_size': 2500, 'use_gpu': True},
     'cell_signature_training_history'
 )
@@ -165,22 +154,44 @@ cell2location.models.Cell2location.setup_anndata(
 )
 
 # create and train the model
+
 #   Note that 'detection_alpha' was changed from its default following:
-#   https://twitter.com/vitaliikl/status/1526510089514926081
+#   https://twitter.com/vitaliikl/status/1526510089514926081.
+#
+#   Although we have cell counts at each spot, and the tutorial claims to
+#   support providing these, the authors clarify use of per-spot counts is not
+#   officially supported. After following the instructions here:
+#   https://github.com/BayraktarLab/cell2location/issues/103#issuecomment-993583464
+#   I encountered an error, and so we'll just use average counts (a scalar).
+#
+# N_CELLS_PER_SPOT = np.array(
+#     adata_vis.obs[cell_count_var], dtype=np.float32
+# ).reshape((adata_vis.shape[0], 1))
+
 mod = cell2location.models.Cell2location(
     adata_vis, cell_state_df=inf_aver,
     # the expected average cell abundance: tissue-dependent
     # hyper-prior which can be estimated from paired histology:
-    N_cells_per_location=N_CELLS_PER_SPOT,
+    N_cells_per_location = float(np.mean(adata_vis.obs[cell_count_var])), # N_CELLS_PER_SPOT,
     # hyperparameter controlling normalisation of
     # within-experiment variation in RNA detection:
-    detection_alpha=20 # default: 200
+    detection_alpha=detection_alpha
 )
 
 cell2location.models.Cell2location.view_anndata_setup(mod)
 
-adata_vis, mod = perform_regression(
-    mod, adata_vis, 'adata_vis', 30000, None,
+mod.train(
+    max_epochs=epochs_spatial,
+    # train using full data (batch_size=None)
+    batch_size=None,
+    # use all data points in training because
+    # we need to estimate cell abundance at all locations
+    train_size=1,
+    use_gpu=True
+)
+
+adata_vis, mod = post_training(
+    mod, adata_vis, 'adata_vis', epochs_spatial,
     {'num_samples': 1000, 'batch_size': mod.adata.n_obs, 'use_gpu': True},
     'spatial_mapping_training_history'
 )
@@ -204,58 +215,64 @@ adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
 #   Visualization
 ################################################################################
 
-#   TODO:
-#       1. possibly change number of cell types + related choices
-
+#   Loop through each sample and produce plots for each
 for sample_id in adata_vis.obs['sample'].cat.categories:
         #   Subset to this sample
     slide = select_slide(adata_vis, sample_id)
 
     cell_types = adata_ref.obs[cell_type_var].cat.categories
 
-    #   Plot 8 cell types separately for this sample
-    sc.pl.spatial(
-        slide, cmap='magma',
-        # show first 8 cell types
-        color=cell_types[:8],
-        ncols=4, size=1.3,
-        img_key='hires',
-        # limit color scale at 99.2% quantile of cell abundance
-        vmin=0, vmax='p99.2'
-    )
-    f = plt.gcf()
-    f.savefig(
-        os.path.join(
-            plot_dir, f'individual_cell_types_{sample_id}.{plot_file_type}'
-        ),
-        bbox_inches='tight'
-    )
-    plt.close(f)
+    #   Plot cell types individually for this sample
+    with mpl.rc_context({'axes.facecolor':  'black', 'figure.figsize': [4.5, 5]}):
+        sc.pl.spatial(
+            slide, cmap='magma',
+            color=cell_types,
+            ncols=int(len(cell_types) / 2),
+            size=1.3,
+            img_key='hires',
+            # limit color scale at 99.2% quantile of cell abundance
+            vmin=0, vmax='p99.2'
+        )
+        f = plt.gcf()
+        f.savefig(
+            os.path.join(
+                plot_dir, f'individual_cell_types_{sample_id}.{plot_file_type}'
+            ),
+            bbox_inches='tight'
+        )
+        plt.close(f)
 
-    fig = plot_spatial(
-        adata=slide,
-        # labels to show on a plot
-        color=cell_types[:6], labels=cell_types[:6],
-        show_img=True,
-        # 'fast' (white background) or 'dark_background'
-        style='fast',
-        # limit color scale at 99.2% quantile of cell abundance
-        max_color_quantile=0.992,
-        # size of locations (adjust depending on figure size)
-        circle_diameter=6,
-        colorbar_position='right'
-    )
-    fig.savefig(
-        os.path.join(
-            plot_dir, f'multi_cell_types_{sample_id}.{plot_file_type}'
-        ),
-        bbox_inches='tight'
-    )
-    plt.close(fig)
+    #   Plot all cell types on the same spatial grid for this sample
+    with mpl.rc_context({'figure.figsize': (15, 15)}):
+        fig = plot_spatial(
+            adata=slide,
+            # labels to show on a plot
+            color=cell_types, labels=cell_types,
+            show_img=True,
+            # 'fast' (white background) or 'dark_background'
+            style='fast',
+            # limit color scale at 99.2% quantile of cell abundance
+            max_color_quantile=0.992,
+            # size of locations (adjust depending on figure size)
+            circle_diameter=6,
+            colorbar_position='right'
+        )
+        fig.savefig(
+            os.path.join(
+                plot_dir, f'multi_cell_types_{sample_id}.{plot_file_type}'
+            ),
+            bbox_inches='tight'
+        )
+        plt.close(fig)
 
 ################################################################################
 #   Export deconvo results
 ################################################################################
+
+#   For export, use mean cell abundances (not 5% quantile)
+adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
+    'means_cell_abundance_w_sf'
+]
 
 clusters = adata_vis.obs[
     ['sample'] + list(adata_vis.uns['mod']['factor_names'])

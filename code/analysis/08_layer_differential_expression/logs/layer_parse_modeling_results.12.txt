@@ -776,3 +776,547 @@ Sum   10259 1.0000000000
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
 Thu May 26 10:20:22 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Thu Jun  9 12:46:30 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 284751
+Job name: layer_parse_modeling_results
+Hostname: compute-126.cm.cluster
+Task id: 12
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading objects:
+  f_stats
+  eb0_list
+  eb_contrasts
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+     1               2               3               4          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:2816      FALSE:9243      FALSE:9674      FALSE:9556     
+ TRUE :7443      TRUE :1016      TRUE :585       TRUE :703      
+     5               6               7               8          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:9343      FALSE:7108      FALSE:9843      FALSE:7839     
+ TRUE :916       TRUE :3151      TRUE :416       TRUE :2420     
+     9               10              11              12         
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:8804      FALSE:9884      FALSE:4726      FALSE:4308     
+ TRUE :1455      TRUE :375       TRUE :5533      TRUE :5951     
+Loading required package: SpatialExperiment
+   t_stat_1   t_stat_2 t_stat_3   t_stat_4 t_stat_5   t_stat_6   t_stat_7   t_stat_8    t_stat_9  t_stat_10 t_stat_11  t_stat_12    p_value_1  p_value_2  p_value_3  p_value_4   p_value_5   p_value_6  p_value_7  p_value_8   p_value_9 p_value_10   p_value_11   p_value_12        fdr_1      fdr_2     fdr_3     fdr_4      fdr_5       fdr_6     fdr_7     fdr_8      fdr_9    fdr_10       fdr_11
+1 -5.455949  2.3445197 2.575436  2.0818780 2.363440 -2.6093907  2.2137952  0.6484668 -0.08977908  0.7554234 -2.925488 -2.3608215 9.170155e-08 0.01960361 0.01041650 0.03807148 0.018645880 0.009455203 0.02747970 0.51710354 0.928513549 0.45049722 3.660940e-03 1.877577e-02 5.701613e-07 0.11571542 0.1036497 0.1654279 0.10603552 0.033368053 0.2014086 0.6890862 0.96933606 0.8411211 9.816410e-03
+2 -3.930372  0.8316106 1.503535  1.5657442 1.159840 -0.2469252  1.9128573  2.0847112 -3.23579907  1.0326063 -2.485569 -0.4786818 1.020185e-04 0.40618929 0.13359260 0.11830188 0.246895659 0.805109241 0.05657284 0.03781182 0.001327418 0.30249294 1.339526e-02 6.324604e-01 2.603503e-04 0.56263407 0.2948003 0.2619031 0.39497945 0.885749673 0.2524240 0.1181216 0.01300667 0.7722461 2.826450e-02
+3  5.707131  1.5379758 1.386441  0.9139184 0.722338 -3.2090678 -0.6210497 -1.2708800  2.37790497 -1.7137637 -1.808972 -3.7878643 2.431624e-08 0.12494769 0.16648476 0.36138173 0.470563543 0.001453328 0.53496655 0.20460587 0.017941636 0.08744733 7.130344e-02 1.784792e-04 1.801157e-07 0.29986303 0.3257844 0.4915692 0.59540101 0.007110009 0.6454454 0.3780032 0.09890556 0.5255549 1.122452e-01
+4  2.908958 -0.2845164 1.458338 -0.5556605 2.662350  0.5588625 -1.8396998  1.4813808  2.65022878 -1.2667523 -5.527433 -2.4631681 3.855393e-03 0.77618101 0.14563383 0.57879391 0.008113736 0.576608929 0.06664937 0.13939471 0.008404732 0.20607652 6.314128e-08 1.424655e-02 6.587688e-03 0.85173184 0.3060966 0.6787662 0.06808955 0.724930269 0.2630652 0.2919460 0.05668911 0.7010581 2.109988e-06
+5 -3.454155  2.0175437 1.927614  1.4124090 1.964835  2.5655033  0.5150721  1.2086777 -1.01832421  0.2902160 -4.482309 -3.3498905 6.189844e-04 0.04439287 0.05470288 0.15870799 0.050214957 0.010713838 0.60682405 0.22759342 0.309219375 0.77182090 9.984845e-06 8.954839e-04 1.293839e-03 0.17923118 0.2074844 0.3020752 0.17204868 0.037082747 0.7010281 0.4059316 0.58852467 0.9560864 9.609243e-05
+6 -4.218576  2.4821752 1.605928  1.5224926 1.150438  1.3017687  2.0897644 -1.2988478 -0.72643666  2.0972444 -1.504831 -4.9111556 3.126921e-05 0.01352130 0.10918115 0.12877840 0.250739828 0.193841947 0.03735220 0.19484158 0.468051189 0.03668068 1.332589e-01 1.385424e-06 9.263379e-05 0.09290714 0.2708147 0.2722311 0.39794862 0.346147906 0.2247757 0.3660281 0.72886113 0.3557157 1.892185e-01
+        fdr_12         ensembl      gene
+1 3.486977e-02 ENSG00000228794 LINC01128
+2 6.754141e-01 ENSG00000188976     NOC2L
+3 8.884126e-04 ENSG00000188290      HES4
+4 2.768094e-02 ENSG00000187608     ISG15
+5 3.087990e-03 ENSG00000188157      AGRN
+6 2.270457e-05 ENSG00000131591  C1orf159
+[1] 10259    66
+ BayesSpace1-BayesSpace2 BayesSpace1-BayesSpace3 BayesSpace1-BayesSpace4 BayesSpace1-BayesSpace5 BayesSpace1-BayesSpace6 BayesSpace1-BayesSpace7 BayesSpace1-BayesSpace8 BayesSpace1-BayesSpace9 BayesSpace1-BayesSpace10 BayesSpace1-BayesSpace11 BayesSpace1-BayesSpace12 BayesSpace2-BayesSpace3 BayesSpace2-BayesSpace4 BayesSpace2-BayesSpace5 BayesSpace2-BayesSpace6 BayesSpace2-BayesSpace7
+ Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical          
+ FALSE:2713              FALSE:2681              FALSE:2533              FALSE:2622              FALSE:4972              FALSE:2550              FALSE:3760              FALSE:4766              FALSE:3465               FALSE:7462               FALSE:7159               FALSE:10234             FALSE:9707              FALSE:9923              FALSE:6873              FALSE:9858             
+ TRUE :7546              TRUE :7578              TRUE :7726              TRUE :7637              TRUE :5287              TRUE :7709              TRUE :6499              TRUE :5493              TRUE :6794               TRUE :2797               TRUE :3100               TRUE :25                TRUE :552               TRUE :336               TRUE :3386              TRUE :401              
+ BayesSpace2-BayesSpace8 BayesSpace2-BayesSpace9 BayesSpace2-BayesSpace10 BayesSpace2-BayesSpace11 BayesSpace2-BayesSpace12 BayesSpace3-BayesSpace4 BayesSpace3-BayesSpace5 BayesSpace3-BayesSpace6 BayesSpace3-BayesSpace7 BayesSpace3-BayesSpace8 BayesSpace3-BayesSpace9 BayesSpace3-BayesSpace10 BayesSpace3-BayesSpace11 BayesSpace3-BayesSpace12 BayesSpace4-BayesSpace5 BayesSpace4-BayesSpace6
+ Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical          
+ FALSE:8455              FALSE:8530              FALSE:9410               FALSE:3794               FALSE:3525               FALSE:10052             FALSE:10249             FALSE:6576              FALSE:10043             FALSE:9465              FALSE:8081              FALSE:9346               FALSE:3737               FALSE:3270               FALSE:10177             FALSE:6673             
+ TRUE :1804              TRUE :1729              TRUE :849                TRUE :6465               TRUE :6734               TRUE :207               TRUE :10                TRUE :3683              TRUE :216               TRUE :794               TRUE :2178              TRUE :913                TRUE :6522               TRUE :6989               TRUE :82                TRUE :3586             
+ BayesSpace4-BayesSpace7 BayesSpace4-BayesSpace8 BayesSpace4-BayesSpace9 BayesSpace4-BayesSpace10 BayesSpace4-BayesSpace11 BayesSpace4-BayesSpace12 BayesSpace5-BayesSpace6 BayesSpace5-BayesSpace7 BayesSpace5-BayesSpace8 BayesSpace5-BayesSpace9 BayesSpace5-BayesSpace10 BayesSpace5-BayesSpace11 BayesSpace5-BayesSpace12 BayesSpace6-BayesSpace7 BayesSpace6-BayesSpace8 BayesSpace6-BayesSpace9
+ Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical          
+ FALSE:10185             FALSE:9640              FALSE:7877              FALSE:9519               FALSE:3643               FALSE:3143               FALSE:6416              FALSE:10068             FALSE:10090             FALSE:7765              FALSE:9172               FALSE:3687               FALSE:3193               FALSE:6964              FALSE:6126              FALSE:8314             
+ TRUE :74                TRUE :619               TRUE :2382              TRUE :740                TRUE :6616               TRUE :7116               TRUE :3843              TRUE :191               TRUE :169               TRUE :2494              TRUE :1087               TRUE :6572               TRUE :7066               TRUE :3295              TRUE :4133              TRUE :1945             
+ BayesSpace6-BayesSpace10 BayesSpace6-BayesSpace11 BayesSpace6-BayesSpace12 BayesSpace7-BayesSpace8 BayesSpace7-BayesSpace9 BayesSpace7-BayesSpace10 BayesSpace7-BayesSpace11 BayesSpace7-BayesSpace12 BayesSpace8-BayesSpace9 BayesSpace8-BayesSpace10 BayesSpace8-BayesSpace11 BayesSpace8-BayesSpace12 BayesSpace9-BayesSpace10 BayesSpace9-BayesSpace11 BayesSpace9-BayesSpace12 BayesSpace10-BayesSpace11
+ Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            
+ FALSE:9099               FALSE:6816               FALSE:5363               FALSE:8982              FALSE:8207              FALSE:9978               FALSE:3792               FALSE:3057               FALSE:7047              FALSE:8015               FALSE:5112               FALSE:5660               FALSE:9124               FALSE:6304               FALSE:6024               FALSE:5814               
+ TRUE :1160               TRUE :3443               TRUE :4896               TRUE :1277              TRUE :2052              TRUE :281                TRUE :6467               TRUE :7202               TRUE :3212              TRUE :2244               TRUE :5147               TRUE :4599               TRUE :1135               TRUE :3955               TRUE :4235               TRUE :4445               
+ BayesSpace10-BayesSpace12 BayesSpace11-BayesSpace12
+ Mode :logical             Mode :logical            
+ FALSE:5006                FALSE:8388               
+ TRUE :5253                TRUE :1871               
+  [1] "t_stat_BayesSpace1-BayesSpace2"    "t_stat_BayesSpace1-BayesSpace3"    "t_stat_BayesSpace1-BayesSpace4"    "t_stat_BayesSpace1-BayesSpace5"    "t_stat_BayesSpace1-BayesSpace6"    "t_stat_BayesSpace1-BayesSpace7"    "t_stat_BayesSpace1-BayesSpace8"    "t_stat_BayesSpace1-BayesSpace9"    "t_stat_BayesSpace1-BayesSpace10"   "t_stat_BayesSpace1-BayesSpace11"  
+ [11] "t_stat_BayesSpace1-BayesSpace12"   "t_stat_BayesSpace2-BayesSpace3"    "t_stat_BayesSpace2-BayesSpace4"    "t_stat_BayesSpace2-BayesSpace5"    "t_stat_BayesSpace2-BayesSpace6"    "t_stat_BayesSpace2-BayesSpace7"    "t_stat_BayesSpace2-BayesSpace8"    "t_stat_BayesSpace2-BayesSpace9"    "t_stat_BayesSpace2-BayesSpace10"   "t_stat_BayesSpace2-BayesSpace11"  
+ [21] "t_stat_BayesSpace2-BayesSpace12"   "t_stat_BayesSpace3-BayesSpace4"    "t_stat_BayesSpace3-BayesSpace5"    "t_stat_BayesSpace3-BayesSpace6"    "t_stat_BayesSpace3-BayesSpace7"    "t_stat_BayesSpace3-BayesSpace8"    "t_stat_BayesSpace3-BayesSpace9"    "t_stat_BayesSpace3-BayesSpace10"   "t_stat_BayesSpace3-BayesSpace11"   "t_stat_BayesSpace3-BayesSpace12"  
+ [31] "t_stat_BayesSpace4-BayesSpace5"    "t_stat_BayesSpace4-BayesSpace6"    "t_stat_BayesSpace4-BayesSpace7"    "t_stat_BayesSpace4-BayesSpace8"    "t_stat_BayesSpace4-BayesSpace9"    "t_stat_BayesSpace4-BayesSpace10"   "t_stat_BayesSpace4-BayesSpace11"   "t_stat_BayesSpace4-BayesSpace12"   "t_stat_BayesSpace5-BayesSpace6"    "t_stat_BayesSpace5-BayesSpace7"   
+ [41] "t_stat_BayesSpace5-BayesSpace8"    "t_stat_BayesSpace5-BayesSpace9"    "t_stat_BayesSpace5-BayesSpace10"   "t_stat_BayesSpace5-BayesSpace11"   "t_stat_BayesSpace5-BayesSpace12"   "t_stat_BayesSpace6-BayesSpace7"    "t_stat_BayesSpace6-BayesSpace8"    "t_stat_BayesSpace6-BayesSpace9"    "t_stat_BayesSpace6-BayesSpace10"   "t_stat_BayesSpace6-BayesSpace11"  
+ [51] "t_stat_BayesSpace6-BayesSpace12"   "t_stat_BayesSpace7-BayesSpace8"    "t_stat_BayesSpace7-BayesSpace9"    "t_stat_BayesSpace7-BayesSpace10"   "t_stat_BayesSpace7-BayesSpace11"   "t_stat_BayesSpace7-BayesSpace12"   "t_stat_BayesSpace8-BayesSpace9"    "t_stat_BayesSpace8-BayesSpace10"   "t_stat_BayesSpace8-BayesSpace11"   "t_stat_BayesSpace8-BayesSpace12"  
+ [61] "t_stat_BayesSpace9-BayesSpace10"   "t_stat_BayesSpace9-BayesSpace11"   "t_stat_BayesSpace9-BayesSpace12"   "t_stat_BayesSpace10-BayesSpace11"  "t_stat_BayesSpace10-BayesSpace12"  "t_stat_BayesSpace11-BayesSpace12"  "p_value_BayesSpace1-BayesSpace2"   "p_value_BayesSpace1-BayesSpace3"   "p_value_BayesSpace1-BayesSpace4"   "p_value_BayesSpace1-BayesSpace5"  
+ [71] "p_value_BayesSpace1-BayesSpace6"   "p_value_BayesSpace1-BayesSpace7"   "p_value_BayesSpace1-BayesSpace8"   "p_value_BayesSpace1-BayesSpace9"   "p_value_BayesSpace1-BayesSpace10"  "p_value_BayesSpace1-BayesSpace11"  "p_value_BayesSpace1-BayesSpace12"  "p_value_BayesSpace2-BayesSpace3"   "p_value_BayesSpace2-BayesSpace4"   "p_value_BayesSpace2-BayesSpace5"  
+ [81] "p_value_BayesSpace2-BayesSpace6"   "p_value_BayesSpace2-BayesSpace7"   "p_value_BayesSpace2-BayesSpace8"   "p_value_BayesSpace2-BayesSpace9"   "p_value_BayesSpace2-BayesSpace10"  "p_value_BayesSpace2-BayesSpace11"  "p_value_BayesSpace2-BayesSpace12"  "p_value_BayesSpace3-BayesSpace4"   "p_value_BayesSpace3-BayesSpace5"   "p_value_BayesSpace3-BayesSpace6"  
+ [91] "p_value_BayesSpace3-BayesSpace7"   "p_value_BayesSpace3-BayesSpace8"   "p_value_BayesSpace3-BayesSpace9"   "p_value_BayesSpace3-BayesSpace10"  "p_value_BayesSpace3-BayesSpace11"  "p_value_BayesSpace3-BayesSpace12"  "p_value_BayesSpace4-BayesSpace5"   "p_value_BayesSpace4-BayesSpace6"   "p_value_BayesSpace4-BayesSpace7"   "p_value_BayesSpace4-BayesSpace8"  
+[101] "p_value_BayesSpace4-BayesSpace9"   "p_value_BayesSpace4-BayesSpace10"  "p_value_BayesSpace4-BayesSpace11"  "p_value_BayesSpace4-BayesSpace12"  "p_value_BayesSpace5-BayesSpace6"   "p_value_BayesSpace5-BayesSpace7"   "p_value_BayesSpace5-BayesSpace8"   "p_value_BayesSpace5-BayesSpace9"   "p_value_BayesSpace5-BayesSpace10"  "p_value_BayesSpace5-BayesSpace11" 
+[111] "p_value_BayesSpace5-BayesSpace12"  "p_value_BayesSpace6-BayesSpace7"   "p_value_BayesSpace6-BayesSpace8"   "p_value_BayesSpace6-BayesSpace9"   "p_value_BayesSpace6-BayesSpace10"  "p_value_BayesSpace6-BayesSpace11"  "p_value_BayesSpace6-BayesSpace12"  "p_value_BayesSpace7-BayesSpace8"   "p_value_BayesSpace7-BayesSpace9"   "p_value_BayesSpace7-BayesSpace10" 
+[121] "p_value_BayesSpace7-BayesSpace11"  "p_value_BayesSpace7-BayesSpace12"  "p_value_BayesSpace8-BayesSpace9"   "p_value_BayesSpace8-BayesSpace10"  "p_value_BayesSpace8-BayesSpace11"  "p_value_BayesSpace8-BayesSpace12"  "p_value_BayesSpace9-BayesSpace10"  "p_value_BayesSpace9-BayesSpace11"  "p_value_BayesSpace9-BayesSpace12"  "p_value_BayesSpace10-BayesSpace11"
+[131] "p_value_BayesSpace10-BayesSpace12" "p_value_BayesSpace11-BayesSpace12" "fdr_BayesSpace1-BayesSpace2"       "fdr_BayesSpace1-BayesSpace3"       "fdr_BayesSpace1-BayesSpace4"       "fdr_BayesSpace1-BayesSpace5"       "fdr_BayesSpace1-BayesSpace6"       "fdr_BayesSpace1-BayesSpace7"       "fdr_BayesSpace1-BayesSpace8"       "fdr_BayesSpace1-BayesSpace9"      
+[141] "fdr_BayesSpace1-BayesSpace10"      "fdr_BayesSpace1-BayesSpace11"      "fdr_BayesSpace1-BayesSpace12"      "fdr_BayesSpace2-BayesSpace3"       "fdr_BayesSpace2-BayesSpace4"       "fdr_BayesSpace2-BayesSpace5"       "fdr_BayesSpace2-BayesSpace6"       "fdr_BayesSpace2-BayesSpace7"       "fdr_BayesSpace2-BayesSpace8"       "fdr_BayesSpace2-BayesSpace9"      
+[151] "fdr_BayesSpace2-BayesSpace10"      "fdr_BayesSpace2-BayesSpace11"      "fdr_BayesSpace2-BayesSpace12"      "fdr_BayesSpace3-BayesSpace4"       "fdr_BayesSpace3-BayesSpace5"       "fdr_BayesSpace3-BayesSpace6"       "fdr_BayesSpace3-BayesSpace7"       "fdr_BayesSpace3-BayesSpace8"       "fdr_BayesSpace3-BayesSpace9"       "fdr_BayesSpace3-BayesSpace10"     
+[161] "fdr_BayesSpace3-BayesSpace11"      "fdr_BayesSpace3-BayesSpace12"      "fdr_BayesSpace4-BayesSpace5"       "fdr_BayesSpace4-BayesSpace6"       "fdr_BayesSpace4-BayesSpace7"       "fdr_BayesSpace4-BayesSpace8"       "fdr_BayesSpace4-BayesSpace9"       "fdr_BayesSpace4-BayesSpace10"      "fdr_BayesSpace4-BayesSpace11"      "fdr_BayesSpace4-BayesSpace12"     
+[171] "fdr_BayesSpace5-BayesSpace6"       "fdr_BayesSpace5-BayesSpace7"       "fdr_BayesSpace5-BayesSpace8"       "fdr_BayesSpace5-BayesSpace9"       "fdr_BayesSpace5-BayesSpace10"      "fdr_BayesSpace5-BayesSpace11"      "fdr_BayesSpace5-BayesSpace12"      "fdr_BayesSpace6-BayesSpace7"       "fdr_BayesSpace6-BayesSpace8"       "fdr_BayesSpace6-BayesSpace9"      
+[181] "fdr_BayesSpace6-BayesSpace10"      "fdr_BayesSpace6-BayesSpace11"      "fdr_BayesSpace6-BayesSpace12"      "fdr_BayesSpace7-BayesSpace8"       "fdr_BayesSpace7-BayesSpace9"       "fdr_BayesSpace7-BayesSpace10"      "fdr_BayesSpace7-BayesSpace11"      "fdr_BayesSpace7-BayesSpace12"      "fdr_BayesSpace8-BayesSpace9"       "fdr_BayesSpace8-BayesSpace10"     
+[191] "fdr_BayesSpace8-BayesSpace11"      "fdr_BayesSpace8-BayesSpace12"      "fdr_BayesSpace9-BayesSpace10"      "fdr_BayesSpace9-BayesSpace11"      "fdr_BayesSpace9-BayesSpace12"      "fdr_BayesSpace10-BayesSpace11"     "fdr_BayesSpace10-BayesSpace12"     "fdr_BayesSpace11-BayesSpace12"     "ensembl"                           "gene"                             
+  BayesSpace3-BayesSpace5   BayesSpace2-BayesSpace3   BayesSpace4-BayesSpace7   BayesSpace4-BayesSpace5   BayesSpace5-BayesSpace8   BayesSpace5-BayesSpace7   BayesSpace3-BayesSpace4   BayesSpace3-BayesSpace7  BayesSpace7-BayesSpace10   BayesSpace2-BayesSpace5   BayesSpace2-BayesSpace7   BayesSpace2-BayesSpace4   BayesSpace4-BayesSpace8  BayesSpace4-BayesSpace10   BayesSpace3-BayesSpace8 
+                       10                        25                        74                        82                       169                       191                       207                       216                       281                       336                       401                       552                       619                       740                       794 
+ BayesSpace2-BayesSpace10  BayesSpace3-BayesSpace10  BayesSpace5-BayesSpace10  BayesSpace9-BayesSpace10  BayesSpace6-BayesSpace10   BayesSpace7-BayesSpace8   BayesSpace2-BayesSpace9   BayesSpace2-BayesSpace8 BayesSpace11-BayesSpace12   BayesSpace6-BayesSpace9   BayesSpace7-BayesSpace9   BayesSpace3-BayesSpace9  BayesSpace8-BayesSpace10   BayesSpace4-BayesSpace9   BayesSpace5-BayesSpace9 
+                      849                       913                      1087                      1135                      1160                      1277                      1729                      1804                      1871                      1945                      2052                      2178                      2244                      2382                      2494 
+ BayesSpace1-BayesSpace11  BayesSpace1-BayesSpace12   BayesSpace8-BayesSpace9   BayesSpace6-BayesSpace7   BayesSpace2-BayesSpace6  BayesSpace6-BayesSpace11   BayesSpace4-BayesSpace6   BayesSpace3-BayesSpace6   BayesSpace5-BayesSpace6  BayesSpace9-BayesSpace11   BayesSpace6-BayesSpace8  BayesSpace9-BayesSpace12 BayesSpace10-BayesSpace11  BayesSpace8-BayesSpace12  BayesSpace6-BayesSpace12 
+                     2797                      3100                      3212                      3295                      3386                      3443                      3586                      3683                      3843                      3955                      4133                      4235                      4445                      4599                      4896 
+ BayesSpace8-BayesSpace11 BayesSpace10-BayesSpace12   BayesSpace1-BayesSpace6   BayesSpace1-BayesSpace9  BayesSpace2-BayesSpace11  BayesSpace7-BayesSpace11   BayesSpace1-BayesSpace8  BayesSpace3-BayesSpace11  BayesSpace5-BayesSpace11  BayesSpace4-BayesSpace11  BayesSpace2-BayesSpace12  BayesSpace1-BayesSpace10  BayesSpace3-BayesSpace12  BayesSpace5-BayesSpace12  BayesSpace4-BayesSpace12 
+                     5147                      5253                      5287                      5493                      6465                      6467                      6499                      6522                      6572                      6616                      6734                      6794                      6989                      7066                      7116 
+ BayesSpace7-BayesSpace12   BayesSpace1-BayesSpace2   BayesSpace1-BayesSpace3   BayesSpace1-BayesSpace5   BayesSpace1-BayesSpace7   BayesSpace1-BayesSpace4 
+                     7202                      7546                      7578                      7637                      7709                      7726 
+          n        ratio
+FALSE     4 0.0003899015
+TRUE  10255 0.9996100985
+Sum   10259 1.0000000000
+  f_stat_noWM p_value_noWM     fdr_noWM noWM_AveExpr         ensembl      gene
+1    9.496466 5.701922e-15 9.613150e-15     4.458668 ENSG00000228794 LINC01128
+2   11.357659 4.768748e-18 9.833686e-18     5.372616 ENSG00000188976     NOC2L
+3   14.810245 1.666707e-23 4.611313e-23     5.971094 ENSG00000188290      HES4
+4   11.294441 6.045105e-18 1.240831e-17     5.371102 ENSG00000187608     ISG15
+5    8.503335 2.720731e-13 4.079506e-13     3.909327 ENSG00000188157      AGRN
+6    6.809099 2.225049e-10 2.762194e-10     3.633549 ENSG00000131591  C1orf159
+[1] "Reproducibility information:"
+[1] "2022-06-09 12:46:41 EDT"
+   user  system elapsed 
+  7.292   0.778   8.706 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R Under development (unstable) (2021-11-06 r81149)
+ os       CentOS Linux 7 (Core)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2022-06-09
+ pandoc   2.11.0.4 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ beachmat               2.12.0   2022-04-26 [2] Bioconductor
+ Biobase              * 2.56.0   2022-04-26 [2] Bioconductor
+ BiocGenerics         * 0.42.0   2022-04-26 [2] Bioconductor
+ BiocParallel           1.30.3   2022-06-05 [2] Bioconductor
+ bitops                 1.0-7    2021-04-24 [2] CRAN (R 4.2.0)
+ cli                    3.3.0    2022-04-25 [2] CRAN (R 4.2.0)
+ codetools              0.2-18   2020-11-04 [3] CRAN (R 4.2.0)
+ DelayedArray           0.22.0   2022-04-26 [2] Bioconductor
+ DelayedMatrixStats     1.18.0   2022-04-26 [2] Bioconductor
+ dqrng                  0.3.0    2021-05-01 [2] CRAN (R 4.2.0)
+ DropletUtils           1.16.0   2022-04-26 [2] Bioconductor
+ edgeR                  3.38.1   2022-05-15 [2] Bioconductor
+ GenomeInfoDb         * 1.32.2   2022-05-15 [2] Bioconductor
+ GenomeInfoDbData       1.2.8    2022-04-16 [2] Bioconductor
+ GenomicRanges        * 1.48.0   2022-04-26 [2] Bioconductor
+ HDF5Array              1.24.1   2022-06-02 [2] Bioconductor
+ here                 * 1.0.1    2020-12-13 [1] CRAN (R 4.2.0)
+ IRanges              * 2.30.0   2022-04-26 [2] Bioconductor
+ lattice                0.20-45  2021-09-22 [3] CRAN (R 4.2.0)
+ limma                * 3.52.1   2022-05-15 [2] Bioconductor
+ locfit                 1.5-9.5  2022-03-03 [2] CRAN (R 4.2.0)
+ magick                 2.7.3    2021-08-18 [2] CRAN (R 4.2.0)
+ magrittr               2.0.3    2022-03-30 [2] CRAN (R 4.2.0)
+ Matrix                 1.4-1    2022-03-23 [3] CRAN (R 4.2.0)
+ MatrixGenerics       * 1.8.0    2022-04-26 [2] Bioconductor
+ matrixStats          * 0.62.0   2022-04-19 [2] CRAN (R 4.2.0)
+ R.methodsS3            1.8.1    2020-08-26 [2] CRAN (R 4.1.0)
+ R.oo                   1.24.0   2020-08-26 [2] CRAN (R 4.1.0)
+ R.utils                2.11.0   2021-09-26 [2] CRAN (R 4.2.0)
+ Rcpp                   1.0.8.3  2022-03-17 [2] CRAN (R 4.2.0)
+ RCurl                  1.98-1.7 2022-06-09 [2] CRAN (R 4.2.0)
+ rhdf5                  2.40.0   2022-04-26 [2] Bioconductor
+ rhdf5filters           1.8.0    2022-04-26 [2] Bioconductor
+ Rhdf5lib               1.18.2   2022-05-15 [2] Bioconductor
+ rjson                  0.2.21   2022-01-09 [2] CRAN (R 4.2.0)
+ rprojroot              2.0.3    2022-04-02 [2] CRAN (R 4.2.0)
+ S4Vectors            * 0.34.0   2022-04-26 [2] Bioconductor
+ scuttle                1.6.2    2022-05-15 [2] Bioconductor
+ sessioninfo          * 1.2.2    2021-12-06 [2] CRAN (R 4.2.0)
+ SingleCellExperiment * 1.18.0   2022-04-26 [2] Bioconductor
+ sparseMatrixStats      1.8.0    2022-04-26 [2] Bioconductor
+ SpatialExperiment    * 1.6.0    2022-04-26 [2] Bioconductor
+ SummarizedExperiment * 1.26.1   2022-04-29 [2] Bioconductor
+ XVector                0.36.0   2022-04-26 [2] Bioconductor
+ zlibbioc               1.42.0   2022-04-26 [2] Bioconductor
+
+ [1] /users/aspangle/R/devel
+ [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/site-library
+ [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Thu Jun  9 12:46:41 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/devel
+**** Job starts ****
+Tue Jun 14 10:08:12 EDT 2022
+**** JHPCE info ****
+User: aspangle
+Job id: 305697
+Job name: layer_parse_modeling_results
+Hostname: compute-126.cm.cluster
+Task id: 12
+Unloading conda_R/devel
+Loading conda_R/devel
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.6.14
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/devel
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading objects:
+  f_stats
+  eb0_list
+  eb_contrasts
+Loading required package: limma
+
+Attaching package: ‘limma’
+
+The following object is masked from ‘package:BiocGenerics’:
+
+    plotMA
+
+     1               2               3               4          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:2816      FALSE:9243      FALSE:9674      FALSE:9556     
+ TRUE :7443      TRUE :1016      TRUE :585       TRUE :703      
+     5               6               7               8          
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:9343      FALSE:7108      FALSE:9843      FALSE:7839     
+ TRUE :916       TRUE :3151      TRUE :416       TRUE :2420     
+     9               10              11              12         
+ Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+ FALSE:8804      FALSE:9884      FALSE:4726      FALSE:4308     
+ TRUE :1455      TRUE :375       TRUE :5533      TRUE :5951     
+Loading required package: SpatialExperiment
+   t_stat_1   t_stat_2 t_stat_3   t_stat_4 t_stat_5   t_stat_6   t_stat_7   t_stat_8    t_stat_9  t_stat_10 t_stat_11  t_stat_12    p_value_1  p_value_2  p_value_3  p_value_4   p_value_5   p_value_6  p_value_7  p_value_8   p_value_9 p_value_10   p_value_11   p_value_12        fdr_1      fdr_2     fdr_3     fdr_4      fdr_5       fdr_6     fdr_7     fdr_8      fdr_9    fdr_10       fdr_11
+1 -5.455949  2.3445197 2.575436  2.0818780 2.363440 -2.6093907  2.2137952  0.6484668 -0.08977908  0.7554234 -2.925488 -2.3608215 9.170155e-08 0.01960361 0.01041650 0.03807148 0.018645880 0.009455203 0.02747970 0.51710354 0.928513549 0.45049722 3.660940e-03 1.877577e-02 5.701613e-07 0.11571542 0.1036497 0.1654279 0.10603552 0.033368053 0.2014086 0.6890862 0.96933606 0.8411211 9.816410e-03
+2 -3.930372  0.8316106 1.503535  1.5657442 1.159840 -0.2469252  1.9128573  2.0847112 -3.23579907  1.0326063 -2.485569 -0.4786818 1.020185e-04 0.40618929 0.13359260 0.11830188 0.246895659 0.805109241 0.05657284 0.03781182 0.001327418 0.30249294 1.339526e-02 6.324604e-01 2.603503e-04 0.56263407 0.2948003 0.2619031 0.39497945 0.885749673 0.2524240 0.1181216 0.01300667 0.7722461 2.826450e-02
+3  5.707131  1.5379758 1.386441  0.9139184 0.722338 -3.2090678 -0.6210497 -1.2708800  2.37790497 -1.7137637 -1.808972 -3.7878643 2.431624e-08 0.12494769 0.16648476 0.36138173 0.470563543 0.001453328 0.53496655 0.20460587 0.017941636 0.08744733 7.130344e-02 1.784792e-04 1.801157e-07 0.29986303 0.3257844 0.4915692 0.59540101 0.007110009 0.6454454 0.3780032 0.09890556 0.5255549 1.122452e-01
+4  2.908958 -0.2845164 1.458338 -0.5556605 2.662350  0.5588625 -1.8396998  1.4813808  2.65022878 -1.2667523 -5.527433 -2.4631681 3.855393e-03 0.77618101 0.14563383 0.57879391 0.008113736 0.576608929 0.06664937 0.13939471 0.008404732 0.20607652 6.314128e-08 1.424655e-02 6.587688e-03 0.85173184 0.3060966 0.6787662 0.06808955 0.724930269 0.2630652 0.2919460 0.05668911 0.7010581 2.109988e-06
+5 -3.454155  2.0175437 1.927614  1.4124090 1.964835  2.5655033  0.5150721  1.2086777 -1.01832421  0.2902160 -4.482309 -3.3498905 6.189844e-04 0.04439287 0.05470288 0.15870799 0.050214957 0.010713838 0.60682405 0.22759342 0.309219375 0.77182090 9.984845e-06 8.954839e-04 1.293839e-03 0.17923118 0.2074844 0.3020752 0.17204868 0.037082747 0.7010281 0.4059316 0.58852467 0.9560864 9.609243e-05
+6 -4.218576  2.4821752 1.605928  1.5224926 1.150438  1.3017687  2.0897644 -1.2988478 -0.72643666  2.0972444 -1.504831 -4.9111556 3.126921e-05 0.01352130 0.10918115 0.12877840 0.250739828 0.193841947 0.03735220 0.19484158 0.468051189 0.03668068 1.332589e-01 1.385424e-06 9.263379e-05 0.09290714 0.2708147 0.2722311 0.39794862 0.346147906 0.2247757 0.3660281 0.72886113 0.3557157 1.892185e-01
+        fdr_12         ensembl      gene
+1 3.486977e-02 ENSG00000228794 LINC01128
+2 6.754141e-01 ENSG00000188976     NOC2L
+3 8.884126e-04 ENSG00000188290      HES4
+4 2.768094e-02 ENSG00000187608     ISG15
+5 3.087990e-03 ENSG00000188157      AGRN
+6 2.270457e-05 ENSG00000131591  C1orf159
+[1] 10259    66
+ BayesSpace1-BayesSpace2 BayesSpace1-BayesSpace3 BayesSpace1-BayesSpace4 BayesSpace1-BayesSpace5 BayesSpace1-BayesSpace6 BayesSpace1-BayesSpace7 BayesSpace1-BayesSpace8 BayesSpace1-BayesSpace9 BayesSpace1-BayesSpace10 BayesSpace1-BayesSpace11 BayesSpace1-BayesSpace12 BayesSpace2-BayesSpace3 BayesSpace2-BayesSpace4 BayesSpace2-BayesSpace5 BayesSpace2-BayesSpace6 BayesSpace2-BayesSpace7
+ Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical          
+ FALSE:2748              FALSE:2694              FALSE:2555              FALSE:2650              FALSE:4990              FALSE:2579              FALSE:3772              FALSE:4790              FALSE:3487               FALSE:7507               FALSE:7190               FALSE:10236             FALSE:9729              FALSE:9943              FALSE:6906              FALSE:9880             
+ TRUE :7511              TRUE :7565              TRUE :7704              TRUE :7609              TRUE :5269              TRUE :7680              TRUE :6487              TRUE :5469              TRUE :6772               TRUE :2752               TRUE :3069               TRUE :23                TRUE :530               TRUE :316               TRUE :3353              TRUE :379              
+ BayesSpace2-BayesSpace8 BayesSpace2-BayesSpace9 BayesSpace2-BayesSpace10 BayesSpace2-BayesSpace11 BayesSpace2-BayesSpace12 BayesSpace3-BayesSpace4 BayesSpace3-BayesSpace5 BayesSpace3-BayesSpace6 BayesSpace3-BayesSpace7 BayesSpace3-BayesSpace8 BayesSpace3-BayesSpace9 BayesSpace3-BayesSpace10 BayesSpace3-BayesSpace11 BayesSpace3-BayesSpace12 BayesSpace4-BayesSpace5 BayesSpace4-BayesSpace6
+ Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical          
+ FALSE:8493              FALSE:8562              FALSE:9439               FALSE:3803               FALSE:3578               FALSE:10064             FALSE:10251             FALSE:6616              FALSE:10054             FALSE:9514              FALSE:8120              FALSE:9372               FALSE:3751               FALSE:3328               FALSE:10182             FALSE:6712             
+ TRUE :1766              TRUE :1697              TRUE :820                TRUE :6456               TRUE :6681               TRUE :195               TRUE :8                 TRUE :3643              TRUE :205               TRUE :745               TRUE :2139              TRUE :887                TRUE :6508               TRUE :6931               TRUE :77                TRUE :3547             
+ BayesSpace4-BayesSpace7 BayesSpace4-BayesSpace8 BayesSpace4-BayesSpace9 BayesSpace4-BayesSpace10 BayesSpace4-BayesSpace11 BayesSpace4-BayesSpace12 BayesSpace5-BayesSpace6 BayesSpace5-BayesSpace7 BayesSpace5-BayesSpace8 BayesSpace5-BayesSpace9 BayesSpace5-BayesSpace10 BayesSpace5-BayesSpace11 BayesSpace5-BayesSpace12 BayesSpace6-BayesSpace7 BayesSpace6-BayesSpace8 BayesSpace6-BayesSpace9
+ Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical          
+ FALSE:10186             FALSE:9703              FALSE:7923              FALSE:9552               FALSE:3650               FALSE:3186               FALSE:6453              FALSE:10075             FALSE:10123             FALSE:7802              FALSE:9218               FALSE:3699               FALSE:3234               FALSE:7007              FALSE:6184              FALSE:8345             
+ TRUE :73                TRUE :556               TRUE :2336              TRUE :707                TRUE :6609               TRUE :7073               TRUE :3806              TRUE :184               TRUE :136               TRUE :2457              TRUE :1041               TRUE :6560               TRUE :7025               TRUE :3252              TRUE :4075              TRUE :1914             
+ BayesSpace6-BayesSpace10 BayesSpace6-BayesSpace11 BayesSpace6-BayesSpace12 BayesSpace7-BayesSpace8 BayesSpace7-BayesSpace9 BayesSpace7-BayesSpace10 BayesSpace7-BayesSpace11 BayesSpace7-BayesSpace12 BayesSpace8-BayesSpace9 BayesSpace8-BayesSpace10 BayesSpace8-BayesSpace11 BayesSpace8-BayesSpace12 BayesSpace9-BayesSpace10 BayesSpace9-BayesSpace11 BayesSpace9-BayesSpace12 BayesSpace10-BayesSpace11
+ Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical           Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            Mode :logical            
+ FALSE:9144               FALSE:6796               FALSE:5411               FALSE:9048              FALSE:8253              FALSE:10010              FALSE:3792               FALSE:3114               FALSE:7099              FALSE:8062               FALSE:5130               FALSE:5718               FALSE:9151               FALSE:6312               FALSE:6074               FALSE:5800               
+ TRUE :1115               TRUE :3463               TRUE :4848               TRUE :1211              TRUE :2006              TRUE :249                TRUE :6467               TRUE :7145               TRUE :3160              TRUE :2197               TRUE :5129               TRUE :4541               TRUE :1108               TRUE :3947               TRUE :4185               TRUE :4459               
+ BayesSpace10-BayesSpace12 BayesSpace11-BayesSpace12
+ Mode :logical             Mode :logical            
+ FALSE:5068                FALSE:8450               
+ TRUE :5191                TRUE :1809               
+  [1] "t_stat_BayesSpace1-BayesSpace2"    "t_stat_BayesSpace1-BayesSpace3"    "t_stat_BayesSpace1-BayesSpace4"    "t_stat_BayesSpace1-BayesSpace5"    "t_stat_BayesSpace1-BayesSpace6"    "t_stat_BayesSpace1-BayesSpace7"    "t_stat_BayesSpace1-BayesSpace8"    "t_stat_BayesSpace1-BayesSpace9"    "t_stat_BayesSpace1-BayesSpace10"   "t_stat_BayesSpace1-BayesSpace11"  
+ [11] "t_stat_BayesSpace1-BayesSpace12"   "t_stat_BayesSpace2-BayesSpace3"    "t_stat_BayesSpace2-BayesSpace4"    "t_stat_BayesSpace2-BayesSpace5"    "t_stat_BayesSpace2-BayesSpace6"    "t_stat_BayesSpace2-BayesSpace7"    "t_stat_BayesSpace2-BayesSpace8"    "t_stat_BayesSpace2-BayesSpace9"    "t_stat_BayesSpace2-BayesSpace10"   "t_stat_BayesSpace2-BayesSpace11"  
+ [21] "t_stat_BayesSpace2-BayesSpace12"   "t_stat_BayesSpace3-BayesSpace4"    "t_stat_BayesSpace3-BayesSpace5"    "t_stat_BayesSpace3-BayesSpace6"    "t_stat_BayesSpace3-BayesSpace7"    "t_stat_BayesSpace3-BayesSpace8"    "t_stat_BayesSpace3-BayesSpace9"    "t_stat_BayesSpace3-BayesSpace10"   "t_stat_BayesSpace3-BayesSpace11"   "t_stat_BayesSpace3-BayesSpace12"  
+ [31] "t_stat_BayesSpace4-BayesSpace5"    "t_stat_BayesSpace4-BayesSpace6"    "t_stat_BayesSpace4-BayesSpace7"    "t_stat_BayesSpace4-BayesSpace8"    "t_stat_BayesSpace4-BayesSpace9"    "t_stat_BayesSpace4-BayesSpace10"   "t_stat_BayesSpace4-BayesSpace11"   "t_stat_BayesSpace4-BayesSpace12"   "t_stat_BayesSpace5-BayesSpace6"    "t_stat_BayesSpace5-BayesSpace7"   
+ [41] "t_stat_BayesSpace5-BayesSpace8"    "t_stat_BayesSpace5-BayesSpace9"    "t_stat_BayesSpace5-BayesSpace10"   "t_stat_BayesSpace5-BayesSpace11"   "t_stat_BayesSpace5-BayesSpace12"   "t_stat_BayesSpace6-BayesSpace7"    "t_stat_BayesSpace6-BayesSpace8"    "t_stat_BayesSpace6-BayesSpace9"    "t_stat_BayesSpace6-BayesSpace10"   "t_stat_BayesSpace6-BayesSpace11"  
+ [51] "t_stat_BayesSpace6-BayesSpace12"   "t_stat_BayesSpace7-BayesSpace8"    "t_stat_BayesSpace7-BayesSpace9"    "t_stat_BayesSpace7-BayesSpace10"   "t_stat_BayesSpace7-BayesSpace11"   "t_stat_BayesSpace7-BayesSpace12"   "t_stat_BayesSpace8-BayesSpace9"    "t_stat_BayesSpace8-BayesSpace10"   "t_stat_BayesSpace8-BayesSpace11"   "t_stat_BayesSpace8-BayesSpace12"  
+ [61] "t_stat_BayesSpace9-BayesSpace10"   "t_stat_BayesSpace9-BayesSpace11"   "t_stat_BayesSpace9-BayesSpace12"   "t_stat_BayesSpace10-BayesSpace11"  "t_stat_BayesSpace10-BayesSpace12"  "t_stat_BayesSpace11-BayesSpace12"  "p_value_BayesSpace1-BayesSpace2"   "p_value_BayesSpace1-BayesSpace3"   "p_value_BayesSpace1-BayesSpace4"   "p_value_BayesSpace1-BayesSpace5"  
+ [71] "p_value_BayesSpace1-BayesSpace6"   "p_value_BayesSpace1-BayesSpace7"   "p_value_BayesSpace1-BayesSpace8"   "p_value_BayesSpace1-BayesSpace9"   "p_value_BayesSpace1-BayesSpace10"  "p_value_BayesSpace1-BayesSpace11"  "p_value_BayesSpace1-BayesSpace12"  "p_value_BayesSpace2-BayesSpace3"   "p_value_BayesSpace2-BayesSpace4"   "p_value_BayesSpace2-BayesSpace5"  
+ [81] "p_value_BayesSpace2-BayesSpace6"   "p_value_BayesSpace2-BayesSpace7"   "p_value_BayesSpace2-BayesSpace8"   "p_value_BayesSpace2-BayesSpace9"   "p_value_BayesSpace2-BayesSpace10"  "p_value_BayesSpace2-BayesSpace11"  "p_value_BayesSpace2-BayesSpace12"  "p_value_BayesSpace3-BayesSpace4"   "p_value_BayesSpace3-BayesSpace5"   "p_value_BayesSpace3-BayesSpace6"  
+ [91] "p_value_BayesSpace3-BayesSpace7"   "p_value_BayesSpace3-BayesSpace8"   "p_value_BayesSpace3-BayesSpace9"   "p_value_BayesSpace3-BayesSpace10"  "p_value_BayesSpace3-BayesSpace11"  "p_value_BayesSpace3-BayesSpace12"  "p_value_BayesSpace4-BayesSpace5"   "p_value_BayesSpace4-BayesSpace6"   "p_value_BayesSpace4-BayesSpace7"   "p_value_BayesSpace4-BayesSpace8"  
+[101] "p_value_BayesSpace4-BayesSpace9"   "p_value_BayesSpace4-BayesSpace10"  "p_value_BayesSpace4-BayesSpace11"  "p_value_BayesSpace4-BayesSpace12"  "p_value_BayesSpace5-BayesSpace6"   "p_value_BayesSpace5-BayesSpace7"   "p_value_BayesSpace5-BayesSpace8"   "p_value_BayesSpace5-BayesSpace9"   "p_value_BayesSpace5-BayesSpace10"  "p_value_BayesSpace5-BayesSpace11" 
+[111] "p_value_BayesSpace5-BayesSpace12"  "p_value_BayesSpace6-BayesSpace7"   "p_value_BayesSpace6-BayesSpace8"   "p_value_BayesSpace6-BayesSpace9"   "p_value_BayesSpace6-BayesSpace10"  "p_value_BayesSpace6-BayesSpace11"  "p_value_BayesSpace6-BayesSpace12"  "p_value_BayesSpace7-BayesSpace8"   "p_value_BayesSpace7-BayesSpace9"   "p_value_BayesSpace7-BayesSpace10" 
+[121] "p_value_BayesSpace7-BayesSpace11"  "p_value_BayesSpace7-BayesSpace12"  "p_value_BayesSpace8-BayesSpace9"   "p_value_BayesSpace8-BayesSpace10"  "p_value_BayesSpace8-BayesSpace11"  "p_value_BayesSpace8-BayesSpace12"  "p_value_BayesSpace9-BayesSpace10"  "p_value_BayesSpace9-BayesSpace11"  "p_value_BayesSpace9-BayesSpace12"  "p_value_BayesSpace10-BayesSpace11"
+[131] "p_value_BayesSpace10-BayesSpace12" "p_value_BayesSpace11-BayesSpace12" "fdr_BayesSpace1-BayesSpace2"       "fdr_BayesSpace1-BayesSpace3"       "fdr_BayesSpace1-BayesSpace4"       "fdr_BayesSpace1-BayesSpace5"       "fdr_BayesSpace1-BayesSpace6"       "fdr_BayesSpace1-BayesSpace7"       "fdr_BayesSpace1-BayesSpace8"       "fdr_BayesSpace1-BayesSpace9"      
+[141] "fdr_BayesSpace1-BayesSpace10"      "fdr_BayesSpace1-BayesSpace11"      "fdr_BayesSpace1-BayesSpace12"      "fdr_BayesSpace2-BayesSpace3"       "fdr_BayesSpace2-BayesSpace4"       "fdr_BayesSpace2-BayesSpace5"       "fdr_BayesSpace2-BayesSpace6"       "fdr_BayesSpace2-BayesSpace7"       "fdr_BayesSpace2-BayesSpace8"       "fdr_BayesSpace2-BayesSpace9"      
+[151] "fdr_BayesSpace2-BayesSpace10"      "fdr_BayesSpace2-BayesSpace11"      "fdr_BayesSpace2-BayesSpace12"      "fdr_BayesSpace3-BayesSpace4"       "fdr_BayesSpace3-BayesSpace5"       "fdr_BayesSpace3-BayesSpace6"       "fdr_BayesSpace3-BayesSpace7"       "fdr_BayesSpace3-BayesSpace8"       "fdr_BayesSpace3-BayesSpace9"       "fdr_BayesSpace3-BayesSpace10"     
+[161] "fdr_BayesSpace3-BayesSpace11"      "fdr_BayesSpace3-BayesSpace12"      "fdr_BayesSpace4-BayesSpace5"       "fdr_BayesSpace4-BayesSpace6"       "fdr_BayesSpace4-BayesSpace7"       "fdr_BayesSpace4-BayesSpace8"       "fdr_BayesSpace4-BayesSpace9"       "fdr_BayesSpace4-BayesSpace10"      "fdr_BayesSpace4-BayesSpace11"      "fdr_BayesSpace4-BayesSpace12"     
+[171] "fdr_BayesSpace5-BayesSpace6"       "fdr_BayesSpace5-BayesSpace7"       "fdr_BayesSpace5-BayesSpace8"       "fdr_BayesSpace5-BayesSpace9"       "fdr_BayesSpace5-BayesSpace10"      "fdr_BayesSpace5-BayesSpace11"      "fdr_BayesSpace5-BayesSpace12"      "fdr_BayesSpace6-BayesSpace7"       "fdr_BayesSpace6-BayesSpace8"       "fdr_BayesSpace6-BayesSpace9"      
+[181] "fdr_BayesSpace6-BayesSpace10"      "fdr_BayesSpace6-BayesSpace11"      "fdr_BayesSpace6-BayesSpace12"      "fdr_BayesSpace7-BayesSpace8"       "fdr_BayesSpace7-BayesSpace9"       "fdr_BayesSpace7-BayesSpace10"      "fdr_BayesSpace7-BayesSpace11"      "fdr_BayesSpace7-BayesSpace12"      "fdr_BayesSpace8-BayesSpace9"       "fdr_BayesSpace8-BayesSpace10"     
+[191] "fdr_BayesSpace8-BayesSpace11"      "fdr_BayesSpace8-BayesSpace12"      "fdr_BayesSpace9-BayesSpace10"      "fdr_BayesSpace9-BayesSpace11"      "fdr_BayesSpace9-BayesSpace12"      "fdr_BayesSpace10-BayesSpace11"     "fdr_BayesSpace10-BayesSpace12"     "fdr_BayesSpace11-BayesSpace12"     "ensembl"                           "gene"                             
+  BayesSpace3-BayesSpace5   BayesSpace2-BayesSpace3   BayesSpace4-BayesSpace7   BayesSpace4-BayesSpace5   BayesSpace5-BayesSpace8   BayesSpace5-BayesSpace7   BayesSpace3-BayesSpace4   BayesSpace3-BayesSpace7  BayesSpace7-BayesSpace10   BayesSpace2-BayesSpace5   BayesSpace2-BayesSpace7   BayesSpace2-BayesSpace4   BayesSpace4-BayesSpace8  BayesSpace4-BayesSpace10   BayesSpace3-BayesSpace8 
+                        8                        23                        73                        77                       136                       184                       195                       205                       249                       316                       379                       530                       556                       707                       745 
+ BayesSpace2-BayesSpace10  BayesSpace3-BayesSpace10  BayesSpace5-BayesSpace10  BayesSpace9-BayesSpace10  BayesSpace6-BayesSpace10   BayesSpace7-BayesSpace8   BayesSpace2-BayesSpace9   BayesSpace2-BayesSpace8 BayesSpace11-BayesSpace12   BayesSpace6-BayesSpace9   BayesSpace7-BayesSpace9   BayesSpace3-BayesSpace9  BayesSpace8-BayesSpace10   BayesSpace4-BayesSpace9   BayesSpace5-BayesSpace9 
+                      820                       887                      1041                      1108                      1115                      1211                      1697                      1766                      1809                      1914                      2006                      2139                      2197                      2336                      2457 
+ BayesSpace1-BayesSpace11  BayesSpace1-BayesSpace12   BayesSpace8-BayesSpace9   BayesSpace6-BayesSpace7   BayesSpace2-BayesSpace6  BayesSpace6-BayesSpace11   BayesSpace4-BayesSpace6   BayesSpace3-BayesSpace6   BayesSpace5-BayesSpace6  BayesSpace9-BayesSpace11   BayesSpace6-BayesSpace8  BayesSpace9-BayesSpace12 BayesSpace10-BayesSpace11  BayesSpace8-BayesSpace12  BayesSpace6-BayesSpace12 
+                     2752                      3069                      3160                      3252                      3353                      3463                      3547                      3643                      3806                      3947                      4075                      4185                      4459                      4541                      4848 
+ BayesSpace8-BayesSpace11 BayesSpace10-BayesSpace12   BayesSpace1-BayesSpace6   BayesSpace1-BayesSpace9  BayesSpace2-BayesSpace11  BayesSpace7-BayesSpace11   BayesSpace1-BayesSpace8  BayesSpace3-BayesSpace11  BayesSpace5-BayesSpace11  BayesSpace4-BayesSpace11  BayesSpace2-BayesSpace12  BayesSpace1-BayesSpace10  BayesSpace3-BayesSpace12  BayesSpace5-BayesSpace12  BayesSpace4-BayesSpace12 
+                     5129                      5191                      5269                      5469                      6456                      6467                      6487                      6508                      6560                      6609                      6681                      6772                      6931                      7025                      7073 
+ BayesSpace7-BayesSpace12   BayesSpace1-BayesSpace2   BayesSpace1-BayesSpace3   BayesSpace1-BayesSpace5   BayesSpace1-BayesSpace7   BayesSpace1-BayesSpace4 
+                     7145                      7511                      7565                      7609                      7680                      7704 
+          n        ratio
+FALSE     4 0.0003899015
+TRUE  10255 0.9996100985
+Sum   10259 1.0000000000
+  f_stat_noWM p_value_noWM     fdr_noWM noWM_AveExpr         ensembl      gene
+1    9.496466 5.701922e-15 9.613150e-15     4.458668 ENSG00000228794 LINC01128
+2   11.357659 4.768748e-18 9.833686e-18     5.372616 ENSG00000188976     NOC2L
+3   14.810245 1.666707e-23 4.611313e-23     5.971094 ENSG00000188290      HES4
+4   11.294441 6.045105e-18 1.240831e-17     5.371102 ENSG00000187608     ISG15
+5    8.503335 2.720731e-13 4.079506e-13     3.909327 ENSG00000188157      AGRN
+6    6.809099 2.225049e-10 2.762194e-10     3.633549 ENSG00000131591  C1orf159
+[1] "Reproducibility information:"
+[1] "2022-06-14 10:08:22 EDT"
+   user  system elapsed 
+  7.320   0.706   8.399 
+─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R Under development (unstable) (2021-11-06 r81149)
+ os       CentOS Linux 7 (Core)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2022-06-14
+ pandoc   2.11.0.4 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/bin/pandoc
+
+─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package              * version  date (UTC) lib source
+ beachmat               2.12.0   2022-04-26 [2] Bioconductor
+ Biobase              * 2.56.0   2022-04-26 [2] Bioconductor
+ BiocGenerics         * 0.42.0   2022-04-26 [2] Bioconductor
+ BiocParallel           1.30.3   2022-06-05 [2] Bioconductor
+ bitops                 1.0-7    2021-04-24 [2] CRAN (R 4.2.0)
+ cli                    3.3.0    2022-04-25 [2] CRAN (R 4.2.0)
+ codetools              0.2-18   2020-11-04 [3] CRAN (R 4.2.0)
+ DelayedArray           0.22.0   2022-04-26 [2] Bioconductor
+ DelayedMatrixStats     1.18.0   2022-04-26 [2] Bioconductor
+ dqrng                  0.3.0    2021-05-01 [2] CRAN (R 4.2.0)
+ DropletUtils           1.16.0   2022-04-26 [2] Bioconductor
+ edgeR                  3.38.1   2022-05-15 [2] Bioconductor
+ GenomeInfoDb         * 1.32.2   2022-05-15 [2] Bioconductor
+ GenomeInfoDbData       1.2.8    2022-04-16 [2] Bioconductor
+ GenomicRanges        * 1.48.0   2022-04-26 [2] Bioconductor
+ HDF5Array              1.24.1   2022-06-02 [2] Bioconductor
+ here                 * 1.0.1    2020-12-13 [1] CRAN (R 4.2.0)
+ IRanges              * 2.30.0   2022-04-26 [2] Bioconductor
+ lattice                0.20-45  2021-09-22 [3] CRAN (R 4.2.0)
+ limma                * 3.52.1   2022-05-15 [2] Bioconductor
+ locfit                 1.5-9.5  2022-03-03 [2] CRAN (R 4.2.0)
+ magick                 2.7.3    2021-08-18 [2] CRAN (R 4.2.0)
+ magrittr               2.0.3    2022-03-30 [2] CRAN (R 4.2.0)
+ Matrix                 1.4-1    2022-03-23 [3] CRAN (R 4.2.0)
+ MatrixGenerics       * 1.8.0    2022-04-26 [2] Bioconductor
+ matrixStats          * 0.62.0   2022-04-19 [2] CRAN (R 4.2.0)
+ R.methodsS3            1.8.2    2022-06-13 [2] CRAN (R 4.2.0)
+ R.oo                   1.25.0   2022-06-12 [2] CRAN (R 4.2.0)
+ R.utils                2.11.0   2021-09-26 [2] CRAN (R 4.2.0)
+ Rcpp                   1.0.8.3  2022-03-17 [2] CRAN (R 4.2.0)
+ RCurl                  1.98-1.7 2022-06-09 [2] CRAN (R 4.2.0)
+ rhdf5                  2.40.0   2022-04-26 [2] Bioconductor
+ rhdf5filters           1.8.0    2022-04-26 [2] Bioconductor
+ Rhdf5lib               1.18.2   2022-05-15 [2] Bioconductor
+ rjson                  0.2.21   2022-01-09 [2] CRAN (R 4.2.0)
+ rprojroot              2.0.3    2022-04-02 [2] CRAN (R 4.2.0)
+ S4Vectors            * 0.34.0   2022-04-26 [2] Bioconductor
+ scuttle                1.6.2    2022-05-15 [2] Bioconductor
+ sessioninfo          * 1.2.2    2021-12-06 [2] CRAN (R 4.2.0)
+ SingleCellExperiment * 1.18.0   2022-04-26 [2] Bioconductor
+ sparseMatrixStats      1.8.0    2022-04-26 [2] Bioconductor
+ SpatialExperiment    * 1.6.0    2022-04-26 [2] Bioconductor
+ SummarizedExperiment * 1.26.1   2022-04-29 [2] Bioconductor
+ XVector                0.36.0   2022-04-26 [2] Bioconductor
+ zlibbioc               1.42.0   2022-04-26 [2] Bioconductor
+
+ [1] /users/aspangle/R/devel
+ [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/site-library
+ [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.6.14/envs/svnR-devel/R/devel/lib64/R/library
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Tue Jun 14 10:08:22 EDT 2022
