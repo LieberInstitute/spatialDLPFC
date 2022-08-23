@@ -110,24 +110,6 @@ sce <- sce[, unlist(cs_keep)]
 #   Train model and deconvolve cell types
 ################################################################################
 
-#   Train model
-mod_ls <- trainNMF(
-    x = sce,
-    y = spe,
-    groups = as.character(sce[[cell_type_var]]),
-    mgs = mgs_df,
-    weight_id = "mean.AUC",
-    group_id = "cluster",
-    gene_id = "gene"
-)
-
-# Run deconvolution
-res <- runDeconvolution(
-    x = spe,
-    mod = mod_ls[["mod"]],
-    ref = mod_ls[["topic"]]
-)
-
 res <- SPOTlight(
     x = sce,
     y = spe,
@@ -138,6 +120,8 @@ res <- SPOTlight(
     group_id = "cluster",
     gene_id = "gene"
 )
+
+saveRDS(res, file.path(processed_dir, 'results.rds'))
 
 ################################################################################
 #   Visualization
@@ -230,5 +214,9 @@ for (sample_id in unique(spe$sample_id)) {
     )
     dev.off()
 }
+
+#   Save final objects
+saveRDS(sce, file.path(processed_dir, 'sce.rds'))
+saveRDS(spe, file.path(processed_dir, 'spe.rds'))
 
 session_info()
