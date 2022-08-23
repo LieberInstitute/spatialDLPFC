@@ -203,27 +203,31 @@ for (sample_id in unique(spe$sample_id)) {
     
     #   Scatterpie
     pdf(file.path(plot_dir, paste0('scatterpie_', sample_id, '.pdf')))
-    plotSpatialScatterpie(
-        x = temp_spe,
-        y = temp_mat,
-        cell_types = colnames(temp_mat),
-        img = FALSE,
-        scatterpie_alpha = 1,
-        pie_scale = 0.4
-    ) +
-        scale_fill_manual(
-            values = pal,
-            breaks = names(pal)
-        )
+    print(
+        plotSpatialScatterpie(
+            x = temp_spe,
+            y = temp_mat,
+            cell_types = colnames(temp_mat),
+            img = FALSE,
+            scatterpie_alpha = 1,
+            pie_scale = 0.4
+        ) +
+            scale_fill_manual(
+                values = pal,
+                breaks = names(pal)
+            )
+    )
     dev.off()
     
     #   Residuals
     pdf(file.path(plot_dir, paste0('residuals_', sample_id, '.pdf')))
-    ggcells(temp_spe, aes(x, y, color = res_ss)) +
-        geom_point() +
-        scale_color_viridis_c() +
-        coord_fixed() +
-        theme_bw()
+    print(
+        ggcells(temp_spe, aes(x, y, color = res_ss)) +
+            geom_point() +
+            scale_color_viridis_c() +
+            coord_fixed() +
+            theme_bw()
+    )
     dev.off()
 }
 
