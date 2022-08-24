@@ -23,6 +23,10 @@ marker_path <- here(
     "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
 )
 
+marker_stats_path = here(
+    "processed-data", "spot_deconvo", "01-tangram", "marker_stats.rds"
+)
+
 plot_dir = here(
     "plots", "spot_deconvo", "04-spotlight", "IF"
 )
@@ -67,35 +71,56 @@ plot(dec$mean, dec$total, xlab = "Mean log-expression", ylab = "Variance")
 curve(metadata(dec)$trend(x), col = "blue", add = TRUE)
 dev.off()
 
-# Get the top 3000 genes.
+#   Get the top 3000 highly variable genes.
 hvg <- getTopHVGs(dec, n = 3000)
-
-#-------------------------------------------------------------------------------
-#   TODO: import Louise's markers instead. Well, can we assign each of our
-#   marker genes a score in a way compatible with SPOTlight?
-#-------------------------------------------------------------------------------
 
 colLabels(sce) <- colData(sce)[[cell_type_var]]
 
-# Get vector indicating which genes are neither ribosomal or mitochondrial
-#   The regular expression in the tutorial appears to be bad, and was fixed here
-genes <- !grepl(pattern = "^(Rp[ls]|MT-)", x = rowData(sce)[[symbol_var]]) # "^Rp[l|s]|Mt"
+#   Read in markers found by Louise's method
+markers = readLines(marker_path)
+marker_stats = readRDS(marker_stats_path)
+stopifnot(all(markers %in% rownames(sce)))
 
-# Compute marker genes
+#   Filter out any mitochondrial/ribosomal genes
+genes = !grepl(
+    pattern = "^(RP[LS]|MT-)",
+    x = rowData(sce)[[symbol_var]]
+) & (rownames(sce) %in% markers)
+print(
+    paste(
+        length(which(genes)),
+        'markers used after filtering out mitochondrial/ribosomal genes.'
+    )
+)
+
+#   Score markers (determine weights) and form a data frame SPOTlight can use as
+#   input
 mgs <- scoreMarkers(sce, subset.row = genes)
 
 mgs_fil <- lapply(names(mgs), function(i) {
     x <- mgs[[i]]
-    # Filter and keep relevant marker genes, those with AUC > 0.8
-    x <- x[x$mean.AUC > 0.8, ]
     # Sort the genes from highest to lowest weight
     x <- x[order(x$mean.AUC, decreasing = TRUE), ]
     # Add gene and cluster id to the dataframe
     x$gene <- rownames(x)
     x$cluster <- i
+    
+    #   Only take genes that have already been determined to be markers for this
+    #   cell type
+    x = x[
+        marker_stats$cellType.target[
+            match(rownames(x), marker_stats$gene)
+        ] == i,
+    ]
+    
     data.frame(x)
 })
 mgs_df <- do.call(rbind, mgs_fil)
+
+#   It's technically possible for the above 'lapply' to generate data frames
+#   with non-unique rownames, leading to R automatically changing some rownames
+#   and thus illegitimate gene names. Verify this most likely didn't happen
+stopifnot(all(rownames(mgs_df) %in% rownames(sce)))
 
 #-------------------------------------------------------------------------------
 
