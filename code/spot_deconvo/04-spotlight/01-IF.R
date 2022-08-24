@@ -42,6 +42,7 @@ symbol_var = 'gene_name'
 
 #   Column names in colData(spe)
 sample_var = 'sample_id'
+cell_count_var = 'cell_count'
 
 #   Used for downsampling single-cell object prior to training
 n_cells_per_type <- 100
@@ -252,8 +253,9 @@ saveRDS(spe, file.path(processed_dir, 'spe.rds'))
 ################################################################################
 
 #   Create a data frame with cell counts for all samples, and add the 'key'
-#   column
-clusters = data.frame(res$mat)
+#   column. Note here we scale cell-type proportions by total cells per spot,
+#   the latter of which is computed prior to running SPOTlight
+clusters = data.frame(res$mat * spe[[cell_count_var]])
 clusters$key = spe$key
 clusters = clusters[, c('key', as.character(unique(sce[[cell_type_var]])))]
 
