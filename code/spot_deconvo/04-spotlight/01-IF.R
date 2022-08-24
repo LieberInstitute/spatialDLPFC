@@ -22,7 +22,6 @@ spe_in <- here(
 marker_path <- here(
     "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
 )
-
 marker_stats_path = here(
     "processed-data", "spot_deconvo", "01-tangram", "marker_stats.rds"
 )
@@ -40,6 +39,9 @@ cell_type_var = 'cellType_broad_hc'
 #   Column names in rowData(sce)
 ensembl_id_var = 'gene_id'
 symbol_var = 'gene_name'
+
+#   Column names in colData(spe)
+sample_var = 'sample_id'
 
 #   Used for downsampling single-cell object prior to training
 n_cells_per_type <- 100
@@ -205,8 +207,9 @@ spe$x <- xy[, 1]
 spe$y <- xy[, 2]
 
 #   Split spatial-related plots by sample
-for (sample_id in unique(spe$sample_id)) {
-    this_sample_indices = which(spe$sample_id == sample_id)
+for (sample_id in unique(spe[[sample_var]])) {
+    #   Subset objects to this sample
+    this_sample_indices = which(spe[[sample_var]] == sample_id)
     temp_spe = spe[, this_sample_indices]
     temp_mat = mat[this_sample_indices,]
     
@@ -243,5 +246,32 @@ for (sample_id in unique(spe$sample_id)) {
 #   Save final objects
 saveRDS(sce, file.path(processed_dir, 'sce.rds'))
 saveRDS(spe, file.path(processed_dir, 'spe.rds'))
+
+################################################################################
+#   Export 'clusters.csv' file of cell counts
+################################################################################
+
+#   Create a data frame with cell counts for all samples, and add the 'key'
+#   column
+clusters = data.frame(res$mat)
+clusters$key = spe$key
+clusters = clusters[, c('key', as.character(unique(sce[[cell_type_var]])))]
+
+#   Write individual 'clusters.csv' files for each sample
+for (sample_id in unique(spe[[sample_var]])) {
+    clusters_small = clusters[spe[[sample_var]] == sample_id, ]
+    
+    #   Make sure processed directory exists for this sample
+    dir.create(
+        file.path(processed_dir, sample_id), recursive = TRUE,
+        showWarnings = FALSE
+    )
+    
+    write.csv(
+        clusters_small,
+        file.path(processed_dir, sample_id, 'clusters.csv'),
+        row.names = FALSE, quote = FALSE
+    )
+}
 
 session_info()
