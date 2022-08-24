@@ -36,6 +36,9 @@ spe_nonIF_out <- here(
 marker_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
 )
+marker_object_out <- here(
+    "processed-data", "spot_deconvo", "01-tangram", "marker_stats.rds"
+)
 sample_IF_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "IF", "sample_ids.txt"
 )
@@ -94,8 +97,8 @@ reducedDims(spe_nonIF)$spatial <- spatialCoords(spe_nonIF)
 
 #   Drop rare cell types for single-cell data
 print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
-table(sce$cellType_broad_hc == "Endo.Mural")
-sce <- sce[, !(sce$cellType_broad_hc == "Endo.Mural")]
+table(sce$cellType_broad_hc == "EndoMural")
+sce <- sce[, !(sce$cellType_broad_hc == "EndoMural")]
 
 #   Use Ensembl gene IDs for rownames (not gene symbol)
 rownames(sce) <- rowData(sce)$gene_id
@@ -145,8 +148,9 @@ print(
     )
 )
 
-#   Write list of markers
+#   Write list of markers and the full object
 writeLines(markers_scratch, con = marker_out)
+saveRDS(marker_stats, marker_object_out)
 
 #   Write sample names to text files
 writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
