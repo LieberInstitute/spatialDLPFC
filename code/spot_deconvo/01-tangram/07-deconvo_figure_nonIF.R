@@ -86,8 +86,8 @@ for (deconvo_tool in deconvo_tools) {
     #   Infer the cell types used
     cell_types <- colnames(clusters)[
         !(colnames(clusters) %in% c(
-            "key", "count", "barcode", spatial_coords_names
-        )
+            "key", "sample", "count", "barcode", spatial_coords_names
+            )
         )
     ]
     
