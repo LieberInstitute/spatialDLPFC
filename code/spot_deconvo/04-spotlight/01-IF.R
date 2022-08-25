@@ -25,6 +25,9 @@ marker_path <- here(
 marker_stats_path = here(
     "processed-data", "spot_deconvo", "01-tangram", "marker_stats.rds"
 )
+cell_counts_path = here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
+)
 
 plot_dir = here(
     "plots", "spot_deconvo", "04-spotlight", "IF"
@@ -42,7 +45,6 @@ symbol_var = 'gene_name'
 
 #   Column names in colData(spe)
 sample_var = 'sample_id'
-cell_count_var = 'cell_count'
 
 #   Used for downsampling single-cell object prior to training
 n_cells_per_type <- 100
@@ -65,6 +67,22 @@ rownames(sce) = rowData(sce)[[ensembl_id_var]]
 print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
 table(sce[[cell_type_var]] == "EndoMural")
 sce <- sce[, sce[[cell_type_var]] != "EndoMural"]
+
+#   Read in cell counts from cellpose
+cell_counts_list = list()
+for (sample_id in unique(spe[[sample_var]])) {
+    this_path = sub('\\{\\}', sample_id, cell_counts_path)
+    
+    cell_counts_list[[sample_id]] = read.csv(this_path)
+}
+
+cell_counts = do.call(rbind, cell_counts_list)
+
+#   Ensure spots are in the same order
+cell_counts = cell_counts[match(spe$key, cell_counts$key),]
+stopifnot(all(spe$key == cell_counts$key))
+
+spe$cell_counts = cell_counts['n_cells']
 
 dec <- modelGeneVar(sce)
 
@@ -255,7 +273,7 @@ saveRDS(spe, file.path(processed_dir, 'spe.rds'))
 #   Create a data frame with cell counts for all samples, and add the 'key'
 #   column. Note here we scale cell-type proportions by total cells per spot,
 #   the latter of which is computed prior to running SPOTlight
-clusters = data.frame(res$mat * spe[[cell_count_var]])
+clusters = data.frame(res$mat * spe$cell_counts)
 clusters$key = spe$key
 clusters = clusters[, c('key', as.character(unique(sce[[cell_type_var]])))]
 
