@@ -21,10 +21,10 @@ spe_in <- here(
 )
 
 marker_path <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
+    "processed-data", "spot_deconvo", "markers.txt"
 )
 marker_stats_path = here(
-    "processed-data", "spot_deconvo", "01-tangram", "marker_stats.rds"
+    "processed-data", "spot_deconvo", "marker_stats.rds"
 )
 
 plot_dir = here(
@@ -38,7 +38,6 @@ processed_dir = here(
 cell_type_var = 'cellType_broad_hc'
 
 #   Column names in rowData(sce)
-ensembl_id_var = 'gene_id'
 symbol_var = 'gene_name'
 
 #   Column names in colData(spe)
@@ -59,13 +58,6 @@ dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 load(sce_in, verbose = TRUE)
 load(spe_in, verbose = TRUE)
 gc()
-
-rownames(sce) = rowData(sce)[[ensembl_id_var]]
-
-#   Drop rare cell types for single-cell data
-print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
-table(sce[[cell_type_var]] == "EndoMural")
-sce <- sce[, sce[[cell_type_var]] != "EndoMural"]
 
 dec <- modelGeneVar(sce)
 

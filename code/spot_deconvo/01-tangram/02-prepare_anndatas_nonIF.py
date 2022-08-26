@@ -34,7 +34,9 @@ sc_path_in = pyhere.here(os.path.dirname(processed_dir), 'sce.h5ad')
 sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
 sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
-marker_path = pyhere.here(os.path.dirname(processed_dir), 'markers.txt')
+marker_path = pyhere.here(
+    os.path.dirname(os.path.dirname(processed_dir)), 'markers.txt'
+)
 sample_info_path = pyhere.here(
     "processed-data", "spot_deconvo", "nonIF_ID_table.csv"
 )

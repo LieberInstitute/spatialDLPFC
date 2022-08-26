@@ -22,10 +22,10 @@ spe_in <- here(
 )
 
 marker_path <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
+    "processed-data", "spot_deconvo", "markers.txt"
 )
 marker_stats_path = here(
-    "processed-data", "spot_deconvo", "01-tangram", "marker_stats.rds"
+    "processed-data", "spot_deconvo", "marker_stats.rds"
 )
 cell_counts_path = here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
