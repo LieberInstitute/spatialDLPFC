@@ -76,7 +76,7 @@ cell_counts = do.call(rbind, cell_counts_list)
 cell_counts = cell_counts[match(spe$key, cell_counts$key),]
 stopifnot(all(spe$key == cell_counts$key))
 
-spe$cell_counts = cell_counts['n_cells']
+spe$cell_counts = cell_counts$n_cells
 
 dec <- modelGeneVar(sce)
 
