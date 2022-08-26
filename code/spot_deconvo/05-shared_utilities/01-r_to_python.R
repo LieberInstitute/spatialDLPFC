@@ -1,18 +1,17 @@
 #   Convert IF SpatialExperiment, non-IF SpatialExperiment, and snRNA-seq
-#   SingleCellExperiment to AnnDatas. Also, find marker genes that will be
-#   shared for both the IF and non-IF analyses.
+#   SingleCellExperiment to AnnDatas. Save a copy of the modified SCE as an R
+#   object as well. This is a processing step shared by, and prior to, the
+#   different deconvolution softwares (tangram, cell2location, SPOTlight).
+#   Finally, run getMeanRatio2 to rank genes as markers, and save the resulting
+#   object.
 
 suppressPackageStartupMessages(library("basilisk"))
 suppressPackageStartupMessages(library("SingleCellExperiment"))
 suppressPackageStartupMessages(library("SpatialExperiment"))
 suppressPackageStartupMessages(library("DeconvoBuddies"))
 suppressPackageStartupMessages(library("zellkonverter"))
-suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
-
-#   Number of marker genes to use per cell type
-n_markers_per_type <- 25
 
 #  Paths
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
@@ -27,23 +26,23 @@ spe_nonIF_in <- here(
 sce_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "sce.h5ad"
 )
+sce_r_out <- here(
+    "processed-data", "spot_deconvo", "sce.rds"
+)
 spe_IF_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "IF", "spe.h5ad"
 )
 spe_nonIF_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "nonIF", "spe.h5ad"
 )
-marker_out <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "markers.txt"
-)
-marker_object_out <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "marker_stats.rds"
-)
 sample_IF_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "IF", "sample_ids.txt"
 )
 sample_nonIF_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "nonIF", "sample_ids.txt"
+)
+marker_object_out <- here(
+    "processed-data", "spot_deconvo", "marker_stats.rds"
 )
 
 #  Make sure output directories exist
@@ -60,13 +59,13 @@ write_anndata <- function(sce, out_path) {
             fun = function(sce, filename) {
                 library("zellkonverter")
                 library("reticulate")
-
+                
                 # Convert SCE to AnnData:
                 adata <- SCE2AnnData(sce)
-
+                
                 #  Write AnnData object to disk
                 adata$write(filename = filename)
-
+                
                 return()
             },
             env = zellkonverterAnnDataEnv(),
@@ -77,8 +76,7 @@ write_anndata <- function(sce, out_path) {
 }
 
 ###############################################################################
-#   Convert snRNA-seq and spatial R objects to AnnData python objects, as a
-#   preprocessing step to running tangram
+#   Convert snRNA-seq and spatial R objects to AnnData python objects
 ###############################################################################
 
 #   Load objects
@@ -103,57 +101,25 @@ sce <- sce[, !(sce$cellType_broad_hc == "EndoMural")]
 #   Use Ensembl gene IDs for rownames (not gene symbol)
 rownames(sce) <- rowData(sce)$gene_id
 
+#   Save a copy of the filtered + slightly modified sce as an R object, and
+#   convert all objects to Anndatas
+saveRDS(sce, sce_r_out)
+
 print('Converting all 3 objects to AnnDatas...')
 write_anndata(sce, sce_out)
 write_anndata(spe_IF, spe_IF_out)
 write_anndata(spe_nonIF, spe_nonIF_out)
 gc()
 
-###############################################################################
-#  Find marker genes
-###############################################################################
+#   Write sample names to text files
+writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
+writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
 
-print("Determining and writing markers...")
+print('Running getMeanRatio2 to rank genes as markers...')
 marker_stats <- get_mean_ratio2(
     sce,
     cellType_col = "cellType_broad_hc", assay_name = "logcounts"
 )
-
-#   Take top N marker genes for each (non-rare) cell type
-marker_stats <- marker_stats %>%
-    filter(rank_ratio <= n_markers_per_type)
-
-markers_scratch <- marker_stats$gene
-
-#   It's technically possible to find a single gene that is used as a "marker"
-#   for two different cell types via this method. Verify this is not the case,
-#   because that would indicate the use of bad markers
-stopifnot(
-    length(unique(markers_scratch)) == n_markers_per_type * length(unique(marker_stats$cellType.target))
-)
-
-#   All the marker genes are present in the single-cell data (sanity check), but
-#   one marker is in neither the IF nor non-IF spatial data
-stopifnot(all(markers_scratch %in% rowData(sce)$gene_id))
-
-start_len <- length(markers_scratch)
-markers_scratch <- markers_scratch[
-    (markers_scratch %in% rowData(spe_IF)$gene_id) &
-        (markers_scratch %in% rowData(spe_nonIF)$gene_id)
-]
-print(
-    paste(
-        "Dropped", start_len - length(markers_scratch),
-        "markers, which were not in the spatial data."
-    )
-)
-
-#   Write list of markers and the full object
-writeLines(markers_scratch, con = marker_out)
 saveRDS(marker_stats, marker_object_out)
-
-#   Write sample names to text files
-writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
-writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
 
 session_info()

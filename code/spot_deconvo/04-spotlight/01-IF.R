@@ -14,7 +14,9 @@ library('sessioninfo')
 #   Variable definitions
 ################################################################################
 
-sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
+sce_in <- here(
+    "processed-data", "spot_deconvo", "sce.rds"
+)
 spe_in <- here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
 )
@@ -40,7 +42,6 @@ processed_dir = here(
 cell_type_var = 'cellType_broad_hc'
 
 #   Column names in rowData(sce)
-ensembl_id_var = 'gene_id'
 symbol_var = 'gene_name'
 
 #   Column names in colData(spe)
@@ -57,16 +58,9 @@ dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 
 #   Load objects
-load(sce_in, verbose = TRUE)
+sce = readRDS(sce_in)
 spe <- readRDS(spe_in)
 gc()
-
-rownames(sce) = rowData(sce)[[ensembl_id_var]]
-
-#   Drop rare cell types for single-cell data
-print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
-table(sce[[cell_type_var]] == "EndoMural")
-sce <- sce[, sce[[cell_type_var]] != "EndoMural"]
 
 #   Read in cell counts from cellpose
 cell_counts_list = list()
