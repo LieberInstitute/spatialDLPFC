@@ -1,0 +1,1 @@
+Several processing steps for spot deconvolution (e.g. moving R objects to python, finding marker genes, etc) are shared between methods (`tangram`, `cell2location`, `SPOTlight`) or involve comparison of methods. This directory contains code for such processing steps.
