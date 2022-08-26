@@ -105,10 +105,10 @@ rownames(sce) <- rowData(sce)$gene_id
 #   convert all objects to Anndatas
 saveRDS(sce, sce_r_out)
 
-# print('Converting all 3 objects to AnnDatas...')
-# write_anndata(sce, sce_out)
-# write_anndata(spe_IF, spe_IF_out)
-# write_anndata(spe_nonIF, spe_nonIF_out)
+print('Converting all 3 objects to AnnDatas...')
+write_anndata(sce, sce_out)
+write_anndata(spe_IF, spe_IF_out)
+write_anndata(spe_nonIF, spe_nonIF_out)
 gc()
 
 #   Write sample names to text files
