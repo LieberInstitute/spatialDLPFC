@@ -70,7 +70,7 @@ write_markers = function(n_markers, out_path) {
     #   "marker" for two different cell types via this method. Verify this is
     #   not the case, because that would indicate the use of bad markers
     stopifnot(
-        length(unique(markers_scratch)) == n_markers_per_type * length(unique(marker_stats_temp$cellType.target))
+        length(unique(markers_scratch)) == n_markers * length(unique(marker_stats_temp$cellType.target))
     )
     
     #   All the marker genes are present in the single-cell data (sanity check),
@@ -134,7 +134,7 @@ walk(
     levels(marker_stats$cellType.target),
     function(ct){
         #   First plot the top 5 markers
-        plot_markers(sce, marker_stats, 5, "top5_marker_genes")
+        plot_markers(sce, marker_stats, 5, "marker_genes_1-5")
         
         #   Next, plot worst 5 C2L markers: those with ranks in
         #   [n_markers_per_type_c2l - 4, n_markers_per_type_c2l]
@@ -145,9 +145,12 @@ walk(
         )
         marker_stats_temp = marker_stats %>%
             filter(rank_ratio <= n_markers_per_type_c2l) %>%
-            mutate(rank_ratio, ~ 1 + n_markers_per_type_c2l - rank_ratio)
+            mutate(
+                rank_ratio, 
+                rank_ratio = 1 + n_markers_per_type_c2l - rank_ratio
+            )
         plot_markers(
-            sce, marker_stats_temp,
+            sce, marker_stats_temp, 5,
             paste0("marker_genes_", rank_range)
         )
         
@@ -159,9 +162,12 @@ walk(
         )
         marker_stats_temp = marker_stats %>%
             filter(rank_ratio <= n_markers_per_type) %>%
-            mutate(rank_ratio, ~ 1 + n_markers_per_type - rank_ratio)
+            mutate(
+                rank_ratio, 
+                rank_ratio = 1 + n_markers_per_type - rank_ratio
+            )
         plot_markers(
-            sce, marker_stats_temp,
+            sce, marker_stats_temp, 5,
             paste0("marker_genes_", rank_range)
         )
     }
