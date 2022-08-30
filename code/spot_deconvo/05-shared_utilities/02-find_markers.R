@@ -32,7 +32,7 @@ marker_out <- here(
     "processed-data", "spot_deconvo", "markers.txt"
 )
 marker_c2l_out <- here(
-    "processed-data", "spot_deconvo", "markers.txt"
+    "processed-data", "spot_deconvo", "markers_C2L.txt"
 )
 
 plot_dir <- here(
@@ -93,7 +93,7 @@ write_markers = function(n_markers, out_path) {
     writeLines(markers_scratch, con = out_path)
 }
 
-plot_markers = function(sce, marker_stats, n_genes, plot_name) {
+plot_markers = function(sce, marker_stats, n_genes, plot_name, ct) {
     p <- plot_marker_express(
         sce,
         marker_stats,
@@ -131,10 +131,10 @@ write_markers(n_markers_per_type_c2l, marker_c2l_out)
 #   the best 5 markers, the worst 5 markers used for C2L, and the worst 5
 #   markers used for tangram/SPOTlight
 walk(
-    levels(marker_stats$cellType.target),
+    unique(marker_stats$cellType.target),
     function(ct){
         #   First plot the top 5 markers
-        plot_markers(sce, marker_stats, 5, "marker_genes_1-5")
+        plot_markers(sce, marker_stats, 5, "marker_genes_1-5", ct)
         
         #   Next, plot worst 5 C2L markers: those with ranks in
         #   [n_markers_per_type_c2l - 4, n_markers_per_type_c2l]
@@ -151,7 +151,7 @@ walk(
             )
         plot_markers(
             sce, marker_stats_temp, 5,
-            paste0("marker_genes_", rank_range)
+            paste0("marker_genes_", rank_range), ct
         )
         
         #   Finally, plot worst 5 non-C2L markers
@@ -168,7 +168,7 @@ walk(
             )
         plot_markers(
             sce, marker_stats_temp, 5,
-            paste0("marker_genes_", rank_range)
+            paste0("marker_genes_", rank_range), ct
         )
     }
 )
