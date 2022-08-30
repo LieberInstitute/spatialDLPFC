@@ -36,8 +36,9 @@ plot_dir = pyhere.here(
 sp_path = os.path.join(processed_dir, 'adata_vis_orig.h5ad')
 sc_path = os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 
-#   Naming conventions used for different columns in the spatial AnnData
-cell_type_var = 'cellType_broad_hc'    # in single-cell only
+#   Naming conventions used for different columns in the single-cell AnnData
+cell_type_var = 'cellType_broad_hc'
+batch_key = 'BrNum'
 
 plot_file_type = 'pdf'
 
@@ -47,6 +48,8 @@ detection_alpha = 20
 #   Number of epochs used to train each portion of the model
 epochs_signature = 400 # default: 250
 epochs_spatial = 30000
+
+
 
 ################################################################################
 #   Function definitions
@@ -108,7 +111,7 @@ adata_ref = sc.read_h5ad(sc_path)
 #   was changed, given the info here: https://github.com/BayraktarLab/cell2location/issues/145#issuecomment-1107410480
 RegressionModel.setup_anndata(
     adata = adata_ref,
-    batch_key = 'subject',
+    batch_key = batch_key,
     labels_key = cell_type_var
 )
 

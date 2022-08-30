@@ -35,7 +35,7 @@ processed_dir = pyhere.here(
     "processed-data", "spot_deconvo", "03-cell2location", "IF"
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo" "03-cell2location", "IF"
+    "plots", "spot_deconvo", "03-cell2location", "IF"
 )
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(processed_dir).mkdir(parents=True, exist_ok=True)
@@ -48,7 +48,7 @@ spaceranger_dir = pyhere.here(
 )
 
 marker_path = pyhere.here(
-    "processed-data", "spot_deconvo", "markers.txt"
+    "processed-data", "spot_deconvo", "markers_C2L.txt"
 )
 
 #   Naming conventions used for different columns in the spatial AnnData
