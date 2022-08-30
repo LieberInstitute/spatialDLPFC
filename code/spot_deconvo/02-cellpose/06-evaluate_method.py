@@ -25,16 +25,20 @@ cell_types = {
 
 #   Mean fluorescence below this value will be considered an indication of an 
 #   absence of the given cell type
-noise_cutoff = 3
+noise_cutoff_global = {
+    "neun": 3,
+    "olig2": 3,
+    "tmem119": 3
+}
 
-def classify_cells(df, cell_types, verbose = False):
+def classify_cells(df, cell_types, noise_cutoff, verbose = False):
     weights = {}
     for channel in cell_types.keys():
         if verbose:
-            print(f'Mean for {channel} above cutoff: {np.mean(df[channel][df[channel] > noise_cutoff])}')
+            print(f'Mean for {channel} above cutoff: {np.mean(df[channel][df[channel] > noise_cutoff[channel]])}')
             print(f'Mean for {channel} otherwise: {np.mean(df[channel])}')
         
-        weights[channel] = 1 / np.mean(df[channel][df[channel] > noise_cutoff])
+        weights[channel] = 1 / np.mean(df[channel][df[channel] > noise_cutoff[channel]])
     
     
     #   Weight the intensity of each channel inversely by the average intensity seen
@@ -50,9 +54,9 @@ def classify_cells(df, cell_types, verbose = False):
     #   For now, assume all cells with low fluorescence in all channels are a cell
     #   type not measured by a marker/ image channel
     df.loc[
-        (df['neun'] < noise_cutoff) &
-        (df['olig2'] < noise_cutoff) &
-        (df['tmem119'] < noise_cutoff),
+        (df['neun'] < noise_cutoff['neun']) &
+        (df['olig2'] < noise_cutoff['olig2']) &
+        (df['tmem119'] < noise_cutoff['tmem119']),
         'cell_type'
     ] = 'other'
     
@@ -62,15 +66,25 @@ def classify_cells(df, cell_types, verbose = False):
 df = pd.read_csv(df_path)
 df.rename({'Unnamed: 0': 'id'}, axis = 1, inplace = True)
 df.index = df['id']
-_ = classify_cells(df, cell_types, True)
+_ = classify_cells(df, cell_types, noise_cutoff_global, verbose = True)
 
 #   Read in manual labels and subset list of cells to the ones labelled
 manual_labels = pd.read_csv(manual_label_path)
 manual_labels.index = manual_labels['id']
+manual_labels.loc[manual_labels['value'] == 'microglia', 'value'] = 'micro'
 df = df.loc[manual_labels['id']]
 
 #   Evaluate classification accuracy
 assert set(df['cell_type']) == set(manual_labels['value'])
 
-accuracy = 100 * np.count_nonzero(df['cell_type'] == manual_labels['value']) / df.shape[0]
-print(f'Classification accuracy: {accuracy}%.')
+accuracy = round(
+    100 * np.count_nonzero(df['cell_type'] == manual_labels['value']) / df.shape[0],
+    2
+)
+print(f'Classification accuracy: {accuracy}%.') # 71.05% using a global 'noise_cutoff' = 3
+
+################################################################################
+#   Use channel-specific cutoffs, and optimize each to maximize classification
+#   accuracy
+################################################################################
+
