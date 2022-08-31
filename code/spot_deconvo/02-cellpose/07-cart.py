@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import copy
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -33,7 +34,8 @@ cell_types = {
 
 random_seed = 0
 min_leaf = 10
-max_depth = 3
+max_depth = 4
+criterion = 'gini' #'entropy'
 
 #   Read in list of cells and format
 df = pd.read_csv(df_path)
@@ -58,12 +60,13 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 #   Instantiate and fit the CART
 model = tree.DecisionTreeClassifier(
-    criterion = 'gini', 
+    criterion = criterion, 
     splitter = 'best', 
     max_depth = max_depth,
     class_weight = None,
     min_samples_leaf = min_leaf, 
-    random_state = random_seed
+    random_state = random_seed,
+    ccp_alpha = 0.01
 )
 
 clf = model.fit(x_train, y_train)
@@ -80,8 +83,36 @@ acc_test = round(100 * model.score(x_test, y_test), 1)
 print(f'Training accuracy: {acc_train}%.')
 print(f'Test accuracy: {acc_test}%.')
 
-#   Inference on training and test data
+#   Print a more thorough report about training and test scores
 labels_train = model.predict(x_train)
 labels_test = model.predict(x_test)
 print(classification_report(y_test, labels_test))
 print(classification_report(y_train, labels_train))
+
+#   Remove splits that don't differentiate classes. Credit to:
+#   https://github.com/scikit-learn/scikit-learn/issues/10810#issuecomment-409028102
+def prune(tree):
+    tree = copy.deepcopy(tree)
+    dat = tree.tree_
+    nodes = range(0, dat.node_count)
+    ls = dat.children_left
+    rs = dat.children_right
+    classes = [[list(e).index(max(e)) for e in v] for v in dat.value]
+    #
+    leaves = [(ls[i] == rs[i]) for i in nodes]
+    #
+    LEAF = -1
+    for i in reversed(nodes):
+        if leaves[i]:
+            continue
+        if leaves[ls[i]] and leaves[rs[i]] and classes[ls[i]] == classes[rs[i]]:
+            ls[i] = rs[i] = LEAF
+            leaves[i] = True
+    return tree
+
+prunedTree = prune(model)
+tree.plot_tree(
+    prunedTree, class_names = clf.classes_, feature_names = x.columns, filled = True,
+    rounded = True
+)
+plt.savefig(tree_path)
