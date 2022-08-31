@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import copy
+import pickle
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -24,6 +25,10 @@ manual_label_path = pyhere.here(
 
 tree_path = pyhere.here(
     'plots', 'spot_deconvo', '02-cellpose', sample_name + '_decision_tree.pdf'
+)
+
+model_out_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'decision_tree.pkl'
 )
 
 cell_types = {
@@ -89,7 +94,7 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, test_size = 0.2, random_state = random_seed, stratify = y
 )
 
-#   Instantiate and fit the CART
+#   Instantiate, fit, and save the CART
 model = tree.DecisionTreeClassifier(
     criterion = criterion, 
     splitter = 'best', 
@@ -100,7 +105,10 @@ model = tree.DecisionTreeClassifier(
     ccp_alpha = 0.02
 )
 
-clf = model.fit(x_train, y_train)
+model.fit(x_train, y_train)
+
+with open(model_out_path, 'wb') as f:
+    pickle.dump(model, f)
 
 #   Compute training and test accuracy
 acc_train = round(100 * model.score(x_train, y_train), 1)
@@ -115,9 +123,9 @@ print(classification_report(y_test, labels_test))
 print(classification_report(y_train, labels_train))
 
 #   Plot the (simplified) decision tree visually (save to PDF)
-prunedTree = prune(model)
+model = prune(model)
 tree.plot_tree(
-    prunedTree, class_names = clf.classes_, feature_names = x.columns,
+    model, class_names = model.classes_, feature_names = x.columns,
     filled = True, rounded = True
 )
 plt.savefig(tree_path)
