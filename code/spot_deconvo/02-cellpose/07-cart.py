@@ -24,7 +24,7 @@ manual_label_path = pyhere.here(
 )
 
 tree_path = pyhere.here(
-    'plots', 'spot_deconvo', '02-cellpose', sample_name + '_decision_tree.pdf'
+    'plots', 'spot_deconvo', '02-cellpose', 'cart', sample_name + '_decision_tree.pdf'
 )
 
 model_out_path = pyhere.here(
