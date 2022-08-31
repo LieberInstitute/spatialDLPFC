@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
-#$ -N "classify_nuclei"
-#$ -o ../../../processed-data/spot_deconvo/02-cellpose/08-classify_nuclei_$TASK_ID.log
-#$ -e ../../../processed-data/spot_deconvo/02-cellpose/08-classify_nuclei_$TASK_ID.log
+#$ -N "classify_nuclei_cart"
+#$ -o ../../../processed-data/spot_deconvo/02-cellpose/08-classify_nuclei_cart_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/02-cellpose/08-classify_nuclei_cart_$TASK_ID.log
 #$ -l mf=20G,h_vmem=20G
 #$ -t 1-4
 #$ -tc 4
@@ -17,7 +17,7 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 module load cellpose/2.0
-python 08-classify_nuclei.py
+python 08-classify_nuclei_cart.py
 
 echo "**** Job ends ****"
 date
