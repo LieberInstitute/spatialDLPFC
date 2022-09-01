@@ -179,7 +179,8 @@ p = marker_stats %>%
     mutate(
         Marker = case_when(
             rank_ratio <= n_markers_per_type ~ paste0('Marker top', n_markers_per_type),
-            rank_ratio <= n_markers_per_type_c2l ~ paste0('Marker top', n_markers_per_type_c2l)
+            rank_ratio <= n_markers_per_type_c2l ~ paste0('Marker top', n_markers_per_type_c2l),
+            TRUE ~ 'Not marker'
         )
     ) %>%
     ggplot(aes(ratio, std.logFC, color = Marker)) +
