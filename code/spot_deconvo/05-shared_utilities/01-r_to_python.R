@@ -12,6 +12,7 @@ suppressPackageStartupMessages(library("DeconvoBuddies"))
 suppressPackageStartupMessages(library("zellkonverter"))
 suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
+suppressPackageStartupMessages(library("tidyverse"))
 
 #  Paths
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
@@ -22,6 +23,8 @@ spe_nonIF_in <- here(
     "processed-data", "rdata", "spe", "01_build_spe",
     "spe_filtered_final_with_clusters.Rdata"
 )
+#   Move this somewhere!
+cell_label_path = "/fastscratch/myscratch/neagles/DLPFC_HC_annotation_Sheet1.csv"
 
 sce_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "sce.h5ad"
@@ -87,16 +90,35 @@ spe_nonIF <- spe
 rm(spe)
 gc()
 
+#-------------------------------------------------------------------------------
+#   Add layer-level annotation
+#-------------------------------------------------------------------------------
+
+cell_label = read.csv(cell_label_path)
+stopifnot(sort(unique(sce$cellType_hc)) == sort(cell_label$cellType_hc))
+
+#   Add layer label and drop EndoMural and unclear excitatory cells
+sce$layer_level = cell_label[
+    match(sce$cellType_hc, cell_label$cellType_hc), 'layer_level'
+]
+keep = ! (sce$layer_level %in% c('drop', 'EndoMural'))
+
+#-------------------------------------------------------------------------------
+#   Drop rare cell types
+#-------------------------------------------------------------------------------
+
+#   Drop rare cell types for single-cell data
+keep = !(sce$cellType_broad_hc == "EndoMural")
+
+print("Distribution of cells to drop (FALSE) vs. keep (TRUE):")
+table(keep)
+sce <- sce[, keep]
+
 #   zellkonverter doesn't know how to convert the 'spatialCoords' slot. We'd
 #   ultimately like the spatialCoords in the .obsm['spatial'] slot of the
 #   resulting AnnDatas, which corresponds to reducedDims(spe)$spatial in R
 reducedDims(spe_IF)$spatial <- spatialCoords(spe_IF)
 reducedDims(spe_nonIF)$spatial <- spatialCoords(spe_nonIF)
-
-#   Drop rare cell types for single-cell data
-print("Distribution of cells to keep (FALSE) vs. drop (TRUE):")
-table(sce$cellType_broad_hc == "EndoMural")
-sce <- sce[, !(sce$cellType_broad_hc == "EndoMural")]
 
 #   Use Ensembl gene IDs for rownames (not gene symbol)
 rownames(sce) <- rowData(sce)$gene_id
@@ -115,11 +137,18 @@ gc()
 writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
 writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
 
-print('Running getMeanRatio2 to rank genes as markers...')
+print('Running getMeanRatio2 and findMarkers_1vAll to rank genes as markers...')
 marker_stats <- get_mean_ratio2(
-    sce,
-    cellType_col = "cellType_broad_hc", assay_name = "logcounts"
+    sce, cellType_col = "cellType_broad_hc", assay_name = "logcounts"
 )
+marker_stats_1vall <- findMarkers_1vAll(
+    sce, cellType_col = "cellType_broad_hc", assay_name = "logcounts",
+    mod = "~BrNum"
+)
+marker_stats <- left_join(
+    marker_stats, marker_stats_1vall, by = c("gene", "cellType.target")
+)
+
 saveRDS(marker_stats, marker_object_out)
 
 session_info()
