@@ -113,6 +113,21 @@ plot_markers = function(sce, marker_stats, n_genes, plot_name, ct) {
     )
 }
 
+#   Plot mean-ratio distribution by cell type/ layer
+boxplot_mean_ratio = function(n_markers, plot_name) {
+    p = marker_stats %>%
+        filter(rank_ratio <= n_markers) %>%
+        ggplot(aes(cellType.target, ratio)) +
+        geom_boxplot() +
+        labs(y = "Mean Ratio") +
+        theme_bw()
+    
+    ggsave(
+        p, filename = file.path(plot_dir, paste0(plot_name, ".png")),
+        height = 10, width = 10
+    )
+}
+
 ###############################################################################
 #  Subset and write markers
 ###############################################################################
@@ -193,5 +208,9 @@ ggsave(
     p, filename = file.path(plot_dir, paste0("mean_ratio_vs_1vall.png")),
     height = 10, width = 10
 )
+
+#   Plot mean-ratio distibution by group (cell type or layer label)
+boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot_tangram")
+boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L")
 
 session_info()
