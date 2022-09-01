@@ -173,4 +173,24 @@ walk(
     }
 )
 
+#   Plot mean ratio against log fold-change for all genes, split by target cell
+#   type and colored by whether each gene will be used as a marker
+p = marker_stats %>% 
+    mutate(
+        Marker = case_when(
+            rank_ratio <= n_markers_per_type ~ paste0('Marker top', n_markers_per_type),
+            rank_ratio <= n_markers_per_type_c2l ~ paste0('Marker top', n_markers_per_type_c2l)
+        )
+    ) %>%
+    ggplot(aes(ratio, std.logFC, color = Marker)) +
+    geom_point(size = 0.5, alpha = 0.5) +
+    facet_wrap(~cellType.target, scales = "free_x") +
+    labs(x = "Mean Ratio") +
+    theme_bw()
+
+ggsave(
+    p, filename = file.path(plot_dir, paste0("mean_ratio_vs_1vall.png")),
+    height = 10, width = 10
+)
+
 session_info()
