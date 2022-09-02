@@ -94,10 +94,10 @@ plot_markers = function(
 }
 
 #   Plot mean-ratio distribution by cell type/ layer
-boxplot_mean_ratio = function(n_markers, plot_name, cell_group) {
+boxplot_mean_ratio = function(n_markers, plot_name) {
     p = marker_stats %>%
         filter(rank_ratio <= n_markers) %>%
-        ggplot(aes_string(cell_group, "ratio")) +
+        ggplot(aes(cellType.target, ratio)) +
         geom_boxplot() +
         labs(y = "Mean Ratio") +
         theme_bw()
@@ -185,7 +185,7 @@ p = marker_stats %>%
     ) %>%
     ggplot(aes(ratio, std.logFC, color = Marker)) +
     geom_point(size = 0.5, alpha = 0.5) +
-    facet_wrap(as.formula(paste("~", cell_group)), scales = "free_x") +
+    facet_wrap(~cellType.target, scales = "free_x") +
     labs(x = "Mean Ratio") +
     theme_bw()
 
@@ -195,7 +195,7 @@ ggsave(
 )
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
-boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot_tangram", cell_group)
-boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L", cell_group)
+boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot_tangram")
+boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L")
 
 session_info()
