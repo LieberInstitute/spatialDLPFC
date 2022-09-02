@@ -24,18 +24,22 @@ import json
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
+
 sc_path = pyhere.here(
-    "processed-data", "spot_deconvo", "01-tangram", "sce.h5ad"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "sce_" + cell_group + ".h5ad"
 )
 sp_path = pyhere.here(
-    "processed-data", "spot_deconvo", "01-tangram", "IF", "spe.h5ad"
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF", "spe.h5ad"
 )
 
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "03-cell2location", "IF"
+    "processed-data", "spot_deconvo", "03-cell2location", "IF", cell_group
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo", "03-cell2location", "IF"
+    "plots", "spot_deconvo", "03-cell2location", "IF", cell_group
 )
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(processed_dir).mkdir(parents=True, exist_ok=True)
@@ -48,17 +52,22 @@ spaceranger_dir = pyhere.here(
 )
 
 marker_path = pyhere.here(
-    "processed-data", "spot_deconvo", "markers_C2L.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "markers_C2L_" + cell_group + ".txt"
 )
 
 #   Naming conventions used for different columns in the spatial AnnData
 sample_id_var = 'sample_id'          # in spatial object only
 ensembl_id_var = 'gene_id'           # in both spatial and single-cell objects
 gene_symbol_var = 'gene_name'        # in both spatial and single-cell objects
-cell_type_var = 'cellType_broad_hc'  # in single-cell only
-spatial_coords_names = ['pxl_col_in_fullres', 'pxl_row_in_fullres']
 
-plot_file_type = 'pdf' # 'pdf' is also supported for higher-quality plots
+# in single-cell only
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
+
+spatial_coords_names = ['pxl_col_in_fullres', 'pxl_row_in_fullres']
 
 #   If True, important per-spot cell counts from a 'clusters.csv' file.
 #   Otherwise it is assumed the object already contains cell counts that will be
@@ -179,9 +188,10 @@ if IMPORT_CELL_COUNTS:
 #   Save AnnDatas
 #-------------------------------------------------------------------------------
 
-adata_vis.write_h5ad(
-    os.path.join(processed_dir, 'adata_vis_orig.h5ad')
-)
+if cell_group == 'broad':
+    adata_vis.write_h5ad(
+        os.path.join(os.path.dirname(processed_dir), 'adata_vis_orig.h5ad')
+    )
 
 adata_ref.write_h5ad(
     os.path.join(processed_dir, 'adata_ref_orig.h5ad')

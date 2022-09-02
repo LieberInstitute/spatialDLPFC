@@ -26,19 +26,25 @@ from pathlib import Path
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
+
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "03-cell2location", "IF"
+    "processed-data", "spot_deconvo", "03-cell2location", "IF", cell_group
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo", "03-cell2location", "IF"
+    "plots", "spot_deconvo", "03-cell2location", "IF", cell_group
 )
 
-sp_path = os.path.join(processed_dir, 'adata_vis_orig.h5ad')
+sp_path = os.path.join(os.path.dirname(processed_dir), 'adata_vis_orig.h5ad')
 sc_path = os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 
 #   Naming conventions used for different columns in the single-cell AnnData
-cell_type_var = 'cellType_broad_hc'
 batch_key = 'BrNum'
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
 
 plot_file_type = 'pdf'
 
@@ -48,8 +54,6 @@ detection_alpha = 20
 #   Number of epochs used to train each portion of the model
 epochs_signature = 400 # default: 250
 epochs_spatial = 30000
-
-
 
 ################################################################################
 #   Function definitions
