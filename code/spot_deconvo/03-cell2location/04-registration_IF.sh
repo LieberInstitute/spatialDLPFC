@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "registration_IF"
-#$ -o ../../../processed-data/spot_deconvo/03-cell2location/04-registration_IF.log
-#$ -e ../../../processed-data/spot_deconvo/03-cell2location/04-registration_IF.log
+#$ -o ../../../processed-data/spot_deconvo/03-cell2location/04-registration_IF_broad.log
+#$ -e ../../../processed-data/spot_deconvo/03-cell2location/04-registration_IF_broad.log
 #$ -l caracol,mf=150G,h_vmem=150G
 
 echo "**** Job starts ****"
