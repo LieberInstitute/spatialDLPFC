@@ -14,6 +14,8 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("tidyverse"))
 
+cell_group = "broad" # "broad" or "layer"
+
 #  Paths
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
 spe_IF_in <- here(
@@ -27,10 +29,12 @@ spe_nonIF_in <- here(
 cell_label_path = "/fastscratch/myscratch/neagles/DLPFC_HC_annotation_Sheet1.csv"
 
 sce_out <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "sce.h5ad"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("sce_", cell_group, ".h5ad")
 )
 sce_r_out <- here(
-    "processed-data", "spot_deconvo", "sce.rds"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("sce_", cell_group, ".rds")
 )
 spe_IF_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "IF", "spe.h5ad"
@@ -45,7 +49,8 @@ sample_nonIF_out <- here(
     "processed-data", "spot_deconvo", "01-tangram", "nonIF", "sample_ids.txt"
 )
 marker_object_out <- here(
-    "processed-data", "spot_deconvo", "marker_stats.rds"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("marker_stats_", cell_group, ".rds")
 )
 
 #  Make sure output directories exist
@@ -79,7 +84,7 @@ write_anndata <- function(sce, out_path) {
 }
 
 ###############################################################################
-#   Convert snRNA-seq and spatial R objects to AnnData python objects
+#   Main
 ###############################################################################
 
 #   Load objects
@@ -90,6 +95,8 @@ spe_nonIF <- spe
 rm(spe)
 gc()
 
+print(paste0("Labelling cells at ", cell_group ,"-resolution."))
+
 #-------------------------------------------------------------------------------
 #   Add layer-level annotation
 #-------------------------------------------------------------------------------
@@ -97,22 +104,30 @@ gc()
 cell_label = read.csv(cell_label_path)
 stopifnot(sort(unique(sce$cellType_hc)) == sort(cell_label$cellType_hc))
 
-#   Add layer label and drop EndoMural and unclear excitatory cells
+#   Add layer label
 sce$layer_level = cell_label[
     match(sce$cellType_hc, cell_label$cellType_hc), 'layer_level'
 ]
-keep = ! (sce$layer_level %in% c('drop', 'EndoMural'))
 
 #-------------------------------------------------------------------------------
-#   Drop rare cell types
+#   Drop appropriate cells
 #-------------------------------------------------------------------------------
 
-#   Drop rare cell types for single-cell data
-keep = !(sce$cellType_broad_hc == "EndoMural")
+if (cell_group == "layer") {
+    #   Drop EndoMural and unclear excitatory cells
+    keep = ! (sce$layer_level %in% c('drop', 'EndoMural'))
+} else {
+    #   Drop rare cell types (EndoMural) for single-cell data
+    keep = !(sce$cellType_broad_hc == "EndoMural")
+}
 
 print("Distribution of cells to drop (FALSE) vs. keep (TRUE):")
 table(keep)
 sce <- sce[, keep]
+
+#-------------------------------------------------------------------------------
+#   Convert snRNA-seq and spatial R objects to AnnData python objects
+#-------------------------------------------------------------------------------
 
 #   zellkonverter doesn't know how to convert the 'spatialCoords' slot. We'd
 #   ultimately like the spatialCoords in the .obsm['spatial'] slot of the
@@ -127,15 +142,24 @@ rownames(sce) <- rowData(sce)$gene_id
 #   convert all objects to Anndatas
 saveRDS(sce, sce_r_out)
 
-print('Converting all 3 objects to AnnDatas...')
+print('Converting objects to AnnDatas...')
 write_anndata(sce, sce_out)
-write_anndata(spe_IF, spe_IF_out)
-write_anndata(spe_nonIF, spe_nonIF_out)
+
+#   Spatial objects are the same between broad and layer-level resolutions, and
+#   need only be saved once
+if (cell_group == "broad") {
+    write_anndata(spe_IF, spe_IF_out)
+    write_anndata(spe_nonIF, spe_nonIF_out)
+}
 gc()
 
 #   Write sample names to text files
 writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
 writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
+
+#-------------------------------------------------------------------------------
+#   Rank marker genes
+#-------------------------------------------------------------------------------
 
 print('Running getMeanRatio2 and findMarkers_1vAll to rank genes as markers...')
 marker_stats <- get_mean_ratio2(
