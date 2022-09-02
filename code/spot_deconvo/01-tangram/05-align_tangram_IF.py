@@ -22,6 +22,8 @@ import custom_tg_code as ctg
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
 #-------------------------------------------------------------------------------
 #   Paths
 #-------------------------------------------------------------------------------
@@ -30,7 +32,7 @@ plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "IF")
 processed_dir = pyhere.here(
     "processed-data", "spot_deconvo", "01-tangram", "IF"
 )
-sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
+sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc_' + cell_group + '.h5ad')
 sp_path_in = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 id_path = pyhere.here(processed_dir, 'sample_ids.txt')
 
@@ -42,7 +44,10 @@ id_path = pyhere.here(processed_dir, 'sample_ids.txt')
 cell_count_var = 'cell_count'
 
 #   Variable name in ad_sc.obs representing cell type
-cell_type_var = 'cellType_broad_hc'
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
 
 plot_file_type = 'pdf'
 
@@ -154,13 +159,13 @@ clusters.to_csv(os.path.join(processed_dir, sample_name, 'clusters.csv'))
 #   Save all AnnDatas that were produced or modified
 print('Saving AnnDatas...')
 ad_map.write_h5ad(
-    os.path.join(processed_dir, sample_name, 'ad_map.h5ad')
+    os.path.join(processed_dir, sample_name, 'ad_map_' + cell_group + '.h5ad')
 )
 ad_ge.write_h5ad(
-    os.path.join(processed_dir, sample_name, 'ad_ge.h5ad')
+    os.path.join(processed_dir, sample_name, 'ad_ge_' + cell_group + '.h5ad')
 )
 ad_sp.write_h5ad(
-    os.path.join(processed_dir, sample_name, 'ad_sp_aligned.h5ad')
+    os.path.join(processed_dir, sample_name, 'ad_sp_aligned_' + cell_group + '.h5ad')
 )
 # ad_segment.write_h5ad(
 #     os.path.join(processed_dir, 'ad_segment_{}.h5ad'.format(sample_name))

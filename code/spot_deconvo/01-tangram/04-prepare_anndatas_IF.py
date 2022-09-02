@@ -21,6 +21,8 @@ import json
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
 #-------------------------------------------------------------------------------
 #   Paths
 #-------------------------------------------------------------------------------
@@ -30,12 +32,16 @@ processed_dir = pyhere.here(
     "processed-data", "spot_deconvo", "01-tangram", "IF"
 )
 
-sc_path_in = pyhere.here(os.path.dirname(processed_dir), 'sce.h5ad')
+sc_path_in = pyhere.here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "sce_" + cell_group + ".h5ad"
+)
 sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
-sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
+sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc_' + cell_group + '.h5ad')
 sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 marker_path = pyhere.here(
-    os.path.dirname(os.path.dirname(processed_dir)), 'markers.txt'
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "markers_" + cell_group + ".txt"
 )
 
 #   Directory containing hires image and a JSON containing scale factors and
@@ -53,7 +59,10 @@ spaceranger_dir = pyhere.here(
 cluster_var_plots = '10x_kmeans_9_clusters'
 
 #   Variable name in ad_sc.obs representing cell type
-cell_type_var = 'cellType_broad_hc'
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
 
 #   Variable name in both ad_sc.var and ad_sp.var containing Ensembl gene ID and
 #   variable name in ad_sp.var containing gene symbol
@@ -196,5 +205,7 @@ Path(os.path.join(processed_dir, sample_name)).mkdir(
 #   ordering. Therefore, while it's a bit wasteful to save many "copies" of
 #   'ad_sc' as done here, it simplifies code later by avoiding several order-
 #   related complications that would need manual resolution
-ad_sp.write_h5ad(str(sp_path_out).format(sample_name))
 ad_sc.write_h5ad(str(sc_path_out).format(sample_name))
+
+if cell_group == 'broad':
+    ad_sp.write_h5ad(str(sp_path_out).format(sample_name))
