@@ -5,6 +5,7 @@ suppressPackageStartupMessages(library("DeconvoBuddies"))
 suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
+suppressPackageStartupMessages(library("HDF5Array"))
 
 cell_group = "broad" # "broad" or "layer"
 
