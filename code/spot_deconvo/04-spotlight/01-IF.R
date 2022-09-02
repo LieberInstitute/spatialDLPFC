@@ -17,7 +17,8 @@ library('sessioninfo')
 cell_group = "broad" # "broad" or "layer"
 
 sce_in <- here(
-    "processed-data", "spot_deconvo", "sce.rds"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("sce_", cell_group, ".rds")
 )
 spe_in <- here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"

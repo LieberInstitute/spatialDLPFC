@@ -37,7 +37,7 @@ sc_path_in = pyhere.here(
     "sce_" + cell_group + ".h5ad"
 )
 sp_path_in = pyhere.here(
-    "processed-data", "spot_deconvo", "05-shared_utilities", 'spe.h5ad'
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF", 'spe.h5ad'
 )
 sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_out = pyhere.here(
