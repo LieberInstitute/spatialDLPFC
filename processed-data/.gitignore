@@ -7,10 +7,7 @@ analysis
 *cloupe
 SPATIAL_RNA_COUNTER_CS
 *.gz
-spot_deconvo/*.rds
 spot_deconvo/01-tangram/logs
-spot_deconvo/01-tangram/*.h5ad
-spot_deconvo/01-tangram/*/sample_ids.txt
 spot_deconvo/01-tangram/*/*.h5ad
 spot_deconvo/01-tangram/*/*/*.h5ad
 spot_deconvo/02-cellpose
@@ -20,4 +17,6 @@ spot_deconvo/03-cell2location/*/adata_*/model.pt
 spot_deconvo/04-spotlight/*.log
 spot_deconvo/04-spotlight/*/*.rds
 spot_deconvo/05-shared_utilities/logs
+spot_deconvo/05-shared_utilities/*.rds
+spot_deconvo/05-shared_utilities/*.h5ad
 synapse_upload/03-download
