@@ -14,6 +14,8 @@ library('sessioninfo')
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
 sce_in <- here(
     "processed-data", "spot_deconvo", "sce.rds"
 )
@@ -22,24 +24,30 @@ spe_in <- here(
 )
 
 marker_path <- here(
-    "processed-data", "spot_deconvo", "markers.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("markers_", cell_group, ".txt")
 )
 marker_stats_path = here(
-    "processed-data", "spot_deconvo", "marker_stats.rds"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("marker_stats_", cell_group, ".rds")
 )
 cell_counts_path = here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
 )
 
 plot_dir = here(
-    "plots", "spot_deconvo", "04-spotlight", "IF"
+    "plots", "spot_deconvo", "04-spotlight", "IF", cell_group
 )
 processed_dir = here(
-    "processed-data", "spot_deconvo", "04-spotlight", "IF"
+    "processed-data", "spot_deconvo", "04-spotlight", "IF", cell_group
 )
 
 #   Column names in colData(sce)
-cell_type_var = 'cellType_broad_hc'
+if (cell_group == 'broad') {
+    cell_type_var = 'cellType_broad_hc'
+} else {
+    cell_type_var = 'layer_level'
+}
 
 #   Column names in rowData(sce)
 symbol_var = 'gene_name'
