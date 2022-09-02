@@ -28,7 +28,7 @@ cell_group = "broad" # "broad" or "layer"
 #   Paths
 #-------------------------------------------------------------------------------
 
-plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "IF")
+plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "IF", cell_group)
 processed_dir = pyhere.here(
     "processed-data", "spot_deconvo", "01-tangram", "IF"
 )
