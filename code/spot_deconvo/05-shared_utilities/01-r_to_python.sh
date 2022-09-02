@@ -2,8 +2,8 @@
 #$ -cwd
 #$ -l mem_free=140G,h_vmem=140G,h_fsize=100G
 #$ -N "r_to_python"
-#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/01-r_to_python.log
-#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/01-r_to_python.log
+#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/01-r_to_python_layer.log
+#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/01-r_to_python_layer.log
 
 echo "**** Job starts ****"
 date
