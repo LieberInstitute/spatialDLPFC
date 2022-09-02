@@ -6,6 +6,8 @@ suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 
+cell_group = "broad" # "broad" or "layer"
+
 #   Number of marker genes to use per cell type. Note that cell2location seems
 #   to need more markers than the other tools, motivating the exception below
 n_markers_per_type <- 25
@@ -14,21 +16,25 @@ stopifnot(n_markers_per_type_c2l >= n_markers_per_type)
 
 #  Paths
 sce_in <- here(
-    "processed-data", "spot_deconvo", "sce.rds"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("sce_", cell_group, ".rds")
 )
 marker_object_in <- here(
-    "processed-data", "spot_deconvo", "marker_stats.rds"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("marker_stats_", cell_group, ".rds")
 )
 
 marker_out <- here(
-    "processed-data", "spot_deconvo", "markers.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("markers_", cell_group, ".txt")
 )
 marker_c2l_out <- here(
-    "processed-data", "spot_deconvo", "markers_C2L.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("markers_C2L_", cell_group, ".txt")
 )
 
 plot_dir <- here(
-    "plots", "spot_deconvo", "05-shared_utilities"
+    "plots", "spot_deconvo", "05-shared_utilities", cell_group
 )
 
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
@@ -40,6 +46,8 @@ dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 sce = readRDS(sce_in)
 marker_stats <- readRDS(marker_object_in)
 gc()
+
+print(paste0("Running script at ", cell_group, "-resolution."))
 
 ###############################################################################
 #  Functions
@@ -63,7 +71,9 @@ write_markers = function(n_markers, out_path) {
     writeLines(markers_scratch, con = out_path)
 }
 
-plot_markers = function(sce, marker_stats, n_genes, plot_name, ct) {
+plot_markers = function(
+    sce, marker_stats, n_genes, plot_name, ct, cell_column
+) {
     p <- plot_marker_express(
         sce,
         marker_stats,
@@ -71,7 +81,7 @@ plot_markers = function(sce, marker_stats, n_genes, plot_name, ct) {
         n_genes = n_genes,
         rank_col = "rank_ratio",
         anno_col = "anno_ratio",
-        cellType_col = "cellType_broad_hc"
+        cellType_col = cell_column
     )
     ggsave(
         p,
@@ -84,10 +94,10 @@ plot_markers = function(sce, marker_stats, n_genes, plot_name, ct) {
 }
 
 #   Plot mean-ratio distribution by cell type/ layer
-boxplot_mean_ratio = function(n_markers, plot_name) {
+boxplot_mean_ratio = function(n_markers, plot_name, cell_group) {
     p = marker_stats %>%
         filter(rank_ratio <= n_markers) %>%
-        ggplot(aes(cellType.target, ratio)) +
+        ggplot(aes_string(cell_group, "ratio")) +
         geom_boxplot() +
         labs(y = "Mean Ratio") +
         theme_bw()
@@ -112,6 +122,11 @@ write_markers(n_markers_per_type_c2l, marker_c2l_out)
 #  Visually check quality of markers
 ###############################################################################
 
+if (cell_group == "broad") {
+    cell_column = "cellType_broad_hc"
+} else {
+    cell_column = "layer_level"
+}
 #   Visually show how markers look for each cell type. In particular, look at
 #   the best 5 markers, the worst 5 markers used for C2L, and the worst 5
 #   markers used for tangram/SPOTlight
@@ -119,7 +134,7 @@ walk(
     unique(marker_stats$cellType.target),
     function(ct){
         #   First plot the top 5 markers
-        plot_markers(sce, marker_stats, 5, "marker_genes_1-5", ct)
+        plot_markers(sce, marker_stats, 5, "marker_genes_1-5", ct, cell_column)
         
         #   Next, plot worst 5 C2L markers: those with ranks in
         #   [n_markers_per_type_c2l - 4, n_markers_per_type_c2l]
@@ -136,7 +151,7 @@ walk(
             )
         plot_markers(
             sce, marker_stats_temp, 5,
-            paste0("marker_genes_", rank_range), ct
+            paste0("marker_genes_", rank_range), ct, cell_column
         )
         
         #   Finally, plot worst 5 non-C2L markers
@@ -153,7 +168,7 @@ walk(
             )
         plot_markers(
             sce, marker_stats_temp, 5,
-            paste0("marker_genes_", rank_range), ct
+            paste0("marker_genes_", rank_range), ct, cell_column
         )
     }
 )
@@ -170,7 +185,7 @@ p = marker_stats %>%
     ) %>%
     ggplot(aes(ratio, std.logFC, color = Marker)) +
     geom_point(size = 0.5, alpha = 0.5) +
-    facet_wrap(~cellType.target, scales = "free_x") +
+    facet_wrap(as.formula(paste("~", cell_group)), scales = "free_x") +
     labs(x = "Mean Ratio") +
     theme_bw()
 
@@ -180,7 +195,7 @@ ggsave(
 )
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
-boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot_tangram")
-boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L")
+boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot_tangram", cell_group)
+boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L", cell_group)
 
 session_info()
