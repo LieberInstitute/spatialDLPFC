@@ -30,11 +30,13 @@ cell_group = "broad" # "broad" or "layer"
 
 plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "IF", cell_group)
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "01-tangram", "IF"
+    "processed-data", "spot_deconvo", "01-tangram", "IF", cell_group
 )
-sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc_' + cell_group + '.h5ad')
-sp_path_in = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
-id_path = pyhere.here(processed_dir, 'sample_ids.txt')
+sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
+sp_path_in = pyhere.here(
+    os.path.dirname(processed_dir), '{}', 'ad_sp_orig.h5ad'
+)
+id_path = pyhere.here(os.path.dirname(processed_dir), 'sample_ids.txt')
 
 #-------------------------------------------------------------------------------
 #   Dataset-specific variables
@@ -159,13 +161,13 @@ clusters.to_csv(os.path.join(processed_dir, sample_name, 'clusters.csv'))
 #   Save all AnnDatas that were produced or modified
 print('Saving AnnDatas...')
 ad_map.write_h5ad(
-    os.path.join(processed_dir, sample_name, 'ad_map_' + cell_group + '.h5ad')
+    os.path.join(processed_dir, sample_name, 'ad_map.h5ad')
 )
 ad_ge.write_h5ad(
-    os.path.join(processed_dir, sample_name, 'ad_ge_' + cell_group + '.h5ad')
+    os.path.join(processed_dir, sample_name, 'ad_ge.h5ad')
 )
 ad_sp.write_h5ad(
-    os.path.join(processed_dir, sample_name, 'ad_sp_aligned_' + cell_group + '.h5ad')
+    os.path.join(processed_dir, sample_name, 'ad_sp_aligned.h5ad')
 )
 # ad_segment.write_h5ad(
 #     os.path.join(processed_dir, 'ad_segment_{}.h5ad'.format(sample_name))

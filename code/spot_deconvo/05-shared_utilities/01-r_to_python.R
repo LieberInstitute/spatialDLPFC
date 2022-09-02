@@ -37,16 +37,16 @@ sce_r_out <- here(
     paste0("sce_", cell_group, ".rds")
 )
 spe_IF_out <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "IF", "spe.h5ad"
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF", "spe.h5ad"
 )
 spe_nonIF_out <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "spe.h5ad"
+    "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF", "spe.h5ad"
 )
 sample_IF_out <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "IF", "sample_ids.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF", "sample_ids.txt"
 )
 sample_nonIF_out <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "sample_ids.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF", "sample_ids.txt"
 )
 marker_object_out <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
