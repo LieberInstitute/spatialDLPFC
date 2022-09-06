@@ -2,8 +2,8 @@
 #$ -cwd
 #$ -l mem_free=20G,h_vmem=20G
 #$ -N "find_markers"
-#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/02-find_markers_broad.log
-#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/02-find_markers_broad.log
+#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/02-find_markers_layer.log
+#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/02-find_markers_layer.log
 
 echo "**** Job starts ****"
 date

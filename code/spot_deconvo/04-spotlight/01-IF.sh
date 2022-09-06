@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "IF"
-#$ -o ../../../processed-data/spot_deconvo/04-spotlight/01-IF_broad.log
-#$ -e ../../../processed-data/spot_deconvo/04-spotlight/01-IF_broad.log
+#$ -o ../../../processed-data/spot_deconvo/04-spotlight/01-IF_layer.log
+#$ -e ../../../processed-data/spot_deconvo/04-spotlight/01-IF_layer.log
 #$ -l mf=20G,h_vmem=20G,h_fsize=50G
 
 echo "**** Job starts ****"

@@ -14,7 +14,7 @@ library('sessioninfo')
 #   Variable definitions
 ################################################################################
 
-cell_group = "broad" # "broad" or "layer"
+cell_group = "layer" # "broad" or "layer"
 
 sce_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
