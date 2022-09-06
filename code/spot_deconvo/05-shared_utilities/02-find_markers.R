@@ -123,11 +123,10 @@ if (cell_group == "broad") {
 #   Visually show how markers look for each cell type. In particular, look at
 #   the best 5 markers, the worst 5 markers used for C2L, and the worst 5
 #   markers used for tangram/SPOTlight
-plot_list = list()
-walk(
+plot_list = lapply(
     unique(marker_stats$cellType.target),
     function(ct){
-        plot_list[[ct]] = plot_markers(
+        plot_markers(
             sce, marker_stats, n_markers_per_type, ct, cell_column
         )
     }
