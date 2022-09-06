@@ -129,43 +129,20 @@ if (cell_group == "broad") {
 #   Visually show how markers look for each cell type. In particular, look at
 #   the best 5 markers, the worst 5 markers used for C2L, and the worst 5
 #   markers used for tangram/SPOTlight
-plots_top_5 = list()
-plots_bottom_5 = list()
+plot_list = list()
 walk(
     unique(marker_stats$cellType.target),
     function(ct){
-        #  Plot the top 5 markers
-        plots_top_5[[ct]] = plot_markers(
-            sce, marker_stats, 5, ct, cell_column)
-        
-        #   Plot the worst 5 markers
-        marker_stats_temp = marker_stats %>%
-            filter(rank_ratio <= n_markers_per_type) %>%
-            mutate(
-                rank_ratio, 
-                rank_ratio = 1 + n_markers_per_type - rank_ratio
-            )
-        plots_bottom_5[[ct]] = plot_markers(
-            sce, marker_stats_temp, 5, ct, cell_column
+        plot_list[[ct]] = plot_markers(
+            sce, marker_stats, n_markers_per_type, ct, cell_column
         )
     }
 )
 
-#   Write a multi-page PDF with violin plots for each cell group and the top
-#   5 markers
-pdf(file.path(plot_dir, paste0("marker_genes_1-5.pdf")))
-lapply(plots_top_5, print)
-dev.off()
-
-#   Write a multi-page PDF with violin plots for each cell group and the worst
-#   5 markers
-rank_range = paste(
-    as.character(n_markers_per_type - 4),
-    as.character(n_markers_per_type),
-    sep = "-"
-)
-pdf(file.path(plot_dir, paste0("marker_genes_", rank_range, ".pdf")))
-lapply(plots_bottom_5, print)
+#   Write a multi-page PDF with violin plots for each cell group and all
+#   markers
+pdf(file.path(plot_dir, paste0("marker_gene_violin.pdf")))
+lapply(plot_list, print)
 dev.off()
 
 #   Plot mean ratio against log fold-change for all genes, split by target cell
