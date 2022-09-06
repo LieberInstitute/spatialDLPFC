@@ -135,7 +135,12 @@ plot_list = lapply(
 
 #   Write a multi-page PDF with violin plots for each cell group and all
 #   markers
-pdf(file.path(plot_dir, paste0("marker_gene_violin.pdf")))
+# pdf(file.path(plot_dir, paste0("marker_gene_violin.pdf")))
+png(
+    file.path(plot_dir, paste0("marker_gene_violin.png")),
+    width = 2000,
+    height = 480 * length(unique(marker_stats$cellType.target))
+)
 lapply(plot_list, print)
 dev.off()
 
