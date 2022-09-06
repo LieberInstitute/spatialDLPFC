@@ -12,7 +12,7 @@ cell_group = "layer" # "broad" or "layer"
 #   Number of marker genes to use per cell type. Note that cell2location seems
 #   to need more markers than the other tools, motivating the exception below
 n_markers_per_type <- 25
-n_markers_per_type_c2l <- 30 # 100 for "broad"
+n_markers_per_type_c2l <- 25 # 100 for "broad"
 stopifnot(n_markers_per_type_c2l >= n_markers_per_type)
 
 #  Paths
@@ -139,21 +139,21 @@ walk(
         
         #   Next, plot worst 5 C2L markers: those with ranks in
         #   [n_markers_per_type_c2l - 4, n_markers_per_type_c2l]
-        rank_range = paste(
-            as.character(n_markers_per_type_c2l - 4),
-            as.character(n_markers_per_type_c2l),
-            sep = "-"
-        )
-        marker_stats_temp = marker_stats %>%
-            filter(rank_ratio <= n_markers_per_type_c2l) %>%
-            mutate(
-                rank_ratio, 
-                rank_ratio = 1 + n_markers_per_type_c2l - rank_ratio
-            )
-        plot_markers(
-            sce, marker_stats_temp, 5,
-            paste0("marker_genes_", rank_range), ct, cell_column
-        )
+        # rank_range = paste(
+        #     as.character(n_markers_per_type_c2l - 4),
+        #     as.character(n_markers_per_type_c2l),
+        #     sep = "-"
+        # )
+        # marker_stats_temp = marker_stats %>%
+        #     filter(rank_ratio <= n_markers_per_type_c2l) %>%
+        #     mutate(
+        #         rank_ratio, 
+        #         rank_ratio = 1 + n_markers_per_type_c2l - rank_ratio
+        #     )
+        # plot_markers(
+        #     sce, marker_stats_temp, 5,
+        #     paste0("marker_genes_", rank_range), ct, cell_column
+        # )
         
         #   Finally, plot worst 5 non-C2L markers
         rank_range = paste(
@@ -180,7 +180,7 @@ p = marker_stats %>%
     mutate(
         Marker = case_when(
             rank_ratio <= n_markers_per_type ~ paste0('Marker top', n_markers_per_type),
-            rank_ratio <= n_markers_per_type_c2l ~ paste0('Marker top', n_markers_per_type_c2l),
+            # rank_ratio <= n_markers_per_type_c2l ~ paste0('Marker top', n_markers_per_type_c2l),
             TRUE ~ 'Not marker'
         )
     ) %>%
@@ -197,6 +197,6 @@ ggsave(
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
 boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot_tangram")
-boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L")
+# boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L")
 
 session_info()
