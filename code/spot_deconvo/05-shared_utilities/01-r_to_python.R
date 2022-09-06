@@ -121,7 +121,7 @@ sce$layer_level = cell_label[
 
 if (cell_group == "layer") {
     #   Drop EndoMural and unclear excitatory cells
-    keep = ! (sce$layer_level %in% c('drop', 'EndoMural'))
+    keep = ! (sce$layer_level %in% c('drop', 'EndoMural', 'Excit_L3'))
 } else {
     #   Drop rare cell types (EndoMural) for single-cell data
     keep = !(sce$cellType_broad_hc == "EndoMural")
@@ -148,16 +148,16 @@ rownames(sce) <- rowData(sce)$gene_id
 #   convert all objects to Anndatas
 saveRDS(sce, sce_r_out)
 
-# print('Converting objects to AnnDatas...')
-# write_anndata(sce, sce_out)
+print('Converting objects to AnnDatas...')
+write_anndata(sce, sce_out)
 # 
 # #   Spatial objects are the same between broad and layer-level resolutions, and
 # #   need only be saved once
-# if (cell_group == "broad") {
-#     write_anndata(spe_IF, spe_IF_out)
-#     write_anndata(spe_nonIF, spe_nonIF_out)
-# }
-# gc()
+if (cell_group == "broad") {
+    write_anndata(spe_IF, spe_IF_out)
+    write_anndata(spe_nonIF, spe_nonIF_out)
+}
+gc()
 
 #   Write sample names to text files
 writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
