@@ -100,6 +100,7 @@ boxplot_mean_ratio = function(n_markers, plot_name) {
         filter(rank_ratio <= n_markers) %>%
         ggplot(aes(cellType.target, ratio)) +
         geom_boxplot() +
+        geom_hline(1, 'dashed', 'red') +
         labs(y = "Mean Ratio") +
         theme_bw()
     
