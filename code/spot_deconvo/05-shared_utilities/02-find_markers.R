@@ -161,7 +161,7 @@ ggsave(
 )
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
-boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot_tangram")
+boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot")
 # boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L")
 
 session_info()
