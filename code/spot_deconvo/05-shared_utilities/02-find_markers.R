@@ -81,14 +81,8 @@ plot_markers = function(
         anno_col = "anno_ratio",
         cellType_col = cell_column
     )
-    ggsave(
-        p,
-        filename = file.path(
-            plot_dir,
-            paste0(plot_name, "_", ct, ".png")
-        ),
-        height = 10, width = 10
-    )
+    
+    return(p)
 }
 
 #   Plot mean-ratio distribution by cell type/ layer
@@ -101,7 +95,10 @@ boxplot_mean_ratio = function(n_markers, plot_name) {
         labs(y = "Mean Ratio") +
         theme_bw()
     
-    return(p)
+    ggsave(
+        p, filename = file.path(plot_dir, paste0(plot_name, ".png")),
+        height = 10, width = 10
+    )
 }
 
 ###############################################################################
