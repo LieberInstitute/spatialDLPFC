@@ -61,12 +61,9 @@ write_markers = function(n_markers, out_path) {
     
     markers_scratch <- marker_stats_temp$gene
     
-    #   It's technically possible to find a single gene that is used as a
-    #   "marker" for two different cell types via this method. Verify this is
-    #   not the case, because that would indicate the use of bad markers
-    stopifnot(
-        length(unique(markers_scratch)) == n_markers * length(unique(marker_stats_temp$cellType.target))
-    )
+    #   Verify all markers have more expression for the target cell type than
+    #   next highest
+    stopifnot(any(marker_stats_temp$ratio > 1))
     
     #   Write list of markers
     writeLines(markers_scratch, con = out_path)
