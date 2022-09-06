@@ -7,12 +7,12 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("HDF5Array"))
 
-cell_group = "broad" # "broad" or "layer"
+cell_group = "layer" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type. Note that cell2location seems
 #   to need more markers than the other tools, motivating the exception below
 n_markers_per_type <- 25
-n_markers_per_type_c2l <- 100
+n_markers_per_type_c2l <- 30 # 100 for "broad"
 stopifnot(n_markers_per_type_c2l >= n_markers_per_type)
 
 #  Paths
