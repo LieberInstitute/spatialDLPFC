@@ -73,7 +73,7 @@ write_markers = function(n_markers, out_path) {
 }
 
 plot_markers = function(
-    sce, marker_stats, n_genes, plot_name, ct, cell_column
+    sce, marker_stats, n_genes, ct, cell_column
 ) {
     p <- plot_marker_express(
         sce,
@@ -103,10 +103,7 @@ boxplot_mean_ratio = function(n_markers, plot_name) {
         labs(y = "Mean Ratio") +
         theme_bw()
     
-    ggsave(
-        p, filename = file.path(plot_dir, paste0(plot_name, ".png")),
-        height = 10, width = 10
-    )
+    return(p)
 }
 
 ###############################################################################
@@ -131,48 +128,44 @@ if (cell_group == "broad") {
 #   Visually show how markers look for each cell type. In particular, look at
 #   the best 5 markers, the worst 5 markers used for C2L, and the worst 5
 #   markers used for tangram/SPOTlight
+plots_top_5 = list()
+plots_bottom_5 = list()
 walk(
     unique(marker_stats$cellType.target),
     function(ct){
-        #   First plot the top 5 markers
-        plot_markers(sce, marker_stats, 5, "marker_genes_1-5", ct, cell_column)
+        #  Plot the top 5 markers
+        plots_top_5[[ct]] = plot_markers(
+            sce, marker_stats, 5, ct, cell_column)
         
-        #   Next, plot worst 5 C2L markers: those with ranks in
-        #   [n_markers_per_type_c2l - 4, n_markers_per_type_c2l]
-        # rank_range = paste(
-        #     as.character(n_markers_per_type_c2l - 4),
-        #     as.character(n_markers_per_type_c2l),
-        #     sep = "-"
-        # )
-        # marker_stats_temp = marker_stats %>%
-        #     filter(rank_ratio <= n_markers_per_type_c2l) %>%
-        #     mutate(
-        #         rank_ratio, 
-        #         rank_ratio = 1 + n_markers_per_type_c2l - rank_ratio
-        #     )
-        # plot_markers(
-        #     sce, marker_stats_temp, 5,
-        #     paste0("marker_genes_", rank_range), ct, cell_column
-        # )
-        
-        #   Finally, plot worst 5 non-C2L markers
-        rank_range = paste(
-            as.character(n_markers_per_type - 4),
-            as.character(n_markers_per_type),
-            sep = "-"
-        )
+        #   Plot the worst 5 markers
         marker_stats_temp = marker_stats %>%
             filter(rank_ratio <= n_markers_per_type) %>%
             mutate(
                 rank_ratio, 
                 rank_ratio = 1 + n_markers_per_type - rank_ratio
             )
-        plot_markers(
-            sce, marker_stats_temp, 5,
-            paste0("marker_genes_", rank_range), ct, cell_column
+        plots_bottom_5[[ct]] = plot_markers(
+            sce, marker_stats_temp, 5, ct, cell_column
         )
     }
 )
+
+#   Write a multi-page PDF with violin plots for each cell group and the top
+#   5 markers
+pdf(file.path(plot_dir, paste0("marker_genes_1-5.pdf")))
+lapply(plots_top_5, print)
+dev.off()
+
+#   Write a multi-page PDF with violin plots for each cell group and the worst
+#   5 markers
+rank_range = paste(
+    as.character(n_markers_per_type - 4),
+    as.character(n_markers_per_type),
+    sep = "-"
+)
+pdf(file.path(plot_dir, paste0("marker_genes_", rank_range, ".pdf")))
+lapply(plots_bottom_5, print)
+dev.off()
 
 #   Plot mean ratio against log fold-change for all genes, split by target cell
 #   type and colored by whether each gene will be used as a marker
