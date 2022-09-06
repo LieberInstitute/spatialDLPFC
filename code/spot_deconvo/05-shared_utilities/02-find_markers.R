@@ -89,10 +89,11 @@ plot_markers = function(
 boxplot_mean_ratio = function(n_markers, plot_name) {
     p = marker_stats %>%
         filter(rank_ratio <= n_markers) %>%
+        mutate(ratio, ratio = log(ratio)) %>%
         ggplot(aes(cellType.target, ratio)) +
         geom_boxplot() +
-        geom_hline(1, 'dashed', 'red') +
-        labs(y = "Mean Ratio") +
+        geom_hline(yintercept = 0, linetype = 'dashed', color = 'red') +
+        labs(y = "log(Mean Ratio)") +
         theme_bw()
     
     ggsave(
