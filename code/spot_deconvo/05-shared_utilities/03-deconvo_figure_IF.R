@@ -12,6 +12,8 @@ library("jaffelab")
 library("rjson")
 library("SpatialExperiment")
 
+cell_group <- "broad" # "broad" or "layer"
+
 sample_id_path <- here(
     "processed-data", "spot_deconvo", "01-tangram", "IF", "sample_ids.txt"
 )
@@ -36,6 +38,8 @@ spatial_coords_names <- c("pxl_col_in_fullres", "pxl_row_in_fullres")
 
 deconvo_tools = c('01-tangram', '03-cell2location', '04-spotlight')
 
+print(paste('Running at', cell_group, 'resolution...'))
+
 #   Load and subset SpatialExperiment
 spe <- readRDS(spe_in)
 spe <- spe[, spe$sample_id == sample_id]
@@ -49,12 +53,12 @@ for (deconvo_tool in deconvo_tools) {
     print(paste0('Generating figure for ', ss(deconvo_tool, '-', 2), '...'))
 
     clusters_path <- here(
-        "processed-data", "spot_deconvo", deconvo_tool, "IF", sample_id,
-        "clusters.csv"
+        "processed-data", "spot_deconvo", deconvo_tool, "IF", cell_group,
+        sample_id, "clusters.csv"
     )
     
     plot_path <- here(
-        "plots", "spot_deconvo", deconvo_tool, "IF", sample_id,
+        "plots", "spot_deconvo", deconvo_tool, "IF", cell_group, sample_id,
         "my_spot_deconvo_fig.pdf"
     )
     
