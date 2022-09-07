@@ -11,5 +11,6 @@ Latest workflow (in order):
 
 * `01-create_masks.*`: segment nuclei on each IF image using `cellpose` to output masks
 * `04-quantify_fluor.*`: quantify fluorescence within each nucleus (as well as a small area around it) to output a `DataFrame` of intensities for each cell
+* `09-prepare_loopy.*`: prepare a CSV of cell IDs and coordinates supported as input to the [Loopy Browser](https://loopybrowser.com/) so that cells can be manually labelled by cell type (to train a model).
 * `07-cart.*`: train a `DecisionTreeClassifier` on manually annotated cells, and save the model
 * `08-classify_nuclei_cart.*`: Use the saved `DecisionTreeClassifier` to classify cell types for all IF samples and all cells. Output a CSV of metrics (rows are cells and columns are things like fluorescence intensity, cell area, etc) and CSV of cell counts (rows are spots and columns are cell-type counts)
