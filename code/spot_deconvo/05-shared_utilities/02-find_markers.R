@@ -69,20 +69,38 @@ write_markers = function(n_markers, out_path) {
     writeLines(markers_scratch, con = out_path)
 }
 
-plot_markers = function(
-    sce, marker_stats, n_genes, ct, cell_column
-) {
-    p <- plot_marker_express(
-        sce,
-        marker_stats,
-        cell_type = ct,
-        n_genes = n_genes,
-        rank_col = "rank_ratio",
-        anno_col = "anno_ratio",
-        cellType_col = cell_column
-    )
+my_plotExpression <- function(sce, genes, assay = "logcounts", cat = "cellType", fill_colors = NULL, title = NULL) {
+    cat_df <- as.data.frame(colData(sce))[, cat, drop = FALSE]
+    expression_long <- reshape2::melt(as.matrix(assays(sce)[[assay]][genes, ]))
     
-    return(p)
+    cat <- cat_df[expression_long$Var2, ]
+    expression_long <- cbind(expression_long, cat)
+    
+    expression_violin <- ggplot(data = expression_long, aes(x = cat, y = value, fill = cat)) +
+        geom_violin(scale = "width") +
+        facet_wrap(~Var1, ncol = 2) +
+        labs(
+            y = paste0("Expression (", assay, ")"),
+            title = title
+        ) +
+        theme_bw() +
+        theme(
+            legend.position = "None", axis.title.x = element_blank(),
+            axis.text.x = element_text(angle = 90, hjust = 1),
+            strip.text.x = element_text(face = "italic")
+        ) +
+        stat_summary(
+            fun = median,
+            # fun.min = median,
+            # fun.max = median,
+            geom = "crossbar",
+            width = 0.3
+        )
+    
+    if (!is.null(fill_colors)) expression_violin <- expression_violin + scale_fill_manual(values = fill_colors)
+    
+    # expression_violin
+    return(expression_violin)
 }
 
 #   Plot mean-ratio distribution by cell type/ layer
@@ -121,27 +139,24 @@ if (cell_group == "broad") {
 } else {
     cell_column = "layer_level"
 }
-#   Visually show how markers look for each cell type. In particular, look at
-#   the best 5 markers, the worst 5 markers used for C2L, and the worst 5
-#   markers used for tangram/SPOTlight
+#   Visually show how markers look for each cell type
 plot_list = lapply(
     unique(marker_stats$cellType.target),
     function(ct){
-        plot_markers(
-            sce, marker_stats, n_markers_per_type, ct, cell_column
+        genes = marker_stats %>%
+            filter(rank_ratio <= n_markers_per_type, cellType.target == ct) %>%
+            pull(gene)
+        my_plotExpression(
+            sce, genes, cat = cell_column, fill_colors = NULL,
+            title = paste('Top', n_markers_per_type, 'for', ct)
         )
     }
 )
 
 #   Write a multi-page PDF with violin plots for each cell group and all
 #   markers
-# pdf(file.path(plot_dir, paste0("marker_gene_violin.pdf")))
-png(
-    file.path(plot_dir, paste0("marker_gene_violin.png")),
-    width = 2000,
-    height = 480 * length(unique(marker_stats$cellType.target))
-)
-lapply(plot_list, print)
+pdf(file.path(plot_dir, paste0("marker_gene_violin.pdf")))
+print(plot_list)
 dev.off()
 
 #   Plot mean ratio against log fold-change for all genes, split by target cell
