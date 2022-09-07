@@ -75,10 +75,16 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", cat = "cellType",
     
     cat <- cat_df[expression_long$Var2, ]
     expression_long <- cbind(expression_long, cat)
+
+    #   Use gene symbols for labels, not Ensembl ID
+    symbols = rowData(sce)$gene_name[match(genes, rownames(sce))]
+    names(symbols) = genes
     
-    expression_violin <- ggplot(data = expression_long, aes(x = cat, y = value, fill = cat)) +
+    expression_violin <- ggplot(
+        data = expression_long, aes(x = cat, y = value, fill = cat)
+    ) +
         geom_violin(scale = "width") +
-        facet_wrap(~Var1, ncol = 2) +
+        facet_wrap(~Var1, ncol = 5, labeller = labeller(Var1 = symbols)) +
         labs(
             y = paste0("Expression (", assay, ")"),
             title = title
@@ -155,7 +161,10 @@ plot_list = lapply(
 
 #   Write a multi-page PDF with violin plots for each cell group and all
 #   markers
-pdf(file.path(plot_dir, paste0("marker_gene_violin.pdf")))
+pdf(
+    file.path(plot_dir, paste0("marker_gene_violin.pdf")),
+    width = 35, height = 35
+)
 print(plot_list)
 dev.off()
 
