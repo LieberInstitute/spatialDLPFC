@@ -15,7 +15,8 @@ library("SpatialExperiment")
 cell_group <- "broad" # "broad" or "layer"
 
 sample_id_path <- here(
-    "processed-data", "spot_deconvo", "01-tangram", "IF", "sample_ids.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    "sample_ids.txt"
 )
 sample_id <- readLines(sample_id_path)[as.numeric(Sys.getenv("SGE_TASK_ID"))]
 print(paste0("Plotting sample ", sample_id, "."))
