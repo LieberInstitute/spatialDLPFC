@@ -199,7 +199,10 @@ if IMPORT_CELL_COUNTS:
 
 #   Ensure output directories exist
 Path(os.path.join(plot_dir, sample_name)).mkdir(parents=True, exist_ok=True)
-Path(os.path.join(processed_dir, sample_name)).mkdir(
+Path(os.path.dirname(str(sc_path_out).format(sample_name))).mkdir(
+    parents=True, exist_ok=True
+)
+Path(os.path.dirname(str(sp_path_out).format(sample_name))).mkdir(
     parents=True, exist_ok=True
 )
 
