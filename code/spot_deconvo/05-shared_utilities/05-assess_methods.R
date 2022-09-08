@@ -2,6 +2,7 @@ library('here')
 library('ggplot2')
 library('jaffelab')
 library('tidyverse')
+library('reshape2')
 
 cell_group = "broad" # "broad" or "layer"
 
@@ -29,7 +30,6 @@ if (cell_group == "broad") {
 } else {
     cell_types = c() # TODO
 }
-
 sample_ids = readLines(sample_ids)
 
 actual_list = list()
@@ -37,6 +37,7 @@ observed_list = list()
 index = 1
 
 added_colnames = c("barcode", "sample_id", "deconvo_tool", "obs_type")
+
 
 for (sample_id in sample_ids) {
     #   Read in the "ground-truth" counts for this sample
@@ -47,11 +48,7 @@ for (sample_id in sample_ids) {
     #   sample ID variables-- nothing else. Order column names
     actual_df_small$barcode = ss(actual_df_small$key, '_', 1)
     actual_df_small$sample_id = sample_id
-    actual_df_small$deconvo_tool = "none"
     actual_df_small$obs_type = "actual"
-    actual_list[[index]] = actual_df_small[
-        , c(added_colnames, cell_types_actual)
-    ]
     
     for (deconvo_tool in deconvo_tools) {
         #   Read in estimated cell counts for this deconvo tool and sample
@@ -69,6 +66,11 @@ for (sample_id in sample_ids) {
             , c(added_colnames, cell_types)
         ]
         
+        actual_df_small$deconvo_tool = deconvo_tool
+        
+        actual_list[[index]] = actual_df_small[
+            , c(added_colnames, cell_types_actual)
+        ]
         observed_list[[index]] = observed_df_small
         index = index + 1
     }
@@ -94,11 +96,23 @@ if (cell_group == "broad") {
     #   TODO
 }
 
-#   TODO: (might use reshape2::cast) reshape full_df such that instead of the
-#   'obs_type' column and 'count', we have 'count_actual' and 'count_observed'
-#   (and thus no need for the 'obs_type' column)
+#   Combine observed and actual cell counts so that each row is a unique
+#   cell type, spot, sample, and deconvolution method with two values: measured
+#   and ground-truth
 full_df = rbind(observed_df, actual_df) %>%
     melt(
         id.vars = added_colnames, variable.name = "cell_type",
         value.name = "count"
+    ) %>%
+    pivot_wider(
+        names_from = obs_type, values_from = count,
     )
+
+
+#   Scatter plot of observed vs. actual cell counts, faceted by cell type and
+#   deconvolution tool. Use all spots as points
+ggplot(full_df, aes(x = observed, y = actual, color = sample_id)) +
+    geom_point(alpha = 0.01) +
+    coord_fixed() +
+    facet_grid(rows = vars(cell_type), cols = vars(deconvo_tool)) +
+    guides(col = guide_legend(override.aes = list(alpha = 1)))
