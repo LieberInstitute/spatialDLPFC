@@ -185,6 +185,16 @@ if IMPORT_CELL_COUNTS:
     assert not any(adata_vis.obs[cell_count_var].isna())
 
 #-------------------------------------------------------------------------------
+#   Replace special characters in some layer groups
+#-------------------------------------------------------------------------------
+
+if cell_group == "layer":
+    adata_ref.obs[cell_type_var] = pd.Series(
+        [x.replace('/', '_') for x in adata_ref.obs[cell_type_var]],
+        dtype = 'category', index = adata_ref.obs_names
+    )
+
+#-------------------------------------------------------------------------------
 #   Save AnnDatas
 #-------------------------------------------------------------------------------
 
