@@ -42,7 +42,7 @@ layer_anno <- annotate_registered_clusters(cor_stats_layer = cor_top100,
                                            cutoff_merge_ratio = 0.25)
 
 layer_anno[order(layer_anno$cluster),]
-#         cluster layer_confidence layer_label
+# cluster layer_confidence layer_label
 # 3         Astro             good          L1
 # 4  EndoMural_01             good          L1
 # 5  EndoMural_02             good          L1
@@ -73,6 +73,15 @@ layer_anno[order(layer_anno$cluster),]
 # 2      Oligo_03             good          WM
 # 7           OPC             good          WM
 
+layer_anno |> filter(grepl("Excit", cluster), layer_confidence == "good") |> count(layer_label)
+#   layer_label n
+# 1          L3 2
+# 2          L4 2
+# 3      L4/3/5 1
+# 4        L4/5 1
+# 5          L5 2
+# 6        L5/6 1
+# 7          L6 2
 
 ## compare to old results
 library(dplyr)
@@ -80,15 +89,46 @@ old_anno <- read.csv("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snR
 
 old_anno <- old_anno |> select(cluster = cellType_hc, layer_label_old = layer_label)
 
-layer_comapre <- layer_anno |> left_join(old_anno)
+layer_compare <- layer_anno |> left_join(old_anno)
 
-layer_comapre |> filter(grepl("Excit", cluster), layer_label == layer_label_old)
+layer_compare |> filter(grepl("Excit", cluster), layer_label == layer_label_old)
 # cluster layer_confidence layer_label layer_label_old
 # 1 Excit_06             good          L6              L6
 # 2 Excit_08             good          L6              L6
 # 3 Excit_04             good          L5              L5
-# 4 Excit_07             good          L5              L5
-# 5 Excit_05             good          L3              L3
-# 6 Excit_14             poor       L3/2*           L3/2*
+# 4 Excit_02             good        L5/6            L5/6
+# 5 Excit_07             good          L5              L5
+# 6 Excit_05             good          L3              L3
+# 7 Excit_14             poor       L3/2*           L3/2*
 
-layer_comapre |> filter(grepl("Excit", cluster), layer_label != layer_label_old, layer_confidence == "good")
+layer_compare |> filter(grepl("Excit", cluster), layer_label != layer_label_old)
+# cluster layer_confidence layer_label layer_label_old
+# 1 Excit_11             good        L4/5              L4
+# 2 Excit_12             poor       L4/5*             L4*
+# 3 Excit_03             good          L4            L4/5
+# 4 Excit_09             good      L4/3/5            L5/4
+# 5 Excit_10             good          L4            L4/5
+# 6 Excit_01             good          L3            L3/2
+# 7 Excit_15             poor         L1*             L4*
+# 8 Excit_13             poor       L3/1*         L4/3/5*
+
+layer_compare |> filter(grepl("Excit", cluster), layer_label != layer_label_old, layer_confidence == "good")
+# cluster layer_confidence layer_label layer_label_old
+# 1 Excit_11             good        L4/5              L4
+# 2 Excit_03             good          L4            L4/5
+# 3 Excit_09             good      L4/3/5            L5/4
+# 4 Excit_10             good          L4            L4/5
+# 5 Excit_01             good          L3            L3/2
+
+layer_compare |> filter(grepl("Excit", cluster), layer_confidence == "good") |> arrange(layer_label)
+
+
+##  Mess with annotation plot
+layer_order <- layer_anno |> filter(grepl("Excit", cluster), layer_confidence == "good") |> arrange(layer_label)
+
+cor_temp <- cor_top100[layer_order$cluster,]
+cor_temp[cor_temp < 0.0] <- 0
+
+pdf(here(plot_dir, "spatial_annotation_plot_sn_v_manual_top100.pdf"))
+layer_stat_cor_plot(cor_temp, max = max(cor_temp))
+dev.off()
