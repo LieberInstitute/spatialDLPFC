@@ -10,6 +10,9 @@ load(file = "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/pro
 colData(sce)$Position <- as.factor(colData(sce)$Position)
 colData(sce)$sex <- as.factor(colData(sce)$sex)
 
+## Use all unique ensembl IDs as rownames
+rownames(sce) <- rowData(sce)$gene_id
+
 ## Run spatial registration
 sn_hc_registration <- registration_wrapper(sce = sce,
                                            var_registration = "cellType_hc", 
@@ -29,4 +32,3 @@ Sys.time()
 proc.time()
 options(width = 120)
 session_info()
-
