@@ -22,7 +22,7 @@ sn_hc_registration <- registration_wrapper(sce = sce,
                                            gene_name = "gene_name",
                                            prefix = "")
 
-save(sn_hc_registration, file = here("processed-data","rdata","spe","12_spatial_registration_sc","sn_hc_registration.RDS"))
+save(sn_hc_registration, file = here("processed-data","rdata","spe","12_spatial_registration_sn","sn_hc_registration.RDS"))
 
 # sgejobs::job_single('01_spatial_registration_sn', create_shell = TRUE, memory = '25G', command = "Rscript 01_spatial_registration_sn.R")
 
