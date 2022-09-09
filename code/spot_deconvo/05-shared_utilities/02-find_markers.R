@@ -82,7 +82,7 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", cat = "cellType",
             y = paste0("Expression (", assay, ")"),
             title = title
         ) +
-        theme_bw() +
+        theme_bw(base_size = 35) +
         theme(
             legend.position = "None", axis.title.x = element_blank(),
             axis.text.x = element_text(angle = 90, hjust = 1),
