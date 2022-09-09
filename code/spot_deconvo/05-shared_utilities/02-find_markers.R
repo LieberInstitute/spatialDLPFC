@@ -9,11 +9,8 @@ suppressPackageStartupMessages(library("HDF5Array"))
 
 cell_group = "layer" # "broad" or "layer"
 
-#   Number of marker genes to use per cell type. Note that cell2location seems
-#   to need more markers than the other tools, motivating the exception below
+#   Number of marker genes to use per cell type
 n_markers_per_type <- 25
-n_markers_per_type_c2l <- 25 # 100 for "broad"
-stopifnot(n_markers_per_type_c2l >= n_markers_per_type)
 
 #  Paths
 sce_in <- here(
@@ -28,10 +25,6 @@ marker_object_in <- here(
 marker_out <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
     paste0("markers_", cell_group, ".txt")
-)
-marker_c2l_out <- here(
-    "processed-data", "spot_deconvo", "05-shared_utilities",
-    paste0("markers_C2L_", cell_group, ".txt")
 )
 
 plot_dir <- here(
@@ -130,11 +123,8 @@ boxplot_mean_ratio = function(n_markers, plot_name) {
 #  Subset and write markers
 ###############################################################################
 
-print("Writing markers for tangram/SPOTlight...")
+print("Writing markers...")
 write_markers(n_markers_per_type, marker_out)
-
-print("Writing markers for cell2location...")
-write_markers(n_markers_per_type_c2l, marker_c2l_out)
 
 ###############################################################################
 #  Visually check quality of markers
@@ -145,6 +135,7 @@ if (cell_group == "broad") {
 } else {
     cell_column = "layer_level"
 }
+
 #   Visually show how markers look for each cell type
 plot_list = lapply(
     unique(marker_stats$cellType.target),
@@ -174,7 +165,6 @@ p = marker_stats %>%
     mutate(
         Marker = case_when(
             rank_ratio <= n_markers_per_type ~ paste0('Marker top', n_markers_per_type),
-            # rank_ratio <= n_markers_per_type_c2l ~ paste0('Marker top', n_markers_per_type_c2l),
             TRUE ~ 'Not marker'
         )
     ) %>%
@@ -191,6 +181,5 @@ ggsave(
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
 boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot")
-# boxplot_mean_ratio(n_markers_per_type_c2l, "mean_ratio_boxplot_C2L")
 
 session_info()

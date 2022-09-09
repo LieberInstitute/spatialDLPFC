@@ -53,7 +53,7 @@ spaceranger_dir = pyhere.here(
 
 marker_path = pyhere.here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
-    "markers_C2L_" + cell_group + ".txt"
+    "markers_" + cell_group + ".txt"
 )
 
 #   Naming conventions used for different columns in the spatial AnnData
