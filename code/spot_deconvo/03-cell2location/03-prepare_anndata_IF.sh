@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "prepare_anndata_IF"
-#$ -o ../../../processed-data/spot_deconvo/03-cell2location/03-prepare_anndata_IF_layer.log
-#$ -e ../../../processed-data/spot_deconvo/03-cell2location/03-prepare_anndata_IF_layer.log
+#$ -o ../../../processed-data/spot_deconvo/03-cell2location/03-prepare_anndata_IF_broad.log
+#$ -e ../../../processed-data/spot_deconvo/03-cell2location/03-prepare_anndata_IF_broad.log
 #$ -l mf=80G,h_vmem=80G,h_fsize=50G
 
 echo "**** Job starts ****"

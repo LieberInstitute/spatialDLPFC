@@ -7,7 +7,7 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("HDF5Array"))
 
-cell_group = "layer" # "broad" or "layer"
+cell_group = "broad" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
 n_markers_per_type <- 25
