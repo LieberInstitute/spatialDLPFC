@@ -24,6 +24,10 @@ observed_paths <- here(
     "{sample_id}", "clusters.csv"
 )
 
+plot_dir = here(
+    "plots", "spot_deconvo", "05-shared_utilities", "IF", cell_group
+)
+
 cell_types_actual = c('micro', 'neuron', 'oligo', 'other')
 if (cell_group == "broad") {
     cell_types = c('Astro', 'Excit', 'Inhib', 'Micro', 'Oligo', 'OPC')
@@ -111,8 +115,84 @@ full_df = rbind(observed_df, actual_df) %>%
 
 #   Scatter plot of observed vs. actual cell counts, faceted by cell type and
 #   deconvolution tool. Use all spots as points
-ggplot(full_df, aes(x = observed, y = actual, color = sample_id)) +
-    geom_point(alpha = 0.01) +
-    coord_fixed() +
-    facet_grid(rows = vars(cell_type), cols = vars(deconvo_tool)) +
-    guides(col = guide_legend(override.aes = list(alpha = 1)))
+# ggplot(full_df, aes(x = observed, y = actual, color = sample_id)) +
+#     geom_point(alpha = 0.01) +
+#     coord_fixed() +
+#     facet_grid(rows = vars(cell_type), cols = vars(deconvo_tool)) +
+#     guides(col = guide_legend(override.aes = list(alpha = 1)))
+
+all_spots = function(count_df, plot_name) {
+    #   Scatterplots observed vs. actual cell counts for each cell type, faceted
+    #   by sample and deconvolution tool. Use all spots as points
+    plot_list = lapply(
+        cell_types_actual,
+        function(ct) {
+            count_df_small = count_df %>%
+                filter(cell_type == ct)
+            
+            ggplot(count_df_small, aes(x = observed, y = actual, color = sample_id)) +
+                geom_point(alpha = 0.01) +
+                geom_abline(
+                    intercept = 0, slope = 1, linetype = 'dashed', color = 'red'
+                ) +
+                coord_fixed() +
+                facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
+                guides(col = guide_legend(override.aes = list(alpha = 1)))
+        }
+    )
+    
+    # pdf(file.path(plot_dir, plot_name))
+    # print(plot_list)
+    # dev.off()
+    return(plot_list)
+}
+
+across_spots = function(count_df, plot_name) {
+    #   Scatterplot of observed vs. actual total counts summed across spots,
+    #   faceted by cell type and deconvolution tool
+    p = ggplot(count_df, aes(x = observed, y = actual, color = sample_id)) +
+        geom_point() +
+        coord_fixed() +
+        facet_grid(rows = vars(cell_type), cols = vars(deconvo_tool)) +
+        geom_abline(
+            intercept = 0, slope = 1, linetype = 'dashed', color = 'red'
+        )
+    
+    # pdf(file.path(plot_dir, plot_name))
+    # print(p)
+    # dev.off()
+    return(p)
+}
+
+all_spots(full_df, 'counts_all_spots_scatter.pdf')
+
+count_df = full_df %>%
+    group_by(sample_id, deconvo_tool, cell_type) %>%
+    summarize(observed = sum(observed), actual = sum(actual))
+
+across_spots(count_df, 'counts_across_spots_scatter.pdf')
+
+#   Now convert from counts to proportions for each spot
+prop_df = full_df %>%
+    group_by(barcode, sample_id, deconvo_tool) %>%
+    mutate(
+        observed = observed / sum(observed),
+        actual = actual / sum(actual),
+    )
+all_spots(prop_df, 'props_all_spots_scatter.pdf')
+
+#   First, sum counts for each (cell type, sample, deconvo tool) across
+#   spots. Then assign a cell-type proportion by dividing by total cells
+#   for each (sample, deconvo tool). Note this method yields many more non-NA
+#   values since taking proportions in each spot and averaging across spots
+#   introduces NAs whenever either the observed or actual total cell count is 0
+#   for a spot.
+prop_df = full_df %>%
+    group_by(sample_id, deconvo_tool, cell_type) %>%
+    summarize(observed = sum(observed), actual = sum(actual)) %>%
+    group_by(sample_id, deconvo_tool) %>%
+    mutate(
+        observed = observed / sum(observed),
+        actual = actual / sum(actual),
+    )
+across_spots(prop_df, 'props_across_spots_scatter.pdf')
