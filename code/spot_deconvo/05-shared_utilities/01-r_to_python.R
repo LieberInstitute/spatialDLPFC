@@ -25,8 +25,6 @@ spe_nonIF_in <- here(
     "processed-data", "rdata", "spe", "01_build_spe",
     "spe_filtered_final_with_clusters.Rdata"
 )
-#   Move this somewhere!
-cell_label_path = "/fastscratch/myscratch/neagles/DLPFC_HC_annotation_Sheet1.csv"
 
 sce_out <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
@@ -101,19 +99,11 @@ spe_nonIF <- spe
 rm(spe)
 gc()
 
-print(paste0("Labelling cells at ", cell_group ,"-resolution."))
+print(paste0("Running script at ", cell_group ,"-resolution."))
 
-#-------------------------------------------------------------------------------
-#   Add layer-level annotation
-#-------------------------------------------------------------------------------
-
-cell_label = read.csv(cell_label_path)
-stopifnot(sort(unique(sce$cellType_hc)) == sort(cell_label$cellType_hc))
-
-#   Add layer label
-sce$layer_level = cell_label[
-    match(sce$cellType_hc, cell_label$cellType_hc), 'layer_level'
-]
+#   Rename layer label for convenience in downstream scripts
+sce$layer_level = sce$cellType_layer
+sce$cellType_layer = NULL
 
 #-------------------------------------------------------------------------------
 #   Drop appropriate cells
@@ -121,7 +111,7 @@ sce$layer_level = cell_label[
 
 if (cell_group == "layer") {
     #   Drop EndoMural and unclear excitatory cells
-    keep = ! (sce$layer_level %in% c('drop', 'EndoMural', 'Excit_L3'))
+    keep = !is.na(sce$layer_level) & (sce$layer_level != "EndoMural")
 } else {
     #   Drop rare cell types (EndoMural) for single-cell data
     keep = !(sce$cellType_broad_hc == "EndoMural")
