@@ -19,7 +19,9 @@ message("\nSCE Dimesions:")
 dim(sce)
 
 message("Cell Types:")
-table(sce$subclass)
+## must be syntactically valid
+colData(sce)$cellType <- as.factor(make.names(colData(sce)$subclass))
+table(sce$cellType)
 
 # identify annotation/cluster labels
 rowData(sce)$gene_name <- rownames(sce) #save gene name as column of rowData
@@ -27,10 +29,10 @@ rownames(sce) <- rowData(sce)$featureid # have to make row names of object the e
 
 ## Logcounts 
 # default “X” contain the log-normalized counts
-names(assays(sce)) <- "logcounts"
+names(assays(sce)) <- "counts" ## this is wrong --- try for now
 
 registration_stats <- registration_wrapper(sce,
-                                     var_registration = "subclass",
+                                     var_registration = "cellType",
                                      var_sample_id = "individualID",
                                      covars = NULL,
                                      gene_ensembl = "featureid",
