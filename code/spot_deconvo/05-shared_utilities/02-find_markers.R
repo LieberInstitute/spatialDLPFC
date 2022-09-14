@@ -123,7 +123,10 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", cat = "cellType",
         data = expression_long, aes(x = cat, y = value, fill = cat)
     ) +
         geom_violin(scale = "width") +
-        facet_wrap(~Var1, ncol = 5, labeller = labeller(Var1 = symbols)) +
+        facet_wrap(
+            ~Var1, ncol = 5, scales = "free_y",
+            labeller = labeller(Var1 = symbols)
+        ) +
         labs(
             y = paste0("Expression (", assay, ")"),
             title = title
@@ -153,11 +156,13 @@ boxplot_mean_ratio = function(n_markers, plot_name) {
     p = marker_stats %>%
         filter(rank_ratio <= n_markers) %>%
         mutate(ratio, ratio = log(ratio)) %>%
-        ggplot(aes(cellType.target, ratio)) +
-        geom_boxplot() +
-        geom_hline(yintercept = 0, linetype = 'dashed', color = 'red') +
-        labs(y = "log(Mean Ratio)") +
-        theme_bw()
+        ggplot(aes(cellType.target, ratio, color = cellType.target)) +
+            geom_boxplot() +
+            geom_hline(yintercept = 0, linetype = 'dashed', color = 'red') +
+            scale_color_manual(values = metadata(sce)$cell_type_colors_layer) +
+            labs(y = "log(Mean Ratio)") +
+            theme_bw() +
+            guides(color = "none")
     
     ggsave(
         p, filename = file.path(plot_dir, paste0(plot_name, ".png")),
@@ -190,7 +195,8 @@ plot_list = lapply(
             filter(rank_ratio <= n_markers_per_type, cellType.target == ct) %>%
             pull(gene)
         my_plotExpression(
-            sce, genes, cat = cell_column, fill_colors = NULL,
+            sce, genes, cat = cell_column,
+            fill_colors = metadata(sce)$cell_type_colors_layer,
             title = paste('Top', n_markers_per_type, 'for', ct)
         )
     }
@@ -216,6 +222,8 @@ p = marker_stats %>%
     ) %>%
     ggplot(aes(ratio, std.logFC, color = Marker)) +
     geom_point(size = 0.5, alpha = 0.5) +
+    geom_hline(yintercept = 0, linetype = 'dashed', color = 'red') +
+    geom_vline(xintercept = 1, linetype = 'dashed', color = 'red') +
     facet_wrap(~cellType.target, scales = "free_x") +
     labs(x = "Mean Ratio") +
     theme_bw()
