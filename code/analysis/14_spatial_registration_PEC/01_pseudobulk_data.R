@@ -33,7 +33,8 @@ message(Sys.time(), " revert to counts")
 # message("Sparsity: ", sum(assays(sce)$X == 0)/product(dim(assays(sce)$X)))
 
 counts(sce) <- assays(sce)$X # change to normalized counts
-counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
+# counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
+counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
 message(Sys.time(), " make pseudobulk object")
 sce_pseudo <- scuttle::aggregateAcrossCells(
