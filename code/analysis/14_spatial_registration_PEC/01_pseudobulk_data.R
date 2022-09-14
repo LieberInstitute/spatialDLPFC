@@ -7,7 +7,7 @@ library("sessioninfo")
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
 dataset <- args[1]
-message("Running -", dataset)
+message("\n#### Running: ", dataset, " ####")
 filepath <- here("raw-data","psychENCODE","version2",dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
 stopifnot(file.exists(filepath))
 
@@ -28,16 +28,36 @@ rownames(sce) <- rowData(sce)$featureid # have to make row names of object the e
 
 ## Logcounts 
 # default “X” contain the log-normalized counts
-# names(assays(sce)) <- "logcounts"
-message(Sys.time(), " make pseudobulk object")
+message(Sys.time(), " revert to counts")
 
+# message("Sparsity: ", sum(assays(sce)$X == 0)/product(dim(assays(sce)$X)))
+
+counts(sce) <- assays(sce)$X # change to normalized counts
+counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
+
+message(Sys.time(), " make pseudobulk object")
 sce_pseudo <- scuttle::aggregateAcrossCells(
   sce,
   DataFrame(
     registration_variable = sce$cellType,
     registration_sample_id = sce$sampleID),
-  use.assay.type = "X"
+  use.assay.type = "counts"
 )
+
+colnames(sce_pseudo) <-
+  paste0(
+    sce_pseudo$registration_sample_id,
+    "_",
+    sce_pseudo$registration_variable
+  )
+
+message(Sys.time(), " normalize expression")
+logcounts(sce_pseudo) <-
+  edgeR::cpm(edgeR::calcNormFactors(sce_pseudo),
+             log = TRUE,
+             prior.count = 1
+  )
+
 
 ## Save results
 saveRDS(sce_pseudo,
