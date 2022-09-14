@@ -34,7 +34,7 @@ plot_dir <- here(
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
 ###############################################################################
-#  Load objects
+#  Load objects and preprocess 'marker_stats'
 ###############################################################################
 
 sce = readRDS(sce_in)
@@ -42,6 +42,36 @@ marker_stats <- readRDS(marker_object_in)
 gc()
 
 print(paste0("Running script at ", cell_group, "-resolution."))
+
+#-------------------------------------------------------------------------------
+#   Filter out mitochondrial genes and re-rank 'rank_ratio' values. Add gene
+#   symbols to 'marker_stats' object
+#-------------------------------------------------------------------------------
+
+#   Add gene symbol
+marker_stats$symbol = rowData(sce)$gene_name[
+    match(marker_stats$gene, rownames(sce))
+]
+
+#   Filter out mitochondrial genes
+marker_stats = marker_stats[!grepl('^MT-', marker_stats$symbol),]
+
+#   "Re-rank" rank_ratio, since there may be missing ranks now
+for (ct in unique(marker_stats$cellType.target)) {
+    old_ranks = marker_stats %>%
+        filter(cellType.target == ct) %>%
+        pull(rank_ratio) %>%
+        sort()
+    
+    for (i in 1:length(which((marker_stats$cellType.target == ct)))) {
+        index = which(
+            (marker_stats$cellType.target == ct) &
+                (marker_stats$rank_ratio == old_ranks[i])
+        )
+        stopifnot(length(index) == 1)
+        marker_stats[index, 'rank_ratio'] = i
+    }
+}
 
 ###############################################################################
 #  Functions
@@ -57,6 +87,9 @@ write_markers = function(n_markers, out_path) {
     #   Verify all markers have more expression for the target cell type than
     #   next highest
     stopifnot(any(marker_stats_temp$ratio > 1))
+    
+    #   Ensure there are the expected number of markers for each cell type
+    stopifnot(nrow(marker_stats_temp) == n_markers * length(unique(marker_stats_temp$cellType.target)))
     
     #   Write list of markers
     writeLines(markers_scratch, con = out_path)
