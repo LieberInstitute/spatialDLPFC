@@ -121,9 +121,9 @@ full_df = rbind(observed_df, actual_df) %>%
 #     facet_grid(rows = vars(cell_type), cols = vars(deconvo_tool)) +
 #     guides(col = guide_legend(override.aes = list(alpha = 1)))
 
+#   Scatterplots observed vs. actual cell counts for each cell type, faceted
+#   by sample and deconvolution tool. Use all spots as points
 all_spots = function(count_df, plot_name) {
-    #   Scatterplots observed vs. actual cell counts for each cell type, faceted
-    #   by sample and deconvolution tool. Use all spots as points
     plot_list = lapply(
         cell_types_actual,
         function(ct) {
@@ -147,15 +147,36 @@ all_spots = function(count_df, plot_name) {
     return(plot_list)
 }
 
+#   Scatterplot of observed vs. actual total counts summed across spots,
+#   faceted by cell type and deconvolution tool
 across_spots = function(count_df, plot_name) {
-    #   Scatterplot of observed vs. actual total counts summed across spots,
-    #   faceted by cell type and deconvolution tool
-    p = ggplot(count_df, aes(x = observed, y = actual, color = sample_id)) +
-        geom_point() +
+    #   Compute metrics for each deconvolution tool: correlation between
+    #   observed and actual values as well as RMSE
+    metrics_df = count_df %>%
+        group_by(deconvo_tool) %>%
+        summarize(
+            corr = round(cor(observed, actual), 2),
+            rmse = round(mean((observed - actual) ** 2) ** 0.5, 1)
+        )
+    
+    #   Improve labels for plotting
+    metrics_df$corr = paste('Cor =', metrics_df$corr)
+    metrics_df$rmse = paste('RMSE =', metrics_df$rmse)
+    
+    p = ggplot(count_df) +
+        geom_point(aes(x = observed, y = actual, color = sample_id)) +
         coord_fixed() +
-        facet_grid(rows = vars(cell_type), cols = vars(deconvo_tool)) +
+        facet_wrap(~deconvo_tool) +
         geom_abline(
             intercept = 0, slope = 1, linetype = 'dashed', color = 'red'
+        ) +
+        geom_text(
+            data = metrics_df,
+            mapping = aes(x = 4000, y = 500, label = corr)
+        ) +
+        geom_text(
+            data = metrics_df,
+            mapping = aes(x = 4000, y = 0, label = rmse)
         )
     
     # pdf(file.path(plot_dir, plot_name))
@@ -169,6 +190,8 @@ all_spots(full_df, 'counts_all_spots_scatter.pdf')
 count_df = full_df %>%
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual))
+
+
 
 across_spots(count_df, 'counts_across_spots_scatter.pdf')
 
