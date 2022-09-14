@@ -80,19 +80,32 @@ for (ct in unique(marker_stats$cellType.target)) {
 write_markers = function(n_markers, out_path) {
     #   Take top N marker genes for each cell type
     marker_stats_temp <- marker_stats %>%
-        filter(rank_ratio <= n_markers)
+        filter(
+            rank_ratio <= n_markers,
+            ratio > 1
+        )
     
-    markers_scratch <- marker_stats_temp$gene
+    #   Warn if less than the intended number of markers is used for any cell
+    #   type
+    num_markers_table = marker_stats_temp %>%
+        group_by(cellType.target) %>%
+        summarize(num_markers = n())
     
-    #   Verify all markers have more expression for the target cell type than
-    #   next highest
-    stopifnot(any(marker_stats_temp$ratio > 1))
+    if (any(num_markers_table$num_markers < n_markers)) {
+        warning(
+            paste(
+                "Used less than", n_markers,
+                "markers for at least one cell type."
+            )
+        )
+        print("Number of markers per cell type:")
+        print(num_markers_table)
+    }
     
-    #   Ensure there are the expected number of markers for each cell type
-    stopifnot(nrow(marker_stats_temp) == n_markers * length(unique(marker_stats_temp$cellType.target)))
+    stopifnot(all(num_markers_table$num_markers > 0))
     
     #   Write list of markers
-    writeLines(markers_scratch, con = out_path)
+    writeLines(marker_stats_temp$gene, con = out_path)
 }
 
 my_plotExpression <- function(sce, genes, assay = "logcounts", cat = "cellType", fill_colors = NULL, title = NULL) {
