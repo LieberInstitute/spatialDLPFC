@@ -192,12 +192,16 @@ plot_list = lapply(
     unique(marker_stats$cellType.target),
     function(ct){
         genes = marker_stats %>%
-            filter(rank_ratio <= n_markers_per_type, cellType.target == ct) %>%
+            filter(
+                rank_ratio <= n_markers_per_type,
+                cellType.target == ct,
+                ratio > 1
+            ) %>%
             pull(gene)
         my_plotExpression(
             sce, genes, cat = cell_column,
             fill_colors = metadata(sce)$cell_type_colors_layer,
-            title = paste('Top', n_markers_per_type, 'for', ct)
+            title = paste('Top', length(genes), 'for', ct)
         )
     }
 )
