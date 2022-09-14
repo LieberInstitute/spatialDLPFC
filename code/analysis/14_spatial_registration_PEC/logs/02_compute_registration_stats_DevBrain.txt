@@ -1,0 +1,130 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.2
+**** Job starts ****
+Tue Sep 13 17:41:07 EDT 2022
+**** JHPCE info ****
+User: lhuuki
+Job id: 1865010
+Job name: compute_registration_stats_DevBrain
+Hostname: compute-147.cm.cluster
+Task id: undefined
+Unloading conda_R/4.2
+Loading conda_R/4.2
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SpatialExperiment
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Running - DevBrain
+
+SCE Dimesions:
+[1] 33201   380
+2022-09-13 17:41:27 dropping 26 pseudo-bulked samples that are below 'min_ncells'.
+Cell Types:
+
+     Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
+        16         16         16         16         16         16         13 
+     L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 Lamp5.Lhx6 
+        16         16         16         16         14         15         16 
+ Micro.PVM      Oligo        OPC       Pax6      Pvalb       Sncg        Sst 
+        14         16         16         12         16         14         16 
+ Sst.Chodl        Vip       VLMC 
+         0         16         16 
+2022-09-13 17:41:28 create model matrix
+2022-09-13 17:41:28 run duplicateCorrelation()
+Note: design matrix not of full rank (1 coef not estimable).
+2022-09-13 17:44:36 computing enrichment statistics
+Coefficients not estimable: res 
+2022-09-13 17:46:10 extract and reformat enrichment results
+There were 26 warnings (use warnings() to see them)
+2022-09-13 17:46:10 running the baseline pairwise model
+Coefficients not estimable: Sst.Chodl 
+Error in limma::lmFit(logcounts(sce_pseudo), design = registration_model,  : 
+  the correlation must be set, see duplicateCorrelation
+Calls: registration_stats_pairwise -> <Anonymous>
+Execution halted
+**** Job ends ****
+Tue Sep 13 17:46:10 EDT 2022
