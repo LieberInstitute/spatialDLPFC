@@ -7,7 +7,6 @@ library("sessioninfo")
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
 dataset <- args[1]
-dataset <- "DevBrain"
 message("Running - ", dataset)
 
 sce_pseudo <- readRDS(file = here("processed-data","rdata","spe","14_spatial_registration_PEC",
@@ -29,7 +28,7 @@ message("Cell Types:")
 ## must be syntactically valid
 (var_tab <- table(sce_pseudo$registration_variable))
 
-if(any(var_tab == 0)) message("Dropping Empty Levels: ", paste0(names(var_tab)[var_tab == 0], collpase = ", "))
+if(any(var_tab == 0)) message("Dropping Empty Levels: ", paste0(names(var_tab)[var_tab == 0], collpase = " "))
 ## Drop Levels
 sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
 
