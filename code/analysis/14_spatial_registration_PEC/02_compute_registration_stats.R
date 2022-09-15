@@ -1,13 +1,13 @@
-library('zellkonverter')
+# library('zellkonverter')
 library("SingleCellExperiment")
 library("spatialLIBD")
 library("here")
 library("sessioninfo")
 
-
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
 dataset <- args[1]
+dataset <- "DevBrain"
 message("Running - ", dataset)
 
 sce_pseudo <- readRDS(file = here("processed-data","rdata","spe","14_spatial_registration_PEC",
@@ -27,9 +27,12 @@ sce_pseudo <- sce_pseudo[, sce_pseudo$ncells >= min_ncells]
 
 message("Cell Types:")
 ## must be syntactically valid
-table(sce_pseudo$cellType)
+(var_tab <- table(sce_pseudo$registration_variable))
+
+if(any(var_tab == 0)) message("Dropping Empty Levels: ", paste0(names(var_tab)[var_tab == 0], collpase = ", "))
 ## Drop Levels
-sce_pseudo$cellType <- droplevels(sce_pseudo$cellType)
+sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
+
 
 #### Run models ####
 registration_mod <- registration_model(sce_pseudo)
@@ -46,31 +49,8 @@ results_enrichment <-
     gene_name = gene_name
   )
 
-results_pairwise <-
-  registration_stats_pairwise(
-    sce_pseudo,
-    registration_model = registration_mod,
-    gene_ensembl = gene_ensembl,
-    gene_name = gene_name
-  )
-
-results_anova <-
-  registration_stats_anova(
-    sce_pseudo,
-    block_cor = block_cor,
-    gene_ensembl = gene_ensembl,
-    gene_name = gene_name,
-    prefix = prefix
-  )
-
-modeling_results <- list(
-  "anova" = results_anova,
-  "enrichment" = results_enrichment,
-  "pairwise" = results_pairwise
-)
-
 ## Save results
-saveRDS(modeling_results,
+saveRDS(results_enrichment,
         file = here("processed-data","rdata","spe","14_spatial_registration_PEC",
                     paste0("registration_stats_",dataset,".rds")))
 
