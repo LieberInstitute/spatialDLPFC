@@ -25,7 +25,7 @@ observed_paths <- here(
 )
 
 plot_dir = here(
-    "plots", "spot_deconvo", "05-shared_utilities", "IF", cell_group
+    "plots", "spot_deconvo", "05-shared_utilities", cell_group
 )
 
 cell_types_actual = c('micro', 'neuron', 'oligo', 'other')
@@ -112,15 +112,6 @@ full_df = rbind(observed_df, actual_df) %>%
         names_from = obs_type, values_from = count,
     )
 
-
-#   Scatter plot of observed vs. actual cell counts, faceted by cell type and
-#   deconvolution tool. Use all spots as points
-# ggplot(full_df, aes(x = observed, y = actual, color = sample_id)) +
-#     geom_point(alpha = 0.01) +
-#     coord_fixed() +
-#     facet_grid(rows = vars(cell_type), cols = vars(deconvo_tool)) +
-#     guides(col = guide_legend(override.aes = list(alpha = 1)))
-
 #   Scatterplots observed vs. actual cell counts for each cell type, faceted
 #   by sample and deconvolution tool. Use all spots as points
 all_spots = function(count_df, plot_name) {
@@ -137,14 +128,15 @@ all_spots = function(count_df, plot_name) {
                 ) +
                 coord_fixed() +
                 facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
-                guides(col = guide_legend(override.aes = list(alpha = 1)))
+                guides(col = guide_legend(override.aes = list(alpha = 1))) +
+                labs(title = ct)
         }
     )
     
-    # pdf(file.path(plot_dir, plot_name))
-    # print(plot_list)
-    # dev.off()
-    return(plot_list)
+    pdf(file.path(plot_dir, plot_name))
+    print(plot_list)
+    dev.off()
+    # return(plot_list)
 }
 
 #   Scatterplot of observed vs. actual total counts summed across spots,
@@ -156,7 +148,7 @@ across_spots = function(count_df, plot_name) {
         group_by(deconvo_tool) %>%
         summarize(
             corr = round(cor(observed, actual), 2),
-            rmse = round(mean((observed - actual) ** 2) ** 0.5, 1)
+            rmse = signif(mean((observed - actual) ** 2) ** 0.5, 3)
         )
     
     #   Improve labels for plotting
@@ -164,7 +156,9 @@ across_spots = function(count_df, plot_name) {
     metrics_df$rmse = paste('RMSE =', metrics_df$rmse)
     
     p = ggplot(count_df) +
-        geom_point(aes(x = observed, y = actual, color = sample_id)) +
+        geom_point(
+            aes(x = observed, y = actual, color = cell_type, shape = sample_id)
+        ) +
         coord_fixed() +
         facet_wrap(~deconvo_tool) +
         geom_abline(
@@ -172,17 +166,21 @@ across_spots = function(count_df, plot_name) {
         ) +
         geom_text(
             data = metrics_df,
-            mapping = aes(x = 4000, y = 500, label = corr)
+            mapping = aes(
+                x = Inf, y = max(count_df$observed) / 7, label = corr
+            ),
+            hjust = 1
         ) +
         geom_text(
             data = metrics_df,
-            mapping = aes(x = 4000, y = 0, label = rmse)
+            mapping = aes(x = Inf, y = 0, label = rmse),
+            hjust = 1, vjust = 0
         )
     
-    # pdf(file.path(plot_dir, plot_name))
-    # print(p)
-    # dev.off()
-    return(p)
+    pdf(file.path(plot_dir, plot_name))
+    print(p)
+    dev.off()
+    # return(p)
 }
 
 all_spots(full_df, 'counts_all_spots_scatter.pdf')
