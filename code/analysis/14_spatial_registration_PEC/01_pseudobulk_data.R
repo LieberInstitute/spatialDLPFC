@@ -36,29 +36,11 @@ counts(sce) <- assays(sce)$X # change to normalized counts
 # counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
 counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
-message(Sys.time(), " make pseudobulk object")
-sce_pseudo <- scuttle::aggregateAcrossCells(
-  sce,
-  DataFrame(
-    registration_variable = sce$cellType,
-    registration_sample_id = sce$sampleID),
-  use.assay.type = "counts"
-)
+#### Pseudobulk ####
+sce_pseudo <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
 
-colnames(sce_pseudo) <-
-  paste0(
-    sce_pseudo$registration_sample_id,
-    "_",
-    sce_pseudo$registration_variable
-  )
-
-message(Sys.time(), " normalize expression")
-logcounts(sce_pseudo) <-
-  edgeR::cpm(edgeR::calcNormFactors(sce_pseudo),
-             log = TRUE,
-             prior.count = 1
-  )
-
+message("\nSCE Pseudobulk Dimesions:")
+dim(sce_pseudo)
 
 ## Save results
 saveRDS(sce_pseudo,
