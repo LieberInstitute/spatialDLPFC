@@ -115,28 +115,56 @@ full_df = rbind(observed_df, actual_df) %>%
 #   Scatterplots observed vs. actual cell counts for each cell type, faceted
 #   by sample and deconvolution tool. Use all spots as points
 all_spots = function(count_df, plot_name) {
+    #   Compute metrics for each deconvolution tool: correlation between
+    #   observed and actual values as well as RMSE
+    metrics_df = count_df %>%
+        group_by(deconvo_tool, sample_id) %>%
+        summarize(
+            corr = round(cor(observed, actual), 2),
+            rmse = signif(mean((observed - actual) ** 2) ** 0.5, 3)
+        )
+    
+    #   Improve labels for plotting
+    metrics_df$corr = paste('Cor =', metrics_df$corr)
+    metrics_df$rmse = paste('RMSE =', metrics_df$rmse)
+    
     plot_list = lapply(
         cell_types_actual,
         function(ct) {
             count_df_small = count_df %>%
                 filter(cell_type == ct)
             
-            ggplot(count_df_small, aes(x = observed, y = actual, color = sample_id)) +
-                geom_point(alpha = 0.01) +
+            ggplot(count_df_small) +
+                geom_point(
+                    aes(x = observed, y = actual, color = sample_id),
+                    alpha = 0.01
+                ) +
                 geom_abline(
                     intercept = 0, slope = 1, linetype = 'dashed', color = 'red'
                 ) +
                 coord_fixed() +
                 facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
                 guides(col = guide_legend(override.aes = list(alpha = 1))) +
-                labs(title = ct)
+                labs(title = ct) +
+                geom_text(
+                    data = metrics_df,
+                    mapping = aes(
+                        x = Inf, y = max(count_df$observed) / 7, label = corr
+                    ),
+                    hjust = 1
+                ) +
+                geom_text(
+                    data = metrics_df,
+                    mapping = aes(x = Inf, y = 0, label = rmse),
+                    hjust = 1, vjust = 0
+                )
         }
     )
     
-    pdf(file.path(plot_dir, plot_name))
-    print(plot_list)
-    dev.off()
-    # return(plot_list)
+    # pdf(file.path(plot_dir, plot_name))
+    # print(plot_list)
+    # dev.off()
+    return(plot_list)
 }
 
 #   Scatterplot of observed vs. actual total counts summed across spots,
