@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=50G,h_vmem=50G,h_fsize=100G
+#$ -l mem_free=100G,h_vmem=100G,h_fsize=100G
 #$ -N pseudobulk_data_CMC
 #$ -o logs/01_pseudobulk_data_CMC.txt
 #$ -e logs/01_pseudobulk_data_CMC.txt

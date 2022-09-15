@@ -23,7 +23,7 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R UCLAMulti
+Rscript 01_pseudobulk_data.R UCLA-ASD
 
 echo "**** Job ends ****"
 date

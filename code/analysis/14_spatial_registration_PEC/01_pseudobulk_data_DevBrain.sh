@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l mem_free=100G,h_vmem=100G,h_fsize=200G
 #$ -N pseudobulk_data_DevBrain
 #$ -o logs/01_pseudobulk_data_DevBrain.txt
 #$ -e logs/01_pseudobulk_data_DevBrain.txt
