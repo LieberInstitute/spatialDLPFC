@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Sep 15 09:19:05 EDT 2022
+Thu Sep 15 12:05:25 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 9934554
+Job id: 9940405
 Job name: pseudobulk_data_UCLA
-Hostname: compute-129.cm.cluster
+Hostname: compute-070.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -100,7 +100,7 @@ Loading required package: SpatialExperiment
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 
 #### Running: UCLA-ASD ####
-2022-09-15 09:19:24 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version2/UCLA-ASD/UCLA-ASD-snRNAseq_annotated.h5ad
+2022-09-15 12:05:51 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version2/UCLA-ASD/UCLA-ASD-snRNAseq_annotated.h5ad
 Warning messages:
 1: The names of these selected uns$uns_dict items have been modified to match R conventions: '18BW' -> 'X18BW', '19BW' -> 'X19BW', '20BW' -> 'X20BW', '21BW' -> 'X21BW', '28BW' -> 'X28BW', '29BW' -> 'X29BW', '33BW' -> 'X33BW', '34BW' -> 'X34BW', '39BW' -> 'X39BW', '40BW' -> 'X40BW', '41BW' -> 'X41BW', '42BW' -> 'X42BW', '43BW' -> 'X43BW', '44BW' -> 'X44BW', '47BW' -> 'X47BW', '48BW' -> 'X48BW', '49BW' -> 'X49BW', '50BW' -> 'X50BW', '51BW' -> 'X51BW', '52BW' -> 'X52BW', '53BW' -> 'X53BW', '54BW' -> 'X54BW', '56BW' -> 'X56BW', '57BW' -> 'X57BW', '61BW' -> 'X61BW', '62BW' -> 'X62BW', '63BW' -> 'X63BW', '64BW' -> 'X64BW', '65BW' -> 'X65BW', '66BW' -> 'X66BW', '67BW' -> 'X67BW', '68BW' -> 'X68BW', '69BW' -> 'X69BW', '70BW' -> 'X70BW', '71BW' -> 'X71BW', '72BW' -> 'X72BW', '73BW' -> 'X73BW', '74BW' -> 'X74BW', '76BW' -> 'X76BW', '77BW' -> 'X77BW', '78BW' -> 'X78BW' 
 2: The names of these selected uns$var_dict items have been modified to match R conventions: '18BW' -> 'X18BW', '19BW' -> 'X19BW', '20BW' -> 'X20BW', '21BW' -> 'X21BW', '28BW' -> 'X28BW', '29BW' -> 'X29BW', '33BW' -> 'X33BW', '34BW' -> 'X34BW', '39BW' -> 'X39BW', '40BW' -> 'X40BW', '41BW' -> 'X41BW', '42BW' -> 'X42BW', '43BW' -> 'X43BW', '44BW' -> 'X44BW', '47BW' -> 'X47BW', '48BW' -> 'X48BW', '49BW' -> 'X49BW', '50BW' -> 'X50BW', '51BW' -> 'X51BW', '52BW' -> 'X52BW', '53BW' -> 'X53BW', '54BW' -> 'X54BW', '56BW' -> 'X56BW', '57BW' -> 'X57BW', '61BW' -> 'X61BW', '62BW' -> 'X62BW', '63BW' -> 'X63BW', '64BW' -> 'X64BW', '65BW' -> 'X65BW', '66BW' -> 'X66BW', '67BW' -> 'X67BW', '68BW' -> 'X68BW', '69BW' -> 'X69BW', '70BW' -> 'X70BW', '71BW' -> 'X71BW', '72BW' -> 'X72BW', '73BW' -> 'X73BW', '74BW' -> 'X74BW', '76BW' -> 'X76BW', '77BW' -> 'X77BW', '78BW' -> 'X78BW' 
@@ -123,9 +123,9 @@ Cell Types:
      12785      54555      23783        898      11858       3144      12365 
  Sst.Chodl        Vip       VLMC 
        127      12190       8674 
-2022-09-15 09:21:29 revert to counts
-2022-09-15 09:21:29 make pseudobulk object
-2022-09-15 09:22:02 drop lowly expressed genes
+2022-09-15 12:09:47 revert to counts
+2022-09-15 12:09:48 make pseudobulk object
+2022-09-15 12:11:11 drop lowly expressed genes
 Error in cpm.default(y, lib.size = lib.size) : 
   library sizes should be finite and non-negative
 Calls: registration_pseudobulk ... filterByExpr.DGEList -> filterByExpr.default -> cpm -> cpm.default
@@ -134,4 +134,4 @@ In DGEList(counts = counts, samples = samples, genes = genes) :
   library size of zero detected
 Execution halted
 **** Job ends ****
-Thu Sep 15 09:22:05 EDT 2022
+Thu Sep 15 12:11:16 EDT 2022
