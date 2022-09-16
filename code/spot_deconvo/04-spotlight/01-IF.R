@@ -9,6 +9,7 @@ library('scran')
 library('here')
 library('NMF')
 library('sessioninfo')
+library('tidyverse')
 
 ################################################################################
 #   Variable definitions
