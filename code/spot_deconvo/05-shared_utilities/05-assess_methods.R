@@ -92,10 +92,10 @@ all_spots = function(count_df, plot_name) {
         }
     )
     
-    # pdf(file.path(plot_dir, plot_name))
-    # print(plot_list)
-    # dev.off()
-    return(plot_list)
+    pdf(file.path(plot_dir, plot_name))
+    print(plot_list)
+    dev.off()
+    # return(plot_list)
 }
 
 #   Scatterplot of observed vs. actual total counts summed across spots,
@@ -144,12 +144,8 @@ across_spots = function(count_df, plot_name) {
 }
 
 ################################################################################
-#   Analysis/ data exploration
-################################################################################
-
-#-------------------------------------------------------------------------------
 #   Read in and format cell counts into a table apt for plotting with ggplot
-#-------------------------------------------------------------------------------
+################################################################################
 
 sample_ids = readLines(sample_ids)
 
@@ -230,8 +226,12 @@ full_df = rbind(observed_df, actual_df) %>%
         names_from = obs_type, values_from = count,
     )
 
-#-------------------------------------------------------------------------------
+################################################################################
 #   Exploratory plots
+################################################################################
+
+#-------------------------------------------------------------------------------
+#   Plot total counts per spot for tangram and cell2location
 #-------------------------------------------------------------------------------
 
 #   For each spot, plot the provided vs. computed total number of cells for the
@@ -255,17 +255,25 @@ ggplot(count_df) +
         title = "Provided vs. calculated total cells per spot"
     )
 
+#-------------------------------------------------------------------------------
+#   Counts: "all" and "across"
+#-------------------------------------------------------------------------------
+
+#   Plot cell-type counts for all spots
 all_spots(full_df, 'counts_all_spots_scatter.pdf')
 
+#   Plot cell-type counts summed across spots
 count_df = full_df %>%
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual))
 
-
-
 across_spots(count_df, 'counts_across_spots_scatter.pdf')
 
-#   Now convert from counts to proportions for each spot
+#-------------------------------------------------------------------------------
+#   Proportions: "all" and "across"
+#-------------------------------------------------------------------------------
+
+#   Plot cell-type proportions for all spots
 prop_df = full_df %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
     mutate(
@@ -289,3 +297,25 @@ prop_df = full_df %>%
         actual = actual / sum(actual),
     )
 across_spots(prop_df, 'props_across_spots_scatter.pdf')
+
+#-------------------------------------------------------------------------------
+#   Adjusted counts: "all" and "across"
+#-------------------------------------------------------------------------------
+
+#   Counts, where we take the estimated proportion and multiply by the
+#   "ground-truth" total count
+count_df = full_df %>%
+    group_by(barcode, sample_id, deconvo_tool) %>%
+    mutate(
+        observed = sum(actual) * observed / sum(observed)
+    )
+count_df$observed[is.na(count_df$observed)] = 0
+all_spots(count_df, 'adjusted_counts_all_spots_scatter.pdf')
+
+count_df = full_df %>%
+    group_by(sample_id, deconvo_tool, cell_type) %>%
+    summarize(observed = sum(observed), actual = sum(actual)) %>%
+    group_by(sample_id, deconvo_tool) %>%
+    mutate(observed = sum(actual) * observed / sum(observed))
+
+across_spots(count_df, 'adjusted_counts_across_spots_scatter.pdf')
