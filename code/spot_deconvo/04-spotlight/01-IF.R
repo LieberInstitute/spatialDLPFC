@@ -105,6 +105,13 @@ markers = readLines(marker_path)
 marker_stats = readRDS(marker_stats_path)
 stopifnot(all(markers %in% rownames(sce)))
 
+#   Make sure there is only one row per gene, and that row corresponds to the
+#   target cell type for which the gene could potentially be a marker
+marker_stats = marker_stats %>%
+    group_by(gene) %>%
+    filter(ratio == max(ratio))
+
+
 #   Filter out any mitochondrial/ribosomal genes
 genes = !grepl(
     pattern = "^(RP[LS]|MT-)",
