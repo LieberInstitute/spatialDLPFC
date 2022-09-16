@@ -34,83 +34,10 @@ if (cell_group == "broad") {
 } else {
     cell_types = c() # TODO
 }
-sample_ids = readLines(sample_ids)
 
-actual_list = list()
-observed_list = list()
-index = 1
-
-added_colnames = c("barcode", "sample_id", "deconvo_tool", "obs_type")
-
-
-for (sample_id in sample_ids) {
-    #   Read in the "ground-truth" counts for this sample
-    actual_path = sub("\\{sample_id\\}", sample_id, actual_paths)
-    actual_df_small = read.csv(actual_path)
-    
-    #   Make sure we have just counts for each cell type, barcode, and
-    #   sample ID variables-- nothing else. Order column names
-    actual_df_small$barcode = ss(actual_df_small$key, '_', 1)
-    actual_df_small$sample_id = sample_id
-    actual_df_small$obs_type = "actual"
-    
-    for (deconvo_tool in deconvo_tools) {
-        #   Read in estimated cell counts for this deconvo tool and sample
-        observed_path = sub("\\{sample_id\\}", sample_id, observed_paths)
-        observed_path = sub("\\{deconvo_tool\\}", deconvo_tool, observed_path)
-        observed_df_small = read.csv(observed_path)
-        
-        #   Make sure column names are consistent and include only info about
-        #   barcode, sample_id, deconvo tool, and cell-type counts
-        observed_df_small$barcode = ss(observed_df_small$key, '_', 1)
-        observed_df_small$sample_id = sample_id
-        observed_df_small$deconvo_tool = deconvo_tool
-        observed_df_small$obs_type = "observed"
-        observed_df_small = observed_df_small[
-            , c(added_colnames, cell_types)
-        ]
-        
-        actual_df_small$deconvo_tool = deconvo_tool
-        
-        actual_list[[index]] = actual_df_small[
-            , c(added_colnames, cell_types_actual)
-        ]
-        observed_list[[index]] = observed_df_small
-        index = index + 1
-    }
-}
-
-#   Form data frames containing cell-type counts for all spots, samples, and
-#   deconvolution tools
-actual_df = as_tibble(do.call(rbind, actual_list))
-observed_df = as_tibble(do.call(rbind, observed_list))
-
-#   Combine cell types as appropriate for comparison against the relatively
-#   narrow types in the ground-truth
-if (cell_group == "broad") {
-    colnames(observed_df) = tolower(colnames(observed_df))
-    
-    observed_df = observed_df %>%
-        mutate("neuron" = excit + inhib) %>%
-        mutate("other" = astro + opc) %>%
-        select(all_of(c(added_colnames, cell_types_actual)))
-    
-    stopifnot(all(colnames(observed_df) == colnames(actual_df)))
-} else {
-    #   TODO
-}
-
-#   Combine observed and actual cell counts so that each row is a unique
-#   cell type, spot, sample, and deconvolution method with two values: measured
-#   and ground-truth
-full_df = rbind(observed_df, actual_df) %>%
-    melt(
-        id.vars = added_colnames, variable.name = "cell_type",
-        value.name = "count"
-    ) %>%
-    pivot_wider(
-        names_from = obs_type, values_from = count,
-    )
+################################################################################
+#   Plotting functions
+################################################################################
 
 #   Scatterplots observed vs. actual cell counts for each cell type, faceted
 #   by sample and deconvolution tool. Use all spots as points
@@ -210,6 +137,114 @@ across_spots = function(count_df, plot_name) {
     dev.off()
     # return(p)
 }
+
+################################################################################
+#   Analysis/ data exploration
+################################################################################
+
+#-------------------------------------------------------------------------------
+#   Read in and format cell counts into a table apt for plotting with ggplot
+#-------------------------------------------------------------------------------
+
+sample_ids = readLines(sample_ids)
+
+actual_list = list()
+observed_list = list()
+index = 1
+
+added_colnames = c("barcode", "sample_id", "deconvo_tool", "obs_type")
+
+#   Read in counts for all cell types for all samples and deconvolution tools
+#   (as well as the "ground-truth")
+for (sample_id in sample_ids) {
+    #   Read in the "ground-truth" counts for this sample
+    actual_path = sub("\\{sample_id\\}", sample_id, actual_paths)
+    actual_df_small = read.csv(actual_path)
+    
+    #   Make sure we have just counts for each cell type, barcode, and
+    #   sample ID variables-- nothing else. Order column names
+    actual_df_small$barcode = ss(actual_df_small$key, '_', 1)
+    actual_df_small$sample_id = sample_id
+    actual_df_small$obs_type = "actual"
+    
+    for (deconvo_tool in deconvo_tools) {
+        #   Read in estimated cell counts for this deconvo tool and sample
+        observed_path = sub("\\{sample_id\\}", sample_id, observed_paths)
+        observed_path = sub("\\{deconvo_tool\\}", deconvo_tool, observed_path)
+        observed_df_small = read.csv(observed_path)
+        
+        #   Make sure column names are consistent and include only info about
+        #   barcode, sample_id, deconvo tool, and cell-type counts
+        observed_df_small$barcode = ss(observed_df_small$key, '_', 1)
+        observed_df_small$sample_id = sample_id
+        observed_df_small$deconvo_tool = deconvo_tool
+        observed_df_small$obs_type = "observed"
+        observed_df_small = observed_df_small[
+            , c(added_colnames, cell_types)
+        ]
+        
+        actual_df_small$deconvo_tool = deconvo_tool
+        
+        actual_list[[index]] = actual_df_small[
+            , c(added_colnames, cell_types_actual)
+        ]
+        observed_list[[index]] = observed_df_small
+        index = index + 1
+    }
+}
+
+#   Form data frames containing cell-type counts for all spots, samples, and
+#   deconvolution tools
+actual_df = as_tibble(do.call(rbind, actual_list))
+observed_df = as_tibble(do.call(rbind, observed_list))
+
+#   Combine cell types as appropriate for comparison against the relatively
+#   narrow types in the ground-truth
+if (cell_group == "broad") {
+    colnames(observed_df) = tolower(colnames(observed_df))
+    
+    observed_df = observed_df %>%
+        mutate("neuron" = excit + inhib) %>%
+        mutate("other" = astro + opc) %>%
+        select(all_of(c(added_colnames, cell_types_actual)))
+    
+    stopifnot(all(colnames(observed_df) == colnames(actual_df)))
+} else {
+    #   TODO
+}
+
+#   Combine observed and actual cell counts so that each row is a unique
+#   cell type, spot, sample, and deconvolution method with two values: measured
+#   and ground-truth
+full_df = rbind(observed_df, actual_df) %>%
+    melt(
+        id.vars = added_colnames, variable.name = "cell_type",
+        value.name = "count"
+    ) %>%
+    pivot_wider(
+        names_from = obs_type, values_from = count,
+    )
+
+#-------------------------------------------------------------------------------
+#   Exploratory plots
+#-------------------------------------------------------------------------------
+
+#   For each spot, plot the provided vs. computed total number of cells for the
+#   deconvolution methods that aren't constrained to use the same totals as
+#   provided (tangram and cell2location)
+count_df = full_df %>%
+    filter(deconvo_tool %in% c('01-tangram', '03-cell2location')) %>%
+    group_by(barcode, sample_id, deconvo_tool) %>%
+    summarize(observed = sum(observed), actual = sum(actual))
+
+ggplot(count_df) +
+    geom_point(aes(x = observed, y = actual), alpha = 0.01) +
+    facet_wrap(~ deconvo_tool) +
+    coord_fixed() +
+    geom_abline(
+        intercept = 0, slope = 1, linetype = 'dashed', color = 'red'
+    ) +
+    labs(title = "Provided vs. calculated total cells per spot")
 
 all_spots(full_df, 'counts_all_spots_scatter.pdf')
 
