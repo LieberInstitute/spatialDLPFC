@@ -72,7 +72,11 @@ all_spots = function(count_df, plot_name) {
                 coord_fixed() +
                 facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
                 guides(col = guide_legend(override.aes = list(alpha = 1))) +
-                labs(title = ct) +
+                labs(
+                    title = ct,
+                    x = "Software-estimated",
+                    y = "CART-calculated",
+                ) +
                 geom_text(
                     data = metrics_df,
                     mapping = aes(
@@ -130,7 +134,8 @@ across_spots = function(count_df, plot_name) {
             data = metrics_df,
             mapping = aes(x = Inf, y = 0, label = rmse),
             hjust = 1, vjust = 0
-        )
+        ) +
+        labs(x = "Software-estimated", y = "CART-calculated")
     
     pdf(file.path(plot_dir, plot_name))
     print(p)
@@ -244,7 +249,11 @@ ggplot(count_df) +
     geom_abline(
         intercept = 0, slope = 1, linetype = 'dashed', color = 'red'
     ) +
-    labs(title = "Provided vs. calculated total cells per spot")
+    labs(
+        x = "Calculated cell count",
+        y = "Provided cell count",
+        title = "Provided vs. calculated total cells per spot"
+    )
 
 all_spots(full_df, 'counts_all_spots_scatter.pdf')
 
