@@ -108,8 +108,11 @@ write_markers = function(n_markers, out_path) {
     writeLines(marker_stats_temp$gene, con = out_path)
 }
 
-my_plotExpression <- function(sce, genes, assay = "logcounts", cat = "cellType", fill_colors = NULL, title = NULL) {
-    cat_df <- as.data.frame(colData(sce))[, cat, drop = FALSE]
+my_plotExpression <- function(
+        sce, genes, assay = "logcounts", ct = "cellType", fill_colors = NULL,
+        title = NULL, marker_stats
+    ) {
+    cat_df <- as.data.frame(colData(sce))[, ct, drop = FALSE]
     expression_long <- reshape2::melt(as.matrix(assays(sce)[[assay]][genes, ]))
     
     cat <- cat_df[expression_long$Var2, ]
@@ -119,10 +122,23 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", cat = "cellType",
     symbols = rowData(sce)$gene_name[match(genes, rownames(sce))]
     names(symbols) = genes
     
+    #   Add a data frame for adding mean-ratio labels to each gene
+    text_df = marker_stats
+    text_df$ratio = paste0('Mean ratio: ', round(text_df$ratio, 2))
+    text_df$Var1 = text_df$gene
+    
     expression_violin <- ggplot(
         data = expression_long, aes(x = cat, y = value, fill = cat)
     ) +
         geom_violin(scale = "width") +
+        geom_text(
+            data = text_df,
+            mapping = aes(
+                x = length(unique(sce[[ct]])), y = Inf, fill = NULL,
+                label = ratio, size = 10
+            ),
+            hjust = 1, vjust = 1
+        ) +
         facet_wrap(
             ~Var1, ncol = 5, scales = "free_y",
             labeller = labeller(Var1 = symbols)
@@ -199,9 +215,15 @@ plot_list = lapply(
             ) %>%
             pull(gene)
         my_plotExpression(
-            sce, genes, cat = cell_column,
+            sce, genes, ct = cell_column,
             fill_colors = metadata(sce)$cell_type_colors_layer,
-            title = paste('Top', length(genes), 'for', ct)
+            title = paste('Top', length(genes), 'for', ct),
+            marker_stats = marker_stats %>%
+                filter(
+                    rank_ratio <= n_markers_per_type,
+                    cellType.target == ct,
+                    ratio > 1
+                )
         )
     }
 )

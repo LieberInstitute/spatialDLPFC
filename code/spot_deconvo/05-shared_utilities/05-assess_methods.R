@@ -62,9 +62,8 @@ all_spots = function(count_df, plot_name) {
                 filter(cell_type == ct)
             
             ggplot(count_df_small) +
-                geom_point(
-                    aes(x = observed, y = actual, color = sample_id),
-                    alpha = 0.01
+                geom_hex(
+                    aes(x = observed, y = actual), bins = 50
                 ) +
                 geom_abline(
                     intercept = 0, slope = 1, linetype = 'dashed', color = 'red'
@@ -88,14 +87,15 @@ all_spots = function(count_df, plot_name) {
                     data = metrics_df,
                     mapping = aes(x = Inf, y = 0, label = rmse),
                     hjust = 1, vjust = 0
-                )
+                ) +
+                scale_fill_continuous(type = "viridis")
         }
     )
     
-    pdf(file.path(plot_dir, plot_name))
-    print(plot_list)
-    dev.off()
-    # return(plot_list)
+    # pdf(file.path(plot_dir, plot_name))
+    # print(plot_list)
+    # dev.off()
+    return(plot_list)
 }
 
 #   Scatterplot of observed vs. actual total counts summed across spots,

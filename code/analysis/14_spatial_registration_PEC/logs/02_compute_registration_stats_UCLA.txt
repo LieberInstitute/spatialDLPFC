@@ -6,22 +6,22 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Sep 15 14:54:15 EDT 2022
+Fri Sep 16 13:33:21 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 9947544
+Job id: 9970791
 Job name: compute_registration_stats_UCLA
-Hostname: compute-102.cm.cluster
+Hostname: compute-054.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
 Loading conda_R/4.2
 
 Currently Loaded Modules:
-  1) matlab/R2019a     6) gcc/4.4.7                      11) git-lfs/2.8.0
-  2) stata/17          7) COMMUNITY_CENTOS7_DEFAULT_ENV  12) ruby/2.6.4p104
-  3) sas/9.4           8) JHPCE_CENTOS7_DEFAULT_ENV      13) rmate/1.5.9
-  4) JHPCE_tools/1.0   9) git-status-size/github         14) conda/3-4.11.0
-  5) sge/8.1.9        10) git/2.28.0                     15) conda_R/4.2
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2
+  5) gcc/4.4.7        10) git-lfs/2.8.0
 
  
 
@@ -102,7 +102,7 @@ Running - UCLA-ASD
 
 SCE Dimesions:
 [1] 34014   976
-2022-09-15 14:54:50 dropping 77 pseudo-bulked samples that are below 'min_ncells'.
+2022-09-16 13:37:37 dropping 77 pseudo-bulked samples that are below 'min_ncells'.
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
@@ -113,12 +113,12 @@ Cell Types:
         40         41         41         30         41         40         41 
  Sst.Chodl        Vip       VLMC 
          2         41         41 
-2022-09-15 14:54:51 create model matrix
-2022-09-15 14:54:51 run duplicateCorrelation()
-2022-09-15 15:31:57 computing enrichment statistics
+2022-09-16 13:37:47 create model matrix
+2022-09-16 13:37:48 run duplicateCorrelation()
+2022-09-16 20:24:39 computing enrichment statistics
 Error in if (abs(correlation) >= 1) stop("correlation is 1 or -1, so the model is degenerate") : 
   missing value where TRUE/FALSE needed
 Calls: registration_stats_enrichment ... <Anonymous> -> .ebayes -> <Anonymous> -> gls.series
 Execution halted
 **** Job ends ****
-Thu Sep 15 15:31:59 EDT 2022
+Fri Sep 16 20:24:49 EDT 2022
