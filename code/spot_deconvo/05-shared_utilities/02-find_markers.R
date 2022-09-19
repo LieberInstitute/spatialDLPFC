@@ -6,6 +6,8 @@ suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("HDF5Array"))
+suppressPackageStartupMessages(library('spatialLIBD'))
+suppressPackageStartupMessages(library('cowplot'))
 
 cell_group = "layer" # "broad" or "layer"
 
@@ -16,6 +18,13 @@ n_markers_per_type <- 25
 sce_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
     paste0("sce_", cell_group, ".rds")
+)
+spe_IF_in <- here(
+    "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
+)
+spe_nonIF_in <- here(
+    "processed-data", "rdata", "spe", "01_build_spe",
+    "spe_filtered_final_with_clusters.Rdata"
 )
 marker_object_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
@@ -261,5 +270,48 @@ ggsave(
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
 boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot")
+
+#   For IF, show a grid of plots summarizing how sparsely marker genes
+#   for each cell type are expressed spatially
+spe = readRDS(spe_IF_in)
+plot_list = list()
+i = 1
+for (ct in unique(marker_stats$cellType.target)) {
+    #   Get markers for this cell type
+    markers = marker_stats %>%
+        filter(
+            cellType.target == ct,
+            rank_ratio <= n_markers_per_type,
+            ratio > 1
+        ) %>%
+        pull(gene)
+    
+    for (sample_id in unique(spe$sample_id)) {
+        spe_small = spe[markers, spe$sample_id == sample_id]
+        
+        #   For each spot, compute proportion of marker genes with nonzero
+        #   expression
+        spe_small$prop_nonzero_marker = colMeans(assays(spe_small)$counts > 0)
+        
+        p = vis_grid_gene(
+            spe_small, geneid = 'prop_nonzero_marker', return_plots = TRUE
+        )
+        plot_list[[i]] = p[[1]] + labs(
+            title = paste0(
+                "Prop. markers w/ nonzero exp:\n",ct, ' (', sample_id, ')'
+            )
+        )
+        i = i + 1
+    }
+}
+n_sample = length(unique(spe$sample_id))
+n_cell_type = length(unique(marker_stats$cellType.target))
+
+pdf(
+    file.path(plot_dir, 'marker_spatial_sparsity.pdf'),
+    width = 3 * n_cell_type, height = 7 * n_cell_type
+)
+plot_grid(plotlist = plot_list, ncol = n_sample)
+dev.off()
 
 session_info()
