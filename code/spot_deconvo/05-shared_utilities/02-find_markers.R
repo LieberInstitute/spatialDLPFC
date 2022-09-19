@@ -176,6 +176,12 @@ my_plotExpression <- function(
     return(expression_violin)
 }
 
+if (cell_group == "broad") {
+    colors_col = 'cell_type_colors_broad'
+} else {
+    colors_col = 'cell_type_colors_layer'
+}
+
 #   Plot mean-ratio distribution by cell type/ layer
 boxplot_mean_ratio = function(n_markers, plot_name) {
     p = marker_stats %>%
@@ -184,7 +190,7 @@ boxplot_mean_ratio = function(n_markers, plot_name) {
         ggplot(aes(cellType.target, ratio, color = cellType.target)) +
             geom_boxplot() +
             geom_hline(yintercept = 0, linetype = 'dashed', color = 'red') +
-            scale_color_manual(values = metadata(sce)$cell_type_colors_layer) +
+            scale_color_manual(values = metadata(sce)[[colors_col]]) +
             labs(y = "log(Mean Ratio)") +
             theme_bw() +
             guides(color = "none")
