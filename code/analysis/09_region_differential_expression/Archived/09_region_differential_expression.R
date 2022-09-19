@@ -6,14 +6,14 @@ library(SingleCellExperiment)
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 # load pseudobulked object created from preliminary_analysis.R
-spe_pseudo <- readRDS(file = here::here("processed-data","rdata","spe","pseudo_bulked_spe",paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k",k,".RDS")))
+spe_pseudo <- readRDS(file = here::here("processed-data", "rdata", "spe", "pseudo_bulked_spe", paste0("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k", k, ".RDS")))
 
 
 # http://bioconductor.org/books/3.14/OSCA.multisample/multi-sample-comparisons.html#creating-pseudo-bulk-samples
 
 de.results.mid <- pseudoBulkDGE(spe_pseudo,
     label = colData(spe_pseudo)$BayesSpace, # tells it to do it one cluster at a time. to do it globally, don't need label.
-    design = ~ factor(region) + factor(sex) + factor(age),  #don't we need to to include bayesSpace here?
+    design = ~ factor(region) + factor(sex) + factor(age), # don't we need to to include bayesSpace here?
     method = "voom",
     coef = "factor(region)middle" # comes from topTable from limma, specifies the coefficient you want to do the t-test on, this is pairwise comparison. can see how they did it before with limma for the pilot study.
     # in order to run anova have to provide more than one coefficient
@@ -50,14 +50,14 @@ save(
 )
 
 
-#####re-try this works####
+##### re-try this works####
 colData(spe_pseudo)$region <- as.factor(colData(spe_pseudo)$region)
 colData(spe_pseudo)$age <- as.factor(colData(spe_pseudo)$age)
 colData(spe_pseudo)$sex <- as.factor(colData(spe_pseudo)$sex)
 de.results.mid <- pseudoBulkDGE(spe_pseudo,
-                                label = spe_pseudo$BayesSpace, # tells it to do it one cluster at a time. to do it globally, don't need label.
-                                design = ~region,  #don't we need to to include bayesSpace here?
-                                method = "voom",
-                                coef = "regionmiddle" # comes from topTable from limma, specifies the coefficient you want to do the t-test on, this is pairwise comparison. can see how they did it before with limma for the pilot study.
-                                # in order to run anova have to provide more than one coefficient
+    label = spe_pseudo$BayesSpace, # tells it to do it one cluster at a time. to do it globally, don't need label.
+    design = ~region, # don't we need to to include bayesSpace here?
+    method = "voom",
+    coef = "regionmiddle" # comes from topTable from limma, specifies the coefficient you want to do the t-test on, this is pairwise comparison. can see how they did it before with limma for the pilot study.
+    # in order to run anova have to provide more than one coefficient
 )

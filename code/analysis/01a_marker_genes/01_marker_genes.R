@@ -36,7 +36,6 @@ human_markers <-
         "HPCAL1",
         "NR4A2",
         "RORB"
-        
     )
 
 ## Locate the marker genes
@@ -270,77 +269,77 @@ for (i in length(regions)) {
 
 # new_markers_search <- rowData(spe)$gene_search[match(new_markers, rowData(spe)$gene_name)]
 new_markers <-
-  c("CLDN5",
-    "C1QL2",
-    "APOE",
-    "MSX1",
-    "SPARC"
-  )
-new_markers<- rowData(spe)$gene_search[match(new_markers, rowData(spe)$gene_name)]
+    c(
+        "CLDN5",
+        "C1QL2",
+        "APOE",
+        "MSX1",
+        "SPARC"
+    )
+new_markers <- rowData(spe)$gene_search[match(new_markers, rowData(spe)$gene_name)]
 samples <- unique(spe$sample_id)
 
 
 for (i in new_markers) {
-  vis_grid_gene(
-    spe = spe,
-    geneid = i,
-    pdf = here::here("plots", "01a_marker_genes", paste0(gsub("; ", "_", i), ".pdf")),
-    assayname = "counts"
-  )
+    vis_grid_gene(
+        spe = spe,
+        geneid = i,
+        pdf = here::here("plots", "01a_marker_genes", paste0(gsub("; ", "_", i), ".pdf")),
+        assayname = "counts"
+    )
 }
 
 for (i in length(new_markers)) {
-  pdf(file = here::here("plots", "01a_marker_genes", paste0("vis_genes_new_markers_", ".pdf")))
-  for (j in length(samples)) {
-    p <- vis_gene( # returns ggplot2 object
-      spe,
-      sampleid = samples[j],
-      geneid = new_markers[i],
-      spatial = TRUE,
-      assayname = "logcounts",
-      minCount = 0,
-      viridis = TRUE,
-      image_id = "lowres",
-      alpha = 1,
-      point_size = 1.25
-      )
-    # append p to plots
-    print(p)
-  }
-  dev.off()
-  
+    pdf(file = here::here("plots", "01a_marker_genes", paste0("vis_genes_new_markers_", ".pdf")))
+    for (j in length(samples)) {
+        p <- vis_gene( # returns ggplot2 object
+            spe,
+            sampleid = samples[j],
+            geneid = new_markers[i],
+            spatial = TRUE,
+            assayname = "logcounts",
+            minCount = 0,
+            viridis = TRUE,
+            image_id = "lowres",
+            alpha = 1,
+            point_size = 1.25
+        )
+        # append p to plots
+        print(p)
+    }
+    dev.off()
 }
 
 
 pdf(file = here::here("plots", "01a_marker_genes", "vis_genes_new_markers_CLDN5.pdf"))
-    p <- vis_gene( # returns ggplot2 object
-      spe,
-      sampleid = "Br8667_mid",
-      geneid ="CLDN5; ENSG00000184113",
-      spatial = TRUE,
-      assayname = "logcounts",
-      minCount = 0,
-      viridis = TRUE,
-      image_id = "lowres",
-      alpha = 1,
-      point_size = 1.25
-    )
-    # append p to plots
-    print(p)
+p <- vis_gene( # returns ggplot2 object
+    spe,
+    sampleid = "Br8667_mid",
+    geneid = "CLDN5; ENSG00000184113",
+    spatial = TRUE,
+    assayname = "logcounts",
+    minCount = 0,
+    viridis = TRUE,
+    image_id = "lowres",
+    alpha = 1,
+    point_size = 1.25
+)
+# append p to plots
+print(p)
 dev.off()
 
 pdf(file = here::here("plots", "01a_marker_genes", "vis_genes_new_markers_MSX1.pdf"))
 p <- vis_gene( # returns ggplot2 object
-  spe,
-  sampleid = "Br8667_mid",
-  geneid ="MSX1; ENSG00000163132",
-  spatial = TRUE,
-  assayname = "logcounts",
-  minCount = 0,
-  viridis = TRUE,
-  image_id = "lowres",
-  alpha = 1,
-  point_size = 1.25
+    spe,
+    sampleid = "Br8667_mid",
+    geneid = "MSX1; ENSG00000163132",
+    spatial = TRUE,
+    assayname = "logcounts",
+    minCount = 0,
+    viridis = TRUE,
+    image_id = "lowres",
+    alpha = 1,
+    point_size = 1.25
 )
 # append p to plots
 print(p)

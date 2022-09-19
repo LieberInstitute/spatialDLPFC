@@ -1,17 +1,17 @@
 # code from Anthony https://github.com/LieberInstitute/spatial_DG_lifespan/blob/main/code/Pseudobulk/Plot_adult_enrichmentDE.R
 
 suppressPackageStartupMessages({
-  library(SpatialExperiment)
-  library(here)
-  library(SingleCellExperiment)
-  library(scater)
-  library(scran)
-  library(pheatmap)
-  library(RColorBrewer)
-  library(viridis)
-  library(dplyr)
-  library(sessioninfo)
-  library(tidyr)
+    library(SpatialExperiment)
+    library(here)
+    library(SingleCellExperiment)
+    library(scater)
+    library(scran)
+    library(pheatmap)
+    library(RColorBrewer)
+    library(viridis)
+    library(dplyr)
+    library(sessioninfo)
+    library(tidyr)
 })
 
 # Load SPE
@@ -59,12 +59,12 @@ fdrs <- fdrs[!(rownames(fdrs) %in% drop_mt), ]
 
 ### pick top 10 genes per cluster:sample
 cluster_specific_indices <- mapply(
-  function(t, p, f) {
-    oo <- order(t, decreasing = TRUE)[1:5]
-  },
-  as.data.frame(t_stat),
-  as.data.frame(pvals),
-  as.data.frame(fdrs)
+    function(t, p, f) {
+        oo <- order(t, decreasing = TRUE)[1:5]
+    },
+    as.data.frame(t_stat),
+    as.data.frame(pvals),
+    as.data.frame(fdrs)
 )
 
 # cluster_specific_indices <- gather(as.data.frame(cluster_specific_indices),t_stat,index,t_stat_1:t_stat_9,factor_key = TRUE)
@@ -83,7 +83,7 @@ exprs_heatmap <- e3
 
 # Add column/sample annotations for pheatmap
 cluster_labels <- as.vector(c(
-  rep("Anterior", 30), rep("Middle", 30), rep("Posterior", 30)
+    rep("Anterior", 30), rep("Middle", 30), rep("Posterior", 30)
 ))
 
 annotation_col <- data.frame(Cluster = factor(c(cluster_labels)))
@@ -93,7 +93,7 @@ names(ann_colors$BayesSpace) <- unique(annotation_col$BayesSpace)
 
 # Add row/gene annotations
 gene_labels <- as.vector(c(
-  rep("Anterior", 5), rep("Middle", 5), rep("Posterior", 5)
+    rep("Anterior", 5), rep("Middle", 5), rep("Posterior", 5)
 ))
 annotation_row <- data.frame(Cluster = factor(c(gene_labels)))
 rownames(annotation_row) <- rownames(exprs_heatmap)
@@ -101,73 +101,73 @@ rownames(annotation_row) <- rownames(exprs_heatmap)
 # Plot heatmap of logcounts for clusters and samples
 pdf(file = here::here("plots", "09_region_differential_expression", "top5_enrichment_heatmap.pdf"), width = 8, height = 8)
 pheatmap(
-  exprs_heatmap,
-  cluster_rows = TRUE,
-  cluster_cols = TRUE,
-  show_colnames = FALSE,
-  color = inferno(20),
-  annotation_col = annotation_col,
-  annotation_colors = ann_colors,
-  fontsize_row = 9,
-  main = "logcounts from enrichment model of 5 genes per region",
+    exprs_heatmap,
+    cluster_rows = TRUE,
+    cluster_cols = TRUE,
+    show_colnames = FALSE,
+    color = inferno(20),
+    annotation_col = annotation_col,
+    annotation_colors = ann_colors,
+    fontsize_row = 9,
+    main = "logcounts from enrichment model of 5 genes per region",
 )
 dev.off()
 
 # Plot heatmap of logcounts for clusters and samples
 pdf(file = here::here("plots", "09_region_differential_expression", "top5_enrichment_heatmap_clusRows.pdf"), width = 8, height = 8)
 pheatmap(
-  exprs_heatmap,
-  cluster_rows = TRUE,
-  cluster_cols = FALSE,
-  show_colnames = FALSE,
-  color = inferno(20),
-  annotation_col = annotation_col,
-  annotation_colors = ann_colors,
-  fontsize_row = 9,
-  main = "logcounts from enrichment model of 5 genes per regionr",
+    exprs_heatmap,
+    cluster_rows = TRUE,
+    cluster_cols = FALSE,
+    show_colnames = FALSE,
+    color = inferno(20),
+    annotation_col = annotation_col,
+    annotation_colors = ann_colors,
+    fontsize_row = 9,
+    main = "logcounts from enrichment model of 5 genes per regionr",
 )
 dev.off()
 
 # Plot heatmap of logcounts for clusters and samples
 pdf(file = here::here("plots", "09_region_differential_expression", "top5_enrichment_heatmap_clusCols.pdf"), width = 8, height = 8)
 pheatmap(
-  exprs_heatmap,
-  cluster_rows = FALSE,
-  cluster_cols = TRUE,
-  show_colnames = FALSE,
-  color = inferno(20),
-  annotation_col = annotation_col,
-  annotation_colors = ann_colors,
-  fontsize_row = 9,
-  main = "logcounts from enrichment model of 5 genes per region",
+    exprs_heatmap,
+    cluster_rows = FALSE,
+    cluster_cols = TRUE,
+    show_colnames = FALSE,
+    color = inferno(20),
+    annotation_col = annotation_col,
+    annotation_colors = ann_colors,
+    fontsize_row = 9,
+    main = "logcounts from enrichment model of 5 genes per region",
 )
 dev.off()
 
 # Plot heatmap of logcounts for clusters and samples
 pdf(file = here::here("plots", "09_region_differential_expression", "top5_enrichment_heatmap_noClus.pdf"), width = 8, height = 8)
 pheatmap(
-  exprs_heatmap,
-  cluster_rows = FALSE,
-  cluster_cols = FALSE,
-  show_colnames = FALSE,
-  color = inferno(20),
-  annotation_col = annotation_col,
-  annotation_colors = ann_colors,
-  annotation_row = annotation_row,
-  fontsize_row = 9,
-  main = "logcounts from enrichment model of 5 genes per region",
+    exprs_heatmap,
+    cluster_rows = FALSE,
+    cluster_cols = FALSE,
+    show_colnames = FALSE,
+    color = inferno(20),
+    annotation_col = annotation_col,
+    annotation_colors = ann_colors,
+    annotation_row = annotation_row,
+    fontsize_row = 9,
+    main = "logcounts from enrichment model of 5 genes per region",
 )
 dev.off()
 
 sig_genes <- sig_genes_extract(
-  n = 25,
-  modeling_results = modeling_results,
-  model_type = names(modeling_results)[2],
-  reverse = FALSE,
-  sce_layer = fetch_data(type = "sce_layer")
+    n = 25,
+    modeling_results = modeling_results,
+    model_type = names(modeling_results)[2],
+    reverse = FALSE,
+    sce_layer = fetch_data(type = "sce_layer")
 )
 saveRDS(sig_genes, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/09_region_differential_expression/top_25_sig_genes.rds")
-write.csv(sig_genes,file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/09_region_differential_expression/top_25_sig_genes.csv")
+write.csv(sig_genes, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/09_region_differential_expression/top_25_sig_genes.csv")
 
 
 ## Reproducibility information
