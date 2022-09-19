@@ -80,3 +80,6 @@ pe_correlation_annotation <- map(datasets, correlate_and_annotate)
 
 layer_anno_all <- transpose(pe_correlation_annotation)$layer_anno
 layer_anno_all <- do.call("rbind", layer_anno_all)
+
+
+layer_anno_all |> count(layer_label)

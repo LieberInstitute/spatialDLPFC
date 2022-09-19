@@ -108,10 +108,8 @@ write_markers <- function(n_markers, out_path) {
     writeLines(marker_stats_temp$gene, con = out_path)
 }
 
-my_plotExpression <- function(
-        sce, genes, assay = "logcounts", ct = "cellType", fill_colors = NULL,
-        title = NULL, marker_stats
-    ) {
+my_plotExpression <- function(sce, genes, assay = "logcounts", ct = "cellType", fill_colors = NULL,
+    title = NULL, marker_stats) {
     cat_df <- as.data.frame(colData(sce))[, ct, drop = FALSE]
     expression_long <- reshape2::melt(as.matrix(assays(sce)[[assay]][genes, ]))
 
@@ -119,14 +117,14 @@ my_plotExpression <- function(
     expression_long <- cbind(expression_long, cat)
 
     #   Use gene symbols for labels, not Ensembl ID
-    symbols = rowData(sce)$gene_name[match(genes, rownames(sce))]
-    names(symbols) = genes
-    
+    symbols <- rowData(sce)$gene_name[match(genes, rownames(sce))]
+    names(symbols) <- genes
+
     #   Add a data frame for adding mean-ratio labels to each gene
-    text_df = marker_stats
-    text_df$ratio = paste0('Mean ratio: ', round(text_df$ratio, 2))
-    text_df$Var1 = text_df$gene
-    
+    text_df <- marker_stats
+    text_df$ratio <- paste0("Mean ratio: ", round(text_df$ratio, 2))
+    text_df$Var1 <- text_df$gene
+
     expression_violin <- ggplot(
         data = expression_long, aes(x = cat, y = value, fill = cat)
     ) +
@@ -217,9 +215,10 @@ plot_list <- lapply(
             ) %>%
             pull(gene)
         my_plotExpression(
-            sce, genes, ct = cell_column,
+            sce, genes,
+            ct = cell_column,
             fill_colors = metadata(sce)$cell_type_colors_layer,
-            title = paste('Top', length(genes), 'for', ct),
+            title = paste("Top", length(genes), "for", ct),
             marker_stats = marker_stats %>%
                 filter(
                     rank_ratio <= n_markers_per_type,

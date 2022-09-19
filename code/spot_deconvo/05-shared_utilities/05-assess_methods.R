@@ -63,7 +63,8 @@ all_spots <- function(count_df, plot_name) {
 
             ggplot(count_df_small) +
                 geom_hex(
-                    aes(x = observed, y = actual), bins = 50
+                    aes(x = observed, y = actual),
+                    bins = 50
                 ) +
                 geom_abline(
                     intercept = 0, slope = 1, linetype = "dashed", color = "red"
@@ -260,14 +261,14 @@ ggplot(count_df) +
 #-------------------------------------------------------------------------------
 
 #   Plot cell-type counts for all spots
-all_spots(full_df, 'counts_all_spots_scatter.pdf')
+all_spots(full_df, "counts_all_spots_scatter.pdf")
 
 #   Plot cell-type counts summed across spots
-count_df = full_df %>%
+count_df <- full_df %>%
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual))
 
-across_spots(count_df, 'counts_across_spots_scatter.pdf')
+across_spots(count_df, "counts_across_spots_scatter.pdf")
 
 #-------------------------------------------------------------------------------
 #   Proportions: "all" and "across"
@@ -298,7 +299,7 @@ prop_df <- full_df %>%
         actual = actual / sum(actual),
     )
 
-across_spots(prop_df, 'props_across_spots_scatter.pdf')
+across_spots(prop_df, "props_across_spots_scatter.pdf")
 
 #-------------------------------------------------------------------------------
 #   Adjusted counts: "all" and "across"
@@ -306,18 +307,18 @@ across_spots(prop_df, 'props_across_spots_scatter.pdf')
 
 #   Counts, where we take the estimated proportion and multiply by the
 #   "ground-truth" total count
-count_df = full_df %>%
+count_df <- full_df %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
     mutate(
         observed = sum(actual) * observed / sum(observed)
     )
-count_df$observed[is.na(count_df$observed)] = 0
-all_spots(count_df, 'adjusted_counts_all_spots_scatter.pdf')
+count_df$observed[is.na(count_df$observed)] <- 0
+all_spots(count_df, "adjusted_counts_all_spots_scatter.pdf")
 
-count_df = full_df %>%
+count_df <- full_df %>%
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     group_by(sample_id, deconvo_tool) %>%
     mutate(observed = sum(actual) * observed / sum(observed))
 
-across_spots(count_df, 'adjusted_counts_across_spots_scatter.pdf')
+across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf")
