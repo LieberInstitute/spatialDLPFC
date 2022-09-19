@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("tidyverse"))
 
-cell_group = "layer" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 #  Paths
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
@@ -51,10 +51,10 @@ marker_object_out <- here(
     paste0("marker_stats_", cell_group, ".rds")
 )
 
-if (cell_group == 'broad') {
-    cell_type_var = 'cellType_broad_hc'
+if (cell_group == "broad") {
+    cell_type_var <- "cellType_broad_hc"
 } else {
-    cell_type_var = 'layer_level'
+    cell_type_var <- "layer_level"
 }
 
 #  Make sure output directories exist
@@ -71,13 +71,13 @@ write_anndata <- function(sce, out_path) {
             fun = function(sce, filename) {
                 library("zellkonverter")
                 library("reticulate")
-                
+
                 # Convert SCE to AnnData:
                 adata <- SCE2AnnData(sce)
-                
+
                 #  Write AnnData object to disk
                 adata$write(filename = filename)
-                
+
                 return()
             },
             env = zellkonverterAnnDataEnv(),
@@ -99,11 +99,11 @@ spe_nonIF <- spe
 rm(spe)
 gc()
 
-print(paste0("Running script at ", cell_group ,"-resolution."))
+print(paste0("Running script at ", cell_group, "-resolution."))
 
 #   Rename layer label for convenience in downstream scripts
-sce$layer_level = sce$cellType_layer
-sce$cellType_layer = NULL
+sce$layer_level <- sce$cellType_layer
+sce$cellType_layer <- NULL
 
 #-------------------------------------------------------------------------------
 #   Drop appropriate cells
@@ -111,10 +111,10 @@ sce$cellType_layer = NULL
 
 if (cell_group == "layer") {
     #   Drop EndoMural and unclear excitatory cells
-    keep = !is.na(sce$layer_level) & (sce$layer_level != "EndoMural")
+    keep <- !is.na(sce$layer_level) & (sce$layer_level != "EndoMural")
 } else {
     #   Drop rare cell types (EndoMural) for single-cell data
-    keep = !(sce$cellType_broad_hc == "EndoMural")
+    keep <- !(sce$cellType_broad_hc == "EndoMural")
 }
 
 print("Distribution of cells to drop (FALSE) vs. keep (TRUE):")
@@ -138,9 +138,9 @@ rownames(sce) <- rowData(sce)$gene_id
 #   convert all objects to Anndatas
 saveRDS(sce, sce_r_out)
 
-print('Converting objects to AnnDatas...')
+print("Converting objects to AnnDatas...")
 write_anndata(sce, sce_out)
-# 
+#
 # #   Spatial objects are the same between broad and layer-level resolutions, and
 # #   need only be saved once
 if (cell_group == "broad") {
@@ -158,11 +158,11 @@ writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
 #-------------------------------------------------------------------------------
 
 #   We won't consider genes that aren't in both the spatial objects
-keep = (rowData(sce)$gene_id %in% rowData(spe_IF)$gene_id) &
+keep <- (rowData(sce)$gene_id %in% rowData(spe_IF)$gene_id) &
     (rowData(sce)$gene_id %in% rowData(spe_nonIF)$gene_id)
-sce = sce[keep,]
+sce <- sce[keep, ]
 
-perc_keep = 100 * (1 - length(which(keep)) / length(keep))
+perc_keep <- 100 * (1 - length(which(keep)) / length(keep))
 print(
     paste0(
         "Dropped ", round(perc_keep, 1), "% of potential marker genes ",
@@ -170,16 +170,19 @@ print(
     )
 )
 
-print('Running getMeanRatio2 and findMarkers_1vAll to rank genes as markers...')
+print("Running getMeanRatio2 and findMarkers_1vAll to rank genes as markers...")
 marker_stats <- get_mean_ratio2(
-    sce, cellType_col = cell_type_var, assay_name = "logcounts"
+    sce,
+    cellType_col = cell_type_var, assay_name = "logcounts"
 )
 marker_stats_1vall <- findMarkers_1vAll(
-    sce, cellType_col = cell_type_var, assay_name = "logcounts",
+    sce,
+    cellType_col = cell_type_var, assay_name = "logcounts",
     mod = "~BrNum"
 )
 marker_stats <- left_join(
-    marker_stats, marker_stats_1vall, by = c("gene", "cellType.target")
+    marker_stats, marker_stats_1vall,
+    by = c("gene", "cellType.target")
 )
 
 saveRDS(marker_stats, marker_object_out)

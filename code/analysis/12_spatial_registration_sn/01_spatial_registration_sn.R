@@ -14,15 +14,17 @@ colData(sce)$sex <- as.factor(colData(sce)$sex)
 rownames(sce) <- rowData(sce)$gene_id
 
 ## Run spatial registration
-sn_hc_registration <- registration_wrapper(sce = sce,
-                                           var_registration = "cellType_hc", 
-                                           var_sample_id = "Sample",
-                                           covars = c("Position", "age", "sex"),
-                                           gene_ensembl = "gene_id",
-                                           gene_name = "gene_name",
-                                           prefix = "")
+sn_hc_registration <- registration_wrapper(
+    sce = sce,
+    var_registration = "cellType_hc",
+    var_sample_id = "Sample",
+    covars = c("Position", "age", "sex"),
+    gene_ensembl = "gene_id",
+    gene_name = "gene_name",
+    prefix = ""
+)
 
-save(sn_hc_registration, file = here("processed-data","rdata","spe","12_spatial_registration_sn","sn_hc_registration.RDS"))
+save(sn_hc_registration, file = here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.RDS"))
 
 # sgejobs::job_single('01_spatial_registration_sn', create_shell = TRUE, memory = '25G', command = "Rscript 01_spatial_registration_sn.R")
 

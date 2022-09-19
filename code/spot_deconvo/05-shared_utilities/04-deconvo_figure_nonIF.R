@@ -11,7 +11,7 @@ library("png")
 library("jaffelab")
 library("rjson")
 library("SpatialExperiment")
-library('readxl')
+library("readxl")
 
 #   Get sample ID for this sample
 sample_id_path <- here(
@@ -20,17 +20,17 @@ sample_id_path <- here(
 sample_id <- readLines(sample_id_path)[as.numeric(Sys.getenv("SGE_TASK_ID"))]
 print(paste0("Plotting sample ", sample_id, "."))
 
-sample_info_path = here(
-    'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
+sample_info_path <- here(
+    "raw-data", "sample_info", "Visium_dlpfc_mastersheet.xlsx"
 )
 
 #   Get the corresponding ID used for some spaceranger files, since a different
 #   naming convention is used for them than the IDs in the SPE object
-sample_info = read_excel(sample_info_path)
-spaceranger_id = basename(
+sample_info <- read_excel(sample_info_path)
+spaceranger_id <- basename(
     as.character(
         sample_info[
-            sample_info['sample name'] == sample_id, 'spaceranger file path'
+            sample_info["sample name"] == sample_id, "spaceranger file path"
         ]
     )
 )
@@ -51,7 +51,7 @@ spe_in <- here(
 )
 
 spatial_coords_names <- c("pxl_col_in_fullres", "pxl_row_in_fullres")
-deconvo_tools = c('01-tangram', '03-cell2location', '04-spotlight')
+deconvo_tools <- c("01-tangram", "03-cell2location", "04-spotlight")
 
 #   Load and subset SpatialExperiment
 load(spe_in, verbose = TRUE)
@@ -63,41 +63,41 @@ scale_json <- fromJSON(file = scale_path)
 
 #   Generate figure for each software we use: tangram, cell2location, spotlight
 for (deconvo_tool in deconvo_tools) {
-    print(paste0('Generating figure for ', ss(deconvo_tool, '-', 2), '...'))
-    
+    print(paste0("Generating figure for ", ss(deconvo_tool, "-", 2), "..."))
+
     clusters_path <- here(
         "processed-data", "spot_deconvo", deconvo_tool, "nonIF", sample_id,
         "clusters.csv"
     )
-    
+
     plot_path <- here(
         "plots", "spot_deconvo", deconvo_tool, "nonIF", sample_id,
         "my_spot_deconvo_fig.pdf"
     )
-    
+
     dir.create(dirname(plot_path), recursive = TRUE, showWarnings = FALSE)
-    
+
     #   Read in cell-type counts and add spatialCoords
     clusters <- read.csv(clusters_path)
     clusters$barcode <- ss(clusters$key, "_", 1)
     stopifnot(all(clusters$barcode == rownames(spatialCoords(spe))))
     clusters <- cbind(clusters, spatialCoords(spe))
-    
+
     #   Infer the cell types used
     cell_types <- colnames(clusters)[
         !(colnames(clusters) %in% c(
             "key", "sample", "count", "barcode", spatial_coords_names
-            )
+        )
         )
     ]
-    
+
     #   Cell2location and SPOTlight produce non-integer cell counts. Simply
     #   round to the nearest integer for visualization purposes-- there might be
     #   a better method to do this
     for (cell_type in cell_types) {
         clusters[[cell_type]] <- round(clusters[[cell_type]], 0)
     }
-    
+
     print(
         paste(
             "After any rounding (cell2location/SPOTlight only), each spot contains",
@@ -105,7 +105,7 @@ for (deconvo_tool in deconvo_tools) {
             "cells on average"
         )
     )
-    
+
     #   Make a long data frame, where each row is a cell
     df_list <- list()
     i <- 1
@@ -121,28 +121,28 @@ for (deconvo_tool in deconvo_tools) {
             }
         }
     }
-    
+
     df_long <- data.frame(do.call(rbind, df_list))
     colnames(df_long) <- c("barcode", spatial_coords_names, "cell_type")
-    
+
     #   Make sure spatialCoords are numeric, and scaled to represent
     #   high-resolution pixels
     for (colname in spatial_coords_names) {
         df_long[, colname] <- scale_json$tissue_hires_scalef *
             as.numeric(df_long[, colname])
     }
-    
+
     #   Reverse y coord of spatialCoords(spe) to agree with the coordinate system
     #   ggplot2 is using
     df_long[[spatial_coords_names[2]]] <- dim(img)[1] -
         df_long[[spatial_coords_names[2]]]
-    
+
     #   Improve plotting speed and file size by keeping a copy of just the spots.
     #   Get spot radius in high-res pixels
     spots <- df_long[match(unique(df_long$barcode), df_long$barcode), ]
     spots$spot_radius <- scale_json$spot_diameter_fullres *
         scale_json$tissue_hires_scalef / 2
-    
+
     #   Create the deconvolution figure
     p <- ggplot() +
         #   The high-res image as the plot's background
@@ -180,7 +180,7 @@ for (deconvo_tool in deconvo_tools) {
         #   Brighten colors and improve legend
         scale_fill_hue(l = 80, name = "Cell type") +
         guides(fill = guide_legend(override.aes = list(size = 5)))
-    
+
     pdf(plot_path)
     print(p)
     dev.off()
