@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l mem_free=300G,h_vmem=300G,h_fsize=100G
 #$ -N pseudobulk_data_SZBD
 #$ -o logs/01_pseudobulk_data_SZBD.txt
 #$ -e logs/01_pseudobulk_data_SZBD.txt
@@ -23,7 +23,7 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R SZBDMulti
+Rscript 01_pseudobulk_data_SZBD.R
 
 echo "**** Job ends ****"
 date
