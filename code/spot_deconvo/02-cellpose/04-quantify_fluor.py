@@ -43,6 +43,9 @@ scale_path = pyhere.here(
 out_df_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df.csv'
 )
+out_df_unfiltered_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df_unfiltered.csv'
+)
 out_masks_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'expanded_masks.npy'
 )
@@ -135,7 +138,7 @@ rng = default_rng()
 #   Different sample IDs are used for different files associated with each
 #   sample. Determine both forms of the sample ID for this sample and update
 #   path variables accordingly
-sample_info = pd.read_excel(sample_info_path, header = 1)[:4]
+sample_info = pd.read_excel(sample_info_path)[:4]
 sample_ids_img = sample_info['Slide SN #'] + '_' + sample_info['Array #']
 sample_ids_spot = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
     '_' + pd.Series([x.split('_')[1] for x in sample_info['Br_Region']]) + \
@@ -148,6 +151,7 @@ mask_path = str(mask_path).format(sample_id_img)
 sample_id_spot = sample_ids_spot[int(os.environ['SGE_TASK_ID']) - 1]
 spot_path = str(spot_path).format(sample_id_spot)
 out_df_path = str(out_df_path).format(sample_id_spot)
+out_df_unfiltered_path = str(out_df_unfiltered_path).format(sample_id_spot)
 out_masks_path = str(out_masks_path).format(sample_id_spot)
 
 Path(out_df_path).parents[0].mkdir(parents=True, exist_ok=True)
@@ -231,6 +235,18 @@ kd = KDTree(raw[["x", "y"]])
 dist, idx = kd.query(df[["x", "y"]])
 dist = pd.DataFrame({"dist": dist, "idx": idx})
 df = pd.concat([df, dist], axis=1)
+
+#   Write a copy of all segmented nuclei (cells) before the upcoming filtering
+#   steps. Modify column names for loading in the Loopy browser
+df_unfiltered = df.rename(
+    {
+        'x': 'y',
+        'y': 'x',
+    },
+    axis = 1
+)
+df_unfiltered.index.name = 'id'
+df_unfiltered.to_csv(out_df_unfiltered_path)
 
 # Filters out masks that are smaller than a threshold and
 # masks whose centroid is farther than the spot radius (aka not inside the
