@@ -40,6 +40,9 @@ plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
 )
 
+#   Symbols for markers of Layer 1-6 respectively for reference in some plots
+classical_markers <- c('AQP4', 'HPCAL1', 'CUX2', 'RORB', 'PCP4', 'KRT17')
+
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
 ###############################################################################
@@ -277,11 +280,40 @@ ggsave(
 #   Plot mean-ratio distibution by group (cell type or layer label)
 boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot")
 
+#   Get Ensembl ID for classical markers
+stopifnot(all(classical_markers %in% rowData(sce)$gene_name))
+classical_markers_ens = rownames(sce)[
+    match(classical_markers, rowData(sce)$gene_name)
+]
+stopifnot(all(classical_markers_ens %in% rownames(spe)))
+
 #   For IF, show a grid of plots summarizing how sparsely marker genes
 #   for each cell type are expressed spatially
 spe = readRDS(spe_IF_in)
+
 plot_list = list()
 i = 1
+
+#   First, plot the classical markers as reference
+for (j in 1:length(classical_markers)) {
+    for (sample_id in unique(spe$sample_id)) {
+        plot_list[[i]] = vis_grid_gene(
+            spe[, spe$sample_id == sample_id],
+            geneid = classical_markers_ens[j], assay = "counts",
+            return_plots = TRUE, spatial = FALSE
+        )[[1]] +
+            labs(
+                title = paste0(
+                    classical_markers[j], ': marker for layer ', j, '\n(',
+                    sample_id, ')'
+                )
+            )
+        
+        i = i + 1
+    }
+}
+
+#   Then plot proportion of markers having nonzero expression for each cell type
 for (ct in unique(marker_stats$cellType.target)) {
     #   Get markers for this cell type
     markers = marker_stats %>%
@@ -311,11 +343,12 @@ for (ct in unique(marker_stats$cellType.target)) {
     }
 }
 n_sample = length(unique(spe$sample_id))
-n_cell_type = length(unique(marker_stats$cellType.target))
+n_rows = length(unique(marker_stats$cellType.target)) +
+    length(classical_markers)
 
 pdf(
     file.path(plot_dir, 'marker_spatial_sparsity.pdf'),
-    width = 3 * n_cell_type, height = 7 * n_cell_type
+    width = 7 * n_sample, height = 7 * n_rows
 )
 plot_grid(plotlist = plot_list, ncol = n_sample)
 dev.off()
