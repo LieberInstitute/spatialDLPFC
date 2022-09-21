@@ -14,16 +14,9 @@ filepath_2 <- here("raw-data", "psychENCODE", "version2", dataset, paste0(datase
 stopifnot(all(file.exists(c(filepath_1, filepath_2))))
 
 message(Sys.time(), " - Reading data from: ", filepath_1)
-sce_1 <- readH5AD(file = filepath_1)
+sce <- readH5AD(file = filepath_1)
 
-rowData(sce_1)$varm <- NULL
-
-message(Sys.time(), " - Reading data from: ", filepath_2)
-sce_2 <- readH5AD(file = filepath_2)
-
-rowData(sce_2)$varm <- NULL
-
-sce <- cbind(sce_1, sce_2)
+rowData(sce)$varm <- NULL
 
 message("\nSCE Dimesions:")
 dim(sce)
@@ -49,6 +42,40 @@ counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 sce_pseudo <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
 
 message("\nSCE Pseudobulk Dimesions:")
+dim(sce_pseudo)
+
+#### Load sce part 2 ####
+message(Sys.time(), " - Reading data from: ", filepath_2)
+sce <- readH5AD(file = filepath_2)
+
+rowData(sce_2)$varm <- NULL
+
+message("\nSCE Dimesions:")
+dim(sce)
+
+message("Cell Types:")
+## must be syntactically valid
+colData(sce)$cellType <- as.factor(make.names(colData(sce)$subclass))
+table(sce$cellType)
+
+# identify annotation/cluster labels
+rowData(sce)$gene_name <- rownames(sce) # save gene name as column of rowData
+rownames(sce) <- rowData(sce)$featureid # have to make row names of object the ensembl id instead of gene names
+
+## Logcounts
+# default “X” contain the log-normalized counts
+message(Sys.time(), " revert to counts")
+
+counts(sce) <- assays(sce)$X # change to normalized counts
+# counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
+counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
+
+#### Pseudobulk ####
+sce_pseudo2 <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
+
+sce_pseudo <- cbind(sce_pseudo, sce_pseudo2)
+
+message("\n Full SCE Pseudobulk Dimesions:")
 dim(sce_pseudo)
 
 ## Save results
