@@ -6,7 +6,11 @@ import pyhere
 import pandas as pd
 from pathlib import Path
 
-model_type='nuclei'
+#   Pretrained model based on 'cyto' and iteratively refined in the GUI
+model_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', 'richard', 'models',
+    'CP_20220415_152031'
+)
 cell_diameter = None
 channel = 1 # DAPI
 
@@ -21,7 +25,7 @@ mask_dir = pyhere.here('processed-data', 'spot_deconvo', '02-cellpose', 'masks')
 Path(mask_dir).mkdir(parents=True, exist_ok=True)
 
 #   Determine paths to IF images; read in just the one for this sample
-sample_info = pd.read_excel(sample_info_path, header = 1)[:4]
+sample_info = pd.read_excel(sample_info_path)[:4]
 sample_ids = sample_info['Slide SN #'] + '_' + sample_info['Array #']
 sample_id = sample_ids[int(os.environ['SGE_TASK_ID']) - 1]
 
@@ -29,8 +33,10 @@ print(f'Segmenting DAPI for sample {sample_id}.')
 
 img = imread(pyhere.here(img_dir, sample_id + '.tif'))[channel, :, :]
 
-#   Initialize the model and process images using it
-model = models.Cellpose(gpu = True, model_type = model_type)
+#   Load the pretrained model and process images using it
+model = models.CellposeModel(
+    gpu = True, pretrained_model = model_path.as_posix()
+)
 masks, flows, styles, diams = model.eval(img, diameter=cell_diameter)
 
 #   Save PNG version of the masks to visually inspect results
