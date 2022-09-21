@@ -33,9 +33,7 @@ processed_dir = pyhere.here(
     "processed-data", "spot_deconvo", "01-tangram", "IF", cell_group
 )
 sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
-sp_path_in = pyhere.here(
-    os.path.dirname(processed_dir), '{}', 'ad_sp_orig.h5ad'
-)
+sp_path_in = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 id_path = pyhere.here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
     "sample_ids.txt"

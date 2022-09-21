@@ -40,9 +40,7 @@ sp_path_in = pyhere.here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF", 'spe.h5ad'
 )
 sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
-sp_path_out = pyhere.here(
-    os.path.dirname(processed_dir), '{}', 'ad_sp_orig.h5ad'
-)
+sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 marker_path = pyhere.here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
     "markers_" + cell_group + ".txt"
@@ -202,17 +200,12 @@ Path(os.path.join(plot_dir, sample_name)).mkdir(parents=True, exist_ok=True)
 Path(os.path.dirname(str(sc_path_out).format(sample_name))).mkdir(
     parents=True, exist_ok=True
 )
-Path(os.path.dirname(str(sp_path_out).format(sample_name))).mkdir(
-    parents=True, exist_ok=True
-)
 
 #   While the contents of the 'ad_sc' object should be identical regardless of
 #   sample, it looks like the order of some variables is random,
 #   but alignment and other downstream tasks are dependent on variable
 #   ordering. Therefore, while it's a bit wasteful to save many "copies" of
-#   'ad_sc' as done here, it simplifies code later by avoiding several order-
-#   related complications that would need manual resolution
+#   'ad_sc' and 'ad_sp' as done here, it simplifies code later by avoiding
+#   several order-related complications that would need manual resolution
 ad_sc.write_h5ad(str(sc_path_out).format(sample_name))
-
-if cell_group == 'broad':
-    ad_sp.write_h5ad(str(sp_path_out).format(sample_name))
+ad_sp.write_h5ad(str(sp_path_out).format(sample_name))
