@@ -281,12 +281,17 @@ saveRDS(spe, file.path(processed_dir, "spe.rds"))
 #   Export 'clusters.csv' file of cell counts
 ################################################################################
 
+#   '/' chracters in cell types are problematic and should be replaced with '_'
+cell_types = gsub('/', '_', colnames(res$mat))
+
 #   Create a data frame with cell counts for all samples, and add the 'key'
 #   column. Note here we scale cell-type proportions by total cells per spot,
 #   the latter of which is computed prior to running SPOTlight
 clusters <- data.frame(res$mat * spe$cell_counts)
+colnames(clusters) = cell_types
+
 clusters$key <- spe$key
-clusters <- clusters[, c("key", as.character(unique(sce[[cell_type_var]])))]
+clusters <- clusters[, c("key", cell_types)]
 
 #   Write individual 'clusters.csv' files for each sample
 for (sample_id in unique(spe[[sample_var]])) {
