@@ -9,7 +9,7 @@ suppressPackageStartupMessages(library("HDF5Array"))
 suppressPackageStartupMessages(library('spatialLIBD'))
 suppressPackageStartupMessages(library('cowplot'))
 
-cell_group = "layer" # "broad" or "layer"
+cell_group = "broad" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
 n_markers_per_type <- 25
@@ -40,8 +40,11 @@ plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
 )
 
-#   Symbols for markers of Layer 1-6 respectively for reference in some plots
-classical_markers <- c('AQP4', 'HPCAL1', 'CUX2', 'RORB', 'PCP4', 'KRT17')
+#   Symbols for markers of Layer 1-6, GM, and WM, respectively, for reference in
+#   some plots
+classical_markers <- c(
+    'AQP4', 'HPCAL1', 'CUX2', 'RORB', 'PCP4', 'KRT17', 'SNAP25', 'MOBP'
+)
 
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -297,17 +300,29 @@ i = 1
 #   First, plot the classical markers as reference
 for (j in 1:length(classical_markers)) {
     for (sample_id in unique(spe$sample_id)) {
+        #   Determine the title for this subplot
+        if (j <= 6) {
+            title = paste0(
+                classical_markers[j], ': marker for layer ', j, '\n(',
+                sample_id, ')'
+            )
+        } else if (classical_markers[j] == 'SNAP25') {
+            title = paste0(
+                'SNAP25: marker for gray matter\n(', sample_id, ')'
+            )
+        } else if (classical_markers[j] == 'MOBP') {
+            title = paste0(
+                'MOBP: marker for white matter\n(', sample_id, ')'
+            )
+        }
+        
+        #   Produce the ggplot object
         plot_list[[i]] = vis_grid_gene(
             spe[, spe$sample_id == sample_id],
             geneid = classical_markers_ens[j], assay = "counts",
             return_plots = TRUE, spatial = FALSE
         )[[1]] +
-            labs(
-                title = paste0(
-                    classical_markers[j], ': marker for layer ', j, '\n(',
-                    sample_id, ')'
-                )
-            )
+            labs(title = title)
         
         i = i + 1
     }
