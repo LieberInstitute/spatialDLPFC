@@ -28,6 +28,20 @@ plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
 )
 
+spe_IF_in <- here(
+    "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
+)
+
+marker_object_in <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("marker_stats_", cell_group, ".rds")
+)
+
+marker_in <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("markers_", cell_group, ".txt")
+)
+
 cell_types_actual <- c("micro", "neuron", "oligo", "other")
 if (cell_group == "broad") {
     cell_types <- c("Astro", "Excit", "Inhib", "Micro", "Oligo", "OPC")
@@ -45,7 +59,7 @@ all_spots <- function(count_df, plot_name) {
     #   Compute metrics for each deconvolution tool: correlation between
     #   observed and actual values as well as RMSE
     metrics_df <- count_df %>%
-        group_by(deconvo_tool, sample_id) %>%
+        group_by(deconvo_tool, sample_id, cell_type) %>%
         summarize(
             corr = round(cor(observed, actual), 2),
             rmse = signif(mean((observed - actual)**2)**0.5, 3)
@@ -61,10 +75,10 @@ all_spots <- function(count_df, plot_name) {
             count_df_small <- count_df %>%
                 filter(cell_type == ct)
 
-            ggplot(count_df_small) +
-                geom_hex(
-                    aes(x = observed, y = actual),
-                    bins = 50
+            p = ggplot(count_df_small) +
+                geom_point(
+                    aes(x = observed, y = actual, color = sample_id),
+                    alpha = 0.01
                 ) +
                 geom_abline(
                     intercept = 0, slope = 1, linetype = "dashed", color = "red"
@@ -78,29 +92,32 @@ all_spots <- function(count_df, plot_name) {
                     y = "CART-calculated",
                 ) +
                 geom_text(
-                    data = metrics_df,
+                    data = metrics_df %>% filter(cell_type == ct),
                     mapping = aes(
-                        x = Inf, y = max(count_df$observed) / 7, label = corr
+                        x = Inf, y = max(count_df_small$actual) / 5,
+                        label = corr
                     ),
                     hjust = 1
                 ) +
                 geom_text(
-                    data = metrics_df,
+                    data = metrics_df %>% filter(cell_type == ct),
                     mapping = aes(x = Inf, y = 0, label = rmse),
                     hjust = 1, vjust = 0
                 ) +
                 scale_fill_continuous(type = "viridis")
+        
+            return(p)
         }
     )
 
-    # pdf(file.path(plot_dir, plot_name))
-    # print(plot_list)
-    # dev.off()
-    return(plot_list)
+    pdf(file.path(plot_dir, plot_name))
+    print(plot_list)
+    dev.off()
+    # return(plot_list)
 }
 
 #   Scatterplot of observed vs. actual total counts summed across spots,
-#   faceted by cell type and deconvolution tool
+#   faceted by deconvolution tool
 across_spots <- function(count_df, plot_name) {
     #   Compute metrics for each deconvolution tool: correlation between
     #   observed and actual values as well as RMSE
@@ -243,6 +260,21 @@ count_df <- full_df %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
     summarize(observed = sum(observed), actual = sum(actual))
 
+
+#   Compute metrics for each deconvolution tool: correlation between
+#   observed and actual values as well as RMSE
+metrics_df <- count_df %>%
+    group_by(deconvo_tool) %>%
+    summarize(
+        corr = round(cor(observed, actual), 2),
+        rmse = signif(mean((observed - actual)**2)**0.5, 3)
+    )
+
+#   Improve labels for plotting
+metrics_df$corr <- paste("Cor =", metrics_df$corr)
+metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
+
+pdf(file.path(plot_dir, 'total_cells.pdf'))
 ggplot(count_df) +
     geom_point(aes(x = observed, y = actual), alpha = 0.01) +
     facet_wrap(~deconvo_tool) +
@@ -250,11 +282,24 @@ ggplot(count_df) +
     geom_abline(
         intercept = 0, slope = 1, linetype = "dashed", color = "red"
     ) +
+    geom_text(
+        data = metrics_df,
+        mapping = aes(
+            x = Inf, y = max(count_df$observed) / 7, label = corr
+        ),
+        hjust = 1
+    ) +
+    geom_text(
+        data = metrics_df,
+        mapping = aes(x = Inf, y = 0, label = rmse),
+        hjust = 1, vjust = 0
+    ) +
     labs(
         x = "Calculated cell count",
-        y = "Provided cell count",
+        y = "Provided cell count (cellpose)",
         title = "Provided vs. calculated total cells per spot"
     )
+dev.off()
 
 #-------------------------------------------------------------------------------
 #   Counts: "all" and "across"
@@ -281,6 +326,9 @@ prop_df <- full_df %>%
     mutate(
         observed = observed / sum(observed),
         actual = actual / sum(actual),
+    ) %>%
+    filter(
+        !is.na(observed) & !is.na(actual)
     )
 all_spots(prop_df, "props_all_spots_scatter.pdf")
 
@@ -319,6 +367,17 @@ count_df <- full_df %>%
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     group_by(sample_id, deconvo_tool) %>%
-    mutate(observed = sum(actual) * observed / sum(observed))
+    mutate(observed = sum(actual) * observed / sum(observed)) %>%
+    ungroup()
 
 across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf")
+
+#-------------------------------------------------------------------------------
+#   Actual counts vs. prop. markers w/ nonzero expr.
+#-------------------------------------------------------------------------------
+
+#   TODO: This is hardcoded for IF! Not sure if we'll do similar plots for nonIF
+
+spe = readRDS(spe_IF_in)
+markers = readLines(marker_in)
+marker_stats <- readRDS(marker_object_in)
