@@ -37,7 +37,7 @@ img = imread(pyhere.here(img_dir, sample_id + '.tif'))[channel, :, :]
 model = models.CellposeModel(
     gpu = True, pretrained_model = model_path.as_posix()
 )
-masks, flows, styles, diams = model.eval(img, diameter=cell_diameter)
+masks, flows, styles = model.eval(img, diameter=cell_diameter)
 
 #   Save PNG version of the masks to visually inspect results
 mask_png = str(pyhere.here(mask_dir, f'{sample_id}_mask.png'))
