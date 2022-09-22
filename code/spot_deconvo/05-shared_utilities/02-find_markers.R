@@ -9,7 +9,7 @@ suppressPackageStartupMessages(library("HDF5Array"))
 suppressPackageStartupMessages(library('spatialLIBD'))
 suppressPackageStartupMessages(library('cowplot'))
 
-cell_group = "broad" # "broad" or "layer"
+cell_group = "layer" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
 n_markers_per_type <- 25
@@ -281,6 +281,7 @@ ggsave(
 boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot")
 
 #   Get Ensembl ID for classical markers
+spe = readRDS(spe_IF_in)
 stopifnot(all(classical_markers %in% rowData(sce)$gene_name))
 classical_markers_ens = rownames(sce)[
     match(classical_markers, rowData(sce)$gene_name)
@@ -289,7 +290,6 @@ stopifnot(all(classical_markers_ens %in% rownames(spe)))
 
 #   For IF, show a grid of plots summarizing how sparsely marker genes
 #   for each cell type are expressed spatially
-spe = readRDS(spe_IF_in)
 
 plot_list = list()
 i = 1
@@ -332,7 +332,8 @@ for (ct in unique(marker_stats$cellType.target)) {
         spe_small$prop_nonzero_marker = colMeans(assays(spe_small)$counts > 0)
         
         p = vis_grid_gene(
-            spe_small, geneid = 'prop_nonzero_marker', return_plots = TRUE
+            spe_small, geneid = 'prop_nonzero_marker', return_plots = TRUE,
+            spatial = FALSE
         )
         plot_list[[i]] = p[[1]] + labs(
             title = paste0(
