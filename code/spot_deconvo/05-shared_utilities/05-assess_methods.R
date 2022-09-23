@@ -3,6 +3,8 @@ library("ggplot2")
 library("jaffelab")
 library("tidyverse")
 library("reshape2")
+library("spatialLIBD")
+library("cowplot")
 
 cell_group <- "broad" # "broad" or "layer"
 
@@ -373,11 +375,55 @@ count_df <- full_df %>%
 across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf")
 
 #-------------------------------------------------------------------------------
-#   Actual counts vs. prop. markers w/ nonzero expr.
+#   Spatial distribution of counts for each sample, cell_type, deconvo method
 #-------------------------------------------------------------------------------
 
 #   TODO: This is hardcoded for IF! Not sure if we'll do similar plots for nonIF
 
 spe = readRDS(spe_IF_in)
-markers = readLines(marker_in)
-marker_stats <- readRDS(marker_object_in)
+
+for (sample_id in sample_ids) {
+    spe_small = spe[,spe$sample_id == sample_id]
+    
+    i = 1
+    plot_list = list()
+    for (deconvo_tool in deconvo_tools) {
+        for (cell_type in cell_types_actual) {
+            #   Grab counts for just this sample, deconvo tool, and cell type
+            counts_df = full_df %>%
+                filter(
+                    sample_id == {{ sample_id }},
+                    deconvo_tool == {{ deconvo_tool }},
+                    cell_type == {{ cell_type }}
+                )
+            
+            #   Add counts as a column in colData(spe_small)
+            spe_small$temp_ct_counts = counts_df$observed[
+                match(colnames(spe_small), counts_df$barcode)
+            ]
+            
+            #   Plot spatial distribution
+            plot_list[[i]] = vis_grid_gene(
+                spe_small, geneid = 'temp_ct_counts', return_plots = TRUE,
+                spatial = FALSE
+            )[[1]] +
+                labs(
+                    title = paste0(
+                        cell_type, ' counts\n(', deconvo_tool, ')'
+                    )
+                )
+            
+            i = i + 1
+        }
+    }
+    
+    #   Plot in a grid where cell types are columns and rows are deconvolution
+    #   tools. One PDF per sample
+    pdf(
+        file.path(plot_dir, paste0('spatial_counts_', sample_id, '.pdf')),
+        width = 7 * length(cell_types_actual),
+        height = 7 * length(deconvo_tools)
+    )
+    print(plot_grid(plotlist = plot_list, ncol = length(cell_types_actual)))
+    dev.off()
+}
