@@ -9,7 +9,7 @@ suppressPackageStartupMessages(library("HDF5Array"))
 suppressPackageStartupMessages(library('spatialLIBD'))
 suppressPackageStartupMessages(library('cowplot'))
 
-cell_group = "broad" # "broad" or "layer"
+cell_group = "layer" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
 n_markers_per_type <- 25
@@ -292,81 +292,86 @@ classical_markers_ens = rownames(sce)[
 stopifnot(all(classical_markers_ens %in% rownames(spe)))
 
 #   For IF, show a grid of plots summarizing how sparsely marker genes
-#   for each cell type are expressed spatially
+#   for each cell type are expressed spatially. Repeat these plots for different
+#   numbers of markers per cell type: 15, 25, 50
 
-plot_list = list()
-i = 1
-
-#   First, plot the classical markers as reference
-for (j in 1:length(classical_markers)) {
-    for (sample_id in unique(spe$sample_id)) {
-        #   Determine the title for this subplot
-        if (j <= 6) {
-            title = paste0(
-                classical_markers[j], ': marker for layer ', j, '\n(',
-                sample_id, ')'
-            )
-        } else if (classical_markers[j] == 'SNAP25') {
-            title = paste0(
-                'SNAP25: marker for gray matter\n(', sample_id, ')'
-            )
-        } else if (classical_markers[j] == 'MOBP') {
-            title = paste0(
-                'MOBP: marker for white matter\n(', sample_id, ')'
-            )
-        }
-        
-        #   Produce the ggplot object
-        plot_list[[i]] = vis_grid_gene(
-            spe[, spe$sample_id == sample_id],
-            geneid = classical_markers_ens[j], assay = "counts",
-            return_plots = TRUE, spatial = FALSE
-        )[[1]] +
-            labs(title = title)
-        
-        i = i + 1
-    }
-}
-
-#   Then plot proportion of markers having nonzero expression for each cell type
-for (ct in unique(marker_stats$cellType.target)) {
-    #   Get markers for this cell type
-    markers = marker_stats %>%
-        filter(
-            cellType.target == ct,
-            rank_ratio <= n_markers_per_type,
-            ratio > 1
-        ) %>%
-        pull(gene)
+for (n_markers in c(15, 25, 50)) {
+    plot_list = list()
+    i = 1
     
-    for (sample_id in unique(spe$sample_id)) {
-        spe_small = spe[markers, spe$sample_id == sample_id]
-        
-        #   For each spot, compute proportion of marker genes with nonzero
-        #   expression
-        spe_small$prop_nonzero_marker = colMeans(assays(spe_small)$counts > 0)
-        
-        p = vis_grid_gene(
-            spe_small, geneid = 'prop_nonzero_marker', return_plots = TRUE,
-            spatial = FALSE
-        )
-        plot_list[[i]] = p[[1]] + labs(
-            title = paste0(
-                "Prop. markers w/ nonzero exp:\n",ct, ' (', sample_id, ')'
-            )
-        )
-        i = i + 1
+    #   First, plot the classical markers as reference
+    for (j in 1:length(classical_markers)) {
+        for (sample_id in unique(spe$sample_id)) {
+            #   Determine the title for this subplot
+            if (j <= 6) {
+                title = paste0(
+                    classical_markers[j], ': marker for layer ', j, '\n(',
+                    sample_id, ')'
+                )
+            } else if (classical_markers[j] == 'SNAP25') {
+                title = paste0(
+                    'SNAP25: marker for gray matter\n(', sample_id, ')'
+                )
+            } else if (classical_markers[j] == 'MOBP') {
+                title = paste0(
+                    'MOBP: marker for white matter\n(', sample_id, ')'
+                )
+            }
+            
+            #   Produce the ggplot object
+            plot_list[[i]] = vis_grid_gene(
+                spe[, spe$sample_id == sample_id],
+                geneid = classical_markers_ens[j], assay = "counts",
+                return_plots = TRUE, spatial = FALSE
+            )[[1]] +
+                labs(title = title)
+            
+            i = i + 1
+        }
     }
+    
+    #   Then plot proportion of markers having nonzero expression for each cell type
+    for (ct in unique(marker_stats$cellType.target)) {
+        #   Get markers for this cell type
+        markers = marker_stats %>%
+            filter(
+                cellType.target == ct,
+                rank_ratio <= n_markers,
+                ratio > 1
+            ) %>%
+            pull(gene)
+        
+        for (sample_id in unique(spe$sample_id)) {
+            spe_small = spe[markers, spe$sample_id == sample_id]
+            
+            #   For each spot, compute proportion of marker genes with nonzero
+            #   expression
+            spe_small$prop_nonzero_marker = colMeans(assays(spe_small)$counts > 0)
+            
+            p = vis_grid_gene(
+                spe_small, geneid = 'prop_nonzero_marker', return_plots = TRUE,
+                spatial = FALSE
+            )
+            plot_list[[i]] = p[[1]] + labs(
+                title = paste0(
+                    "Prop. markers w/ nonzero exp:\n",ct, ' (', sample_id, ')'
+                )
+            )
+            i = i + 1
+        }
+    }
+    n_sample = length(unique(spe$sample_id))
+    n_rows = length(unique(marker_stats$cellType.target)) +
+        length(classical_markers)
+    
+    pdf(
+        file.path(
+            plot_dir, paste0('marker_spatial_sparsity_n', n_markers, '.pdf')
+        ),
+        width = 7 * n_sample, height = 7 * n_rows
+    )
+    print(plot_grid(plotlist = plot_list, ncol = n_sample))
+    dev.off()
 }
-n_sample = length(unique(spe$sample_id))
-n_rows = length(unique(marker_stats$cellType.target)) +
-    length(classical_markers)
-
-pdf(
-    file.path(plot_dir, 'marker_spatial_sparsity.pdf'),
-    width = 7 * n_sample, height = 7 * n_rows
-)
-plot_grid(plotlist = plot_list, ncol = n_sample)
-dev.off()
 
 session_info()
