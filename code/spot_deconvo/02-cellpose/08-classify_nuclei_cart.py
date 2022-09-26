@@ -146,7 +146,7 @@ cells_path = pyhere.here(
 #   Different sample IDs are used for different files associated with each
 #   sample. Determine both forms of the sample ID for this sample and update
 #   path variables accordingly
-sample_info = pd.read_excel(sample_info_path, header = 1)[:4]
+sample_info = pd.read_excel(sample_info_path)[:4]
 sample_ids_img = sample_info['Slide SN #'] + '_' + sample_info['Array #']
 sample_ids_spot = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
     '_' + pd.Series([x.split('_')[1] for x in sample_info['Br_Region']]) + \
