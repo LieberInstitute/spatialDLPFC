@@ -26,7 +26,7 @@ from pathlib import Path
 #   Variable definitions
 ################################################################################
 
-cell_group = "layer" # "broad" or "layer"
+cell_group = "broad" # "broad" or "layer"
 
 
 processed_dir = pyhere.here(
