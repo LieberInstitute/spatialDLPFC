@@ -48,7 +48,10 @@ cell_types_actual <- c("micro", "neuron", "oligo", "other")
 if (cell_group == "broad") {
     cell_types <- c("Astro", "Excit", "Inhib", "Micro", "Oligo", "OPC")
 } else {
-    cell_types <- c() # TODO
+    cell_types <- c(
+        "Astro", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4",
+        "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro", "Oligo", "OPC"
+    )
 }
 
 ################################################################################
@@ -65,7 +68,8 @@ all_spots <- function(count_df, plot_name) {
         summarize(
             corr = round(cor(observed, actual), 2),
             rmse = signif(mean((observed - actual)**2)**0.5, 3)
-        )
+        ) %>%
+        ungroup()
 
     #   Improve labels for plotting
     metrics_df$corr <- paste("Cor =", metrics_df$corr)
@@ -106,7 +110,8 @@ all_spots <- function(count_df, plot_name) {
                     mapping = aes(x = Inf, y = 0, label = rmse),
                     hjust = 1, vjust = 0
                 ) +
-                scale_fill_continuous(type = "viridis")
+                scale_fill_continuous(type = "viridis") +
+                theme_bw(base_size = 10)
         
             return(p)
         }
@@ -128,7 +133,8 @@ across_spots <- function(count_df, plot_name) {
         summarize(
             corr = round(cor(observed, actual), 2),
             rmse = signif(mean((observed - actual)**2)**0.5, 3)
-        )
+        ) %>%
+        ungroup()
 
     #   Improve labels for plotting
     metrics_df$corr <- paste("Cor =", metrics_df$corr)
@@ -155,7 +161,8 @@ across_spots <- function(count_df, plot_name) {
             mapping = aes(x = Inf, y = 0, label = rmse),
             hjust = 1, vjust = 0
         ) +
-        labs(x = "Software-estimated", y = "CART-calculated")
+        labs(x = "Software-estimated", y = "CART-calculated") +
+        theme_bw(base_size = 10)
 
     pdf(file.path(plot_dir, plot_name))
     print(p)
@@ -193,6 +200,9 @@ for (sample_id in sample_ids) {
         observed_path <- sub("\\{sample_id\\}", sample_id, observed_paths)
         observed_path <- sub("\\{deconvo_tool\\}", deconvo_tool, observed_path)
         observed_df_small <- read.csv(observed_path)
+        colnames(observed_df_small) = gsub(
+            '\\.', '_', colnames(observed_df_small)
+        )
 
         #   Make sure column names are consistent and include only info about
         #   barcode, sample_id, deconvo tool, and cell-type counts
@@ -221,18 +231,25 @@ observed_df <- as_tibble(do.call(rbind, observed_list))
 
 #   Combine cell types as appropriate for comparison against the relatively
 #   narrow types in the ground-truth
-if (cell_group == "broad") {
-    colnames(observed_df) <- tolower(colnames(observed_df))
+colnames(observed_df) <- tolower(colnames(observed_df))
 
+if (cell_group == "broad") {
     observed_df <- observed_df %>%
         mutate("neuron" = excit + inhib) %>%
         mutate("other" = astro + opc) %>%
         select(all_of(c(added_colnames, cell_types_actual)))
-
-    stopifnot(all(colnames(observed_df) == colnames(actual_df)))
 } else {
-    #   TODO
+    observed_df = observed_df %>%
+        rowwise() %>%
+        mutate(
+            neuron = sum(c_across(starts_with(c('excit_', 'inhib')))),
+            other = astro + opc
+        ) %>%
+        ungroup() %>%
+        select(all_of(c(added_colnames, cell_types_actual)))
 }
+
+stopifnot(all(colnames(observed_df) == colnames(actual_df)))
 
 #   Combine observed and actual cell counts so that each row is a unique
 #   cell type, spot, sample, and deconvolution method with two values: measured
@@ -260,8 +277,8 @@ full_df <- rbind(observed_df, actual_df) %>%
 count_df <- full_df %>%
     filter(deconvo_tool %in% c("01-tangram", "03-cell2location")) %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
-    summarize(observed = sum(observed), actual = sum(actual))
-
+    summarize(observed = sum(observed), actual = sum(actual)) %>%
+    ungroup()
 
 #   Compute metrics for each deconvolution tool: correlation between
 #   observed and actual values as well as RMSE
@@ -270,7 +287,8 @@ metrics_df <- count_df %>%
     summarize(
         corr = round(cor(observed, actual), 2),
         rmse = signif(mean((observed - actual)**2)**0.5, 3)
-    )
+    ) %>%
+    ungroup()
 
 #   Improve labels for plotting
 metrics_df$corr <- paste("Cor =", metrics_df$corr)
@@ -300,7 +318,8 @@ ggplot(count_df) +
         x = "Calculated cell count",
         y = "Provided cell count (cellpose)",
         title = "Provided vs. calculated total cells per spot"
-    )
+    ) +
+    theme_bw(base_size = 10)
 dev.off()
 
 #-------------------------------------------------------------------------------
@@ -313,7 +332,8 @@ all_spots(full_df, "counts_all_spots_scatter.pdf")
 #   Plot cell-type counts summed across spots
 count_df <- full_df %>%
     group_by(sample_id, deconvo_tool, cell_type) %>%
-    summarize(observed = sum(observed), actual = sum(actual))
+    summarize(observed = sum(observed), actual = sum(actual)) %>%
+    ungroup()
 
 across_spots(count_df, "counts_across_spots_scatter.pdf")
 
@@ -331,7 +351,8 @@ prop_df <- full_df %>%
     ) %>%
     filter(
         !is.na(observed) & !is.na(actual)
-    )
+    ) %>%
+    ungroup()
 all_spots(prop_df, "props_all_spots_scatter.pdf")
 
 #   First, sum counts for each (cell type, sample, deconvo tool) across
@@ -347,7 +368,8 @@ prop_df <- full_df %>%
     mutate(
         observed = observed / sum(observed),
         actual = actual / sum(actual),
-    )
+    ) %>%
+    ungroup()
 
 across_spots(prop_df, "props_across_spots_scatter.pdf")
 
@@ -361,7 +383,8 @@ count_df <- full_df %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
     mutate(
         observed = sum(actual) * observed / sum(observed)
-    )
+    ) %>%
+    ungroup()
 count_df$observed[is.na(count_df$observed)] <- 0
 all_spots(count_df, "adjusted_counts_all_spots_scatter.pdf")
 
