@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "deconvo_figure_IF"
-#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/03-deconvo_figure_IF_$TASK_ID.log
-#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/03-deconvo_figure_IF_$TASK_ID.log
+#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/03-deconvo_figure_IF_layer_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/03-deconvo_figure_IF_layer_$TASK_ID.log
 #$ -l mf=10G,h_vmem=10G
 #$ -t 1-4
 #$ -tc 4

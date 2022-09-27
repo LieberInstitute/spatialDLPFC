@@ -12,7 +12,7 @@ library("jaffelab")
 library("rjson")
 library("SpatialExperiment")
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 sample_id_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
