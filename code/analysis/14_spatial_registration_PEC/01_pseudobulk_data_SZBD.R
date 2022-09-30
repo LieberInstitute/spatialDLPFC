@@ -48,7 +48,7 @@ dim(sce_pseudo)
 message(Sys.time(), " - Reading data from: ", filepath_2)
 sce <- readH5AD(file = filepath_2)
 
-rowData(sce_2)$varm <- NULL
+rowData(sce)$varm <- NULL
 
 message("\nSCE Dimesions:")
 dim(sce)
