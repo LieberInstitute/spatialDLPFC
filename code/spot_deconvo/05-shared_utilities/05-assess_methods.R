@@ -450,3 +450,143 @@ for (sample_id in sample_ids) {
     print(plot_grid(plotlist = plot_list, ncol = length(cell_types_actual)))
     dev.off()
 }
+
+#-------------------------------------------------------------------------------
+#   Spatial distribution of marker gene expression vs. cell-type counts
+#-------------------------------------------------------------------------------
+
+#   Read in markers and marker stats
+marker_stats = readRDS(marker_object_in)
+markers = readLines(marker_in)
+
+#   Subset marker_stats to include just the rows where each gene is a marker for
+#   the given cell type
+marker_stats <- marker_stats %>%
+    group_by(gene) %>%
+    filter(
+        ratio == max(ratio),
+        gene %in% markers
+    ) %>%
+    ungroup()
+
+#   Collapse cell types to the resolution detectable on the IF images
+#   ("ground-truth"). Note there are some subtle flaws that emerge from this
+#   approach, which we'll ignore for the sake of an easy approximate
+#   visualization: a marker might start with a good mean ratio between 'Excit'
+#   and 'Inhib', but we collapse these categories, changing the real mean ratio
+#   and thus rank of the marker (not accounted for here).
+marker_stats$cellType.target = tolower(as.character(marker_stats$cellType.target))
+if (cell_group == "broad") {
+    marker_stats$cellType.target[
+        marker_stats$cellType.target %in% c('excit', 'inhib')
+    ] = "neuron"
+    marker_stats$cellType.target[
+        marker_stats$cellType.target %in% c('opc', 'astro')
+    ] = "other"
+} else {
+    # TODO
+}
+marker_stats$cellType.target = as.factor(marker_stats$cellType.target)
+stopifnot(
+    all(sort(unique(marker_stats$cellType.target)) == sort(cell_types_actual))
+)
+
+#   Add mean marker-gene expression for each associated cell type to the main
+#   data frame with cell-type counts
+full_df$marker_express = NA
+for (cell_type in cell_types_actual) {
+    #   Grab markers for this cell type
+    these_markers = marker_stats %>%
+        filter(cellType.target == cell_type) %>%
+        arrange(desc(ratio)) %>%
+        head(n = 25) %>%
+        pull(gene)
+    
+    stopifnot(all(these_markers %in% rownames(spe)))
+    
+    for (sample_id in sample_ids) {
+        spe_small = spe[these_markers, spe$sample_id == sample_id]
+        
+        for (deconvo_tool in deconvo_tools) {
+            #   Form a temporary tibble with mean expression across markers for
+            #   each spot
+            temp_df = as_tibble(
+                data.frame(
+                    'marker_express_temp' = colMeans(assays(spe_small)$counts),
+                    'barcode' = colnames(spe_small),
+                    'sample_id' = sample_id,
+                    'cell_type' = cell_type,
+                    'deconvo_tool' = deconvo_tool
+                )
+            )
+            
+            #   Add this quantity to the full tibble that has cell-type counts
+            temp_df = left_join(
+                full_df, temp_df,
+                by = c("barcode", "sample_id", "cell_type", "deconvo_tool")
+            )
+            new_indices = !is.na(temp_df$marker_express_temp)
+            full_df[new_indices, 'marker_express'] = temp_df[
+                new_indices, 'marker_express_temp'
+            ]
+        }
+    }
+}
+
+#   All rows in full_df should've been filled with an expression value
+stopifnot(all(!is.na(full_df$marker_express)))
+
+
+#   Compute correlation for each deconvolution tool
+metrics_df <- full_df %>%
+    group_by(deconvo_tool, sample_id, cell_type) %>%
+    summarize(
+        corr = round(cor(observed, actual), 2),
+    ) %>%
+    ungroup()
+
+#   Improve label for plotting
+metrics_df$corr <- paste("Cor =", metrics_df$corr)
+
+#   For each cell type, plot counts of this cell type, measured by each
+#   deconvolution tool, against the mean marker-gene expression for that cell
+#   type (scatterplot)
+plot_list <- lapply(
+    cell_types_actual,
+    function(ct) {
+        full_df_small <- full_df %>%
+            filter(cell_type == ct)
+        
+        metrics_df_small <- metrics_df %>%
+            filter(cell_type == ct)
+        
+        p = ggplot(full_df_small) +
+            geom_point(
+                aes(x = observed, y = marker_express, color = sample_id),
+                alpha = 0.01
+            ) +
+            facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
+            guides(col = guide_legend(override.aes = list(alpha = 1))) +
+            geom_text(
+                data = metrics_df_small,
+                mapping = aes(
+                    x = Inf, y = max(full_df_small$marker_express) / 7,
+                    label = corr
+                ),
+                hjust = 1
+            ) +
+            labs(
+                title = ct,
+                x = paste0("Software-estimated ", ct, " counts"),
+                y = "Mean marker-gene counts",
+            ) +
+            scale_fill_continuous(type = "viridis") +
+            theme_bw(base_size = 10)
+        
+        return(p)
+    }
+)
+
+pdf(file.path(plot_dir, 'marker_vs_ct_counts.pdf'))
+print(plot_list)
+dev.off()
