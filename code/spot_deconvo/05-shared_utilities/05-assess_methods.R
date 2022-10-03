@@ -557,9 +557,6 @@ plot_list <- lapply(
         full_df_small <- full_df %>%
             filter(cell_type == ct)
         
-        metrics_df_small <- metrics_df %>%
-            filter(cell_type == ct)
-        
         p = ggplot(full_df_small) +
             geom_point(
                 aes(x = observed, y = marker_express, color = sample_id),
@@ -568,7 +565,7 @@ plot_list <- lapply(
             facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
             guides(col = guide_legend(override.aes = list(alpha = 1))) +
             geom_text(
-                data = metrics_df_small,
+                data = metrics_df %>% filter(cell_type == ct),
                 mapping = aes(
                     x = Inf, y = max(full_df_small$marker_express) / 7,
                     label = corr
