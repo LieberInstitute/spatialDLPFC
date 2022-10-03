@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Tue Sep 13 15:14:57 EDT 2022
+Fri Sep 30 13:28:05 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 1860567
+Job id: 149768
 Job name: pseudobulk_data_SZBD
-Hostname: compute-076.cm.cluster
+Hostname: compute-116.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -98,8 +98,60 @@ The following objects are masked from ‘package:matrixStats’:
 
 Loading required package: SpatialExperiment
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-Running -SZBDMulti
-Error: file.exists(filepath) is not TRUE
+
+#### Running: SZBDMulti ####
+2022-09-30 13:28:36 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version2/SZBDMulti/SZBDMulti-Seq_annotated_part1.h5ad
+Warning messages:
+1: The names of these selected uns items have been modified to match R conventions: '_attr2type' -> 'X_attr2type' 
+2: conversion failed for the item 'de_res' in 'varm' with the following error and has been skipped
+Conversion error message: Error in py_ref_to_r(x): Conversion from numpy array type 20 is not supported
+ 
+
+SCE Dimesions:
+[1]  34283 462993
+Cell Types:
+
+     Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
+     22486       2690        603     137151      34552       4367       2724 
+     L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 Lamp5.Lhx6 
+     51267       6551      30543       5354      11232       8146       4319 
+ Micro.PVM      Oligo        OPC       Pax6      Pvalb       Sncg        Sst 
+      5253      55526      12040       1716      26497       4561      16621 
+ Sst.Chodl        Vip       VLMC 
+       359      17389       1046 
+2022-09-30 13:51:22 revert to counts
+2022-09-30 13:53:49 make pseudobulk object
+2022-09-30 17:45:21 drop lowly expressed genes
+2022-09-30 17:45:43 normalize expression
+
+SCE Pseudobulk Dimesions:
+[1] 30910  6172
+2022-09-30 17:48:11 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version2/SZBDMulti/SZBDMulti-Seq_annotated_part2.h5ad
+Warning messages:
+1: The names of these selected uns items have been modified to match R conventions: '_attr2type' -> 'X_attr2type' 
+2: conversion failed for the item 'de_res' in 'varm' with the following error and has been skipped
+Conversion error message: Error in py_ref_to_r(x): Conversion from numpy array type 20 is not supported
+ 
+
+SCE Dimesions:
+[1]  34283 487659
+Cell Types:
+
+     Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
+     25871       2983        536     141807      36841       4430       2372 
+     L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 Lamp5.Lhx6 
+     53386       6823      30745       5258      10916       9157       4734 
+ Micro.PVM      Oligo        OPC       Pax6      Pvalb       Sncg        Sst 
+      6444      58330      13455       1914      28436       4520      16863 
+ Sst.Chodl        Vip       VLMC 
+       396      20315       1127 
+2022-09-30 18:23:23 revert to counts
+2022-09-30 18:25:56 make pseudobulk object
+2022-09-30 22:23:26 drop lowly expressed genes
+2022-09-30 22:23:45 normalize expression
+Error in FUN(X[[i]], ...) : 
+  column(s) 'featureid' in ‘mcols’ are duplicated and the data do not match
+Calls: cbind ... .cbind.SummarizedExperiment -> .cbind.DataFrame -> lapply -> lapply -> FUN
 Execution halted
 **** Job ends ****
-Tue Sep 13 15:15:27 EDT 2022
+Fri Sep 30 22:26:40 EDT 2022
