@@ -25,7 +25,7 @@ spatialLIBD::run_app(
     sig_genes = NULL,
     title = "Visium_IF DLPFC 2022",
     spe_discrete_vars = c(
-        vars[grep("^10x_", vars)],
+        vars[grep("^(10x|tangram|CART|cell2location|spotlight)_", vars)],
         "ManualAnnotation"
     ),
     spe_continuous_vars = c(
