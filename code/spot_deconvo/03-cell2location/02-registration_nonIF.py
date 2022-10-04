@@ -26,19 +26,26 @@ from pathlib import Path
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
+
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "03-cell2location", "nonIF"
+    "processed-data", "spot_deconvo", "03-cell2location", "nonIF", cell_group
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo", "03-cell2location", "nonIF"
+    "plots", "spot_deconvo", "03-cell2location", "nonIF", cell_group
 )
 
-sp_path = os.path.join(processed_dir, 'adata_vis_orig.h5ad')
+sp_path = os.path.join(os.path.dirname(processed_dir), 'adata_vis_orig.h5ad')
 sc_path = os.path.join(processed_dir, 'adata_ref_orig.h5ad')
 
-#   TODO: adjust these as appropriate!
+#   Naming conventions used for different columns in the single-cell AnnData
+batch_key = 'BrNum'
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
 
-cell_type_var = 'cellType_broad_hc'    # in single-cell only
 cell_count_var = 'count'               # in spatial only
 plot_file_type = 'pdf'
 
@@ -109,7 +116,7 @@ adata_ref = sc.read_h5ad(sc_path)
 #   was changed, given the info here: https://github.com/BayraktarLab/cell2location/issues/145#issuecomment-1107410480
 RegressionModel.setup_anndata(
     adata = adata_ref,
-    batch_key = 'subject',
+    batch_key = batch_key,
     labels_key = cell_type_var
 )
 
@@ -215,12 +222,22 @@ adata_vis.obs[adata_vis.uns['mod']['factor_names']] = adata_vis.obsm[
 #   Visualization
 ################################################################################
 
+cell_types = adata_ref.obs[cell_type_var].cat.categories
+
+#   There are too many cell types to plot in one spatial plot. For layer
+#   resolution, combine all excitatory cells types for the multi-type plot
+if cell_group == "layer":
+    adata_vis.obs['Excit'] = adata_vis.obs[
+        [x for x in cell_types if 'Excit' in x]
+    ].sum(axis = 1)
+    cell_types_multi = np.unique(np.array([x.split('_')[0] for x in cell_types]))
+else:
+    cell_types_multi = cell_types
+
 #   Loop through each sample and produce plots for each
 for sample_id in adata_vis.obs['sample'].cat.categories:
         #   Subset to this sample
     slide = select_slide(adata_vis, sample_id)
-
-    cell_types = adata_ref.obs[cell_type_var].cat.categories
 
     #   Plot cell types individually for this sample
     with mpl.rc_context({'axes.facecolor':  'black', 'figure.figsize': [4.5, 5]}):
@@ -247,7 +264,7 @@ for sample_id in adata_vis.obs['sample'].cat.categories:
         fig = plot_spatial(
             adata=slide,
             # labels to show on a plot
-            color=cell_types, labels=cell_types,
+            color=cell_types_multi, labels=cell_types_multi,
             show_img=True,
             # 'fast' (white background) or 'dark_background'
             style='fast',

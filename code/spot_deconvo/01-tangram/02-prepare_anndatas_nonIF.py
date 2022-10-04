@@ -21,21 +21,31 @@ import json
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
 #-------------------------------------------------------------------------------
 #   Paths
 #-------------------------------------------------------------------------------
 
-plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "nonIF")
+plot_dir = pyhere.here(
+    "plots", "spot_deconvo", "01-tangram", "nonIF", cell_group
+)
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "01-tangram", "nonIF"
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF", cell_group
 )
 
-sc_path_in = pyhere.here(os.path.dirname(processed_dir), 'sce.h5ad')
-sp_path_in = pyhere.here(processed_dir, 'spe.h5ad')
+sc_path_in = pyhere.here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "sce_" + cell_group + ".h5ad"
+)
+sp_path_in = pyhere.here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF", 'spe.h5ad'
+)
 sc_path_out = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_out = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
 marker_path = pyhere.here(
-    os.path.dirname(os.path.dirname(processed_dir)), 'markers.txt'
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "markers_" + cell_group + ".txt"
 )
 sample_info_path = pyhere.here(
     "processed-data", "spot_deconvo", "nonIF_ID_table.csv"
@@ -56,7 +66,10 @@ spaceranger_dir = pyhere.here(
 cluster_var_plots = 'bayesSpace_harmony_9'
 
 #   Variable name in ad_sc.obs representing cell type
-cell_type_var = 'cellType_broad_hc'
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
 
 #   Variable name in both ad_sc.var and ad_sp.var containing Ensembl gene ID and
 #   variable name in ad_sp.var containing gene symbol
@@ -170,7 +183,7 @@ ad_sp.obsm['spatial'] = np.array(
 
 #   Ensure output directories exist
 Path(os.path.join(plot_dir, sample_name)).mkdir(parents=True, exist_ok=True)
-Path(os.path.join(processed_dir, sample_name)).mkdir(
+Path(os.path.dirname(str(sc_path_out).format(sample_name))).mkdir(
     parents=True, exist_ok=True
 )
 
@@ -178,7 +191,7 @@ Path(os.path.join(processed_dir, sample_name)).mkdir(
 #   sample, it looks like the order of some variables is random,
 #   but alignment and other downstream tasks are dependent on variable
 #   ordering. Therefore, while it's a bit wasteful to save many "copies" of
-#   'ad_sc' as done here, it simplifies code later by avoiding several order-
-#   related complications that would need manual resolution
-ad_sp.write_h5ad(str(sp_path_out).format(sample_name))
+#   'ad_sc' and 'ad_sp' as done here, it simplifies code later by avoiding
+#   several order-related complications that would need manual resolution
 ad_sc.write_h5ad(str(sc_path_out).format(sample_name))
+ad_sp.write_h5ad(str(sp_path_out).format(sample_name))

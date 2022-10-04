@@ -24,18 +24,22 @@ import json
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
+
 sc_path = pyhere.here(
-    "processed-data", "spot_deconvo", "01-tangram", "sce.h5ad"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "sce_" + cell_group + ".h5ad"
 )
 sp_path = pyhere.here(
-    "processed-data", "spot_deconvo", "01-tangram", "nonIF", "spe.h5ad"
+    "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF", "spe.h5ad"
 )
 
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "03-cell2location", "nonIF"
+    "processed-data", "spot_deconvo", "03-cell2location", "nonIF", cell_group
 )
 plot_dir = pyhere.here(
-    "plots", "spot_deconvo", "03-cell2location", "nonIF"
+    "plots", "spot_deconvo", "03-cell2location", "nonIF", cell_group
 )
 Path(plot_dir).mkdir(parents=True, exist_ok=True)
 Path(processed_dir).mkdir(parents=True, exist_ok=True)
@@ -48,18 +52,24 @@ spaceranger_dir = pyhere.here(
 )
 
 marker_path = pyhere.here(
-    "processed-data", "spot_deconvo", "markers.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "markers_" + cell_group + ".txt"
 )
 
 sample_info_path = pyhere.here(
     "processed-data", "spot_deconvo", "nonIF_ID_table.csv"
 )
 
+#   In single-cell only
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
+
 #   Naming conventions used for different columns in the spatial AnnData
 sample_id_var = 'sample_id'          # in spatial object only
 ensembl_id_var = 'gene_id'           # in both spatial and single-cell objects
 gene_symbol_var = 'gene_name'        # in both spatial and single-cell objects
-cell_type_var = 'cellType_broad_hc'  # in single-cell only
 spatial_coords_names = ['pxl_col_in_fullres', 'pxl_row_in_fullres']
 
 plot_file_type = 'pdf'
@@ -157,12 +167,23 @@ adata_vis.obsm['spatial'] = np.array(
 )
 
 #-------------------------------------------------------------------------------
+#   Replace special characters in some layer groups
+#-------------------------------------------------------------------------------
+
+if cell_group == "layer":
+    adata_ref.obs[cell_type_var] = pd.Series(
+        [x.replace('/', '_') for x in adata_ref.obs[cell_type_var]],
+        dtype = 'category', index = adata_ref.obs_names
+    )
+
+#-------------------------------------------------------------------------------
 #   Save AnnDatas
 #-------------------------------------------------------------------------------
 
-adata_vis.write_h5ad(
-    os.path.join(processed_dir, 'adata_vis_orig.h5ad')
-)
+if cell_group == 'broad':
+    adata_vis.write_h5ad(
+        os.path.join(os.path.dirname(processed_dir), 'adata_vis_orig.h5ad')
+    )
 
 adata_ref.write_h5ad(
     os.path.join(processed_dir, 'adata_ref_orig.h5ad')

@@ -22,17 +22,22 @@ import custom_tg_code as ctg
 #   Variable definitions
 ################################################################################
 
+cell_group = "broad" # "broad" or "layer"
+
 #-------------------------------------------------------------------------------
 #   Paths
 #-------------------------------------------------------------------------------
 
-plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "nonIF")
+plot_dir = pyhere.here("plots", "spot_deconvo", "01-tangram", "nonIF", cell_group)
 processed_dir = pyhere.here(
-    "processed-data", "spot_deconvo", "01-tangram", "nonIF"
+    "processed-data", "spot_deconvo", "01-tangram", "nonIF", cell_group
 )
 sc_path_in = pyhere.here(processed_dir, '{}', 'ad_sc.h5ad')
 sp_path_in = pyhere.here(processed_dir, '{}', 'ad_sp_orig.h5ad')
-id_path = pyhere.here(processed_dir, 'sample_ids.txt')
+id_path = pyhere.here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF",
+    "sample_ids.txt"
+)
 
 #-------------------------------------------------------------------------------
 #   Dataset-specific variables
@@ -42,7 +47,10 @@ id_path = pyhere.here(processed_dir, 'sample_ids.txt')
 cell_count_var = 'count'
 
 #   Variable name in ad_sc.obs representing cell type
-cell_type_var = 'cellType_broad_hc'
+if cell_group == 'broad':
+    cell_type_var = 'cellType_broad_hc'
+else:
+    cell_type_var = 'layer_level'
 
 plot_file_type = 'pdf'
 

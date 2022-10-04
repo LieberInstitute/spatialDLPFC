@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "prepare_anndata_nonIF"
-#$ -o ../../../processed-data/spot_deconvo/03-cell2location/01-prepare_anndata_nonIF.log
-#$ -e ../../../processed-data/spot_deconvo/03-cell2location/01-prepare_anndata_nonIF.log
+#$ -o ../../../processed-data/spot_deconvo/03-cell2location/01-prepare_anndata_nonIF_broad.log
+#$ -e ../../../processed-data/spot_deconvo/03-cell2location/01-prepare_anndata_nonIF_broad.log
 #$ -l mf=80G,h_vmem=80G,h_fsize=50G
 
 echo "**** Job starts ****"

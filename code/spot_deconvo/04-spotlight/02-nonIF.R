@@ -14,28 +14,39 @@ library("sessioninfo")
 #   Variable definitions
 ################################################################################
 
-sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
+cell_group <- "broad" # "broad" or "layer"
+
+sce_in <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("sce_", cell_group, ".rds")
+)
 spe_in <- here(
     "processed-data", "rdata", "spe", "01_build_spe",
     "spe_filtered_final_with_clusters.Rdata"
 )
 
 marker_path <- here(
-    "processed-data", "spot_deconvo", "markers.txt"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("markers_", cell_group, ".txt")
 )
 marker_stats_path <- here(
-    "processed-data", "spot_deconvo", "marker_stats.rds"
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("marker_stats_", cell_group, ".rds")
 )
 
 plot_dir <- here(
-    "plots", "spot_deconvo", "04-spotlight", "nonIF"
+    "plots", "spot_deconvo", "04-spotlight", "nonIF", cell_group
 )
 processed_dir <- here(
-    "processed-data", "spot_deconvo", "04-spotlight", "nonIF"
+    "processed-data", "spot_deconvo", "04-spotlight", "nonIF", cell_group
 )
 
 #   Column names in colData(sce)
-cell_type_var <- "cellType_broad_hc"
+if (cell_group == "broad") {
+    cell_type_var <- "cellType_broad_hc"
+} else {
+    cell_type_var <- "layer_level"
+}
 
 #   Column names in rowData(sce)
 symbol_var <- "gene_name"
@@ -55,7 +66,7 @@ dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 
 #   Load objects
-load(sce_in, verbose = TRUE)
+sce <- readRDS(sce_in)
 load(spe_in, verbose = TRUE)
 gc()
 
@@ -76,6 +87,13 @@ colLabels(sce) <- colData(sce)[[cell_type_var]]
 markers <- readLines(marker_path)
 marker_stats <- readRDS(marker_stats_path)
 stopifnot(all(markers %in% rownames(sce)))
+
+#   Make sure there is only one row per gene, and that row corresponds to the
+#   target cell type for which the gene could potentially be a marker
+marker_stats <- marker_stats %>%
+    group_by(gene) %>%
+    filter(ratio == max(ratio))
+
 
 #   Filter out any mitochondrial/ribosomal genes
 genes <- !grepl(
@@ -245,12 +263,17 @@ saveRDS(spe, file.path(processed_dir, "spe.rds"))
 #   Export 'clusters.csv' file of cell counts
 ################################################################################
 
+#   '/' chracters in cell types are problematic and should be replaced with '_'
+cell_types = gsub('/', '_', colnames(res$mat))
+
 #   Create a data frame with cell counts for all samples, and add the 'key'
 #   column. Note here we scale cell-type proportions by total cells per spot,
 #   the latter of which is computed prior to running SPOTlight
-clusters <- data.frame(res$mat * spe[[cell_count_var]])
+clusters <- data.frame(res$mat * spe$cell_counts)
+colnames(clusters) = cell_types
+
 clusters$key <- spe$key
-clusters <- clusters[, c("key", as.character(unique(sce[[cell_type_var]])))]
+clusters <- clusters[, c("key", cell_types)]
 
 #   Write individual 'clusters.csv' files for each sample
 for (sample_id in unique(spe[[sample_var]])) {
