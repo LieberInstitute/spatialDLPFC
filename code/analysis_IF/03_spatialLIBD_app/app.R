@@ -11,19 +11,19 @@ options("golem.app.prod" = TRUE)
 options(repos = BiocManager::repositories())
 
 ## Load the data
-load("spe.Rdata", verbose = TRUE)
+spe_IF <- readRDS("spe.rds")
 
 # speB$BayesSpace <- speB$spatial.cluster
 # speB$BayesSpace_initial <- speB$cluster.init
-vars <- colnames(colData(spe))
+vars <- colnames(colData(spe_IF))
 
 ## Deploy the website
 spatialLIBD::run_app(
-    spe,
+    spe_IF,
     sce_layer = NULL,
     modeling_results = NULL,
     sig_genes = NULL,
-    title = "Visium HPC 2022",
+    title = "Visium_IF DLPFC 2022",
     spe_discrete_vars = c(
         vars[grep("^10x_", vars)],
         "ManualAnnotation"
