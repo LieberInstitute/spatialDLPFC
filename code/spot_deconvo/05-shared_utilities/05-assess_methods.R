@@ -6,7 +6,7 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -475,18 +475,17 @@ marker_stats <- marker_stats %>%
 #   visualization: a marker might start with a good mean ratio between 'Excit'
 #   and 'Inhib', but we collapse these categories, changing the real mean ratio
 #   and thus rank of the marker (not accounted for here).
-marker_stats$cellType.target = tolower(as.character(marker_stats$cellType.target))
-if (cell_group == "broad") {
-    marker_stats$cellType.target[
-        marker_stats$cellType.target %in% c('excit', 'inhib')
-    ] = "neuron"
-    marker_stats$cellType.target[
-        marker_stats$cellType.target %in% c('opc', 'astro')
-    ] = "other"
-} else {
-    # TODO
-}
+marker_stats$cellType.target = tolower(
+    as.character(marker_stats$cellType.target)
+)
+marker_stats$cellType.target[
+    grep('^(excit|inhib)', marker_stats$cellType.target)
+] = "neuron"
+marker_stats$cellType.target[
+    marker_stats$cellType.target %in% c('opc', 'astro')
+] = "other"
 marker_stats$cellType.target = as.factor(marker_stats$cellType.target)
+
 stopifnot(
     all(sort(unique(marker_stats$cellType.target)) == sort(cell_types_actual))
 )
@@ -535,7 +534,6 @@ for (cell_type in cell_types_actual) {
 
 #   All rows in full_df should've been filled with an expression value
 stopifnot(all(!is.na(full_df$marker_express)))
-
 
 #   Compute correlation for each deconvolution tool
 metrics_df <- full_df %>%
