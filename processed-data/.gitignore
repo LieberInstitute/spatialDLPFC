@@ -9,7 +9,7 @@ SPATIAL_RNA_COUNTER_CS
 *.gz
 spot_deconvo/01-tangram/logs
 spot_deconvo/01-tangram/IF/*/*/*.h5ad
-spot_deconvo/01-tangram/nonIF/*/*.h5ad
+spot_deconvo/01-tangram/nonIF/*/*/*.h5ad
 spot_deconvo/02-cellpose/*.log
 spot_deconvo/02-cellpose/masks
 spot_deconvo/02-cellpose/*/*.npy
@@ -23,10 +23,11 @@ spot_deconvo/03-cell2location/IF/*.h5ad
 spot_deconvo/03-cell2location/IF/*/*.h5ad
 spot_deconvo/03-cell2location/IF/*/adata_*/model.pt
 spot_deconvo/03-cell2location/nonIF/*.h5ad
-spot_deconvo/03-cell2location/nonIF/adata_*/model.pt
+spot_deconvo/03-cell2location/nonIF/*/*.h5ad
+spot_deconvo/03-cell2location/nonIF/*/adata_*/model.pt
 spot_deconvo/04-spotlight/*.log
 spot_deconvo/04-spotlight/IF/*/*.rds
-spot_deconvo/04-spotlight/nonIF/*.rds
+spot_deconvo/04-spotlight/nonIF/*/*.rds
 spot_deconvo/05-shared_utilities/logs
 spot_deconvo/05-shared_utilities/*.rds
 spot_deconvo/05-shared_utilities/*.h5ad
