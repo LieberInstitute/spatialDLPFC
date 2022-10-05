@@ -5,6 +5,9 @@ import pickle
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
 from sklearn import tree
 
 import pyhere
@@ -72,6 +75,10 @@ def prune(tree):
 #   Analysis
 ################################################################################
 
+#-------------------------------------------------------------------------------
+#   Preprocess and clean fluorescence data + manual cell-type labels
+#-------------------------------------------------------------------------------
+
 #   Read in list of cells and format
 df = pd.read_csv(df_path)
 df.rename({'Unnamed: 0': 'id'}, axis = 1, inplace = True)
@@ -94,6 +101,27 @@ x_train, x_test, y_train, y_test = train_test_split(
     x, y, test_size = 0.2, random_state = random_seed, stratify = y
 )
 
+#-------------------------------------------------------------------------------
+#   Just for quick comparison, train a LogisticRegression model and report
+#   accuracy
+#-------------------------------------------------------------------------------
+
+#   Train a LogisticRegression model on normalized training data
+pipe = make_pipeline(
+    StandardScaler(),
+    LogisticRegression(random_state = random_seed, C = 10)
+)
+pipe.fit(x_train, y_train)
+
+acc_train = round(100 * pipe.score(x_train, y_train), 1)
+acc_test = round(100 * pipe.score(x_test, y_test), 1)
+print(f'Logistic regression training accuracy: {acc_train}%.')
+print(f'Logistic regression test accuracy: {acc_test}%.')
+
+#-------------------------------------------------------------------------------
+#   Train the DecisionTreeClassifier
+#-------------------------------------------------------------------------------
+
 #   Instantiate, fit, and save the CART
 model = tree.DecisionTreeClassifier(
     criterion = criterion, 
@@ -113,8 +141,8 @@ with open(model_out_path, 'wb') as f:
 #   Compute training and test accuracy
 acc_train = round(100 * model.score(x_train, y_train), 1)
 acc_test = round(100 * model.score(x_test, y_test), 1)
-print(f'Training accuracy: {acc_train}%.')
-print(f'Test accuracy: {acc_test}%.')
+print(f'CART training accuracy: {acc_train}%.')
+print(f'CART test accuracy: {acc_test}%.')
 
 #   Print a more thorough report about training and test scores
 labels_train = model.predict(x_train)
