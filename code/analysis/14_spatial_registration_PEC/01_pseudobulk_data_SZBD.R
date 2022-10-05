@@ -84,7 +84,12 @@ save(sce_subset, sce_pseudo,sce_subset2, sce_pseudo2,
 
 message(Sys.time(), " Combine two parts")
 
-sce_pseudo2 <- sce_pseudo2[rownames(sce_pseudo),]
+common_genes <- intersect(rownames(sce_pseudo), rownames(sce_pseudo2))
+length(common_genes)
+
+sce_pseudo <- sce_pseudo[common_genes,]
+sce_pseudo2 <- sce_pseudo2[common_genes,]
+
 sce_pseudo <- cbind(sce_pseudo, sce_pseudo2)
 
 message("\n Full SCE Pseudobulk Dimesions:")
