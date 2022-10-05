@@ -9,6 +9,7 @@ args <- commandArgs(trailingOnly = TRUE)
 dataset <- args[1]
 message("\n#### Running: ", dataset, " ####")
 filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
+filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "_annotated.h5ad"))
 stopifnot(file.exists(filepath))
 
 message(Sys.time(), " - Reading data from: ", filepath)
