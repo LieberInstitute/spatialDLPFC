@@ -395,4 +395,71 @@ for (n_markers in c(15, 25, 50)) {
     dev.off()
 }
 
+#-------------------------------------------------------------------------------
+#   For the manuscript, make a 4x4 plot for IF layer-level: 4 columns (samples)
+#   by 4 rows: expression of PCP4 then that of 'Excit_L5' for different numbers
+#   of markers: 15,25,50
+#-------------------------------------------------------------------------------
+
+if (cell_group == "layer") {
+    plot_list = list()
+    i = 1
+    
+    #   Plot expression of PCP4 for every sample
+    for (sample_id in unique(spe$sample_id)) {
+        #   Produce the ggplot object
+        plot_list[[i]] = vis_grid_gene(
+            spe[, spe$sample_id == sample_id],
+            geneid = classical_markers_ens[classical_markers == 'PCP4'],
+            assay = "counts",
+            return_plots = TRUE,
+            spatial = FALSE
+        )[[1]] +
+            labs(title = paste0('PCP4: marker for layer 5\n(', sample_id, ')'))
+        
+        i = i + 1
+    }
+    
+    for (n_markers in c(15, 25, 50)) {
+        #   Get markers for this cell type
+        markers = marker_stats %>%
+            filter(
+                cellType.target == 'Excit_L5',
+                rank_ratio <= n_markers,
+                ratio > 1
+            ) %>%
+            pull(gene)
+        
+        for (sample_id in unique(spe$sample_id)) {
+            spe_small = spe[markers, spe$sample_id == sample_id]
+            
+            #   For each spot, compute proportion of marker genes with nonzero
+            #   expression
+            spe_small$prop_nonzero_marker = colMeans(
+                assays(spe_small)$counts > 0
+            )
+            
+            plot_list[[i]] = vis_grid_gene(
+                spe_small, geneid = 'prop_nonzero_marker', return_plots = TRUE,
+                spatial = FALSE
+            )[[1]] + labs(
+                title = paste0(
+                    "Prop. markers w/ nonzero exp (", n_markers,
+                    " markers):\nExcit_L5 (", sample_id, ')'
+                )
+            )
+            i = i + 1
+        }
+    }
+    
+    pdf(
+        file.path(
+            plot_dir, paste0('sparsity_figure.pdf')
+        ),
+        width = 7 * n_sample, height = 28
+    )
+    print(plot_grid(plotlist = plot_list, ncol = n_sample))
+    dev.off()
+}
+
 session_info()
