@@ -270,7 +270,7 @@ cell_types = gsub('/', '_', colnames(res$mat))
 #   Create a data frame with cell counts for all samples, and add the 'key'
 #   column. Note here we scale cell-type proportions by total cells per spot,
 #   the latter of which is computed prior to running SPOTlight
-clusters <- data.frame(res$mat * spe$cell_counts)
+clusters <- data.frame(res$mat * spe[[cell_count_var]])
 colnames(clusters) = cell_types
 
 clusters$key <- spe$key

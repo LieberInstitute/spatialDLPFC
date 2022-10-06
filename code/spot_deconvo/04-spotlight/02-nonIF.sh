@@ -3,7 +3,7 @@
 #$ -N "nonIF"
 #$ -o ../../../processed-data/spot_deconvo/04-spotlight/02-nonIF_broad.log
 #$ -e ../../../processed-data/spot_deconvo/04-spotlight/02-nonIF_broad.log
-#$ -l mf=20G,h_vmem=20G,h_fsize=50G
+#$ -l mf=60G,h_vmem=60G,h_fsize=50G
 
 echo "**** Job starts ****"
 date
