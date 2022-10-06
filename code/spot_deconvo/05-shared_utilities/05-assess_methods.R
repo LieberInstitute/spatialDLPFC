@@ -14,6 +14,7 @@ sample_ids <- here(
 )
 
 deconvo_tools <- c("01-tangram", "03-cell2location", "04-spotlight")
+deconvo_tool_names = c('tangram', 'cell2location', 'SPOTlight')
 
 #   "Ground-truth" cell counts from cellpose + trained classification tree
 actual_paths <- here(
@@ -58,6 +59,10 @@ if (cell_group == "broad") {
 #   Plotting functions
 ################################################################################
 
+temp = deconvo_tool_names
+names(temp) = deconvo_tools
+deconvo_labeller = labeller(deconvo_tool = temp)
+
 #   Scatterplots observed vs. actual cell counts for each cell type, faceted
 #   by sample and deconvolution tool. Use all spots as points
 all_spots <- function(count_df, plot_name) {
@@ -90,7 +95,10 @@ all_spots <- function(count_df, plot_name) {
                     intercept = 0, slope = 1, linetype = "dashed", color = "red"
                 ) +
                 coord_fixed() +
-                facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
+                facet_grid(
+                    rows = vars(sample_id), cols = vars(deconvo_tool),
+                    labeller = deconvo_labeller
+                ) +
                 guides(col = guide_legend(override.aes = list(alpha = 1))) +
                 labs(
                     title = ct,
@@ -145,7 +153,7 @@ across_spots <- function(count_df, plot_name) {
             aes(x = observed, y = actual, color = cell_type, shape = sample_id)
         ) +
         coord_fixed() +
-        facet_wrap(~deconvo_tool) +
+        facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
         geom_abline(
             intercept = 0, slope = 1, linetype = "dashed", color = "red"
         ) +
@@ -297,7 +305,7 @@ metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
 pdf(file.path(plot_dir, 'total_cells.pdf'))
 ggplot(count_df) +
     geom_point(aes(x = observed, y = actual), alpha = 0.01) +
-    facet_wrap(~deconvo_tool) +
+    facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
     coord_fixed() +
     geom_abline(
         intercept = 0, slope = 1, linetype = "dashed", color = "red"
@@ -432,7 +440,9 @@ for (sample_id in sample_ids) {
             )[[1]] +
                 labs(
                     title = paste0(
-                        cell_type, ' counts\n(', deconvo_tool, ')'
+                        cell_type, ' counts\n(',
+                        deconvo_tool_names[match(deconvo_tool, deconvo_tools)],
+                        ')'
                     )
                 )
             
@@ -560,7 +570,10 @@ plot_list <- lapply(
                 aes(x = observed, y = marker_express, color = sample_id),
                 alpha = 0.01
             ) +
-            facet_grid(rows = vars(sample_id), cols = vars(deconvo_tool)) +
+            facet_grid(
+                rows = vars(sample_id), cols = vars(deconvo_tool),
+                labeller = deconvo_labeller
+            ) +
             guides(col = guide_legend(override.aes = list(alpha = 1))) +
             geom_text(
                 data = metrics_df %>% filter(cell_type == ct),
