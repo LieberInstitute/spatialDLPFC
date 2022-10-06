@@ -198,7 +198,7 @@ boxplot_mean_ratio = function(n_markers, plot_name) {
             geom_hline(yintercept = 0, linetype = 'dashed', color = 'red') +
             scale_color_manual(values = metadata(sce)[[colors_col]]) +
             labs(y = "log(Mean Ratio)") +
-            theme_bw() +
+            theme_bw(base_size = 25) +
             guides(color = "none")
     
     ggsave(
@@ -237,7 +237,7 @@ plot_list = lapply(
             pull(gene)
         my_plotExpression(
             sce, genes, ct = cell_column,
-            fill_colors = metadata(sce)$cell_type_colors_layer,
+            fill_colors = metadata(sce)[[colors_col]],
             title = paste('Top', length(genes), 'for', ct),
             marker_stats = marker_stats %>%
                 filter(
@@ -273,7 +273,8 @@ p = marker_stats %>%
     geom_vline(xintercept = 1, linetype = 'dashed', color = 'red') +
     facet_wrap(~cellType.target, scales = "free_x") +
     labs(x = "Mean Ratio") +
-    theme_bw()
+    theme_bw(base_size = 18) +
+    guides(col = guide_legend(override.aes = list(size = 2)))
 
 ggsave(
     p, filename = file.path(plot_dir, paste0("mean_ratio_vs_1vall.png")),
