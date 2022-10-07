@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Mon Sep 19 17:20:39 EDT 2022
+Fri Oct  7 14:01:35 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 26576
+Job id: 182166
 Job name: compute_registration_stats_UCLA
-Hostname: compute-096.cm.cluster
+Hostname: compute-129.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -101,8 +101,8 @@ here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 Running - UCLA-ASD
 
 SCE Dimesions:
-[1] 34014   976
-2022-09-19 17:21:07 dropping 77 pseudo-bulked samples that are below 'min_ncells'.
+[1] 31010   976
+2022-10-07 14:01:56 dropping 77 pseudo-bulked samples that are below 'min_ncells'.
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
@@ -113,18 +113,15 @@ Cell Types:
         40         41         41         30         41         40         41 
  Sst.Chodl        Vip       VLMC 
          2         41         41 
-2022-09-19 17:21:09 create model matrix
-2022-09-19 17:21:09 run duplicateCorrelation()
-The estimated correlation is: NaN
-Warning message:
-The resulting correlation is not finite! So it won't be used by downstream functions. The value is: NaN. 
-2022-09-19 18:12:44 computing enrichment statistics
-2022-09-19 18:14:36 extract and reformat enrichment results
-There were 24 warnings (use warnings() to see them)
+2022-10-07 14:01:58 create model matrix
+2022-10-07 14:01:58 run duplicateCorrelation()
+The estimated correlation is: 0.130513477191854
+2022-10-07 14:29:52 computing enrichment statistics
+2022-10-07 14:36:01 extract and reformat enrichment results
 [1] "Reproducibility information:"
-[1] "2022-09-19 18:14:37 EDT"
+[1] "2022-10-07 14:36:03 EDT"
     user   system  elapsed 
-3183.745   40.434 3236.925 
+2046.464   11.973 2066.549 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.1 Patched (2022-08-30 r82775)
@@ -135,7 +132,7 @@ There were 24 warnings (use warnings() to see them)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2022-09-19
+ date     2022-10-07
  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -305,4 +302,4 @@ There were 24 warnings (use warnings() to see them)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Sep 19 18:14:40 EDT 2022
+Fri Oct  7 14:36:05 EDT 2022
