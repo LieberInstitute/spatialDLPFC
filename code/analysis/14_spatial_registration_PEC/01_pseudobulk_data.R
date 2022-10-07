@@ -9,7 +9,6 @@ args <- commandArgs(trailingOnly = TRUE)
 dataset <- args[1]
 message("\n#### Running: ", dataset, " ####")
 filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
-filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "_annotated.h5ad"))
 stopifnot(file.exists(filepath))
 
 message(Sys.time(), " - Reading data from: ", filepath)
@@ -31,7 +30,8 @@ rownames(sce) <- rowData(sce)$featureid # have to make row names of object the e
 # default “X” contain the log-normalized counts
 message(Sys.time(), " revert to counts")
 
-# message("Sparsity: ", sum(assays(sce)$X == 0)/product(dim(assays(sce)$X)))
+## check for all 0s (just first 100 cols for mem)
+stopifnot(any(assays(sce)$X[,1:100] != 0))
 
 counts(sce) <- assays(sce)$X # change to normalized counts
 # counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
