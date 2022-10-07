@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l mem_free=200G,h_vmem=200G,h_fsize=100G
 #$ -N pseudobulk_data_UCLA
 #$ -o logs/01_pseudobulk_data_UCLA.txt
 #$ -e logs/01_pseudobulk_data_UCLA.txt
