@@ -411,6 +411,35 @@ across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf")
 
 #   TODO: This is hardcoded for IF! Not sure if we'll do similar plots for nonIF
 
+#   Return a 'vis_grid_gene' plot given the SpatialExperiment, long-format
+#   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
+#   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
+spatial_counts_plot = function(
+        spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name, title
+        ) {
+    #   Grab counts for just this sample, deconvo tool, and cell type
+    counts_df = full_df %>%
+        filter(
+            sample_id == sample_id1,
+            deconvo_tool == deconvo_tool1,
+            cell_type == cell_type1
+        )
+    
+    #   Add counts as a column in colData(spe_small)
+    spe_small$temp_ct_counts = counts_df[[c_name]][
+        match(colnames(spe_small), counts_df$barcode)
+    ]
+    
+    #   Plot spatial distribution
+    p = vis_grid_gene(
+        spe_small, geneid = 'temp_ct_counts', return_plots = TRUE,
+        spatial = FALSE
+    )[[1]] +
+        labs(title = title)
+    
+    return(p)
+}
+
 spe = readRDS(spe_IF_in)
 
 for (sample_id in sample_ids) {
@@ -418,36 +447,30 @@ for (sample_id in sample_ids) {
     
     i = 1
     plot_list = list()
+    
+    #   For each deconvo tool, make a row of plots (each including all cell
+    #   types) showed the observed distribution
     for (deconvo_tool in deconvo_tools) {
         for (cell_type in cell_types_actual) {
-            #   Grab counts for just this sample, deconvo tool, and cell type
-            counts_df = full_df %>%
-                filter(
-                    sample_id == {{ sample_id }},
-                    deconvo_tool == {{ deconvo_tool }},
-                    cell_type == {{ cell_type }}
+            plot_list[[i]] = spatial_counts_plot(
+                spe_small, full_df, sample_id, deconvo_tool, cell_type,
+                'observed',
+                paste0(
+                    cell_type, ' counts\n(',
+                    deconvo_tool_names[match(deconvo_tool, deconvo_tools)], ')'
                 )
-            
-            #   Add counts as a column in colData(spe_small)
-            spe_small$temp_ct_counts = counts_df$observed[
-                match(colnames(spe_small), counts_df$barcode)
-            ]
-            
-            #   Plot spatial distribution
-            plot_list[[i]] = vis_grid_gene(
-                spe_small, geneid = 'temp_ct_counts', return_plots = TRUE,
-                spatial = FALSE
-            )[[1]] +
-                labs(
-                    title = paste0(
-                        cell_type, ' counts\n(',
-                        deconvo_tool_names[match(deconvo_tool, deconvo_tools)],
-                        ')'
-                    )
-                )
-            
+            )
             i = i + 1
         }
+    }
+    
+    #   Add a row showing the ground-truth counts for each cell type
+    for (cell_type in cell_types_actual) {
+        plot_list[[i]] = spatial_counts_plot(
+            spe_small, full_df, sample_id, deconvo_tool, cell_type, 'actual',
+            paste0(cell_type, ' counts\n(Ground-truth)')
+        )
+        i = i + 1
     }
     
     #   Plot in a grid where cell types are columns and rows are deconvolution
@@ -455,7 +478,7 @@ for (sample_id in sample_ids) {
     pdf(
         file.path(plot_dir, paste0('spatial_counts_', sample_id, '.pdf')),
         width = 7 * length(cell_types_actual),
-        height = 7 * length(deconvo_tools)
+        height = 7 * (length(deconvo_tools) + 1)
     )
     print(plot_grid(plotlist = plot_list, ncol = length(cell_types_actual)))
     dev.off()
