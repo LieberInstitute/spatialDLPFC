@@ -1,4 +1,3 @@
-# library('zellkonverter')
 library("SingleCellExperiment")
 library("spatialLIBD")
 library("here")
