@@ -3,6 +3,7 @@
 library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
+library("xlsx")
 library("here")
 library("sessioninfo")
 
@@ -75,8 +76,6 @@ pe_correlation_annotation <- map(datasets, correlate_and_annotate)
 data_dir <- here("processed-data","rdata","spe","14_spatial_registration_PEC")
 names(pe_correlation_annotation$DevBrain$cor_top100)
 
-library("xlsx")
-
 key <- data.frame(data = c("annotation", paste0("cor_", names(modeling_results))),
                   description = c("Annotations of spatial registration",
                                   "Correlation values with manual layer annotations",
@@ -131,17 +130,12 @@ cell_type_anno |> count(layers)
 
 ## Plot 
 layer_anno_plot <- ggplot(layer_anno_long, aes(x = cluster, y = layers)) +
-  geom_jitter(aes(color = Dataset, shape = layer_confidence),width = 0.1, height = 0.1) +
+  # geom_jitter(aes(color = Dataset, shape = layer_confidence),width = 0.1, height = 0.1) +
+  geom_point(aes(color = Dataset, shape = layer_confidence), position=position_dodge(width = .8)) +
   geom_tile(data = cell_type_anno, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-ggsave(layer_anno_plot, filename = here(plot_dir, "dataset_layer_annotation.png"))
+ggsave(layer_anno_plot, filename = here(plot_dir, "dataset_layer_annotation.png"), width = 10, height = 5)
 
-
-layer_anno_plot2 <- ggplot(cell_type_anno) +
-  # geom_jitter(aes(color = Dataset, shape = layer_confidence),width = 0.1, height = 0.1) +
-  geom_tile(aes(x = cluster, y = layers, fill= val)) 
-
-ggsave(layer_anno_plot2, filename = here(plot_dir, "dataset_layer_annotation2.png"))
 
