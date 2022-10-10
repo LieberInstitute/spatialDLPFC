@@ -65,13 +65,41 @@ correlate_and_annotate <- function(dataset){
 }
 
 datasets <- c("DevBrain", "IsoHuB","CMC","UCLA-ASD")
-datasets <- c("DevBrain", "IsoHuB","CMC")
+# datasets <- c("DevBrain", "IsoHuB","CMC")
 names(datasets) <- datasets
 
 ## Caluclate correlatiosn and annotaions for each dataset
 pe_correlation_annotation <- map(datasets, correlate_and_annotate)
 
 #### Save Output to XLSX sheet ####
+data_dir <- here("processed-data","rdata","spe","14_spatial_registration_PEC")
+names(pe_correlation_annotation$DevBrain$cor_top100)
+
+library("xlsx")
+
+key <- data.frame(data = c("annotation", paste0("cor_", names(modeling_results))),
+                  description = c("Annotations of spatial registration",
+                                  "Correlation values with manual layer annotations",
+                                  "Correlation values with k9 domains",
+                                  "Correlation values with k16 domains"))
+
+## Clear file and write key
+annotation_xlsx <- here(data_dir,"PE_spatial_annotations.xlsx")
+write.xlsx(key, file=annotation_xlsx, sheetName="Key", append=FALSE, row.names=FALSE)
+
+## write annotations
+walk2(pe_correlation_annotation, names(pe_correlation_annotation), 
+      ~write.xlsx(.x$layer_anno, file=annotation_xlsx, sheetName= paste0("annotation_", .y), append=TRUE, row.names=FALSE))
+
+## write correlations 
+walk2(pe_correlation_annotation, names(pe_correlation_annotation), function(data, name){
+  
+  name <- paste0("cor_",name)
+  # message(name)
+  walk2(data$cor_top100, names(data$cor_top100),
+        ~write.xlsx(t(.x), file=annotation_xlsx, sheetName= paste0(name, "_", .y), append=TRUE, row.names=TRUE))
+  
+})
 
 #### Compare annotations for each cell type ####
 ## prep data
