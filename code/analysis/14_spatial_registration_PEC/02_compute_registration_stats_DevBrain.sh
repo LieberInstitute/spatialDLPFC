@@ -5,7 +5,7 @@
 #$ -o logs/02_compute_registration_stats_DevBrain.txt
 #$ -e logs/02_compute_registration_stats_DevBrain.txt
 #$ -m e
-#$ -hold-jid pseudobulk_data_DevBrain
+#$ -hold_jid pseudobulk_data_DevBrain
 
 echo "**** Job starts ****"
 date

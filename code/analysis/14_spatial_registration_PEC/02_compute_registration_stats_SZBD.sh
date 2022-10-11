@@ -5,7 +5,7 @@
 #$ -o logs/02_compute_registration_stats_SZBD.txt
 #$ -e logs/02_compute_registration_stats_SZBD.txt
 #$ -m e
-#$ -hold-jid pseudobulk_data_SZBD
+#$ -hold_jid pseudobulk_data_SZBD
 
 echo "**** Job starts ****"
 date

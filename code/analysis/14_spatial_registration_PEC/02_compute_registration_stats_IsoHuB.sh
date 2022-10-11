@@ -5,7 +5,7 @@
 #$ -o logs/02_compute_registration_stats_IsoHuB.txt
 #$ -e logs/02_compute_registration_stats_IsoHuB.txt
 #$ -m e
-#$ -hold-jid pseudobulk_data_IsoHub
+#$ -hold_jid pseudobulk_data_IsoHub
 
 echo "**** Job starts ****"
 date
