@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "align_tangram_IF"
-#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_broad_$TASK_ID.log
-#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_broad_$TASK_ID.log
+#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_layer_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/05-align_tangram_IF_layer_$TASK_ID.log
 #$ -l caracol,mf=128G,h_vmem=128G
 #$ -t 1-4
 #$ -tc 2

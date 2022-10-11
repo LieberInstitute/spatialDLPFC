@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "prepare_anndatas_IF"
-#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/04-prepare_anndatas_IF_broad_$TASK_ID.log
-#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/04-prepare_anndatas_IF_broad_$TASK_ID.log
+#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/04-prepare_anndatas_IF_layer_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/04-prepare_anndatas_IF_layer_$TASK_ID.log
 #$ -l mf=80G,h_vmem=80G,h_fsize=50G
 #$ -t 1-4
 #$ -tc 4
