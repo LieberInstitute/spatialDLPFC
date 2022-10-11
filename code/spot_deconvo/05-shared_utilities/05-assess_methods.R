@@ -8,7 +8,7 @@ library("cowplot")
 
 cell_group <- "layer" # "broad" or "layer"
 
-sample_ids <- here(
+sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
     "sample_ids.txt"
 )
@@ -182,7 +182,7 @@ across_spots <- function(count_df, plot_name) {
 #   Read in and format cell counts into a table apt for plotting with ggplot
 ################################################################################
 
-sample_ids <- readLines(sample_ids)
+sample_ids <- readLines(sample_ids_path)
 
 actual_list <- list()
 observed_list <- list()
@@ -411,11 +411,13 @@ across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf")
 
 #   TODO: This is hardcoded for IF! Not sure if we'll do similar plots for nonIF
 
-#   Return a 'vis_grid_gene' plot given the SpatialExperiment, long-format
+#   Return a length-2 list containing a 'vis_grid_gene' plot and maximum value
+#   in the plot given the SpatialExperiment, long-format
 #   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
 #   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
 spatial_counts_plot = function(
-        spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name, title
+        spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
+        title
         ) {
     #   Grab counts for just this sample, deconvo tool, and cell type
     counts_df = full_df %>%
@@ -437,7 +439,7 @@ spatial_counts_plot = function(
     )[[1]] +
         labs(title = title)
     
-    return(p)
+    return(list(p, max(spe_small$temp_ct_counts)))
 }
 
 spe = readRDS(spe_IF_in)
@@ -447,12 +449,13 @@ for (sample_id in sample_ids) {
     
     i = 1
     plot_list = list()
+    max_list = list()
     
     #   For each deconvo tool, make a row of plots (each including all cell
     #   types) showed the observed distribution
     for (deconvo_tool in deconvo_tools) {
         for (cell_type in cell_types_actual) {
-            plot_list[[i]] = spatial_counts_plot(
+            temp = spatial_counts_plot(
                 spe_small, full_df, sample_id, deconvo_tool, cell_type,
                 'observed',
                 paste0(
@@ -460,17 +463,46 @@ for (sample_id in sample_ids) {
                     deconvo_tool_names[match(deconvo_tool, deconvo_tools)], ')'
                 )
             )
+            plot_list[[i]] = temp[[1]]
+            max_list[[i]] = temp[[2]]
             i = i + 1
         }
     }
     
     #   Add a row showing the ground-truth counts for each cell type
     for (cell_type in cell_types_actual) {
-        plot_list[[i]] = spatial_counts_plot(
+        temp = spatial_counts_plot(
             spe_small, full_df, sample_id, deconvo_tool, cell_type, 'actual',
             paste0(cell_type, ' counts\n(Ground-truth)')
         )
+        plot_list[[i]] = temp[[1]]
+        max_list[[i]] = temp[[2]]
         i = i + 1
+    }
+    
+    max_mat = matrix(
+        unlist(max_list), ncol = length(cell_types_actual), byrow= TRUE
+    )
+    
+    #   Now loop back through the plot list (which will be displayed in 2D)
+    #   and overwrite the scale to go as high as the largest value in the
+    #   column. This allows for easy comparison between deconvo tools and the
+    #   groun truth
+    for (i_col in 1:length(cell_types_actual)) {
+        for (i_row in 1:(length(deconvo_tools) + 1)) {
+            index = (i_row - 1) * length(cell_types_actual) + i_col
+            upper_limit = max(max_mat[,i_col])
+            
+            plot_list[[index]] = plot_list[[index]] +
+                scale_color_continuous(
+                    type = "viridis", limits = c(0, upper_limit),
+                    na.value = c("black" = "#0000002D")
+                ) +
+                scale_fill_continuous(
+                    type = "viridis", limits = c(0, upper_limit),
+                    na.value = c("black" = "#0000002D")
+                )
+        }
     }
     
     #   Plot in a grid where cell types are columns and rows are deconvolution
