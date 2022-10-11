@@ -149,9 +149,7 @@ across_spots <- function(count_df, plot_name) {
     metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
 
     p <- ggplot(count_df) +
-        geom_point(
-            aes(x = observed, y = actual, color = cell_type, shape = sample_id)
-        ) +
+        geom_point(aes(x = observed, y = actual, shape = sample_id)) +
         coord_fixed() +
         facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
         geom_abline(
@@ -487,7 +485,7 @@ for (sample_id in sample_ids) {
     #   Now loop back through the plot list (which will be displayed in 2D)
     #   and overwrite the scale to go as high as the largest value in the
     #   column. This allows for easy comparison between deconvo tools and the
-    #   groun truth
+    #   ground truth
     for (i_col in 1:length(cell_types_actual)) {
         for (i_row in 1:(length(deconvo_tools) + 1)) {
             index = (i_row - 1) * length(cell_types_actual) + i_col
