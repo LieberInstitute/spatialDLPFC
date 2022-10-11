@@ -2,6 +2,7 @@
 library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
+library("xlsx")
 library("here")
 library("sessioninfo")
 
@@ -130,32 +131,6 @@ pdf(here(plot_dir, "spatial_annotation_plot_sn_v_manual_top100.pdf"))
 layer_stat_cor_plot(cor_temp, max = max(cor_temp))
 dev.off()
 
-## Create Long Format
-layers_long <- layer_anno |>
-  mutate(layers = strsplit(layer_label, "/")) |>
-  unnest_longer(layers) |>
-  mutate(
-    layers = gsub("\\*", "", gsub("^([1-9])", "L\\1", layers)),
-    Annotation = "layer")
-
-## make annotation grid
-anno_matrix <- layers_long |>
-    mutate(layer_confidence = ifelse(layer_confidence == "good", 1, .5)) |>
-    select(-layer_label, -Annotation) |>
-    pivot_wider(names_from = "layers", values_from = "layer_confidence") |>
-    column_to_rownames("cluster")
-
-anno_matrix <- anno_matrix[rownames(cor_top100), gsub("ayer", "", colnames(cor_top100))]
-colnames(anno_matrix) <- colnames(cor_top100)
-
-anno_matrix2 <- cor_top100
-anno_matrix2[is.na(anno_matrix)] <- NA
-
-pdf(here(plot_dir, "spatial_annotation_plot_sn_v_manual_top100.pdf"))
-# layer_matrix_plot(anno_matrix)
-layer_stat_cor_plot(anno_matrix2)
-dev.off()
-
 
 #### Add Layer Annotations to colData ####
 source(here("code","analysis", "12_spatial_registration_sn","utils.R"))
@@ -201,5 +176,67 @@ table(sce$layer_annotation)
 
 # save(sce, file = "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata")
 
+#### Save Output to XLSX sheet ####
+data_dir <- here("processed-data","rdata","spe","12_spatial_registration_sn")
+
+key <- data.frame(data = c("annotation", paste0("cor_", names(modeling_results))),
+                  description = c("Annotations of spatial registration, with coresponding layer cell type lables used in spatial deconvolution",
+                                  "Correlation values with manual layer annotations",
+                                  "Correlation values with k9 domains",
+                                  "Correlation values with k16 domains"))
+
+## Clear file and write key
+annotation_xlsx <- here(data_dir,"sn_spatial_annotations.xlsx")
+write.xlsx(key, file=annotation_xlsx, sheetName="Key", append=FALSE, row.names=FALSE)
+
+## write annotations
+write.xlsx(layer_anno_all, file=annotation_xlsx, sheetName= paste0("annotation"), append=TRUE, row.names=FALSE)
+
+## write correlations 
+walk2(cor_top100, names(cor_top100),
+        ~write.xlsx(t(.x), file=annotation_xlsx, sheetName= paste0("cor_", .y), append=TRUE, row.names=TRUE))
+
+
 #### Explore Annotations ####
 
+layer_anno_long <- layer_anno_all |>
+  select(cluster,ends_with("label")) |>
+  pivot_longer(!cluster, names_to = "Annotation", values_to ="label") |>
+  mutate(confidence = !grepl("\\*", label),
+         layers = str_split(gsub("\\*","",label),"/"),
+         Annotation = gsub("_label","", Annotation)) |>
+  unnest_longer("layers") |>
+  # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
+  mutate(layers = ifelse(Annotation == "layer",
+                         ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers),
+                         paste0("k",str_pad(layers, 2,pad= "0"))
+  ))
+
+layer_anno_long |> count(confidence)
+
+
+label_anno_plot <- layer_anno_long |>
+  ggplot(aes(x = cluster, y = layers)) +
+  geom_point(aes(color = confidence), size = 3) +
+  # geom_tile(aes( fill = confidence), color = "black") +
+  facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+# ggsave(label_anno_plot, filename = here(plot_dir, "spatial_annotations_sn_all_tile.png"), height = 10)
+ggsave(label_anno_plot, filename = here(plot_dir, "spatial_annotations_sn_all.png"), height = 10)
+
+## which are specific?
+n_anno <- layer_anno_long|> filter(confidence) |> group_by(Annotation, cluster) |> summarize(n_anno = n())
+
+label_anno_plot_specific <- layer_anno_long |>
+  left_join(n_anno) |>
+  filter(confidence) |>
+  ggplot(aes(x = cluster, y = layers)) +
+  geom_point(aes(color = n_anno == 1), size = 3) +
+  # geom_tile(aes( fill = confidence), color = "black") +
+  facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_sn_all_specific.png"), height = 10)
