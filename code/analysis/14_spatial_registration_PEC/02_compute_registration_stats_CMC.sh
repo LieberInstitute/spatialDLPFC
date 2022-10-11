@@ -5,6 +5,7 @@
 #$ -o logs/02_compute_registration_stats_CMC.txt
 #$ -e logs/02_compute_registration_stats_CMC.txt
 #$ -m e
+#$ -hold-jid pseudobulk_data_CMC
 
 echo "**** Job starts ****"
 date

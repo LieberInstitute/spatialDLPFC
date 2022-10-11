@@ -1,11 +1,11 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
-#$ -N compute_registration_stats_DevBrain
-#$ -o logs/02_compute_registration_stats_DevBrain.txt
-#$ -e logs/02_compute_registration_stats_DevBrain.txt
+#$ -l mem_free=100G,h_vmem=100G,h_fsize=100G
+#$ -N compute_registration_stats_SZBD
+#$ -o logs/02_compute_registration_stats_SZBD.txt
+#$ -e logs/02_compute_registration_stats_SZBD.txt
 #$ -m e
-#$ -hold-jid pseudobulk_data_DevBrain
+#$ -hold-jid pseudobulk_data_SZBD
 
 echo "**** Job starts ****"
 date
@@ -24,7 +24,7 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 02_compute_registration_stats.R DevBrain
+Rscript 02_compute_registration_stats.R SZBDMulti
 
 echo "**** Job ends ****"
 date

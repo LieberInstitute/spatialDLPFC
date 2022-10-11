@@ -5,6 +5,8 @@
 #$ -o logs/02_compute_registration_stats_UCLA.txt
 #$ -e logs/02_compute_registration_stats_UCLA.txt
 #$ -m e
+#$ -hold-jid pseudobulk_data_UCLA
+
 
 echo "**** Job starts ****"
 date
