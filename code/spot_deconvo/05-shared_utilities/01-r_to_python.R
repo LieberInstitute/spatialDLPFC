@@ -110,8 +110,9 @@ sce$cellType_layer <- NULL
 #-------------------------------------------------------------------------------
 
 if (cell_group == "layer") {
-    #   Drop EndoMural and unclear excitatory cells
-    keep <- !is.na(sce$layer_level) & (sce$layer_level != "EndoMural")
+    #   Drop EndoMural, unclear excitatory cells, and suspicious oligo cluster
+    keep <- !is.na(sce$layer_level) & (sce$layer_level != "EndoMural") &
+        ((sce$cellType_hc != "Oligo_01") | (sce$prelimCluster == 65))
 } else {
     #   Drop rare cell types (EndoMural) for single-cell data
     keep <- !(sce$cellType_broad_hc == "EndoMural")
