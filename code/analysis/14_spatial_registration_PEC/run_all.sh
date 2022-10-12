@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=2G,h_vmem=2G,h_fsize=100G
-#$ -N run_all_template_project
+#$ -N run_all
 #$ -o logs/run_all.txt
 #$ -e logs/run_all.txt
 #$ -m e
@@ -53,6 +53,10 @@ qsub 01_pseudobulk_data_UCLA.sh
 
 rm logs/02_compute_registration_stats_UCLA.txt
 qsub 02_compute_registration_stats_UCLA.sh
+
+## Compile and Summarize
+rm logs/03_correlate_spatial.txt
+qsub 03_correlate_spatial
 
 echo "**** Job ends ****"
 date
