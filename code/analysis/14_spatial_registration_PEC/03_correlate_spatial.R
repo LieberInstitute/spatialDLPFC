@@ -1,5 +1,4 @@
 
-# library(SingleCellExperiment)
 library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
@@ -74,7 +73,6 @@ pe_correlation_annotation <- map(datasets, correlate_and_annotate)
 
 #### Save Output to XLSX sheet ####
 data_dir <- here("processed-data","rdata","spe","14_spatial_registration_PEC")
-names(pe_correlation_annotation$DevBrain$cor_top100)
 
 key <- data.frame(data = c("annotation", paste0("cor_", names(modeling_results))),
                   description = c("Annotations of spatial registration",
@@ -111,31 +109,70 @@ layer_anno_all <- do.call("rbind", layer_anno) |>
          layer_label_order = gsub("\\*","", fix_layer_order2(layer_label)))
 
 layer_anno_long <- layer_anno_all |>
-  select(Dataset, cluster,layer_confidence, layer_label) |>
-  mutate(layers = str_split(gsub("\\*","",layer_label),"/")) |>
+  select(Dataset, cluster,ends_with("label")) |>
+  pivot_longer(!c(Dataset, cluster), names_to = "Annotation", values_to ="label") |>
+  mutate(confidence = grepl("\\*", label),
+         layers = str_split(gsub("\\*","",label),"/"),
+         Annotation = gsub("_label","", Annotation)) |>
   unnest_longer("layers") |>
-  mutate(layers = ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers))
+  # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
+  mutate(layers = ifelse(Annotation == "layer",
+                         ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers),
+                         paste0("k",str_pad(layers, 2,pad= "0"))
+                         ))
 
 layer_anno_long |> count(layers)
 
+## Plot layer annotation 
 cell_type_anno <- tibble(cluster = cell_types) |>
   mutate(layer_label = ifelse(grepl("^L[0-9]", cluster),sub(" .*", "",cluster),NA)) |>
   filter(!is.na(layer_label))|>
   mutate(layers = str_split(gsub("\\*","",layer_label),"/")) |>
   unnest_longer("layers")|>
   mutate(layers = gsub("b","",ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers)),
-         val = 1)
+         val = 1,
+         Annotation = "layer")
 
 cell_type_anno |> count(layers)
 
-## Plot 
-layer_anno_plot <- ggplot(layer_anno_long, aes(x = cluster, y = layers)) +
-  # geom_jitter(aes(color = Dataset, shape = layer_confidence),width = 0.1, height = 0.1) +
-  geom_point(aes(color = Dataset, shape = layer_confidence), position=position_dodge(width = .8)) +
+layer_anno_plot <- layer_anno_long |>
+  filter(Annotation == "layer") |>
+  ggplot(aes(x = cluster, y = layers)) +
+  geom_point(aes(color = Dataset, shape = confidence), position=position_dodge(width = .8)) +
   geom_tile(data = cell_type_anno, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-ggsave(layer_anno_plot, filename = here(plot_dir, "dataset_layer_annotation.png"), width = 10, height = 5)
+ggsave(layer_anno_plot, filename = here(plot_dir, "PE_datasets_layer_annotation.png"), width = 10, height = 5)
 
+## Filter to high confidence 
+layer_anno_plot_filter <- layer_anno_long |>
+  filter(Annotation == "layer", confidence) |>
+  ggplot(aes(x = cluster, y = layers)) +
+  geom_point(aes(color = Dataset), position=position_dodge(width = .8)) +
+  geom_tile(data = cell_type_anno, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
+ggsave(layer_anno_plot_filter, filename = here(plot_dir, "PE_datasets_layer_annotation_confident.png"), width = 10, height = 5)
+
+## All annotations 
+label_anno_plot <- layer_anno_long |>
+  filter(confidence) |>
+  ggplot(aes(x = cluster, y = layers)) +
+  geom_point(aes(color = Dataset), position=position_dodge(width = .8)) +
+  geom_tile(data = cell_type_anno, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
+  facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+ggsave(label_anno_plot, filename = here(plot_dir, "PE_datasets_all_annotations.png"), height = 10)
+
+# sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
