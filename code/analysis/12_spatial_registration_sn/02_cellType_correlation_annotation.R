@@ -35,11 +35,22 @@ cor_top100 <- map(modeling_results, ~layer_stat_cor(registration_t_stats,
                                                     model_type = "enrichment",
                                                     reverse = FALSE,
                                                     top_n = 100))
-  
-## Plot
-pdf(here(plot_dir, paste0("spatial_registration_plot_sn.pdf")))
+
+
+
+## Plot all for portability
+pdf(here(plot_dir, "spatial_registration_plot_sn.pdf"))
 map(cor_top100, layer_stat_cor_plot)
 dev.off()
+
+## Plot seperatly for illistator
+map2(cor_top100, names(cor_top100), function(data, name){
+  
+  pdf(here(plot_dir, paste0("spatial_registration_plot_sn-",name,".pdf")))
+  layer_stat_cor_plot(data)
+  dev.off()
+  
+})
 
 #### Annotate Layers ####
 layer_anno <- map2(cor_top100, names(cor_top100), function(cor, name){
@@ -52,28 +63,7 @@ layer_anno <- map2(cor_top100, names(cor_top100), function(cor, name){
 
 layer_anno_all <- reduce(layer_anno, left_join, by = "cluster")
 
-
-modeling_results_pilot <- fetch_data(type = "modeling_results_pilot")
-
-## Save correlation matrix
-save(cor_top100, file = here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_cor_top100.RDS"))
-
-##  Plot layer correlation
-
-
-pdf(here(plot_dir, "spatial_registration_plot_sn_v_manual_top100.pdf"))
-layer_stat_cor_plot(cor_top100, max = max(cor_top100))
-dev.off()
-
-
 #### Annotate Cell Types by Layer ####
-
-layer_anno <- annotate_registered_clusters(
-    cor_stats_layer = cor_top100,
-    confidence_threshold = 0.25,
-    cutoff_merge_ratio = 0.25
-)
-
 layer_anno$layer |> arrange(cluster)
 #         cluster layer_confidence layer_label
 # 1         Astro             good          L1
@@ -119,39 +109,28 @@ layer_anno |>
 # 7        L5/6 1
 # 8          L6 2
 
-##  Mess with annotation plot
-layer_order <- layer_anno |>
-    filter(grepl("Excit", cluster), layer_confidence == "good") |>
-    arrange(layer_label)
-
-cor_temp <- cor_top100[layer_order$cluster, ]
-cor_temp[cor_temp < 0.0] <- 0
-
-pdf(here(plot_dir, "spatial_annotation_plot_sn_v_manual_top100.pdf"))
-layer_stat_cor_plot(cor_temp, max = max(cor_temp))
-dev.off()
-
-
-#### Add Layer Annotations to colData ####
+## Add additonal annotaitons 
 source(here("code","analysis", "12_spatial_registration_sn","utils.R"))
 
 ## layer_annotation is the reordered layer label - removes detail from the ordering process but helps group
 layer_anno_all <- layer_anno_all |>
-    arrange(cluster) |>
-    mutate(
-        layer_annotation = fix_layer_order2(layer_label),
-        cellType_broad = gsub("_.*", "", cluster),
-        cellType_layer = case_when(
-            layer_confidence == "good" & grepl("Excit", cluster) ~ paste0(cellType_broad, "_", layer_annotation),
-            grepl("Excit", cluster) ~ as.character(NA),
-            TRUE ~ cellType_broad
-        )
-    ) |>
-    select(-cellType_broad)
+  arrange(cluster) |>
+  mutate(
+    layer_annotation = fix_layer_order2(layer_label),
+    cellType_broad = gsub("_.*", "", cluster),
+    cellType_layer = case_when(
+      layer_confidence == "good" & grepl("Excit", cluster) ~ paste0(cellType_broad, "_", layer_annotation),
+      grepl("Excit", cluster) ~ as.character(NA),
+      TRUE ~ cellType_broad
+    )
+  ) |>
+  select(-cellType_broad)
 
-## Save for refrence
+## Save for reference
 write.csv(layer_anno_all, file = here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "cellType_layer_annotations.csv"))
 
+
+#### Add Layer Annotations to colData ####
 ## Add to sce object for future use
 load(file = "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata", verbose = TRUE)
 
@@ -196,9 +175,7 @@ write.xlsx(layer_anno_all, file=annotation_xlsx, sheetName= paste0("annotation")
 walk2(cor_top100, names(cor_top100),
         ~write.xlsx(t(.x), file=annotation_xlsx, sheetName= paste0("cor_", .y), append=TRUE, row.names=TRUE))
 
-
 #### Explore Annotations ####
-
 layer_anno_long <- layer_anno_all |>
   select(cluster,ends_with("label")) |>
   pivot_longer(!cluster, names_to = "Annotation", values_to ="label") |>
@@ -211,6 +188,9 @@ layer_anno_long <- layer_anno_all |>
                          ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers),
                          paste0("k",str_pad(layers, 2,pad= "0"))
   ))
+
+head(layer_anno_long)
+table(layer_anno_long$layers)
 
 layer_anno_long |> count(confidence)
 
@@ -240,3 +220,47 @@ label_anno_plot_specific <- layer_anno_long |>
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_sn_all_specific.png"), height = 10)
+
+
+#### Condensed Spatial Registration ####
+colnames(cor_top100$k9) <- paste0("k9-", colnames(cor_top100$k9))
+colnames(cor_top100$k16) <- paste0("k16-", colnames(cor_top100$k16))
+
+cor_all <- do.call("cbind", cor_top100)
+
+library("ComplexHeatmap")
+library("jaffelab")
+
+## match spatialLIBD color scale
+theSeq <- seq(min(cor_all), max(cor_all), by = 0.01)
+my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
+
+## Add split for manual/k9/k16
+annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"-"))
+
+## Add annotations
+layer_anno_all
+
+cell_fun = function(j, i, x, y, w, h, col) { # add text to each grid
+  grid.text(mat_letters[i, j], x, y)
+}
+
+
+pdf(here(plot_dir,"spatial_registration_heatmap.pdf"))
+Heatmap(t(cor_all),
+        name = "Cor",
+        col = my.col,
+        row_split = annotation_split,
+        rect_gp = gpar(col = "black", lwd = 1),
+        cluster_rows = FALSE)
+dev.off()
+
+pdf(here(plot_dir,"spatial_registration_heatmap-cluster.pdf"))
+Heatmap(t(cor_all),
+        name = "Cor",
+        col = my.col,
+        # row_split = annotation_split,
+        rect_gp = gpar(col = "black", lwd = 1),
+        cluster_rows = TRUE)
+dev.off()
+
