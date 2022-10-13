@@ -36,7 +36,7 @@ cor_top100 <- map(modeling_results, ~layer_stat_cor(registration_t_stats,
                                                     reverse = FALSE,
                                                     top_n = 100))
 
-
+save(cor_top100, file = here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_cor_top100.RDS"))
 
 ## Plot all for portability
 pdf(here(plot_dir, "spatial_registration_plot_sn.pdf"))
@@ -60,8 +60,6 @@ layer_anno <- map2(cor_top100, names(cor_top100), function(cor, name){
   colnames(anno) <- gsub("layer",name, colnames(anno))
   return(anno)
 })
-
-layer_anno_all <- reduce(layer_anno, left_join, by = "cluster")
 
 #### Annotate Cell Types by Layer ####
 layer_anno$layer |> arrange(cluster)
@@ -96,7 +94,7 @@ layer_anno$layer |> arrange(cluster)
 # 28     Oligo_03             good          WM
 # 29          OPC             good          WM
 
-layer_anno |>
+layer_anno$layer |>
     filter(grepl("Excit", cluster), layer_confidence == "good") |>
     count(layer_label)
 #   layer_label n
@@ -113,7 +111,7 @@ layer_anno |>
 source(here("code","analysis", "12_spatial_registration_sn","utils.R"))
 
 ## layer_annotation is the reordered layer label - removes detail from the ordering process but helps group
-layer_anno_all <- layer_anno_all |>
+layer_anno_all <- reduce(layer_anno, left_join, by = "cluster") |>
   arrange(cluster) |>
   mutate(
     layer_annotation = fix_layer_order2(layer_label),
@@ -184,19 +182,23 @@ layer_anno_long <- layer_anno_all |>
          Annotation = gsub("_label","", Annotation)) |>
   unnest_longer("layers") |>
   # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
-  mutate(layers = ifelse(Annotation == "layer",
+  mutate(layer_short = ifelse(Annotation == "layer",
                          ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers),
-                         paste0("k",str_pad(layers, 2,pad= "0"))
-  ))
+                         paste0("k",str_pad(layers, 2,pad= "0"))), 
+         layer_long = ifelse(Annotation == "layer",
+                             gsub("L","Layer",layer_short),
+                             paste0(Annotation, "-", layers)))
 
 head(layer_anno_long)
 table(layer_anno_long$layers)
+table(layer_anno_long$layer_long)
+table(layer_anno_long$layer_short)
 
 layer_anno_long |> count(confidence)
 
 
 label_anno_plot <- layer_anno_long |>
-  ggplot(aes(x = cluster, y = layers)) +
+  ggplot(aes(x = cluster, y = layer_short)) +
   geom_point(aes(color = confidence), size = 3) +
   # geom_tile(aes( fill = confidence), color = "black") +
   facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
@@ -212,7 +214,7 @@ n_anno <- layer_anno_long|> filter(confidence) |> group_by(Annotation, cluster) 
 label_anno_plot_specific <- layer_anno_long |>
   left_join(n_anno) |>
   filter(confidence) |>
-  ggplot(aes(x = cluster, y = layers)) +
+  ggplot(aes(x = cluster, y = layer_short)) +
   geom_point(aes(color = n_anno == 1), size = 3) +
   # geom_tile(aes( fill = confidence), color = "black") +
   facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
@@ -225,6 +227,9 @@ ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_
 #### Condensed Spatial Registration ####
 colnames(cor_top100$k9) <- paste0("k9-", colnames(cor_top100$k9))
 colnames(cor_top100$k16) <- paste0("k16-", colnames(cor_top100$k16))
+
+cor_top100$k9 <- cor_top100$k9[rownames(cor_top100$layer),]
+cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer),]
 
 cor_all <- do.call("cbind", cor_top100)
 
@@ -239,12 +244,22 @@ my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(lengt
 annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"-"))
 
 ## Add annotations
-layer_anno_all
+layer_anno_long |> count(layer_long, layer_short) |> print(n = 37)
 
-cell_fun = function(j, i, x, y, w, h, col) { # add text to each grid
-  grid.text(mat_letters[i, j], x, y)
-}
+anno_matrix <- layer_anno_long |> 
+  mutate(fill = ifelse(confidence, "X","*")) |> 
+  select(cluster, layer_long, fill) |> 
+  pivot_wider(names_from = "layer_long", values_from = "fill", values_fill = "") |>
+  column_to_rownames("cluster") |>
+  t()
 
+anno_matrix <- anno_matrix[colnames(cor_all),rownames(cor_all)]
+
+corner(anno_matrix)
+
+## all match
+setdiff(colnames(anno_matrix),colnames(cor_all))
+setdiff(rownames(anno_matrix),rownames(cor_all))
 
 pdf(here(plot_dir,"spatial_registration_heatmap.pdf"))
 Heatmap(t(cor_all),
@@ -252,7 +267,12 @@ Heatmap(t(cor_all),
         col = my.col,
         row_split = annotation_split,
         rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE)
+        cluster_rows = FALSE,
+        cluster_columns = TRUE,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
+        }
+        )
 dev.off()
 
 pdf(here(plot_dir,"spatial_registration_heatmap-cluster.pdf"))
@@ -261,6 +281,9 @@ Heatmap(t(cor_all),
         col = my.col,
         # row_split = annotation_split,
         rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = TRUE)
+        cluster_rows = TRUE,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
+        })
 dev.off()
 
