@@ -6,10 +6,10 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Sep 15 14:51:42 EDT 2022
+Tue Oct 11 10:44:22 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 9947541
+Job id: 200875
 Job name: compute_registration_stats_DevBrain
 Hostname: compute-124.cm.cluster
 Task id: undefined
@@ -101,8 +101,8 @@ here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 Running - DevBrain
 
 SCE Dimesions:
-[1] 29867   380
-2022-09-15 14:51:59 dropping 26 pseudo-bulked samples that are below 'min_ncells'.
+[1] 23405   354
+2022-10-11 10:45:53 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
@@ -114,14 +114,15 @@ Cell Types:
  Sst.Chodl        Vip       VLMC 
          0         16         16 
 Dropping Empty Levels: Sst.Chodl 
-2022-09-15 14:52:00 create model matrix
-2022-09-15 14:52:00 run duplicateCorrelation()
-2022-09-15 14:54:16 computing enrichment statistics
-2022-09-15 14:55:12 extract and reformat enrichment results
+2022-10-11 10:45:54 create model matrix
+2022-10-11 10:45:54 run duplicateCorrelation()
+2022-10-11 10:47:40 The estimated correlation is: 0.12239986245013
+2022-10-11 10:47:40 computing enrichment statistics
+2022-10-11 10:48:25 extract and reformat enrichment results
 [1] "Reproducibility information:"
-[1] "2022-09-15 14:55:12 EDT"
+[1] "2022-10-11 10:48:50 EDT"
    user  system elapsed 
-201.285   5.635 209.517 
+161.092   5.428 234.075 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.1 Patched (2022-08-30 r82775)
@@ -132,7 +133,7 @@ Dropping Empty Levels: Sst.Chodl
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2022-09-15
+ date     2022-10-11
  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -161,26 +162,26 @@ Dropping Empty Levels: Sst.Chodl
  blob                     1.2.3     2022-04-10 [2] CRAN (R 4.2.1)
  bslib                    0.4.0     2022-07-16 [2] CRAN (R 4.2.1)
  cachem                   1.0.6     2021-08-19 [2] CRAN (R 4.2.1)
- cli                      3.4.0     2022-09-08 [1] CRAN (R 4.2.1)
+ cli                      3.4.1     2022-09-23 [1] CRAN (R 4.2.1)
  codetools                0.2-18    2020-11-04 [3] CRAN (R 4.2.1)
  colorspace               2.0-3     2022-02-21 [2] CRAN (R 4.2.1)
  config                   0.3.1     2020-12-17 [2] CRAN (R 4.2.1)
  cowplot                  1.1.1     2020-12-30 [2] CRAN (R 4.2.1)
- crayon                   1.5.1     2022-03-26 [2] CRAN (R 4.2.1)
- curl                     4.3.2     2021-06-23 [2] CRAN (R 4.2.1)
+ crayon                   1.5.2     2022-09-29 [1] CRAN (R 4.2.1)
+ curl                     4.3.3     2022-10-06 [1] CRAN (R 4.2.1)
  data.table               1.14.2    2021-09-27 [2] CRAN (R 4.2.1)
  DBI                      1.1.3     2022-06-18 [2] CRAN (R 4.2.1)
  dbplyr                   2.2.1     2022-06-27 [2] CRAN (R 4.2.1)
  DelayedArray             0.22.0    2022-04-26 [2] Bioconductor
- DelayedMatrixStats       1.18.0    2022-04-26 [2] Bioconductor
+ DelayedMatrixStats       1.18.1    2022-09-27 [1] Bioconductor
  desc                     1.4.2     2022-09-08 [1] CRAN (R 4.2.1)
  digest                   0.6.29    2021-12-01 [2] CRAN (R 4.2.1)
  doParallel               1.0.17    2022-02-07 [2] CRAN (R 4.2.1)
- dotCall64                1.0-1     2021-02-11 [2] CRAN (R 4.2.1)
+ dotCall64                1.0-2     2022-10-03 [1] CRAN (R 4.2.1)
  dplyr                    1.0.10    2022-09-01 [1] CRAN (R 4.2.1)
  dqrng                    0.3.0     2021-05-01 [2] CRAN (R 4.2.1)
  DropletUtils             1.16.0    2022-04-26 [2] Bioconductor
- DT                       0.24      2022-08-09 [2] CRAN (R 4.2.1)
+ DT                       0.25      2022-09-12 [1] CRAN (R 4.2.1)
  edgeR                    3.38.4    2022-08-07 [2] Bioconductor
  ellipsis                 0.3.2     2021-04-29 [2] CRAN (R 4.2.1)
  ExperimentHub            2.4.0     2022-04-26 [2] Bioconductor
@@ -199,33 +200,33 @@ Dropping Empty Levels: Sst.Chodl
  ggplot2                  3.3.6     2022-05-03 [2] CRAN (R 4.2.1)
  ggrepel                  0.9.1     2021-01-15 [2] CRAN (R 4.2.1)
  glue                     1.6.2     2022-02-24 [2] CRAN (R 4.2.1)
- golem                    0.3.3     2022-07-13 [2] CRAN (R 4.2.1)
+ golem                    0.3.4     2022-09-26 [1] CRAN (R 4.2.1)
  gridExtra                2.3       2017-09-09 [2] CRAN (R 4.2.1)
  gtable                   0.3.1     2022-09-01 [1] CRAN (R 4.2.1)
  HDF5Array                1.24.2    2022-08-02 [2] Bioconductor
  here                   * 1.0.1     2020-12-13 [2] CRAN (R 4.2.1)
  htmltools                0.5.3     2022-07-18 [2] CRAN (R 4.2.1)
  htmlwidgets              1.5.4     2021-09-08 [2] CRAN (R 4.2.1)
- httpuv                   1.6.5     2022-01-05 [2] CRAN (R 4.2.1)
+ httpuv                   1.6.6     2022-09-08 [1] CRAN (R 4.2.1)
  httr                     1.4.4     2022-08-17 [2] CRAN (R 4.2.1)
  interactiveDisplayBase   1.34.0    2022-04-26 [2] Bioconductor
  IRanges                * 2.30.1    2022-08-18 [2] Bioconductor
- irlba                    2.3.5     2021-12-06 [2] CRAN (R 4.2.1)
+ irlba                    2.3.5.1   2022-10-03 [1] CRAN (R 4.2.1)
  iterators                1.0.14    2022-02-05 [2] CRAN (R 4.2.1)
  jquerylib                0.1.4     2021-04-26 [2] CRAN (R 4.2.1)
- jsonlite                 1.8.0     2022-02-22 [2] CRAN (R 4.2.1)
+ jsonlite                 1.8.2     2022-10-02 [1] CRAN (R 4.2.1)
  KEGGREST                 1.36.3    2022-07-12 [2] Bioconductor
  knitr                    1.40      2022-08-24 [2] CRAN (R 4.2.1)
  later                    1.3.0     2021-08-18 [2] CRAN (R 4.2.1)
  lattice                  0.20-45   2021-09-22 [3] CRAN (R 4.2.1)
  lazyeval                 0.2.2     2019-03-15 [2] CRAN (R 4.2.1)
- lifecycle                1.0.1     2021-09-24 [2] CRAN (R 4.2.1)
- limma                    3.52.2    2022-06-19 [2] Bioconductor
+ lifecycle                1.0.3     2022-10-07 [1] CRAN (R 4.2.1)
+ limma                    3.52.4    2022-09-27 [1] Bioconductor
  locfit                   1.5-9.6   2022-07-11 [2] CRAN (R 4.2.1)
  magick                   2.7.3     2021-08-18 [2] CRAN (R 4.2.1)
  magrittr                 2.0.3     2022-03-30 [2] CRAN (R 4.2.1)
  maps                     3.4.0     2021-09-25 [2] CRAN (R 4.2.1)
- Matrix                   1.4-1     2022-03-23 [3] CRAN (R 4.2.1)
+ Matrix                   1.5-1     2022-09-13 [1] CRAN (R 4.2.1)
  MatrixGenerics         * 1.8.1     2022-06-26 [2] Bioconductor
  matrixStats            * 0.62.0    2022-04-19 [2] CRAN (R 4.2.1)
  memoise                  2.0.1     2021-11-26 [2] CRAN (R 4.2.1)
@@ -238,7 +239,7 @@ Dropping Empty Levels: Sst.Chodl
  plotly                   4.10.0    2021-10-09 [2] CRAN (R 4.2.1)
  png                      0.1-7     2013-12-03 [2] CRAN (R 4.2.1)
  promises                 1.2.0.1   2021-02-11 [2] CRAN (R 4.2.1)
- purrr                    0.3.4     2020-04-17 [2] CRAN (R 4.2.1)
+ purrr                    0.3.5     2022-10-06 [1] CRAN (R 4.2.1)
  R.methodsS3              1.8.2     2022-06-13 [2] CRAN (R 4.2.1)
  R.oo                     1.25.0    2022-06-12 [2] CRAN (R 4.2.1)
  R.utils                  2.12.0    2022-06-28 [2] CRAN (R 4.2.1)
@@ -246,50 +247,50 @@ Dropping Empty Levels: Sst.Chodl
  rappdirs                 0.3.3     2021-01-31 [2] CRAN (R 4.2.1)
  RColorBrewer             1.1-3     2022-04-03 [2] CRAN (R 4.2.1)
  Rcpp                     1.0.9     2022-07-08 [2] CRAN (R 4.2.1)
- RCurl                    1.98-1.8  2022-07-30 [2] CRAN (R 4.2.1)
+ RCurl                    1.98-1.9  2022-10-03 [1] CRAN (R 4.2.1)
  rematch2                 2.1.2     2020-05-01 [2] CRAN (R 4.2.1)
  restfulr                 0.0.15    2022-06-16 [2] CRAN (R 4.2.1)
  rhdf5                    2.40.0    2022-04-26 [2] Bioconductor
  rhdf5filters             1.8.0     2022-04-26 [2] Bioconductor
  Rhdf5lib                 1.18.2    2022-05-15 [2] Bioconductor
  rjson                    0.2.21    2022-01-09 [2] CRAN (R 4.2.1)
- rlang                    1.0.5     2022-08-31 [1] CRAN (R 4.2.1)
+ rlang                    1.0.6     2022-09-24 [1] CRAN (R 4.2.1)
  roxygen2                 7.2.1     2022-07-18 [2] CRAN (R 4.2.1)
  rprojroot                2.0.3     2022-04-02 [2] CRAN (R 4.2.1)
  Rsamtools                2.12.0    2022-04-26 [2] Bioconductor
- RSQLite                  2.2.16    2022-08-17 [2] CRAN (R 4.2.1)
+ RSQLite                  2.2.18    2022-10-04 [1] CRAN (R 4.2.1)
  rstudioapi               0.14      2022-08-22 [2] CRAN (R 4.2.1)
  rsvd                     1.0.5     2021-04-16 [2] CRAN (R 4.2.1)
  rtracklayer              1.56.1    2022-06-23 [2] Bioconductor
  S4Vectors              * 0.34.0    2022-04-26 [2] Bioconductor
  sass                     0.4.2     2022-07-16 [2] CRAN (R 4.2.1)
- ScaledMatrix             1.4.0     2022-04-26 [2] Bioconductor
+ ScaledMatrix             1.4.1     2022-09-11 [1] Bioconductor
  scales                   1.2.1     2022-08-20 [2] CRAN (R 4.2.1)
  scater                   1.24.0    2022-04-26 [2] Bioconductor
  scuttle                  1.6.3     2022-08-23 [2] Bioconductor
  sessioninfo            * 1.2.2     2021-12-06 [2] CRAN (R 4.2.1)
  shiny                    1.7.2     2022-07-19 [2] CRAN (R 4.2.1)
- shinyWidgets             0.7.3     2022-08-31 [1] CRAN (R 4.2.1)
- SingleCellExperiment   * 1.18.0    2022-04-26 [2] Bioconductor
+ shinyWidgets             0.7.4     2022-10-05 [1] CRAN (R 4.2.1)
+ SingleCellExperiment   * 1.18.1    2022-10-02 [1] Bioconductor
  spam                     2.9-1     2022-08-07 [2] CRAN (R 4.2.1)
  sparseMatrixStats        1.8.0     2022-04-26 [2] Bioconductor
  SpatialExperiment      * 1.6.1     2022-08-09 [2] Bioconductor
- spatialLIBD            * 1.9.14    2022-09-08 [1] Github (LieberInstitute/spatialLIBD@cbcd2b0)
+ spatialLIBD            * 1.9.19    2022-10-11 [1] Github (LieberInstitute/spatialLIBD@e2f179b)
  statmod                  1.4.37    2022-08-12 [2] CRAN (R 4.2.1)
  stringi                  1.7.8     2022-07-11 [2] CRAN (R 4.2.1)
  stringr                  1.4.1     2022-08-20 [2] CRAN (R 4.2.1)
  SummarizedExperiment   * 1.26.1    2022-04-29 [2] Bioconductor
  tibble                   3.1.8     2022-07-22 [2] CRAN (R 4.2.1)
  tidyr                    1.2.1     2022-09-08 [1] CRAN (R 4.2.1)
- tidyselect               1.1.2     2022-02-21 [2] CRAN (R 4.2.1)
+ tidyselect               1.2.0     2022-10-10 [1] CRAN (R 4.2.1)
  usethis                  2.1.6     2022-05-25 [2] CRAN (R 4.2.1)
  utf8                     1.2.2     2021-07-24 [2] CRAN (R 4.2.1)
- vctrs                    0.4.1     2022-04-13 [2] CRAN (R 4.2.1)
+ vctrs                    0.4.2     2022-09-29 [1] CRAN (R 4.2.1)
  vipor                    0.4.5     2017-03-22 [2] CRAN (R 4.2.1)
  viridis                  0.6.2     2021-10-13 [2] CRAN (R 4.2.1)
  viridisLite              0.4.1     2022-08-22 [2] CRAN (R 4.2.1)
- xfun                     0.32      2022-08-10 [2] CRAN (R 4.2.1)
- XML                      3.99-0.10 2022-06-09 [2] CRAN (R 4.2.1)
+ xfun                     0.33      2022-09-12 [1] CRAN (R 4.2.1)
+ XML                      3.99-0.11 2022-10-03 [1] CRAN (R 4.2.1)
  xml2                     1.3.3     2021-11-30 [2] CRAN (R 4.2.1)
  xtable                   1.8-4     2019-04-21 [2] CRAN (R 4.2.1)
  XVector                  0.36.0    2022-04-26 [2] Bioconductor
@@ -302,4 +303,4 @@ Dropping Empty Levels: Sst.Chodl
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Sep 15 14:55:14 EDT 2022
+Tue Oct 11 10:48:55 EDT 2022

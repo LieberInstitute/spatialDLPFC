@@ -56,6 +56,7 @@ saveRDS(sce_pseudo,
 # sgejobs::job_single('01_pseudobulk_data_CMC', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R CMC")
 # sgejobs::job_single('01_pseudobulk_data_IsoHUB', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R IsoHUB")
 # sgejobs::job_single('01_pseudobulk_data_UCLA', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R UCLA")
+# sgejobs::job_single('01_pseudobulk_data_Urban-DLPFC', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R Urban-DLPFC")
 
 ## Reproducibility information
 print("Reproducibility information:")
