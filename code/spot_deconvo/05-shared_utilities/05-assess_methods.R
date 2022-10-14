@@ -176,6 +176,127 @@ across_spots <- function(count_df, plot_name) {
     # return(p)
 }
 
+#   Return a length-2 list containing a 'vis_grid_gene' plot and maximum value
+#   in the plot given the SpatialExperiment, long-format
+#   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
+#   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
+spatial_counts_plot = function(
+        spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
+        title
+) {
+    #   Grab counts for just this sample, deconvo tool, and cell type
+    counts_df = full_df %>%
+        filter(
+            sample_id == sample_id1,
+            deconvo_tool == deconvo_tool1,
+            cell_type == cell_type1
+        )
+    
+    #   Add counts as a column in colData(spe_small)
+    spe_small$temp_ct_counts = counts_df[[c_name]][
+        match(colnames(spe_small), counts_df$barcode)
+    ]
+    
+    #   Plot spatial distribution
+    p = vis_grid_gene(
+        spe_small, geneid = 'temp_ct_counts', return_plots = TRUE,
+        spatial = FALSE
+    )[[1]] +
+        labs(title = title)
+    
+    return(list(p, max(spe_small$temp_ct_counts)))
+}
+
+#   For all samples individually, write PDF plots of each cell type spatially
+#   for each deconvolution tool.
+#
+#   spe: SpatialExperiment including all spatial samples
+#   full_df: tibble in long format containing columns "barcode", "sample_id",
+#       "deconvo_tool", "cell_type", "observed", and, if include_actual,
+#       "actual"
+#   cell_type_vec: character vector of unique cell types expected in the full_df
+#       column "cell_type"
+#   include_actual: length-1 logical: add a row of plots for the ground-truth
+#       counts?
+#   pdf_prefix: length-1 character to prepend to PDF filenames
+spatial_counts_plot_full = function(
+        spe, full_df, cell_type_vec, include_actual, pdf_prefix
+    ) {
+    for (sample_id in sample_ids) {
+        spe_small = spe[,spe$sample_id == sample_id]
+        
+        i = 1
+        plot_list = list()
+        max_list = list()
+        
+        #   For each deconvo tool, make a row of plots (each including all cell
+        #   types) showed the observed distribution
+        for (deconvo_tool in deconvo_tools) {
+            for (cell_type in cell_type_vec) {
+                temp = spatial_counts_plot(
+                    spe_small, full_df, sample_id, deconvo_tool, cell_type,
+                    'observed',
+                    paste0(
+                        cell_type, ' counts\n(',
+                        deconvo_tool_names[match(deconvo_tool, deconvo_tools)], ')'
+                    )
+                )
+                plot_list[[i]] = temp[[1]]
+                max_list[[i]] = temp[[2]]
+                i = i + 1
+            }
+        }
+        
+        #   Add a row showing the ground-truth counts for each cell type
+        if (include_actual) {
+            for (cell_type in cell_types_actual) {
+                temp = spatial_counts_plot(
+                    spe_small, full_df, sample_id, deconvo_tool, cell_type, 'actual',
+                    paste0(cell_type, ' counts\n(Ground-truth)')
+                )
+                plot_list[[i]] = temp[[1]]
+                max_list[[i]] = temp[[2]]
+                i = i + 1
+            }
+        }
+        
+        max_mat = matrix(
+            unlist(max_list), ncol = length(cell_type_vec), byrow= TRUE
+        )
+        
+        #   Now loop back through the plot list (which will be displayed in 2D)
+        #   and overwrite the scale to go as high as the largest value in the
+        #   column. This allows for easy comparison between deconvo tools
+        #   (and optionally the ground truth)
+        for (i_col in 1:length(cell_type_vec)) {
+            for (i_row in 1:(length(deconvo_tools) + include_actual)) {
+                index = (i_row - 1) * length(cell_type_vec) + i_col
+                upper_limit = max(max_mat[,i_col])
+                
+                plot_list[[index]] = plot_list[[index]] +
+                    scale_color_continuous(
+                        type = "viridis", limits = c(0, upper_limit),
+                        na.value = c("black" = "#0000002D")
+                    ) +
+                    scale_fill_continuous(
+                        type = "viridis", limits = c(0, upper_limit),
+                        na.value = c("black" = "#0000002D")
+                    )
+            }
+        }
+        
+        #   Plot in a grid where cell types are columns and rows are
+        #   deconvolution tools. One PDF per sample
+        pdf(
+            file.path(plot_dir, paste0(pdf_prefix, sample_id, '.pdf')),
+            width = 7 * length(cell_type_vec),
+            height = 7 * (length(deconvo_tools) + include_actual)
+        )
+        print(plot_grid(plotlist = plot_list, ncol = length(cell_type_vec)))
+        dev.off()
+    }
+}
+
 ################################################################################
 #   Read in and format cell counts into a table apt for plotting with ggplot
 ################################################################################
@@ -234,6 +355,23 @@ for (sample_id in sample_ids) {
 #   deconvolution tools
 actual_df <- as_tibble(do.call(rbind, actual_list))
 observed_df <- as_tibble(do.call(rbind, observed_list))
+
+#   Plot counts for each cell type before collapsing cell categories, a step
+#   performed to allow comparison to the ground-truth counts
+observed_df_long <- observed_df %>%
+    melt(
+        id.vars = added_colnames, variable.name = "cell_type",
+        value.name = "count"
+    ) %>%
+    pivot_wider(
+        names_from = obs_type, values_from = count,
+    )
+
+spe = readRDS(spe_IF_in)
+
+spatial_counts_plot_full(
+    spe, observed_df_long, cell_types, FALSE, 'spatial_counts_fullres_'
+)
 
 #   Combine cell types as appropriate for comparison against the relatively
 #   narrow types in the ground-truth
@@ -407,112 +545,9 @@ across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf")
 #   Spatial distribution of counts for each sample, cell_type, deconvo method
 #-------------------------------------------------------------------------------
 
-#   TODO: This is hardcoded for IF! Not sure if we'll do similar plots for nonIF
-
-#   Return a length-2 list containing a 'vis_grid_gene' plot and maximum value
-#   in the plot given the SpatialExperiment, long-format
-#   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
-#   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
-spatial_counts_plot = function(
-        spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
-        title
-        ) {
-    #   Grab counts for just this sample, deconvo tool, and cell type
-    counts_df = full_df %>%
-        filter(
-            sample_id == sample_id1,
-            deconvo_tool == deconvo_tool1,
-            cell_type == cell_type1
-        )
-    
-    #   Add counts as a column in colData(spe_small)
-    spe_small$temp_ct_counts = counts_df[[c_name]][
-        match(colnames(spe_small), counts_df$barcode)
-    ]
-    
-    #   Plot spatial distribution
-    p = vis_grid_gene(
-        spe_small, geneid = 'temp_ct_counts', return_plots = TRUE,
-        spatial = FALSE
-    )[[1]] +
-        labs(title = title)
-    
-    return(list(p, max(spe_small$temp_ct_counts)))
-}
-
-spe = readRDS(spe_IF_in)
-
-for (sample_id in sample_ids) {
-    spe_small = spe[,spe$sample_id == sample_id]
-    
-    i = 1
-    plot_list = list()
-    max_list = list()
-    
-    #   For each deconvo tool, make a row of plots (each including all cell
-    #   types) showed the observed distribution
-    for (deconvo_tool in deconvo_tools) {
-        for (cell_type in cell_types_actual) {
-            temp = spatial_counts_plot(
-                spe_small, full_df, sample_id, deconvo_tool, cell_type,
-                'observed',
-                paste0(
-                    cell_type, ' counts\n(',
-                    deconvo_tool_names[match(deconvo_tool, deconvo_tools)], ')'
-                )
-            )
-            plot_list[[i]] = temp[[1]]
-            max_list[[i]] = temp[[2]]
-            i = i + 1
-        }
-    }
-    
-    #   Add a row showing the ground-truth counts for each cell type
-    for (cell_type in cell_types_actual) {
-        temp = spatial_counts_plot(
-            spe_small, full_df, sample_id, deconvo_tool, cell_type, 'actual',
-            paste0(cell_type, ' counts\n(Ground-truth)')
-        )
-        plot_list[[i]] = temp[[1]]
-        max_list[[i]] = temp[[2]]
-        i = i + 1
-    }
-    
-    max_mat = matrix(
-        unlist(max_list), ncol = length(cell_types_actual), byrow= TRUE
-    )
-    
-    #   Now loop back through the plot list (which will be displayed in 2D)
-    #   and overwrite the scale to go as high as the largest value in the
-    #   column. This allows for easy comparison between deconvo tools and the
-    #   ground truth
-    for (i_col in 1:length(cell_types_actual)) {
-        for (i_row in 1:(length(deconvo_tools) + 1)) {
-            index = (i_row - 1) * length(cell_types_actual) + i_col
-            upper_limit = max(max_mat[,i_col])
-            
-            plot_list[[index]] = plot_list[[index]] +
-                scale_color_continuous(
-                    type = "viridis", limits = c(0, upper_limit),
-                    na.value = c("black" = "#0000002D")
-                ) +
-                scale_fill_continuous(
-                    type = "viridis", limits = c(0, upper_limit),
-                    na.value = c("black" = "#0000002D")
-                )
-        }
-    }
-    
-    #   Plot in a grid where cell types are columns and rows are deconvolution
-    #   tools. One PDF per sample
-    pdf(
-        file.path(plot_dir, paste0('spatial_counts_', sample_id, '.pdf')),
-        width = 7 * length(cell_types_actual),
-        height = 7 * (length(deconvo_tools) + 1)
-    )
-    print(plot_grid(plotlist = plot_list, ncol = length(cell_types_actual)))
-    dev.off()
-}
+spatial_counts_plot_full(
+    spe, full_df, cell_types_actual, TRUE, 'spatial_counts_'
+)
 
 #-------------------------------------------------------------------------------
 #   Spatial distribution of marker gene expression vs. cell-type counts
