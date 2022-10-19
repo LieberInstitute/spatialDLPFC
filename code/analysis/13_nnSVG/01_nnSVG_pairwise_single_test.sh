@@ -23,7 +23,7 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_nnSVG_pairwise.R Br2720_ant 5 9
+Rscript 01_nnSVG_pairwise.R 4v16 1
 
 echo "**** Job ends ****"
 date
