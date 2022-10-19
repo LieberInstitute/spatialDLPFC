@@ -112,7 +112,7 @@ sce$cellType_layer <- NULL
 if (cell_group == "layer") {
     #   Drop EndoMural, unclear excitatory cells, and suspicious oligo cluster
     keep <- !is.na(sce$layer_level) & (sce$layer_level != "EndoMural") &
-        ((sce$cellType_hc != "Oligo_01") | (sce$prelimCluster == 65))
+        ((sce$cellType_hc != "Oligo_01") | (sce$prelimCluster %in% c(22, 65)))
 } else {
     #   Drop rare cell types (EndoMural) for single-cell data
     keep <- !(sce$cellType_broad_hc == "EndoMural")
@@ -141,9 +141,9 @@ saveRDS(sce, sce_r_out)
 
 print("Converting objects to AnnDatas...")
 write_anndata(sce, sce_out)
-#
-# #   Spatial objects are the same between broad and layer-level resolutions, and
-# #   need only be saved once
+
+#   Spatial objects are the same between broad and layer-level resolutions, and
+#   need only be saved once
 if (cell_group == "broad") {
     write_anndata(spe_IF, spe_IF_out)
     write_anndata(spe_nonIF, spe_nonIF_out)
