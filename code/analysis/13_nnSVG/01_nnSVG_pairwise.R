@@ -74,13 +74,12 @@ save(nnSVG_data, file = here(data_dir, fn_out))
 
 ## Loop through domains, use array to run samples
 # domains <- readLines("nnSVG_domains.txt")
-sgejobs::job_loop(
-  loops = list(domains = domains),
-  cores = 5,
-  task_num = 18,
-  name = '01_nnSVG_pairwise_loop',
-  create_shell = TRUE
-)
+# sgejobs::job_loop(
+#   loops = list(domains = domains),
+#   task_num = 30,
+#   name = '01_nnSVG_pairwise_loop',
+#   create_shell = TRUE
+# )
 
 ## Reproducibility information
 print("Reproducibility information:")

@@ -43,7 +43,7 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_nnSVG_pairwise.R ${domains} $SGE_TASK_ID
+Rscript 01_nnSVG_pairwise.R ${domains} \$SGE_TASK_ID
 
 echo "**** Job ends ****"
 date
