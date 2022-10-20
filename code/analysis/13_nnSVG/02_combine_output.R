@@ -17,17 +17,16 @@ output_t <- tibble(file = basename(output_fn)) |>
 
 Sys.time()
 (n_done <- output_t |> count(domains))
-# [1] "2022-10-20 16:05:36 EDT"
+[1] "2022-10-20 17:19:06 EDT"
+# # A tibble: 6 × 2
 # domains     n
 # <chr>   <int>
-# 1 12v13      24
-# 2 12v16      11
+# 1 12v13      26
+# 2 12v16      20
 # 3 4v16       30
-# 4 5v9        29
-# 5 7v12       26
-# 6 7v13       21
-
-domains <- readLines("nnSVG_domains.txt")
+# 4 5v9        30
+# 5 7v12       27
+# 6 7v13       26
 
 
 #### Get info from Log files ####
@@ -86,8 +85,11 @@ log_t |> count(domains, done)
 # 10 7v13    FALSE     7
 # 11 7v13    TRUE     15
 
+log_t |> filter(error) |> count(domains)
+
 log_t |> filter(done, !error, is.na(file))
 log_t |> filter(done, !error) |> count(domains, output = !is.na(file))
+
 
 ## Checkout runtime
 plot_dir <- here("plots", "13_nnSVG")
@@ -105,6 +107,48 @@ runtime_plot <- runtime_long |>
 
 ggsave(runtime_plot, filename = here(plot_dir, "runtime_scatter.png"), width = 10)
 
+## cells vs. genes
+spots_v_gene_scatter <- log_t |>
+  ggplot(aes(x= n_spots, y = n_genes, color = domains)) +
+  geom_point() +
+  geom_vline(xintercept = 65, color = "red", linetype = "dashed")
+
+ggsave(spots_v_gene_scatter, filename = here(plot_dir, "spots_v_gene_scatter.png"))
+
+spots_box <- log_t |>
+  ggplot(aes(x= domains, y = n_spots, fill = domains)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.25) +
+  geom_jitter(aes(color = domains)) +
+  geom_hline(yintercept = 65, color = "red", linetype = "dashed")
+
+ggsave(spots_box, filename = here(plot_dir, "spots_box.png"))
+
+genes_box <- log_t |>
+  ggplot(aes(x= domains, y = n_genes, fill = domains)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.25) +
+  geom_jitter(aes(color = domains)) 
+
+ggsave(genes_box, filename = here(plot_dir, "genes_box.png"))
+
+
+library(patchwork)
+
+ggsave(spots_v_gene_scatter + theme(legend.position = "None") +
+         genes_box /
+         (spots_box + coord_flip() + theme(legend.position = "None")), 
+       filename = here(plot_dir, "spots_genes_summary.png"), width = 10)
+
+## low genes all from one sample
+log_t |> filter(n_genes < 1000)
+# log           domains sample_i Sample     n_spots n_genes error  user system elapsed done  file                       
+# <chr>         <chr>      <int> <chr>        <dbl>   <dbl> <lgl> <dbl>  <dbl>   <dbl> <lgl> <chr>                      
+# 1 nnSVG_4v16.13 4v16          13 Br2720_ant    1390     521 FALSE  574.   5.59    582. TRUE  nnSVG_k16-4v16-Br2720_ant.…
+# 2 nnSVG_5v9.13  5v9           13 Br2720_ant    1401     710 FALSE 1127.  12.6    1143. TRUE  nnSVG_k16-5v9-Br2720_ant.R…
+# 3 nnSVG_7v12.13 7v12          13 Br2720_ant     873     459 FALSE 1430.  74.4    1507. TRUE  nnSVG_k16-7v12-Br2720_ant.…
+# 4 nnSVG_7v13.13 7v13          13 Br2720_ant     926     509 FALSE  581.  11.8     595. TRUE  nnSVG_k16-7v13-Br2720_ant.…
+
+log_t |> filter(Sample == "Br2720_ant")
+
 #### load data ####
 nnSVG_output <- lapply(output_fn, function(x) get(load(x)))
 
@@ -113,10 +157,7 @@ nnSVG_all <- do.call("rbind", nnSVG_output) |>
   mutate(FDR = p.adjust(pval, method = "BH"))
 
 dim(nnSVG_all)
-# [1] 364546     23
-
-
-nnSVG_all |> arrange(rank) |> head() 
+# [1] 414846     24
 
 nnSVG_all  |> filter(FDR < 0.05) |> count()
 
@@ -131,14 +172,20 @@ nnSVG_all_summary <- nnSVG_all |>
             mean_rank = mean(rank), 
             median_rank = median(rank))
 
-nnSVG_all_summary |> arrange(min_rank)
+nnSVG_all_summary |> filter(n == 30) |> count()
+# domains     n
+# <chr>   <int>
+# 1 4v16      465
+# 2 5v9       568
 
-nnSVG_all_summary |> filter(n == 30)
 nnSVG_all_summary |> filter(n_signif != 0) |> arrange(-n_signif)
 
 nnSVG_all_summary |> filter(max_FDR !=1) |> ungroup()  |> count(n ==1)
 
-nnSVG_all_summary |> filter(n > 20) |> arrange(max_rank) |> slice(1)
+nnSVG_all_summary |> filter(max_FDR !=1, n !=1)
+
+## lowest max rank for each domains
+low_max <- nnSVG_all_summary |> filter(n > 20) |> arrange(max_rank) |> slice(1)
 
 n_gene_distribution <- nnSVG_all_summary |>
   ggplot(aes(n, color = domains)) +
@@ -146,4 +193,16 @@ n_gene_distribution <- nnSVG_all_summary |>
 
 ggsave(n_gene_distribution, filename = here(plot_dir, "n_gene_distribution.png"), width = 10)
 
+## What is the FDR distribution like for low max?
 
+low_max <- low_max |> left_join(nnSVG_all)
+
+low_max |> count()
+
+low_max_FDR <- low_max |>
+  ggplot(aes(x = domains , y = FDR, fill = domains)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.25) +
+  geom_jitter(aes(color = domains)) +
+  geom_hline(yintercept = 0.05, color = "red", linetype = "dashed")
+
+ggsave(low_max_FDR, filename = here(plot_dir, "low_max_FDR.png"))
