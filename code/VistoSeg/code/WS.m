@@ -1,6 +1,7 @@
-function WS(fname)
+function WS(fname,M)
 
-load([fname(1:end-4),'_nuclei.mat'])
+load([fname(1:end-4),'_mask.mat'])
+mask_dark_blue = mask{M};
 he = imread(fname);
 
 D = -bwdist(~mask_dark_blue);
