@@ -66,15 +66,10 @@ df = df.loc[manual_labels['id']]
 x = df.drop(['id', 'x', 'y', 'dist', 'idx'], axis = 1)
 y = manual_labels['value']
 
-#   Split data into training, test, and validation sets (70%: 15%: 15%), evenly
-#   stratified across classes. A validation set is necessary because we'll do
-#   a couple grid searchs over hyperparameters, optimizing for test performance
+#   Split data into training and test sets (80%: 20%), evenly stratified across
+#   classes
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size = 0.3, random_state = random_seed, stratify = y
-)
-
-x_test, x_val, y_test, y_val = train_test_split(
-    x_test, y_test, test_size = 0.5, random_state = random_seed, stratify = y_test
+    x, y, test_size = 0.2, random_state = random_seed, stratify = y
 )
 
 #-------------------------------------------------------------------------------
@@ -86,7 +81,7 @@ tuned_parameters = [
         'criterion': ['gini', 'entropy'],
         'max_depth': [2, 3, 4, 5],
         'min_samples_leaf': [1, 5, 10, 15, 20, 25],
-        'ccp_alpha': [0.001, 0.01, 0.1, 1]
+        'ccp_alpha': [0, 0.001, 0.003, 0.01, 0.03, 0.1, 0.3]
     }
 ]
 
@@ -98,15 +93,18 @@ grid = GridSearchCV(
 )
 grid.fit(x_train, y_train)
 
-#   Train the decision tree using the best params and evaluate on validation set
-model = tree.DecisionTreeClassifier(**grid.best_params_)
+#   Train the decision tree using the best params and evaluate on test set
+model = tree.DecisionTreeClassifier(
+    random_state = random_seed, splitter = 'best', class_weight = None,
+    **grid.best_params_
+)
 model.fit(x_train, y_train)
 
-#   Compute training and validation accuracy
+#   Compute training and test accuracy
 acc_train = round(100 * model.score(x_train, y_train), 1)
-acc_test = round(100 * model.score(x_val, y_val), 1)
+acc_test = round(100 * model.score(x_test, y_test), 1)
 print(f'CART training accuracy: {acc_train}%.')
-print(f'CART validation accuracy: {acc_test}%.')
+print(f'CART test accuracy: {acc_test}%.')
 
 #-------------------------------------------------------------------------------
 #   Try logistic regression
@@ -136,9 +134,9 @@ pipe = make_pipeline(
 pipe.fit(x_train, y_train)
 
 acc_train = round(100 * pipe.score(x_train, y_train), 1)
-acc_test = round(100 * pipe.score(x_val, y_val), 1)
+acc_test = round(100 * pipe.score(x_test, y_test), 1)
 print(f'Logistic regression training accuracy: {acc_train}%.')
-print(f'Logistic regression validation accuracy: {acc_test}%.')
+print(f'Logistic regression test accuracy: {acc_test}%.')
 
 #-------------------------------------------------------------------------------
 #   Try SVM (linear and non-linear kernels)
@@ -172,7 +170,7 @@ pipe = make_pipeline(
 pipe.fit(x_train, y_train)
 
 acc_train = round(100 * pipe.score(x_train, y_train), 1)
-acc_test = round(100 * pipe.score(x_val, y_val), 1)
+acc_test = round(100 * pipe.score(x_test, y_test), 1)
 print(f'SVM training accuracy: {acc_train}%.')
-print(f'SVM validation accuracy: {acc_test}%.')
+print(f'SVM test accuracy: {acc_test}%.')
 
