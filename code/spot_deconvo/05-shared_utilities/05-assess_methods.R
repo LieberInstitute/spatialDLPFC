@@ -45,6 +45,11 @@ marker_in <- here(
     paste0("markers_", cell_group, ".txt")
 )
 
+layer_ann_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "annotations_{sample_id}_spots.csv"
+)
+
 cell_types_actual <- c("micro", "neuron", "oligo", "other")
 if (cell_group == "broad") {
     cell_types <- c("Astro", "Excit", "Inhib", "Micro", "Oligo", "OPC")
@@ -686,3 +691,18 @@ plot_list <- lapply(
 pdf(file.path(plot_dir, 'marker_vs_ct_counts.pdf'))
 print(plot_list)
 dev.off()
+
+#-------------------------------------------------------------------------------
+#   Spatial distribution of cell-types compared against manual layer annotation
+#-------------------------------------------------------------------------------
+
+for (sample_id in sample_ids) {
+    this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
+    layer_ann <- read.csv(this_layer_path)
+    
+    spe_small = spe[, spe$sample_id == sample_id]
+    
+    spe_small$layer_manual[layer_ann$id + 1] = layer_ann$label
+    
+    #   TODO: now compare against cell-type counts
+}
