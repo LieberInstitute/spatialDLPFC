@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
+#$ -l bluejay,mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -pe local 4
 #$ -o /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code/Logs/WS.$TASK_ID.txt
 #$ -e /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code/Logs/WS.$TASK_ID.txt
