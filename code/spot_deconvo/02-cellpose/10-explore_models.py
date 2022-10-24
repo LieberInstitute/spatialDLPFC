@@ -26,20 +26,6 @@ manual_label_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'manual_labels.csv'
 )
 
-tree_path = pyhere.here(
-    'plots', 'spot_deconvo', '02-cellpose', 'cart', sample_name + '_decision_tree.pdf'
-)
-
-model_out_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'decision_tree.pkl'
-)
-
-cell_types = {
-    "neun": "neuron",
-    "olig2": "oligo",
-    "tmem119": "micro"
-}
-
 random_seed = 0
 
 ################################################################################
