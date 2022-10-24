@@ -39,7 +39,7 @@ df_path = pyhere.here(
 
 #   Trained DecisionTreeClassifier path
 model_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', 'Br2720_Ant_IF', 'decision_tree.pkl'
+    'processed-data', 'spot_deconvo', '02-cellpose', 'decision_tree.pkl'
 )
 
 #   Main output: rows are spots and columns are cell types (values are counts)
@@ -64,7 +64,8 @@ names = {0: "junk", 1: "dapi", 2: "gfap", 3: "neun", 4: "olig2", 5: "tmem119"}
 cell_types = {
     "neun": "neuron",
     "olig2": "oligo",
-    "tmem119": "micro"
+    "tmem119": "micro",
+    "gfap": "astro"
 }
 
 plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
@@ -199,7 +200,7 @@ with open(model_path, 'rb') as f:
 df['cell_type'] = model.predict(x)
 
 #   Ensure cell-type names match with what we expect
-assert set(df['cell_type']) == set(list(cell_types.values()) + ['other'])
+assert set(df['cell_type']) == set(cell_types.values())
 
 #-------------------------------------------------------------------------------
 #   Visually verify cell-type calls
