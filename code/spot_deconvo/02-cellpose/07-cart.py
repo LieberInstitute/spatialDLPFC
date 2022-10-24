@@ -16,35 +16,30 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import graphviz
 
-sample_name = 'Br2720_Ant_IF'
-
 df_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'df.csv'
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df_unfiltered.csv'
 )
 
 manual_label_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'manual_labels.csv'
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'manual_labels_clean.csv'
 )
 
 tree_path = pyhere.here(
-    'plots', 'spot_deconvo', '02-cellpose', 'cart', sample_name + '_decision_tree.pdf'
+    'plots', 'spot_deconvo', '02-cellpose', 'cart', 'decision_tree.pdf'
 )
 
 model_out_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'decision_tree.pkl'
+    'processed-data', 'spot_deconvo', '02-cellpose', 'decision_tree.pkl'
 )
 
-cell_types = {
-    "neun": "neuron",
-    "olig2": "oligo",
-    "tmem119": "micro"
-}
+sample_info_path = pyhere.here(
+    'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
+)
 
-#   Hyperparameters for CART
 random_seed = 0
-min_leaf = 10
-max_depth = 4
-criterion = 'entropy' # 'gini'
+
+expected_num_labels = 30
+num_cell_types = 4
 
 ################################################################################
 #   Functions
@@ -59,9 +54,9 @@ def prune(tree):
     ls = dat.children_left
     rs = dat.children_right
     classes = [[list(e).index(max(e)) for e in v] for v in dat.value]
-    #
+    
     leaves = [(ls[i] == rs[i]) for i in nodes]
-    #
+    
     LEAF = -1
     for i in reversed(nodes):
         if leaves[i]:
@@ -76,61 +71,58 @@ def prune(tree):
 ################################################################################
 
 #-------------------------------------------------------------------------------
-#   Preprocess and clean fluorescence data + manual cell-type labels
+#   Preprocess and gather fluorescence data + manual cell-type labels
 #-------------------------------------------------------------------------------
 
-#   Read in list of cells and format
-df = pd.read_csv(df_path)
-df.rename({'Unnamed: 0': 'id'}, axis = 1, inplace = True)
-df.index = df['id']
+sample_info = pd.read_excel(sample_info_path)[:4]
+sample_ids = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
+    '_' + pd.Series([x.split('_')[1] for x in sample_info['Br_Region']]) + \
+    '_IF'
 
-#   Read in manual labels and subset list of cells to the ones labelled
-manual_labels = pd.read_csv(manual_label_path)
-manual_labels.index = manual_labels['id']
-manual_labels.loc[manual_labels['value'] == 'microglia', 'value'] = 'micro'
-df = df.loc[manual_labels['id']]
+#   Loop through labels and flourescence intensity tables for each sample and
+#   combine into a single data frame
+df = pd.DataFrame()
+for i in range(len(sample_ids)):
+    this_df_path = str(df_path).format(sample_ids[i])
+    this_manual_label_path = str(manual_label_path).format(sample_ids[i])
+    
+    this_df = pd.read_csv(this_df_path, index_col = 'id')
+    this_manual_labels = pd.read_csv(this_manual_label_path, index_col = 'id')
+    
+    this_df['label'] = this_manual_labels['label']
+    df = pd.concat([df, this_df.dropna()])
 
-#   Subset to the features we want the CART to access
-# x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
-x = df.drop(['id', 'x', 'y', 'dist', 'idx'], axis = 1)
-y = manual_labels['value']
+#   Verify we have the correct amount of cells
+assert(df.shape[0] == len(sample_ids) * expected_num_labels * num_cell_types)
 
-#   Split data into training and test sets (20% test), evenly stratified
-#   across classes
+#   Define the inputs (features we want the model to access) and outputs to the
+#   model
+x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
+y = df['label']
+
+#   Split data into training and test sets (80%: 20%), evenly stratified across
+#   classes
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, test_size = 0.2, random_state = random_seed, stratify = y
 )
 
 #-------------------------------------------------------------------------------
-#   Just for quick comparison, train a LogisticRegression model and report
-#   accuracy
-#-------------------------------------------------------------------------------
-
-#   Train a LogisticRegression model on normalized training data
-pipe = make_pipeline(
-    StandardScaler(),
-    LogisticRegression(random_state = random_seed, C = 10)
-)
-pipe.fit(x_train, y_train)
-
-acc_train = round(100 * pipe.score(x_train, y_train), 1)
-acc_test = round(100 * pipe.score(x_test, y_test), 1)
-print(f'Logistic regression training accuracy: {acc_train}%.')
-print(f'Logistic regression test accuracy: {acc_test}%.')
-
-#-------------------------------------------------------------------------------
 #   Train the DecisionTreeClassifier
 #-------------------------------------------------------------------------------
 
-#   Instantiate, fit, and save the CART
+#   Instantiate, fit, and save the CART. Good hyperparameters were determined in
+#   10-explore_models.py (via cross-validation, with final test accuracy of
+#   99.0%) and are used here. Note that we still reserve part of the data as
+#   test data, since we want to be able to make statements about the test
+#   performance of the exact tree used for inference, and trees can
+#   qualitatively change with the introduction of new data (if we used all
+#   manual labels for inference).
 model = tree.DecisionTreeClassifier(
-    criterion = criterion, 
-    splitter = 'best', 
-    max_depth = max_depth,
-    class_weight = None,
-    min_samples_leaf = min_leaf, 
+    criterion = 'gini', 
+    max_depth = 4,
+    min_samples_leaf = 1, 
     random_state = random_seed,
-    ccp_alpha = 0.02
+    ccp_alpha = 0
 )
 
 model.fit(x_train, y_train)
@@ -138,21 +130,22 @@ model.fit(x_train, y_train)
 with open(model_out_path, 'wb') as f:
     pickle.dump(model, f)
 
-#   Compute training and test accuracy
+#   Compute training and test accuracy on the model
 acc_train = round(100 * model.score(x_train, y_train), 1)
 acc_test = round(100 * model.score(x_test, y_test), 1)
 print(f'CART training accuracy: {acc_train}%.')
 print(f'CART test accuracy: {acc_test}%.')
 
-#   Print a more thorough report about training and test scores
+#   Print a more thorough report about training and test scores, making sure
+#   performance is good across all classes (since we optimized for accuracy)
 labels_train = model.predict(x_train)
 labels_test = model.predict(x_test)
-print(classification_report(y_test, labels_test))
-print(classification_report(y_train, labels_train))
+print('Training report:\n', classification_report(y_train, labels_train))
+print('Test report:\n', classification_report(y_test, labels_test))
 
 #   Plot the (simplified) decision tree visually (save to PDF)
 model = prune(model)
-tree.plot_tree(
+_ = tree.plot_tree(
     model, class_names = model.classes_, feature_names = x.columns,
     filled = True, rounded = True
 )
