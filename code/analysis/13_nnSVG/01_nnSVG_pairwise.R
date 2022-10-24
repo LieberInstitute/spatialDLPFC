@@ -1,7 +1,7 @@
 
 library("SpatialExperiment")
 library("spatialLIBD")
-library("nnSVG")
+library("nnSVG") 
 library("here")
 library("sessioninfo")
 
@@ -22,7 +22,7 @@ sample_i = as.integer(args[2])
 message(Sys.time(), " - Loading spe")
 load(here("processed-data", "rdata","spe", "01_build_spe", "spe_filtered_final_with_clusters.Rdata"))
 
-samples <- unique(sce$Sample)
+samples <- unique(spe$sample_id)
 sample <- samples[[sample_i]]
 
 stopifnot(sample %in% spe$sample_id)
