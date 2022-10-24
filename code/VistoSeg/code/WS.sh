@@ -1,13 +1,13 @@
 #!/bin/bash
 #$ -cwd
 #$ -l bluejay,mem_free=10G,h_vmem=10G,h_fsize=100G
-#$ -pe local 4
+#$ -pe local 5
 #$ -o /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code/Logs/WS.$TASK_ID.txt
 #$ -e /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code/Logs/WS.$TASK_ID.txt
 #$ -m e
 #$ -M madhavitippani28@gmail.com
-#$ -t 1-12
-#$ -tc 6
+#$ -t 12
+#$ -tc 2
 
 echo "**** Job starts ****"
 date
