@@ -16,15 +16,20 @@ from sklearn import tree, svm
 import pyhere
 from pathlib import Path
 
-sample_name = 'Br2720_Ant_IF'
-
 df_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'df.csv'
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df_unfiltered.csv'
 )
 
 manual_label_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', sample_name, 'manual_labels.csv'
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'manual_labels_clean.csv'
 )
+
+sample_info_path = pyhere.here(
+    'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
+)
+
+expected_num_labels = 30
+num_cell_types = 4
 
 random_seed = 0
 
@@ -33,24 +38,34 @@ random_seed = 0
 ################################################################################
 
 #-------------------------------------------------------------------------------
-#   Preprocess and clean fluorescence data + manual cell-type labels
+#   Preprocess and gather fluorescence data + manual cell-type labels
 #-------------------------------------------------------------------------------
 
-#   Read in list of cells and format
-df = pd.read_csv(df_path)
-df.rename({'Unnamed: 0': 'id'}, axis = 1, inplace = True)
-df.index = df['id']
+sample_info = pd.read_excel(sample_info_path)[:4]
+sample_ids = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
+    '_' + pd.Series([x.split('_')[1] for x in sample_info['Br_Region']]) + \
+    '_IF'
 
-#   Read in manual labels and subset list of cells to the ones labelled
-manual_labels = pd.read_csv(manual_label_path)
-manual_labels.index = manual_labels['id']
-manual_labels.loc[manual_labels['value'] == 'microglia', 'value'] = 'micro'
-df = df.loc[manual_labels['id']]
+#   Loop through labels and flourescence intensity tables for each sample and
+#   combine into a single data frame
+df = pd.DataFrame()
+for i in range(len(sample_ids)):
+    this_df_path = str(df_path).format(sample_ids[i])
+    this_manual_label_path = str(manual_label_path).format(sample_ids[i])
+    
+    this_df = pd.read_csv(this_df_path, index_col = 'id')
+    this_manual_labels = pd.read_csv(this_manual_label_path, index_col = 'id')
+    
+    this_df['label'] = this_manual_labels['label']
+    df = pd.concat([df, this_df.dropna()])
 
-#   Subset to the features we want the CART to access
-# x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
-x = df.drop(['id', 'x', 'y', 'dist', 'idx'], axis = 1)
-y = manual_labels['value']
+#   Verify we have the correct amount of cells
+assert(df.shape[0] == len(sample_ids) * expected_num_labels * num_cell_types)
+
+#   Define the inputs (features we want the model to access) and outputs to the
+#   model
+x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
+y = df['label']
 
 #   Split data into training and test sets (80%: 20%), evenly stratified across
 #   classes
@@ -79,18 +94,19 @@ grid = GridSearchCV(
 )
 grid.fit(x_train, y_train)
 
-#   Train the decision tree using the best params and evaluate on test set
-model = tree.DecisionTreeClassifier(
-    random_state = random_seed, splitter = 'best', class_weight = None,
-    **grid.best_params_
-)
-model.fit(x_train, y_train)
-
-#   Compute training and test accuracy
-acc_train = round(100 * model.score(x_train, y_train), 1)
-acc_test = round(100 * model.score(x_test, y_test), 1)
+#   Compute training and test accuracy on the best model
+acc_train = round(100 * grid.best_estimator_.score(x_train, y_train), 1)
+acc_test = round(100 * grid.best_estimator_.score(x_test, y_test), 1)
 print(f'CART training accuracy: {acc_train}%.')
 print(f'CART test accuracy: {acc_test}%.')
+print(f'Best params: {grid.best_params_}')
+
+#   Print a more thorough report about training and test scores, making sure
+#   performance is good across all classes (since we optimized for accuracy)
+labels_train = grid.best_estimator_.predict(x_train)
+labels_test = grid.best_estimator_.predict(x_test)
+print('Training report:\n', classification_report(y_train, labels_train))
+print('Test report:\n', classification_report(y_test, labels_test))
 
 #-------------------------------------------------------------------------------
 #   Try logistic regression
@@ -110,19 +126,18 @@ pipe = make_pipeline(
 grid = GridSearchCV(pipe, tuned_parameters, cv=5, scoring = 'accuracy')
 grid.fit(x_train, y_train)
 
-pipe = make_pipeline(
-    StandardScaler(),
-    LogisticRegression(
-        random_state = random_seed,
-        C = grid.best_params_['logisticregression__C']
-    )
-)
-pipe.fit(x_train, y_train)
-
-acc_train = round(100 * pipe.score(x_train, y_train), 1)
-acc_test = round(100 * pipe.score(x_test, y_test), 1)
+acc_train = round(100 * grid.best_estimator_.score(x_train, y_train), 1)
+acc_test = round(100 * grid.best_estimator_.score(x_test, y_test), 1)
 print(f'Logistic regression training accuracy: {acc_train}%.')
 print(f'Logistic regression test accuracy: {acc_test}%.')
+print(f'Best params: {grid.best_params_}')
+
+#   Print a more thorough report about training and test scores, making sure
+#   performance is good across all classes (since we optimized for accuracy)
+labels_train = grid.best_estimator_.predict(x_train)
+labels_test = grid.best_estimator_.predict(x_test)
+print('Training report:\n', classification_report(y_train, labels_train))
+print('Test report:\n', classification_report(y_test, labels_test))
 
 #-------------------------------------------------------------------------------
 #   Try SVM (linear and non-linear kernels)
@@ -144,19 +159,15 @@ pipe = make_pipeline(
 grid = GridSearchCV(pipe, tuned_parameters, cv=5, scoring = 'accuracy')
 grid.fit(x_train, y_train)
 
-pipe = make_pipeline(
-    StandardScaler(),
-    svm.SVC(
-        random_state = random_seed,
-        C = grid.best_params_['svc__C'],
-        kernel = grid.best_params_['svc__kernel'],
-        gamma = grid.best_params_['svc__gamma']
-    )
-)
-pipe.fit(x_train, y_train)
-
-acc_train = round(100 * pipe.score(x_train, y_train), 1)
-acc_test = round(100 * pipe.score(x_test, y_test), 1)
+acc_train = round(100 * grid.best_estimator_.score(x_train, y_train), 1)
+acc_test = round(100 * grid.best_estimator_.score(x_test, y_test), 1)
 print(f'SVM training accuracy: {acc_train}%.')
 print(f'SVM test accuracy: {acc_test}%.')
+print(f'Best params: {grid.best_params_}')
 
+#   Print a more thorough report about training and test scores, making sure
+#   performance is good across all classes (since we optimized for accuracy)
+labels_train = grid.best_estimator_.predict(x_train)
+labels_test = grid.best_estimator_.predict(x_test)
+print('Training report:\n', classification_report(y_train, labels_train))
+print('Test report:\n', classification_report(y_test, labels_test))
