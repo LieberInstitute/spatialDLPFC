@@ -94,4 +94,4 @@ for i in range(len(sample_ids)):
     assert(all(this_manual_labels['id'].isin(this_df['id'])))
     
     #   Write a clean copy of the manual labels
-    this_manual_labels.to_csv(this_manual_label_path_out)
+    this_manual_labels.to_csv(this_manual_label_path_out, index = False)
