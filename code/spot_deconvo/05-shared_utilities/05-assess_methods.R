@@ -414,6 +414,17 @@ full_df <- rbind(observed_df, actual_df) %>%
 #   Exploratory plots
 ################################################################################
 
+#   Consider the count of each cell type in each spot a single data point, and
+#   compute correlation and RMSE between ground-truth counts and those measured
+#   by each deconvolution software
+print("Overall performance of deconvolution methods:")
+full_df |>
+    group_by(deconvo_tool) |>
+    summarize(
+        corr = round(cor(observed, actual), 2),
+        rmse = signif(mean((observed - actual)**2)**0.5, 3)
+    )
+
 #-------------------------------------------------------------------------------
 #   Plot total counts per sample for tangram and cell2location
 #-------------------------------------------------------------------------------
@@ -717,9 +728,4 @@ for (sample_id in sample_ids) {
     this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
     layer_ann <- read.csv(this_layer_path)
     
-    spe_small = spe[, spe$sample_id == sample_id]
-    
-    spe_small$layer_manual[layer_ann$id + 1] = layer_ann$label
-    
-    #   TODO: now compare against cell-type counts
-}
+    spe_s
