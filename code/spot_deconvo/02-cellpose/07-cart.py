@@ -20,6 +20,10 @@ df_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df_unfiltered.csv'
 )
 
+predictions_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'model_predictions.csv'
+)
+
 manual_label_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'manual_labels_clean.csv'
 )
@@ -38,8 +42,14 @@ sample_info_path = pyhere.here(
 
 random_seed = 0
 
+#   Expected quantities: there should be 4 cell types and 30 cells per type per
+#   sample
 expected_num_labels = 30
 num_cell_types = 4
+
+#   Number of cells per type to predict and output to Loopy-compatible CSV for
+#   inspection
+num_examples_check = 5
 
 ################################################################################
 #   Functions
@@ -143,7 +153,44 @@ labels_test = model.predict(x_test)
 print('Training report:\n', classification_report(y_train, labels_train))
 print('Test report:\n', classification_report(y_test, labels_test))
 
+#-------------------------------------------------------------------------------
+#   Write a small CSV of model predictions for import to loopy to visually
+#   verify model performance
+#-------------------------------------------------------------------------------
+
+#   Read in the original unfiltered cells for a single sample
+sample_id = sample_ids[0]
+this_df = pd.read_csv(str(df_path).format(sample_id), index_col = 'id')
+this_df = this_df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
+
+#   Row IDs were not preserved during concatenation earlier, so we'll manually
+#   drop rows in 'this_df' that are present in 'x'
+this_df = this_df.merge(
+    x, how='left', indicator=True,
+    on = ['gfap', 'neun', 'olig2', 'tmem119', 'area']
+)
+this_df = this_df[this_df['_merge'] == 'left_only'].drop('_merge', axis=1)
+this_df['label'] = model.predict(this_df)
+
+#   For each cell type, pick [num_examples_check] cells randomly. Then form a
+#   dataframe with these cells
+small_df = pd.DataFrame()
+for cell_type in this_df['label'].unique():
+    indices = np.random.choice(
+        this_df[this_df['label'] == cell_type].index,
+        size = num_examples_check, replace = False
+    )
+    small_df = pd.concat([small_df, this_df.loc[indices]])
+
+#   Make compatible with import to Loopy and write to CSV
+small_df['id'] = small_df.index
+small_df = small_df.loc[:, ['id', 'label']]
+small_df.to_csv(str(predictions_path).format(sample_id), index = False)
+
+#-------------------------------------------------------------------------------
 #   Plot the (simplified) decision tree visually (save to PDF)
+#-------------------------------------------------------------------------------
+
 model = prune(model)
 _ = tree.plot_tree(
     model, class_names = model.classes_, feature_names = x.columns,
