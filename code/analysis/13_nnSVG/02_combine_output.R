@@ -9,7 +9,7 @@ output_fn <- list.files(data_dir, pattern = "nnSVG_k16", full.names = TRUE)
 names(output_fn) <- gsub("nnSVG_k16-|.RData","", output_fn)
 
 length(output_fn)
-# [1] 141
+# [1] 169
 
 output_t <- tibble(file = basename(output_fn)) |>
             mutate(label = gsub("nnSVG_k16-|.RData","", file)) |>
@@ -17,16 +17,15 @@ output_t <- tibble(file = basename(output_fn)) |>
 
 Sys.time()
 (n_done <- output_t |> count(domains))
-[1] "2022-10-20 17:19:06 EDT"
-# # A tibble: 6 × 2
+# [1] "2022-10-24 10:25:15 EDT"
 # domains     n
 # <chr>   <int>
-# 1 12v13      26
-# 2 12v16      20
+# 1 12v13      27
+# 2 12v16      26
 # 3 4v16       30
 # 4 5v9        30
-# 5 7v12       27
-# 6 7v13       26
+# 5 7v12       28
+# 6 7v13       28
 
 
 #### Get info from Log files ####
@@ -43,53 +42,54 @@ log_fn <- list.files(log_dir, pattern = "01_nnSVG_pairwise_loop_", full.names = 
 names(log_fn) <- gsub("01_nnSVG_pairwise_loop_", "nnSVG_", gsub(".txt","",basename(log_fn)))
 
 length(log_fn)
-# [1] 150
+# [1] 178
 
 logs <- map(log_fn, readLines)
 
 ## Job completed
-map_lgl(logs, ~any(grepl("Job ends", .x)))
+jobs_done <- map_lgl(logs, ~any(grepl("Job ends", .x)))
+table(jobs_done)
+# FALSE  TRUE 
+# 2   176 
 
 n_spots <- get_log_info(logs, "ncol")
-error <- grepl("Error",ncol)
-n_spots <- ifelse(error, NA, parse_number(unlist(ncol)))
+error_spot<- grepl("Error",n_spots)
+n_spots <- ifelse(error_spot, NA, parse_number(unlist(n_spots)))
+
+error <- grepl("Error", logs)
 
 log_t <- tibble(log = names(log_fn),
                 Sample = gsub(".*(Br\\d+_.*),.*","\\1",get_log_info(logs, "Running sample: ")),
-                n_spots =  get_log_info(logs, "ncol"),
+                n_spots =  n_spots,
                 n_genes = parse_number(unlist(get_log_info(logs, "nrow"))),
-                error = error,
-                runtime = unlist(get_log_info(logs, "Reproducibility information:", 3))) |> 
+                error_spot = error_spot,
+                error_anny = error,
+                runtime = unlist(get_log_info(logs, "Reproducibility information:", 3)),
+                done = jobs_done) |> 
   separate(runtime, into = c("user", "system", "elapsed"), sep = " +", convert = TRUE, extra = "drop") |>
   separate(log, into = c(NA, "domains", "sample_i"), convert = TRUE, remove = FALSE) |>
-  mutate(done = !is.na(user),
-         error = grepl("Error",ncol),
-         n_spots = ifelse(error, NA, parse_number(unlist(ncol)))) |>
   left_join(output_t)
 
 Sys.time()
 log_t |> count(domains, done)
 
-# [1] "2022-10-20 15:16:27 EDT"
+# [1] "2022-10-24 10:54:41 EDT"
 # domains done      n
 # <chr>   <lgl> <int>
-# 1 12v13   FALSE    13
-# 2 12v13   TRUE     16
-# 3 12v16   FALSE     3
-# 4 12v16   TRUE      9
-# 5 4v16    TRUE     30
-# 6 5v9     FALSE     1
-# 7 5v9     TRUE     29
-# 8 7v12    FALSE    11
-# 9 7v12    TRUE     18
-# 10 7v13    FALSE     7
-# 11 7v13    TRUE     15
+# 1 12v13   TRUE     30
+# 2 12v16   FALSE     1
+# 3 12v16   TRUE     29
+# 4 4v16    TRUE     30
+# 5 5v9     TRUE     30
+# 6 7v12    FALSE     1
+# 7 7v12    TRUE     29
+# 8 7v13    TRUE     28
 
 log_t |> filter(error) |> count(domains)
-
-log_t |> filter(done, !error, is.na(file))
-log_t |> filter(done, !error) |> count(domains, output = !is.na(file))
-
+# domains     n
+# 1 12v13       3
+# 2 12v16       3
+# 3 7v12        1
 
 ## Checkout runtime
 plot_dir <- here("plots", "13_nnSVG")
@@ -157,7 +157,7 @@ nnSVG_all <- do.call("rbind", nnSVG_output) |>
   mutate(FDR = p.adjust(pval, method = "BH"))
 
 dim(nnSVG_all)
-# [1] 414846     24
+# [1] 446052     24
 
 nnSVG_all  |> filter(FDR < 0.05) |> count()
 
@@ -170,7 +170,8 @@ nnSVG_all_summary <- nnSVG_all |>
             min_rank = min(rank),
             max_rank = max(rank),
             mean_rank = mean(rank), 
-            median_rank = median(rank))
+            median_rank = median(rank),
+            top100_rank = sum(rank <= 100))
 
 nnSVG_all_summary |> filter(n == 30) |> count()
 # domains     n
@@ -206,3 +207,37 @@ low_max_FDR <- low_max |>
   geom_hline(yintercept = 0.05, color = "red", linetype = "dashed")
 
 ggsave(low_max_FDR, filename = here(plot_dir, "low_max_FDR.png"))
+
+## Mean rank vs. n
+mean_rank_n_box <- nnSVG_all_summary |>
+  ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
+  geom_boxplot() +
+  facet_wrap(~domains) +
+  theme(legend.position = "None")
+
+ggsave(mean_rank_n_box, filename = here(plot_dir, "mean_rank_n_box.png"), width = 12)
+
+mean_rank_top_n_scatter <- nnSVG_all_summary |> 
+  arrange(mean_rank) |>
+  slice(1:500) |>
+  # ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
+  ggplot(aes(x = n, y = mean_rank, color = top100_rank)) +
+  geom_point(alpha = 0.2) +
+  facet_wrap(~domains) 
+
+ggsave(mean_rank_top_n_scatter, filename = here(plot_dir, "mean_rank_top_n_scatter.png"), width = 12)
+
+nnSVG_all_summary |> 
+  arrange(mean_rank) |>
+  slice(1:5)
+
+## n rank > 100 vs. mean
+mean_rank_n_top100 <- nnSVG_all_summary |>
+  ggplot(aes(x = top100_rank, y = mean_rank)) +
+  geom_point() +
+  facet_wrap(~domains) +
+  theme(legend.position = "None")+
+  geom_hline(yintercept = 100)
+
+ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100.png"), width = 12)
+
