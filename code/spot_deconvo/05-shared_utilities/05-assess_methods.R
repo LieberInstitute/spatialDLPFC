@@ -415,6 +415,25 @@ full_df <- rbind(observed_df, actual_df) %>%
 ################################################################################
 
 #-------------------------------------------------------------------------------
+#   Plot total counts per sample for tangram and cell2location
+#-------------------------------------------------------------------------------
+
+count_df = full_df |>
+    filter(deconvo_tool %in% c("01-tangram", "03-cell2location")) |>
+    group_by(sample_id, deconvo_tool) |>
+    summarize(observed = sum(observed), actual = sum(actual)) |>
+    mutate(diff = abs((observed - actual) / (observed + actual)))
+
+pdf(file.path(plot_dir, 'total_cells_sample.pdf'))
+ggplot(count_df, aes(x = deconvo_tool, y = diff, color = sample_id)) +
+    geom_point() +
+    theme_bw(base_size = 10) +
+    scale_x_discrete(labels = c('tangram', 'cell2location')) +
+    scale_y_continuous(limits = c(0, max(count_df$diff) * 1.1), expand = c(0, 0)) +
+    labs(x = "Deconvolution tool", y = "Absolute proportion difference")
+dev.off()
+
+#-------------------------------------------------------------------------------
 #   Plot total counts per spot for tangram and cell2location
 #-------------------------------------------------------------------------------
 
@@ -441,7 +460,7 @@ metrics_df <- count_df %>%
 metrics_df$corr <- paste("Cor =", metrics_df$corr)
 metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
 
-pdf(file.path(plot_dir, 'total_cells.pdf'))
+pdf(file.path(plot_dir, 'total_cells_spot.pdf'))
 ggplot(count_df) +
     geom_point(aes(x = observed, y = actual), alpha = 0.01) +
     facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
