@@ -69,7 +69,7 @@ message("Saving to: ", fn_out)
 save(nnSVG_data, file = here(data_dir, fn_out))
 
 #### Use sgejobs to write sh files ### 
-# sgejobs::job_single('01_nnSVG_pairwise_modTest', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 01_nnSVG_pairwise_modTest 5v9 1")
+# sgejobs::job_single('01_nnSVG_pairwise_modTest', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 01_nnSVG_pairwise_modTest.R 5v9 1")
 
 ## Loop through domains, use array to run samples
 # domains <- readLines("nnSVG_domains.txt")

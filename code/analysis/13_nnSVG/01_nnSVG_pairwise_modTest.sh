@@ -23,7 +23,7 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_nnSVG_pairwise_modTest 5v9 1
+Rscript 01_nnSVG_pairwise_modTest.R 5v9 1
 
 echo "**** Job ends ****"
 date

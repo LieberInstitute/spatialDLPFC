@@ -92,14 +92,10 @@ all_spots <- function(count_df, plot_name) {
                 filter(cell_type == ct)
 
             p = ggplot(count_df_small) +
-                geom_point(
-                    aes(x = observed, y = actual, color = sample_id),
-                    alpha = 0.01
-                ) +
+                geom_point(aes(x = observed, y = actual), alpha = 0.01) +
                 geom_abline(
                     intercept = 0, slope = 1, linetype = "dashed", color = "red"
                 ) +
-                coord_fixed() +
                 facet_grid(
                     rows = vars(sample_id), cols = vars(deconvo_tool),
                     labeller = deconvo_labeller
@@ -154,7 +150,9 @@ across_spots <- function(count_df, plot_name) {
     metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
 
     p <- ggplot(count_df) +
-        geom_point(aes(x = observed, y = actual, shape = sample_id)) +
+        geom_point(
+            aes(x = observed, y = actual, shape = sample_id, color = cell_type)
+        ) +
         coord_fixed() +
         facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
         geom_abline(
