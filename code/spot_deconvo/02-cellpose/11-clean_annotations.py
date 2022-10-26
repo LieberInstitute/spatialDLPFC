@@ -34,15 +34,15 @@ sample_info_path = pyhere.here(
 #   Define expected cell-type labels (after cleaning), expected columns
 #   in the fluorescence-intensity data frame, and expected number of counts
 #   for each cell-type label
-expected_labels = ["astro", "micro", "neuron", "oligo"]
+expected_labels = ["astro", "micro", "neuron", "oligo", "other"]
 expected_df_cols = [
     'id', 'gfap', 'neun', 'olig2', 'tmem119', 'area', 'y', 'x', 'dist', 'idx'
 ]
 expected_label_counts = 30
 
 #   Define original labels and what they should be replaced with
-replace_from = ["Astrocytes", "Astrocyte", "Microglia", "Neurons", "Neuron", "Oligo"]
-replace_to = ["astro", "astro", "micro", "neuron", "neuron", "oligo"]
+replace_from = ["Astrocytes", "Astrocyte", "Microglia", "Neurons", "Neuron", "Oligo", "Other"]
+replace_to = ["astro", "astro", "micro", "neuron", "neuron", "oligo", "other"]
 
 ################################################################################
 #   Clean data
@@ -78,15 +78,6 @@ for i in range(len(sample_ids)):
     this_manual_labels.dropna(inplace = True)
     this_manual_labels.replace(replace_from, replace_to, inplace=True)
     assert set(expected_labels) == set(this_manual_labels['label'])
-    
-    #   One sample has 2 extra 'astro' labels. Randomly drop 2 'astro' labels to
-    #   get the count for each cell type to 30
-    if sample_ids[i] == 'Br2720_Ant_IF':
-        indices = np.random.choice(
-            this_manual_labels['label'].loc[this_manual_labels['label'] == 'astro'].index,
-            size=2, replace=False
-        )
-        this_manual_labels.drop(index = indices, inplace = True)
     
     #   Verify the correct number of labels per cell type is present, and all cell
     #   IDs line up to the original data frame of fluorescence intensities

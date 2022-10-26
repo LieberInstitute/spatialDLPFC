@@ -42,10 +42,10 @@ sample_info_path = pyhere.here(
 
 random_seed = 0
 
-#   Expected quantities: there should be 4 cell types and 30 cells per type per
+#   Expected quantities: there should be 5 cell types and 30 cells per type per
 #   sample
 expected_num_labels = 30
-num_cell_types = 4
+num_cell_types = 5
 
 #   Number of cells per type to predict and output to Loopy-compatible CSV for
 #   inspection
@@ -132,7 +132,7 @@ model = tree.DecisionTreeClassifier(
     max_depth = 4,
     min_samples_leaf = 1, 
     random_state = random_seed,
-    ccp_alpha = 0
+    ccp_alpha = 0.01
 )
 
 model.fit(x_train, y_train)

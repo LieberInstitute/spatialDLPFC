@@ -200,7 +200,7 @@ with open(model_path, 'rb') as f:
 df['cell_type'] = model.predict(x)
 
 #   Ensure cell-type names match with what we expect
-assert set(df['cell_type']) == set(cell_types.values())
+assert set(df['cell_type']) == set(list(cell_types.values()) + ['other'])
 
 #-------------------------------------------------------------------------------
 #   Visually verify cell-type calls

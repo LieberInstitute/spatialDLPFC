@@ -29,7 +29,7 @@ sample_info_path = pyhere.here(
 )
 
 expected_num_labels = 30
-num_cell_types = 4
+num_cell_types = 5
 
 random_seed = 0
 
