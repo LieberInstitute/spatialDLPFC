@@ -46,7 +46,7 @@ marker_in <- here(
 )
 
 layer_ann_path <- here(
-    "processed-data", "spot_deconvo", "05-shared_utilities",
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
     "annotations_{sample_id}_spots.csv"
 )
 
@@ -60,13 +60,13 @@ if (cell_group == "broad") {
     )
 }
 
+deconvo_labels = deconvo_tool_names
+names(deconvo_labels) = deconvo_tools
+deconvo_labeller = labeller(deconvo_tool = deconvo_labels)
+
 ################################################################################
 #   Plotting functions
 ################################################################################
-
-temp = deconvo_tool_names
-names(temp) = deconvo_tools
-deconvo_labeller = labeller(deconvo_tool = temp)
 
 #   Scatterplots observed vs. actual cell counts for each cell type, faceted
 #   by sample and deconvolution tool. Use all spots as points
@@ -724,8 +724,76 @@ dev.off()
 #   Spatial distribution of cell-types compared against manual layer annotation
 #-------------------------------------------------------------------------------
 
-for (sample_id in sample_ids) {
-    this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
-    layer_ann <- read.csv(this_layer_path)
+if (cell_group == "layer") {
+    #   Read layer annotation in for each sample and match to a barcode
+    layer_ann = data.frame()
+    for (sample_id in sample_ids) {
+        this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
+        layer_ann_small <- read.csv(this_layer_path)
+        
+        layer_ann_small$barcode = colnames(spe[, spe$sample_id == sample_id])[
+            layer_ann_small$id + 1
+        ]
+        layer_ann_small$sample_id = sample_id
+        
+        layer_ann = rbind(layer_ann, layer_ann_small)
+    }
+    layer_ann$id = NULL
     
-    spe_s
+    #   Add layer label to observed_df_long
+    observed_df_long = left_join(
+        observed_df_long, layer_ann, by = c('barcode', 'sample_id')
+    )
+    
+    #   Warn about any NA layer labels
+    num_na = nrow(
+        unique(observed_df_long[is.na(observed_df_long$label), 'barcode'])
+    )
+    print(
+        paste(
+            "Warning:", num_na,
+            "barcodes had NA layer labels across all samples."
+        )
+    )
+    
+    #   Clean up labels
+    observed_df_long$label = tolower(observed_df_long$label)
+    
+    #   Average counts of each cell type in each layer as annotated; filter NA
+    #   labels
+    counts_df = observed_df_long |> 
+        filter(
+            !is.na(label),
+            label != ""
+        ) |>
+        group_by(label, deconvo_tool, sample_id, cell_type) |>
+        summarize(count = mean(observed)) |>
+        ungroup()
+    
+    #   Create plots for each cell type
+    plot_list = list()
+    for (cell_type in cell_types) {
+        plot_list[[cell_type]] = ggplot(
+            counts_df |> filter(cell_type == {{ cell_type }}),
+            aes(x = label, y = count, color = deconvo_tool)
+        ) +
+            geom_boxplot() +
+            geom_smooth(
+                aes(x = as.numeric(as.factor(label))),
+                method = "loess", se = FALSE, span = 0.7, linetype = "dotted"
+            ) +
+            labs(
+                x = "Annotated layer",
+                y = paste("Average predicted", cell_type, "count"),
+                color = "Deconvolution tool"
+            ) +
+            scale_color_discrete(labels = deconvo_labels) +
+            theme_bw(base_size = 10)
+    }
+    
+    pdf(
+        file.path(plot_dir, "layer_distribution.pdf"),
+    )
+    print(plot_list)
+    dev.off()
+}
