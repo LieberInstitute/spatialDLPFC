@@ -77,6 +77,41 @@ mod_max_df |> arrange(other_n)
 # 10 Br6522_mid      675   661      4      14 d4v16 
 
 
+map(k16_domain_pairs, ~pd |>
+      filter(bayesSpace_harmony_16 %in% .x) |> 
+      count(bayesSpace_harmony_2))
+
+# $`5v9`
+# bayesSpace_harmony_2     n
+# 1                    1     1
+# 2                    2 19626
+# 
+# $`4v16`
+# bayesSpace_harmony_2     n
+# 1                    1     8
+# 2                    2 20382
+# 
+# $`7v13`
+# bayesSpace_harmony_2     n
+# 1                    1  3535
+# 2                    2 16339
+# 
+# $`12v13`
+# bayesSpace_harmony_2    n
+# 1                    1 3521
+# 2                    2 6021
+# 
+# $`7v12`
+# bayesSpace_harmony_2     n
+# 1                    1    40
+# 2                    2 17868
+# 
+# $`12v16`
+# bayesSpace_harmony_2     n
+# 1                    1    15
+# 2                    2 11295
+
+
 ## Compare output from nnSVG with and w/o model
 load(here("processed-data", "rdata", "spe", "13_nnSVG", "01_nnSVG_pairwise","nnSVG_k16-5v9-Br2743_ant.RData"), verbose = TRUE)
 nnSVG_mod_data <- nnSVG_data
