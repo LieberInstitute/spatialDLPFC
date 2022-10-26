@@ -3,9 +3,16 @@ library("tidyverse")
 library("here")
 library("sessioninfo")
 
+## setup output dirs
+data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "02_combine_output")
+if(!dir.exists(data_dir)) dir.create(data_dir)
+
+plot_dir <- here("plots", "13_nnSVG", "02_combine_output")
+if(!dir.exists(plot_dir)) dir.create(plot_dir)
+
 #### Progress ####
-data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "01_nnSVG_pairwise")
-output_fn <- list.files(data_dir, pattern = "nnSVG_k16", full.names = TRUE)
+output_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "01_nnSVG_pairwise")
+output_fn <- list.files(output_dir, pattern = "nnSVG_k16", full.names = TRUE)
 names(output_fn) <- gsub("nnSVG_k16-|.RData","", output_fn)
 
 length(output_fn)
@@ -92,8 +99,6 @@ log_t |> filter(error) |> count(domains)
 # 3 7v12        1
 
 ## Checkout runtime
-plot_dir <- here("plots", "13_nnSVG")
-
 runtime_long <- log_t |>
   filter(done) |> 
   mutate(prod = n_spots * n_genes) |>
@@ -159,10 +164,26 @@ nnSVG_all <- do.call("rbind", nnSVG_output) |>
 dim(nnSVG_all)
 # [1] 446052     24
 
+#### Br6522_ant quick export for check ####
+
+nnSVG_quick_check <- nnSVG_all |>
+  # filter(Sample == "Br6522_ant", domains == "5v9") |> 
+  filter(Sample == "Br6522_ant", rank <= 100) |>
+  select(Sample, domains, gene_id, gene_name, rank, pval, FDR) |>
+  arrange(rank) |>
+  arrange(domains)
+
+nnSVG_quick_check |> filter(rank <= 3) |> print(n=25)
+
+
+write_csv(nnSVG_quick_check, file = here(data_dir, "nnSVG_quick_check_Br6522_ant-5v9.csv"))
+
+
+#### Explore Data ####
 nnSVG_all  |> filter(FDR < 0.05) |> count()
 
 nnSVG_all_summary <- nnSVG_all |>
-  group_by(domains, gene_id) |> 
+  group_by(domains, gene_id, gene_name) |> 
   summarize(n = n(), 
             n_signif = sum(FDR < 0.05),
             max_FDR = max(FDR),
@@ -171,19 +192,20 @@ nnSVG_all_summary <- nnSVG_all |>
             max_rank = max(rank),
             mean_rank = mean(rank), 
             median_rank = median(rank),
-            top100_rank = sum(rank <= 100))
+            top100_rank = sum(rank <= 100)) |>
+  ungroup()  |>
+  group_by(domains)
 
 nnSVG_all_summary |> filter(n == 30) |> count()
 # domains     n
 # <chr>   <int>
 # 1 4v16      465
 # 2 5v9       568
-
-nnSVG_all_summary |> filter(n_signif != 0) |> arrange(-n_signif)
-
 nnSVG_all_summary |> filter(max_FDR !=1) |> ungroup()  |> count(n ==1)
 
 nnSVG_all_summary |> filter(max_FDR !=1, n !=1)
+
+nnSVG_all_summary |> arrange(-top100_rank) |> slice(1:3)
 
 ## lowest max rank for each domains
 low_max <- nnSVG_all_summary |> filter(n > 20) |> arrange(max_rank) |> slice(1)
@@ -232,12 +254,32 @@ nnSVG_all_summary |>
   slice(1:5)
 
 ## n rank > 100 vs. mean
+library("ggrepel")
+
 mean_rank_n_top100 <- nnSVG_all_summary |>
+  # slice(1:100) |>
   ggplot(aes(x = top100_rank, y = mean_rank)) +
-  geom_point() +
+  geom_point(alpha = 0.2) +
+  geom_text_repel(aes(label = ifelse(top100_rank > 10, gene_name, NA)), size = 2) +
+  # geom_jitter(alpha = 0.2) +
   facet_wrap(~domains) +
-  theme(legend.position = "None")+
-  geom_hline(yintercept = 100)
+  theme(legend.position = "None")
 
 ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100.png"), width = 12)
+
+mean_rank_n_top100 <- nnSVG_all_summary |>
+  arrange(-top100_rank) |>
+  slice(1:100) |>
+  ggplot(aes(x = top100_rank, y = mean_rank)) +
+  geom_point(alpha = 0.2) +
+  geom_text_repel(aes(label = gene_name), size = 2) +
+  # geom_text(aes(label = gene_name), size = 2) +
+  # geom_jitter(alpha = 0.2) +
+  facet_wrap(~domains) +
+  theme(legend.position = "None")
+
+ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100_filter.png"), width = 12)
+
+
+
 
