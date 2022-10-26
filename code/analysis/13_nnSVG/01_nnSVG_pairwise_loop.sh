@@ -17,12 +17,10 @@ for domains in 5v9 4v16 7v13 12v13 7v12 12v16; do
     cat > .${SHORT}.sh <<EOF
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
-#$ -pe local 5
+#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -N ${NAME}
 #$ -o logs/${SHORT}.\$TASK_ID.txt
 #$ -e logs/${SHORT}.\$TASK_ID.txt
-#$ -m e
 #$ -t 1-30
 #$ -tc 10
 
