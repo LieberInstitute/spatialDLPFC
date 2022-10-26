@@ -50,7 +50,7 @@ layer_ann_path <- here(
     "annotations_{sample_id}_spots.csv"
 )
 
-cell_types_actual <- c("micro", "neuron", "oligo", "other")
+cell_types_actual <- c("astro", "micro", "neuron", "oligo", "other")
 if (cell_group == "broad") {
     cell_types <- c("Astro", "Excit", "Inhib", "Micro", "Oligo", "OPC")
 } else {
@@ -383,14 +383,14 @@ colnames(observed_df) <- tolower(colnames(observed_df))
 if (cell_group == "broad") {
     observed_df <- observed_df %>%
         mutate("neuron" = excit + inhib) %>%
-        mutate("other" = astro + opc) %>%
+        mutate("other" = opc) %>%
         select(all_of(c(added_colnames, cell_types_actual)))
 } else {
     observed_df = observed_df %>%
         rowwise() %>%
         mutate(
             neuron = sum(c_across(starts_with(c('excit_', 'inhib')))),
-            other = astro + opc
+            other = opc
         ) %>%
         ungroup() %>%
         select(all_of(c(added_colnames, cell_types_actual)))
@@ -745,16 +745,8 @@ if (cell_group == "layer") {
         observed_df_long, layer_ann, by = c('barcode', 'sample_id')
     )
     
-    #   Warn about any NA layer labels
-    num_na = nrow(
-        unique(observed_df_long[is.na(observed_df_long$label), 'barcode'])
-    )
-    print(
-        paste(
-            "Warning:", num_na,
-            "barcodes had NA layer labels across all samples."
-        )
-    )
+    #   Stop if any layer labels are missing
+    #stopifnot(!any(is.na(observed_df_long$label)))
     
     #   Clean up labels
     observed_df_long$label = tolower(observed_df_long$label)
@@ -778,10 +770,6 @@ if (cell_group == "layer") {
             aes(x = label, y = count, color = deconvo_tool)
         ) +
             geom_boxplot() +
-            geom_smooth(
-                aes(x = as.numeric(as.factor(label))),
-                method = "loess", se = FALSE, span = 0.7, linetype = "dotted"
-            ) +
             labs(
                 x = "Annotated layer",
                 y = paste("Average predicted", cell_type, "count"),
