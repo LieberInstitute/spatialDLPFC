@@ -3,8 +3,14 @@ library("spatialLIBD")
 library("here")
 library("sessioninfo")
 
-# load sn data
-load(file = "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata", verbose = TRUE)
+data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
+
+#### Load sn data & exclude drop cells ####
+load(file = here(data_dir, "sce_DLPFC.Rdata"), verbose = TRUE)
+sce <- sce[,sce$cellType_hc != "drop"]
+sce$cellType_hc <- droplevels(sce$cellType_hc)
+
+table(sce$cellType_hc)
 
 ## Factor categorical variables used as covariates
 colData(sce)$Position <- as.factor(colData(sce)$Position)
@@ -20,11 +26,10 @@ sn_hc_registration <- registration_wrapper(
     var_sample_id = "Sample",
     covars = c("Position", "age", "sex"),
     gene_ensembl = "gene_id",
-    gene_name = "gene_name",
-    prefix = ""
+    gene_name = "gene_name"
 )
 
-save(sn_hc_registration, file = here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.RDS"))
+save(sn_hc_registration, file = here(data_dir, "sn_hc_registration.RDS"))
 
 # sgejobs::job_single('01_spatial_registration_sn', create_shell = TRUE, memory = '25G', command = "Rscript 01_spatial_registration_sn.R")
 
