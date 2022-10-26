@@ -5,10 +5,10 @@ library("sessioninfo")
 library("patchwork")
 
 ## setup output dirs
-data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "02_combine_output")
+data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "02_compile_nnSVG_output")
 if(!dir.exists(data_dir)) dir.create(data_dir)
 
-plot_dir <- here("plots", "13_nnSVG", "02_combine_output")
+plot_dir <- here("plots", "13_nnSVG", "02_compile_nnSVG_output")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
 #### Progress ####
