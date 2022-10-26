@@ -2,6 +2,7 @@
 library("tidyverse")
 library("here")
 library("sessioninfo")
+library("patchwork")
 
 ## setup output dirs
 data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "02_combine_output")
@@ -65,7 +66,7 @@ n_spots <- ifelse(error_spot, NA, parse_number(unlist(n_spots)))
 
 error <- grepl("Error", logs)
 
-log_t <- tibble(log = names(log_fn),
+nnSVG_log_details <- tibble(log = names(log_fn),
                 Sample = gsub(".*(Br\\d+_.*),.*","\\1",get_log_info(logs, "Running sample: ")),
                 n_spots =  n_spots,
                 n_genes = parse_number(unlist(get_log_info(logs, "nrow"))),
@@ -78,7 +79,7 @@ log_t <- tibble(log = names(log_fn),
   left_join(output_t)
 
 Sys.time()
-log_t |> count(domains, done)
+nnSVG_log_details |> count(domains, done)
 
 # [1] "2022-10-24 10:54:41 EDT"
 # domains done      n
@@ -92,14 +93,17 @@ log_t |> count(domains, done)
 # 7 7v12    TRUE     29
 # 8 7v13    TRUE     28
 
-log_t |> filter(error) |> count(domains)
+nnSVG_log_details |> filter(error) |> count(domains)
 # domains     n
 # 1 12v13       3
 # 2 12v16       3
 # 3 7v12        1
 
-## Checkout runtime
-runtime_long <- log_t |>
+## save
+save(nnSVG_log_details, file = here(data_dir, "nnSVG_log_details.Rdata"))
+
+#### Plot runtime and other input details ####
+runtime_long <- nnSVG_log_details |>
   filter(done) |> 
   mutate(prod = n_spots * n_genes) |>
   select(domains, Sample, n_spots, n_genes, elapsed, user, prod) |>
@@ -110,41 +114,38 @@ runtime_plot <- runtime_long |>
   geom_point() +
   facet_wrap(~metric, scales = "free_x")
 
-ggsave(runtime_plot, filename = here(plot_dir, "runtime_scatter.png"), width = 10)
+ggsave(runtime_plot, filename = here(plot_dir, "nnSVG_runtime_scatter.png"), width = 10)
 
 ## cells vs. genes
-spots_v_gene_scatter <- log_t |>
+spots_v_gene_scatter <- nnSVG_log_details |>
   ggplot(aes(x= n_spots, y = n_genes, color = domains)) +
   geom_point() +
   geom_vline(xintercept = 65, color = "red", linetype = "dashed")
 
-ggsave(spots_v_gene_scatter, filename = here(plot_dir, "spots_v_gene_scatter.png"))
+ggsave(spots_v_gene_scatter, filename = here(plot_dir, "nnSVG_spots_v_gene_scatter.png"))
 
-spots_box <- log_t |>
+spots_box <- nnSVG_log_details |>
   ggplot(aes(x= domains, y = n_spots, fill = domains)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.25) +
   geom_jitter(aes(color = domains)) +
   geom_hline(yintercept = 65, color = "red", linetype = "dashed")
 
-ggsave(spots_box, filename = here(plot_dir, "spots_box.png"))
+ggsave(spots_box, filename = here(plot_dir, "nnSVG_n_spots_boxplot.png"))
 
-genes_box <- log_t |>
+genes_box <- nnSVG_log_details |>
   ggplot(aes(x= domains, y = n_genes, fill = domains)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.25) +
   geom_jitter(aes(color = domains)) 
 
-ggsave(genes_box, filename = here(plot_dir, "genes_box.png"))
-
-
-library(patchwork)
+ggsave(genes_box, filename = here(plot_dir, "nnSVG_n_genes_boxplot.png"))
 
 ggsave(spots_v_gene_scatter + theme(legend.position = "None") +
          genes_box /
          (spots_box + coord_flip() + theme(legend.position = "None")), 
-       filename = here(plot_dir, "spots_genes_summary.png"), width = 10)
+       filename = here(plot_dir, "nnSVG_input_summary.png"), width = 10)
 
 ## low genes all from one sample
-log_t |> filter(n_genes < 1000)
+nnSVG_log_details |> filter(n_genes < 1000)
 # log           domains sample_i Sample     n_spots n_genes error  user system elapsed done  file                       
 # <chr>         <chr>      <int> <chr>        <dbl>   <dbl> <lgl> <dbl>  <dbl>   <dbl> <lgl> <chr>                      
 # 1 nnSVG_4v16.13 4v16          13 Br2720_ant    1390     521 FALSE  574.   5.59    582. TRUE  nnSVG_k16-4v16-Br2720_ant.…
@@ -152,9 +153,9 @@ log_t |> filter(n_genes < 1000)
 # 3 nnSVG_7v12.13 7v12          13 Br2720_ant     873     459 FALSE 1430.  74.4    1507. TRUE  nnSVG_k16-7v12-Br2720_ant.…
 # 4 nnSVG_7v13.13 7v13          13 Br2720_ant     926     509 FALSE  581.  11.8     595. TRUE  nnSVG_k16-7v13-Br2720_ant.…
 
-log_t |> filter(Sample == "Br2720_ant")
+nnSVG_log_details |> filter(Sample == "Br2720_ant")
 
-#### load data ####
+#### load nnSVG output data ####
 nnSVG_output <- lapply(output_fn, function(x) get(load(x)))
 
 nnSVG_all <- do.call("rbind", nnSVG_output) |> 
@@ -164,10 +165,12 @@ nnSVG_all <- do.call("rbind", nnSVG_output) |>
 dim(nnSVG_all)
 # [1] 446052     24
 
+save(nnSVG_all, file = here(data_dir, "nnSVG_all.Rdata"))
+
 #### Br6522_ant quick export for check ####
 
 nnSVG_quick_check <- nnSVG_all |>
-  # filter(Sample == "Br6522_ant", domains == "5v9") |> 
+  filter(Sample == "Br6522_ant", domains == "5v9") |>
   filter(Sample == "Br6522_ant", rank <= 100) |>
   select(Sample, domains, gene_id, gene_name, rank, pval, FDR) |>
   arrange(rank) |>
@@ -178,108 +181,13 @@ nnSVG_quick_check |> filter(rank <= 3) |> print(n=25)
 
 write_csv(nnSVG_quick_check, file = here(data_dir, "nnSVG_quick_check_Br6522_ant-5v9.csv"))
 
+# sgejobs::job_single('02_compile_nnSVG_output', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 02_compile_nnSVG_output.R")
 
-#### Explore Data ####
-nnSVG_all  |> filter(FDR < 0.05) |> count()
-
-nnSVG_all_summary <- nnSVG_all |>
-  group_by(domains, gene_id, gene_name) |> 
-  summarize(n = n(), 
-            n_signif = sum(FDR < 0.05),
-            max_FDR = max(FDR),
-            min_FDR = min(FDR),
-            min_rank = min(rank),
-            max_rank = max(rank),
-            mean_rank = mean(rank), 
-            median_rank = median(rank),
-            top100_rank = sum(rank <= 100)) |>
-  ungroup()  |>
-  group_by(domains)
-
-nnSVG_all_summary |> filter(n == 30) |> count()
-# domains     n
-# <chr>   <int>
-# 1 4v16      465
-# 2 5v9       568
-nnSVG_all_summary |> filter(max_FDR !=1) |> ungroup()  |> count(n ==1)
-
-nnSVG_all_summary |> filter(max_FDR !=1, n !=1)
-
-nnSVG_all_summary |> arrange(-top100_rank) |> slice(1:3)
-
-## lowest max rank for each domains
-low_max <- nnSVG_all_summary |> filter(n > 20) |> arrange(max_rank) |> slice(1)
-
-n_gene_distribution <- nnSVG_all_summary |>
-  ggplot(aes(n, color = domains)) +
-  geom_density()
-
-ggsave(n_gene_distribution, filename = here(plot_dir, "n_gene_distribution.png"), width = 10)
-
-## What is the FDR distribution like for low max?
-
-low_max <- low_max |> left_join(nnSVG_all)
-
-low_max |> count()
-
-low_max_FDR <- low_max |>
-  ggplot(aes(x = domains , y = FDR, fill = domains)) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.25) +
-  geom_jitter(aes(color = domains)) +
-  geom_hline(yintercept = 0.05, color = "red", linetype = "dashed")
-
-ggsave(low_max_FDR, filename = here(plot_dir, "low_max_FDR.png"))
-
-## Mean rank vs. n
-mean_rank_n_box <- nnSVG_all_summary |>
-  ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
-  geom_boxplot() +
-  facet_wrap(~domains) +
-  theme(legend.position = "None")
-
-ggsave(mean_rank_n_box, filename = here(plot_dir, "mean_rank_n_box.png"), width = 12)
-
-mean_rank_top_n_scatter <- nnSVG_all_summary |> 
-  arrange(mean_rank) |>
-  slice(1:500) |>
-  # ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
-  ggplot(aes(x = n, y = mean_rank, color = top100_rank)) +
-  geom_point(alpha = 0.2) +
-  facet_wrap(~domains) 
-
-ggsave(mean_rank_top_n_scatter, filename = here(plot_dir, "mean_rank_top_n_scatter.png"), width = 12)
-
-nnSVG_all_summary |> 
-  arrange(mean_rank) |>
-  slice(1:5)
-
-## n rank > 100 vs. mean
-library("ggrepel")
-
-mean_rank_n_top100 <- nnSVG_all_summary |>
-  # slice(1:100) |>
-  ggplot(aes(x = top100_rank, y = mean_rank)) +
-  geom_point(alpha = 0.2) +
-  geom_text_repel(aes(label = ifelse(top100_rank > 10, gene_name, NA)), size = 2) +
-  # geom_jitter(alpha = 0.2) +
-  facet_wrap(~domains) +
-  theme(legend.position = "None")
-
-ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100.png"), width = 12)
-
-mean_rank_n_top100 <- nnSVG_all_summary |>
-  arrange(-top100_rank) |>
-  slice(1:100) |>
-  ggplot(aes(x = top100_rank, y = mean_rank)) +
-  geom_point(alpha = 0.2) +
-  geom_text_repel(aes(label = gene_name), size = 2) +
-  # geom_text(aes(label = gene_name), size = 2) +
-  # geom_jitter(alpha = 0.2) +
-  facet_wrap(~domains) +
-  theme(legend.position = "None")
-
-ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100_filter.png"), width = 12)
-
-
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
 
 
