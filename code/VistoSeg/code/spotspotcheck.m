@@ -27,7 +27,7 @@ function start(~, ~, countCheck)
         catch
         end
     end
-    [imgFile, imgPath] = uigetfile(getImg, 'Select Histology Image');
+    [imgFile, imgPath] = uigetfile(getImg, 'Select Visium Image');
     getMask = fullfile(imgPath, '*.mat');
     getJSON = fullfile(imgPath, '*.json');
     getPositions = fullfile(imgPath, '*.txt;*.csv'); 
@@ -43,22 +43,33 @@ function start(~, ~, countCheck)
         fclose(fid);
         clear ip
     end
-    im = imread(fullfile(imgPath, imgFile));
-    temp = load(fullfile(maskPath, maskFile));
-    O = fieldnames(temp);
-    BW = temp.(O{1});
-    %BW = mask_dark_blue;
+
+    BW = load(fullfile(maskPath, maskFile));
+    O = fieldnames(BW);
+    %O1 =[2,1,4,6,5,3]; %only for AD
+    O1 = 1:numel(O);
+    for C = 1:numel(O)
+    im.(O{C}) = imread(fullfile(imgPath,imgFile),O1(C));
+    end
+    
     jsonname = fullfile(jsonPath, jsonFile);
     w = jsondecode(fileread(jsonname));
     R = ceil(w.spot_diameter_fullres/2);
     tbl = readtable(fullfile(posPath, posFile));
     count = [];
-    if size(tbl, 2) == 7
-        count = table2array(tbl(:, 7));
+    %prop = [];
+    
+    if size(tbl, 2) > 6
+        b = 7;
+        for C = 1:numel(O)
+        count.(O{C}) = table2array(tbl(:, b));
+        %prop.(O{C}) = table2array(tbl(:, b+1));
+        b = b+3;
+        end
     end
     if countCheck.Value
-        count = countSpots(BW, R, tbl, posPath);
+        [count,~] = countSpots(BW, R, tbl, posPath);
     end
-    clickPlot(im, BW, R, tbl, count);    
+    clickPlot(im, BW, R, tbl, count, O);    
 
 end
