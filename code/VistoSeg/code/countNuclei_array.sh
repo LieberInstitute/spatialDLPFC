@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
+#$ -l bluejay,mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -pe local 4
 #$ -N spatialDLPFC_rerun_countNuclei
 #$ -o Logs/countNuclei.$TASK_ID.txt
@@ -25,7 +25,7 @@ module load matlab/R2019a
 ## Read parameters
 SAMPLE=$(awk 'BEGIN {FS="\t"} {print $1}' ../../spaceranger/spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
 IMAGEPATH=$(awk 'BEGIN {FS="\t"} {print $4}' ../../spaceranger/spaceranger_parameters.txt | awk "NR==${SGE_TASK_ID}")
-MASKPATH=$(echo ${IMAGEPATH} | sed "s/.tif/_nuclei.mat/g")
+MASKPATH=$(echo ${IMAGEPATH} | sed "s/.tif/_nuclei_WS_final.mat/g")
 
 echo "Processing sample ${SAMPLE} with mask ${MASKPATH}"
 date
