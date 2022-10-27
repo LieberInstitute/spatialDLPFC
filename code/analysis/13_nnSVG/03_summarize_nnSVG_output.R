@@ -1,4 +1,20 @@
+library("tidyverse")
+library("here")
+library("sessioninfo")
+library("patchwork")
+
+## setup output dirs
+# # data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "02_compile_nnSVG_output")
+# if(!dir.exists(data_dir)) dir.create(data_dir)
+
+plot_dir <- here("plots", "13_nnSVG", "03_summarize_nnSVG_output")
+if(!dir.exists(plot_dir)) dir.create(plot_dir)
+
 #### Explore Data ####
+
+## Load all
+load(here("processed-data", "rdata", "spe", "13_nnSVG", "02_compile_nnSVG_output", "nnSVG_all.Rdata"))
+
 nnSVG_all  |> filter(FDR < 0.05) |> count()
 
 nnSVG_all_summary <- nnSVG_all |>
