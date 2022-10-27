@@ -1,0 +1,42 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Thu Oct 27 09:38:30 EDT 2022
+**** JHPCE info ****
+User: mtippani
+Job id: 342080
+Job name: spatialDLPFC_rerun_countNuclei
+Hostname: compute-098.cm.cluster
+Task id: 2
+****
+Processing sample DLPFC_Br2743_mid_manual_alignment_extra_reads with mask /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush-001_mid_1_nuclei_WS_final.mat
+Thu Oct 27 09:38:30 EDT 2022
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+Elapsed time is 15.984617 seconds.
+{Error using fieldnames
+Invalid input argument of type 'logical'. Input must be a structure or a Java
+or COM object.
+
+Error in countSpots (line 6)
+O = fieldnames(BW);
+
+Error in countNuclei (line 27)
+        count = countSpots(BW, R, tbl, posPath);
+} 
+>> **** Job ends ****
+Thu Oct 27 09:38:52 EDT 2022
