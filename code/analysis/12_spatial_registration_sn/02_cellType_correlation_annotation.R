@@ -8,6 +8,7 @@ library("sessioninfo")
 
 ## Set up plotting
 plot_dir <- here("plots", "12_spatial_registration_sn")
+data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
 
 ## Load Registration Results
 load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.RDS"), verbose = TRUE)
@@ -36,7 +37,7 @@ cor_top100 <- map(modeling_results, ~layer_stat_cor(registration_t_stats,
                                                     reverse = FALSE,
                                                     top_n = 100))
 
-save(cor_top100, file = here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_cor_top100.RDS"))
+save(cor_top100, file = here(data_dir, "sn_hc_cor_top100.RDS"))
 
 ## Plot all for portability
 pdf(here(plot_dir, "spatial_registration_plot_sn.pdf"))
@@ -65,7 +66,7 @@ layer_anno <- map2(cor_top100, names(cor_top100), function(cor, name){
 layer_anno$layer |> arrange(cluster)
 #         cluster layer_confidence layer_label
 # 1         Astro             good          L1
-# 2  EndoMural_01             good       L1/WM
+# 2  EndoMural_01             good          L1
 # 3  EndoMural_02             good          L1
 # 4      Excit_01             good          L3
 # 5      Excit_02             good        L5/6
@@ -79,20 +80,20 @@ layer_anno$layer |> arrange(cluster)
 # 13     Excit_10             good          L4
 # 14     Excit_11             good      L4/5/3
 # 15     Excit_12             poor       L4/5*
-# 16     Excit_13             poor         L4*
+# 16     Excit_13             poor       L4/3*
 # 17     Excit_14             good        L3/2
 # 18     Excit_15             poor         L1*
-# 19     Inhib_01             good          L2
+# 19     Inhib_01             good        L2/3
 # 20     Inhib_02             good          L4
-# 21     Inhib_03             poor       L4/3*
+# 21     Inhib_03             good        L4/3
 # 22     Inhib_04             poor         L2*
 # 23     Inhib_05             good          L2
 # 24     Inhib_06             poor         L2*
 # 25        Micro             good       WM/L1
-# 26     Oligo_01             poor       L3/4*
+# 26     Oligo_01             good          WM
 # 27     Oligo_02             good          WM
 # 28     Oligo_03             good          WM
-# 29          OPC             good          WM
+# 29          OPC             good       WM/L1
 
 layer_anno$layer |>
     filter(grepl("Excit", cluster), layer_confidence == "good") |>
@@ -125,33 +126,37 @@ layer_anno_all <- reduce(layer_anno, left_join, by = "cluster") |>
   select(-cellType_broad)
 
 ## Save for reference
-write.csv(layer_anno_all, file = here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "cellType_layer_annotations.csv"))
+write.csv(layer_anno_all, file = here(data_dir, "cellType_layer_annotations.csv"))
 
 
 #### Add Layer Annotations to colData ####
 ## Add to sce object for future use
-load(file = "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata", verbose = TRUE)
+load(here(data_dir, "sce_DLPFC.Rdata"), verbose = TRUE)
 
-sce$cellType_layer <- factor(layer_anno2$cellType_layer[match(sce$cellType_hc, layer_anno2$cluster)],
+sce$cellType_layer <- factor(layer_anno_all$cellType_layer[match(sce$cellType_hc, layer_anno_all$cluster)],
     levels = c(
         "Astro", "EndoMural", "Micro", "Oligo", "OPC",
         "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4", "Excit_L5",
         "Excit_L5/6", "Excit_L6", "Inhib"
     )
 )
-sce$layer_annotation <- factor(layer_anno2$layer_annotation[match(sce$cellType_hc, layer_anno2$cluster)])
+sce$layer_annotation <- factor(layer_anno_all$layer_annotation[match(sce$cellType_hc, layer_anno_all$cluster)])
 
 table(sce$cellType_layer)
-# Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4
-# 3979         2157         1601        32051         1940           82        10459         3043         2388
-# Excit_L5   Excit_L5/6     Excit_L6        Inhib
-# 2505         2487         1792        11067
+# Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4 
+# 3979         2157         1601        10894         1940           82        10459         3043         2388 
+# Excit_L5   Excit_L5/6     Excit_L6        Inhib 
+# 2505         2487         1792        11067 
 
 table(sce$layer_annotation)
-# L1    L1*     L2    L2*   L2/3     L3  L3/4* L3/4/5     L4    L4*  L4/5*     L5   L5/6     L6     WM  WM/L1
-# 5690     66   6558   1932     82  10459  24335   3043   3655   1567    420   2505   2487   1792  10966   2047
+# L1    L1*     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4  L4/5*     L5   L5/6     L6     WM  WM/L1 
+# 6136     66   1192   1932   5448  10459   1310   1567   3043   3655    420   2505   2487   1792  10894   3541
 
-# save(sce, file = "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata")
+## Drop nuc are NA
+sum(is.na(sce$cellType_layer))
+# [1] 23210
+
+# save(sce, file = here(data_dir, "sce_DLPFC.Rdata"))
 
 #### Save Output to XLSX sheet ####
 data_dir <- here("processed-data","rdata","spe","12_spatial_registration_sn")
@@ -287,3 +292,11 @@ Heatmap(t(cor_all),
         })
 dev.off()
 
+# sgejobs::job_single('02_cellType_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 02_cellType_correlation_annotation.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
