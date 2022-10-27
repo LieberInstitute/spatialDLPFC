@@ -3,11 +3,11 @@
 #$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -pe local 4
 #$ -N spatialDLPFC_rerun_countNuclei
-#$ -o Logs/rerun_countNuclei.$TASK_ID.txt
-#$ -e Logs/rerun_countNuclei.$TASK_ID.txt
+#$ -o Logs/countNuclei.$TASK_ID.txt
+#$ -e Logs/countNuclei.$TASK_ID.txt
 #$ -m e
-#$ -t 1-27
-#$ -tc 30
+#$ -t 1-12
+#$ -tc 6
 
 echo "**** Job starts ****"
 date
