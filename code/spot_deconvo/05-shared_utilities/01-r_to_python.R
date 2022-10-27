@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("tidyverse"))
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 #  Paths
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
@@ -110,12 +110,13 @@ sce$cellType_layer <- NULL
 #-------------------------------------------------------------------------------
 
 if (cell_group == "layer") {
-    #   Drop EndoMural, unclear excitatory cells, and suspicious oligo cluster
+    #   Drop EndoMural, unclear excitatory cells, and suspicious subclusters
     keep <- !is.na(sce$layer_level) & (sce$layer_level != "EndoMural") &
-        ((sce$cellType_hc != "Oligo_01") | (sce$prelimCluster %in% c(22, 65)))
+        (sce$cellType_hc != "drop")
 } else {
-    #   Drop rare cell types (EndoMural) for single-cell data
-    keep <- !(sce$cellType_broad_hc == "EndoMural")
+    #   Drop rare cell types (EndoMural) and suspicious subclusters
+    keep <- !(sce$cellType_broad_hc == "EndoMural") &
+        (sce$cellType_hc != "drop")
 }
 
 print("Distribution of cells to drop (FALSE) vs. keep (TRUE):")
