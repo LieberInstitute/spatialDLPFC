@@ -724,64 +724,94 @@ dev.off()
 #   Spatial distribution of cell-types compared against manual layer annotation
 #-------------------------------------------------------------------------------
 
-if (cell_group == "layer") {
-    #   Read layer annotation in for each sample and match to a barcode
-    layer_ann = data.frame()
-    for (sample_id in sample_ids) {
-        this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
-        layer_ann_small <- read.csv(this_layer_path)
-        
-        layer_ann_small$barcode = colnames(spe[, spe$sample_id == sample_id])[
-            layer_ann_small$id + 1
-        ]
-        layer_ann_small$sample_id = sample_id
-        
-        layer_ann = rbind(layer_ann, layer_ann_small)
-    }
-    layer_ann$id = NULL
+#   Read layer annotation in for each sample and match to a barcode
+layer_ann = data.frame()
+for (sample_id in sample_ids) {
+    this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
+    layer_ann_small <- read.csv(this_layer_path)
     
-    #   Add layer label to observed_df_long
-    observed_df_long = left_join(
-        observed_df_long, layer_ann, by = c('barcode', 'sample_id')
-    )
+    layer_ann_small$barcode = colnames(spe[, spe$sample_id == sample_id])[
+        layer_ann_small$id + 1
+    ]
+    layer_ann_small$sample_id = sample_id
     
-    #   Stop if any layer labels are missing
-    #stopifnot(!any(is.na(observed_df_long$label)))
-    
-    #   Clean up labels
-    observed_df_long$label = tolower(observed_df_long$label)
-    
-    #   Average counts of each cell type in each layer as annotated; filter NA
-    #   labels
-    counts_df = observed_df_long |> 
-        filter(
-            !is.na(label),
-            label != ""
-        ) |>
-        group_by(label, deconvo_tool, sample_id, cell_type) |>
-        summarize(count = mean(observed)) |>
-        ungroup()
-    
-    #   Create plots for each cell type
-    plot_list = list()
-    for (cell_type in cell_types) {
-        plot_list[[cell_type]] = ggplot(
-            counts_df |> filter(cell_type == {{ cell_type }}),
-            aes(x = label, y = count, color = deconvo_tool)
-        ) +
-            geom_boxplot() +
-            labs(
-                x = "Annotated layer",
-                y = paste("Average predicted", cell_type, "count"),
-                color = "Deconvolution tool"
-            ) +
-            scale_color_discrete(labels = deconvo_labels) +
-            theme_bw(base_size = 10)
-    }
-    
-    pdf(
-        file.path(plot_dir, "layer_distribution.pdf"),
-    )
-    print(plot_list)
-    dev.off()
+    layer_ann = rbind(layer_ann, layer_ann_small)
 }
+layer_ann$id = NULL
+
+#   Add layer label to observed_df_long
+observed_df_long = left_join(
+    observed_df_long, layer_ann, by = c('barcode', 'sample_id')
+)
+
+#   Clean up labels
+observed_df_long$label = tolower(observed_df_long$label)
+
+#   Average counts of each cell type in each layer as annotated; filter NA
+#   labels (there are 2 inentional NAs where spots should be dropped)
+counts_df = observed_df_long |> 
+    filter(
+        !is.na(label),
+        label != ""
+    ) |>
+    group_by(label, deconvo_tool, sample_id, cell_type) |>
+    summarize(count = mean(observed)) |>
+    ungroup()
+
+#   Create plots for each cell type
+plot_list = list()
+for (cell_type in cell_types) {
+    plot_list[[cell_type]] = ggplot(
+        counts_df |> filter(cell_type == {{ cell_type }}),
+        aes(x = label, y = count, color = deconvo_tool)
+    ) +
+        geom_boxplot() +
+        labs(
+            x = "Annotated layer",
+            y = paste("Average predicted", cell_type, "count"),
+            color = "Deconvolution tool"
+        ) +
+        scale_color_discrete(labels = deconvo_labels) +
+        theme_bw(base_size = 10)
+}
+
+pdf(
+    file.path(plot_dir, "layer_distribution.pdf"),
+)
+print(plot_list)
+dev.off()
+
+#-------------------------------------------------------------------------------
+#   Spatial plots of manual layer annotation
+#-------------------------------------------------------------------------------
+
+plot_list = list()
+for (sample_id in sample_ids) {
+    spe_small = spe[, spe$sample_id == sample_id]
+    counts_df = observed_df_long |> filter(sample_id == {{ sample_id }})
+    
+    spe_small$manual_layer = counts_df[
+        match(colnames(spe_small), counts_df$barcode), 'label'
+    ] |> pull(label)
+    
+    #   Verify no NA labels are present, except for sample 'Br6432_Ant_IF',
+    #   where 2 NA spots are expected: these should be dropped for these plots
+    spe_small$manual_layer[spe_small$manual_layer == ""] = NA
+    if (sample_id != 'Br6432_Ant_IF' & any(is.na(spe_small$manual_layer))) {
+        stop("No spot labels should be NA")
+    } else if (sample_id == 'Br6432_Ant_IF') {
+        stopifnot(length(which(is.na(spe_small$manual_layer))) == 2)
+        spe_small = spe_small[, !is.na(spe_small$manual_layer)]
+    }
+    
+    plot_list[[sample_id]] = vis_grid_gene(
+        spe_small, geneid = 'manual_layer', return_plots = TRUE,
+        spatial = FALSE
+    )[[1]] +
+        scale_color_discrete() +
+        scale_fill_discrete()
+}
+
+pdf(file.path(plot_dir, 'spot_layer_labels.pdf'))
+print(plot_list)
+dev.off()
