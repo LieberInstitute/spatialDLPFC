@@ -48,10 +48,16 @@ message("nrow: ", nrow(spe))
 message(Sys.time(), " - Run nnSVG")
 
 ## create Model
+message("K9 model breakdown:")
+table(spe$bayesSpace_harmony_9)
+
 mod <- model.matrix(~ spe$bayesSpace_harmony_9)
 
 # set seed for reproducibility
-set.seed(1019)
+# set.seed(1019)
+seed = 2822
+message("seed = ", seed)
+set.seed(seed) 
 # Run nnSVG
 spe <- nnSVG(spe, X = mod, n_threads = 1)
 
