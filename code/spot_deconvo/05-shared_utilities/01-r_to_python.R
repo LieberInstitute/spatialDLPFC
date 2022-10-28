@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("tidyverse"))
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 #  Paths
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
