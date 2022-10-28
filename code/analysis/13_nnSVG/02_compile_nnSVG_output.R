@@ -17,7 +17,7 @@ output_fn <- list.files(output_dir, pattern = "nnSVG_k16", full.names = TRUE)
 names(output_fn) <- gsub("nnSVG_k16-|.RData","", output_fn)
 
 length(output_fn)
-# [1] 169
+# [1] 171
 
 output_t <- tibble(file = basename(output_fn)) |>
             mutate(label = gsub("nnSVG_k16-|.RData","", file)) |>
@@ -25,7 +25,7 @@ output_t <- tibble(file = basename(output_fn)) |>
 
 Sys.time()
 (n_done <- output_t |> count(domains))
-[1] "2022-10-27 15:57:05 EDT"
+# [1] "2022-10-28 11:26:42 EDT"
 # domains     n
 # <chr>   <int>
 # 1 12v13      27
@@ -99,22 +99,22 @@ log_recap <- nnSVG_log_details |>
   group_by(domains) |> 
   summarize(logs = n(), 
             error_spot = sum(error_spot), 
-            error = sum(error_any),
-            done = sum(done),
-            output = sum(!is.na(file)))
+            error_other = sum(error_any) - error_spot,
+            output_file = sum(!is.na(file)),
+            done = sum(done))
 
-# domains  logs error_spot error  done output
-# <chr>   <int>      <int> <int> <int>  <int>
-# 1 12v13      30          1     3    30     27
-# 2 12v16      30          2     3    29     26
-# 3 4v16       30          0     0    30     30
-# 4 5v9        30          0     0    30     30
-# 5 7v12       30          0     1    29     28
-# 6 7v13       30          0     0    29     29
+# domains  logs error_spot error_other output_file  done
+# <chr>   <int>      <int>       <int>       <int> <int>
+# 1 12v13      30          1           2          27    30
+# 2 12v16      30          2           1          26    29
+# 3 4v16       30          0           0          30    30
+# 4 5v9        30          0           0          30    30
+# 5 7v12       30          0           1          28    29
+# 6 7v13       30          0           0          30    30
 
 #### Identify uncompleted runs ####
 
-## What didn't finish?
+## What didn't finish? - ran for 18+ hours?
 nnSVG_log_details |> filter(!done)
 # log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file 
 # <chr>          <chr>      <int> <chr>        <dbl>   <dbl> <lgl>      <lgl>     <dbl>  <dbl>   <dbl> <lgl> <chr>
@@ -124,24 +124,23 @@ nnSVG_log_details |> filter(!done)
 ## What errored out? not from spot error
 
 nnSVG_log_details |> filter(!error_spot, error_any)
-# log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file 
+# log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file
 # <chr>          <chr>      <int> <chr>        <dbl>   <dbl> <lgl>      <lgl>     <dbl>  <dbl>   <dbl> <lgl> <chr>
-# 1 nnSVG_12v13.10 12v13         10 Br8492_ant      81    1266 FALSE      TRUE         NA     NA      NA TRUE  NA   
-# 2 nnSVG_12v13.22 12v13         22 Br6522_ant     329    2180 FALSE      TRUE         NA     NA      NA TRUE  NA   
-# 3 nnSVG_12v16.28 12v16         28 Br8667_ant      74    3892 FALSE      TRUE         NA     NA      NA TRUE  NA   
-# 4 nnSVG_7v12.19  7v12          19 Br6471_ant     376    3884 FALSE      TRUE         NA     NA      NA TRUE  NA 
+# 1 nnSVG_12v13.10 12v13         10 Br8492_ant      81    1266 FALSE      TRUE         NA     NA      NA TRUE  NA
+# 2 nnSVG_12v13.22 12v13         22 Br6522_ant     329    2180 FALSE      TRUE         NA     NA      NA TRUE  NA
+# 3 nnSVG_12v16.28 12v16         28 Br8667_ant      74    3892 FALSE      TRUE         NA     NA      NA TRUE  NA
+# 4 nnSVG_7v12.19  7v12          19 Br6471_ant     376    3884 FALSE      TRUE         NA     NA      NA TRUE  NA
 
 ## redo tab 
-redo_tab <- nnSVG_log_details |> filter((!error_spot & error_any)|!done)
-# domains sample_i Sample     
-# <chr>      <int> <chr>      
-# 1 12v13         10 Br8492_ant 
-# 2 12v13         22 Br6522_ant 
-# 3 12v16         23 Br6522_mid 
-# 4 12v16         28 Br8667_ant run
-# 5 7v12          19 Br6471_ant 
-# 6 7v12           4 Br3942_ant run
-# 7 7v13          24 Br6522_post run
+# redo_tab <- nnSVG_log_details |> filter((!error_spot & error_any)|!done)
+# log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file 
+# <chr>          <chr>      <int> <chr>        <dbl>   <dbl> <lgl>      <lgl>     <dbl>  <dbl>   <dbl> <lgl> <chr>
+#   1 nnSVG_12v13.10 12v13         10 Br8492_ant      81    1266 FALSE      TRUE         NA     NA      NA TRUE  NA   
+# 2 nnSVG_12v13.22 12v13         22 Br6522_ant     329    2180 FALSE      TRUE         NA     NA      NA TRUE  NA   
+# 3 nnSVG_12v16.23 12v16         23 Br6522_mid     307    4039 FALSE      FALSE        NA     NA      NA FALSE NA   
+# 4 nnSVG_12v16.28 12v16         28 Br8667_ant      74    3892 FALSE      TRUE         NA     NA      NA TRUE  NA   
+# 5 nnSVG_7v12.19  7v12          19 Br6471_ant     376    3884 FALSE      TRUE         NA     NA      NA TRUE  NA   
+# 6 nnSVG_7v12.4   7v12           4 Br3942_ant     645    3980 FALSE      FALSE        NA     NA      NA FALSE NA 
 
 ## Use SGE job tools to re-run 
 # walk2(redo_tab$domains, redo_tab$sample_i, function(d, i){
@@ -160,15 +159,16 @@ runtime_long <- nnSVG_log_details |>
   pivot_longer(!c(domains, Sample, elapsed, user), names_to = "metric", values_to = "n")
 
 runtime_plot <- runtime_long |>
-  ggplot(aes(x = n, y = elapsed, color = domains)) +
+  ggplot(aes(x = n, y = elapsed/60, color = domains)) +
   geom_point() +
-  facet_wrap(~metric, scales = "free_x")
+  facet_wrap(~metric, scales = "free_x") +
+  labs(y = "elapsed (min)")
 
 ggsave(runtime_plot, filename = here(plot_dir, "nnSVG_runtime_scatter.png"), width = 10)
 
 ## cells vs. genes
 spots_v_gene_scatter <- nnSVG_log_details |>
-  ggplot(aes(x= n_spots, y = n_genes, color = domains)) +
+  ggplot(aes(x= n_spots, y = n_genes, color = domains, shape = error_any)) +
   geom_point() +
   geom_vline(xintercept = 65, color = "red", linetype = "dashed")
 
@@ -220,17 +220,19 @@ save(nnSVG_all, file = here(data_dir, "nnSVG_all.Rdata"))
 ## Check output again...
 nnSVG_all |> 
   group_by(domains) |> 
-  summarize(runs = length(unique(Sample))) |> 
-  left_join(log_recap)
+  summarize(output_file = length(unique(Sample))) |> 
+  left_join(log_recap) |>
+  mutate(not_done = logs - done) |>
+  select(-logs, -done) 
 
-# domains  runs  logs error_spot error  done output
-# <chr>   <int> <int>      <int> <int> <int>  <int>
-# 1 12v13      27    30          1     3    30     27
-# 2 12v16      26    30          2     3    29     26
-# 3 4v16       30    30          0     0    30     30
-# 4 5v9        30    30          0     0    30     30
-# 5 7v12       28    30          0     1    29     28
-# 6 7v13       30    30          0     0    29     29
+# domains output_file error_spot error_other not_done
+# <chr>         <int>      <int>       <int>    <int>
+# 1 12v13            27          1           2        0
+# 2 12v16            26          2           1        1
+# 3 4v16             30          0           0        0
+# 4 5v9              30          0           0        0
+# 5 7v12             28          0           1        1
+# 6 7v13             30          0           0        0
 
 
 #### Br6522_ant quick export for check ####
