@@ -22,7 +22,7 @@ import custom_tg_code as ctg
 #   Variable definitions
 ################################################################################
 
-cell_group = "layer" # "broad" or "layer"
+cell_group = "broad" # "broad" or "layer"
 
 #-------------------------------------------------------------------------------
 #   Paths
