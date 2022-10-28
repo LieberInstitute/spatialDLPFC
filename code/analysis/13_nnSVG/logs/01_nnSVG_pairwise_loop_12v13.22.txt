@@ -108,3 +108,13 @@ Gene filtering: retaining genes with at least 3 counts in at least 0.5% (n = 3) 
 removed 26723 out of 28903 genes due to low expression
 nrow: 2180
 2022-10-27 16:39:29 - Run nnSVG
+Timing stopped at: 0.043 0 0.044
+Error: BiocParallel errors
+  1 remote errors, element index: 692
+  1488 unevaluated and other errors
+  first remote error:
+Error in BRISC_estimation(coords = coords, y = y_i, x = X, cov.model = "exponential", : c++ error: dpotrf failed
+
+Execution halted
+**** Job ends ****
+Thu Oct 27 16:52:10 EDT 2022
