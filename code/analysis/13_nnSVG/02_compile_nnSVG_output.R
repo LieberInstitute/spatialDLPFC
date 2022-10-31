@@ -17,7 +17,7 @@ output_fn <- list.files(output_dir, pattern = "nnSVG_k16", full.names = TRUE)
 names(output_fn) <- gsub("nnSVG_k16-|.RData","", output_fn)
 
 length(output_fn)
-# [1] 171
+# [1] 172
 
 output_t <- tibble(file = basename(output_fn)) |>
             mutate(label = gsub("nnSVG_k16-|.RData","", file)) |>
@@ -28,7 +28,7 @@ Sys.time()
 # [1] "2022-10-28 11:26:42 EDT"
 # domains     n
 # <chr>   <int>
-# 1 12v13      27
+# 1 12v13      28
 # 2 12v16      26
 # 3 4v16       30
 # 4 5v9        30
@@ -114,7 +114,7 @@ log_recap <- nnSVG_log_details |>
 
 #### Identify uncompleted runs ####
 
-## What didn't finish? - ran for 18+ hours?
+## What didn't finish? - ran for 2+ days 
 nnSVG_log_details |> filter(!done)
 # log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file 
 # <chr>          <chr>      <int> <chr>        <dbl>   <dbl> <lgl>      <lgl>     <dbl>  <dbl>   <dbl> <lgl> <chr>
@@ -124,23 +124,14 @@ nnSVG_log_details |> filter(!done)
 ## What errored out? not from spot error
 
 nnSVG_log_details |> filter(!error_spot, error_any)
-# log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file
+# log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file 
 # <chr>          <chr>      <int> <chr>        <dbl>   <dbl> <lgl>      <lgl>     <dbl>  <dbl>   <dbl> <lgl> <chr>
-# 1 nnSVG_12v13.10 12v13         10 Br8492_ant      81    1266 FALSE      TRUE         NA     NA      NA TRUE  NA
-# 2 nnSVG_12v13.22 12v13         22 Br6522_ant     329    2180 FALSE      TRUE         NA     NA      NA TRUE  NA
-# 3 nnSVG_12v16.28 12v16         28 Br8667_ant      74    3892 FALSE      TRUE         NA     NA      NA TRUE  NA
-# 4 nnSVG_7v12.19  7v12          19 Br6471_ant     376    3884 FALSE      TRUE         NA     NA      NA TRUE  NA
+# 1 nnSVG_12v13.10 12v13         10 Br8492_ant      81    1266 FALSE      TRUE         NA     NA      NA TRUE  NA   
+# 2 nnSVG_12v16.28 12v16         28 Br8667_ant      74    3892 FALSE      TRUE         NA     NA      NA TRUE  NA   
+# 3 nnSVG_7v12.19  7v12          19 Br6471_ant     376    3884 FALSE      TRUE         NA     NA      NA TRUE  NA 
 
 ## redo tab 
 # redo_tab <- nnSVG_log_details |> filter((!error_spot & error_any)|!done)
-# log            domains sample_i Sample     n_spots n_genes error_spot error_any  user system elapsed done  file 
-# <chr>          <chr>      <int> <chr>        <dbl>   <dbl> <lgl>      <lgl>     <dbl>  <dbl>   <dbl> <lgl> <chr>
-#   1 nnSVG_12v13.10 12v13         10 Br8492_ant      81    1266 FALSE      TRUE         NA     NA      NA TRUE  NA   
-# 2 nnSVG_12v13.22 12v13         22 Br6522_ant     329    2180 FALSE      TRUE         NA     NA      NA TRUE  NA   
-# 3 nnSVG_12v16.23 12v16         23 Br6522_mid     307    4039 FALSE      FALSE        NA     NA      NA FALSE NA   
-# 4 nnSVG_12v16.28 12v16         28 Br8667_ant      74    3892 FALSE      TRUE         NA     NA      NA TRUE  NA   
-# 5 nnSVG_7v12.19  7v12          19 Br6471_ant     376    3884 FALSE      TRUE         NA     NA      NA TRUE  NA   
-# 6 nnSVG_7v12.4   7v12           4 Br3942_ant     645    3980 FALSE      FALSE        NA     NA      NA FALSE NA 
 
 ## Use SGE job tools to re-run 
 # walk2(redo_tab$domains, redo_tab$sample_i, function(d, i){
