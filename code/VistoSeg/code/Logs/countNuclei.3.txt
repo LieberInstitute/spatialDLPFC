@@ -40,3 +40,95 @@ Error in countNuclei (line 27)
 } 
 >> **** Job ends ****
 Thu Oct 27 09:38:56 EDT 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Thu Oct 27 09:56:49 EDT 2022
+**** JHPCE info ****
+User: mtippani
+Job id: 342097
+Job name: spatialDLPFC_rerun_countNuclei
+Hostname: compute-095.cm.cluster
+Task id: 3
+****
+Processing sample DLPFC_Br2743_post_manual_alignment with mask /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round1/Liebert_Institute_OTS-20-7748_rush_posterior_1_nuclei_WS_final.mat
+Thu Oct 27 09:56:49 EDT 2022
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+loading data
+4992 Visium spots detected
+Building spot grid
+29462 mask_dark_blue ROIS detected
+counting dots per Visium spot
+100 spots finished in time 602.6813s
+200 spots finished in time 1204.7914s
+300 spots finished in time 1807.2026s
+400 spots finished in time 2409.3202s
+500 spots finished in time 3011.855s
+600 spots finished in time 3614.1169s
+700 spots finished in time 4216.4006s
+800 spots finished in time 4818.6529s
+900 spots finished in time 5420.9193s
+1000 spots finished in time 6023.7054s
+1100 spots finished in time 6626.38s
+1200 spots finished in time 7228.6912s
+1300 spots finished in time 7830.8379s
+1400 spots finished in time 8433.308s
+1500 spots finished in time 9036.0613s
+1600 spots finished in time 9638.8011s
+1700 spots finished in time 10241.6691s
+1800 spots finished in time 10844.7308s
+1900 spots finished in time 11447.6886s
+2000 spots finished in time 12050.5122s
+2100 spots finished in time 12632.7364s
+2200 spots finished in time 13197.5286s
+2300 spots finished in time 13758.2327s
+2400 spots finished in time 14320.7043s
+2500 spots finished in time 14886.6055s
+2600 spots finished in time 15445.5431s
+2700 spots finished in time 16008.0297s
+2800 spots finished in time 16573.5169s
+2900 spots finished in time 17136.1527s
+3000 spots finished in time 17695.5213s
+3100 spots finished in time 18256.8611s
+3200 spots finished in time 18817.439s
+3300 spots finished in time 19381.7805s
+3400 spots finished in time 19944.7747s
+3500 spots finished in time 20504.7483s
+3600 spots finished in time 21066.8014s
+3700 spots finished in time 21629.8249s
+3800 spots finished in time 22192.0544s
+3900 spots finished in time 22746.636s
+4000 spots finished in time 23303.2161s
+4100 spots finished in time 23865.2131s
+4200 spots finished in time 24427.1791s
+4300 spots finished in time 24992.5599s
+4400 spots finished in time 25568.3289s
+4500 spots finished in time 26132.9035s
+4600 spots finished in time 26683.8639s
+4700 spots finished in time 27235.2094s
+4800 spots finished in time 27788.823s
+4900 spots finished in time 28340.4191s
+writing table
+
+ans = 
+
+  struct with fields:
+
+    mask_dark_blue: [4992x1 double]
+
+>> **** Job ends ****
+Thu Oct 27 17:58:21 EDT 2022
