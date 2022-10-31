@@ -10,6 +10,9 @@ library("patchwork")
 plot_dir <- here("plots", "13_nnSVG", "03_summarize_nnSVG_output")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
+data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "03_summarize_nnSVG_output")
+if(!dir.exists(data_dir)) dir.create(data_dir)
+
 #### Explore Data ####
 
 ## Load all
@@ -45,6 +48,28 @@ nnSVG_all_summary |> arrange(-top100_rank) |> slice(1:3)
 ## lowest max rank for each domains
 low_max <- nnSVG_all_summary |> filter(n > 20) |> arrange(max_rank) |> slice(1)
 
+
+#### Export 50 top100_rank genes in excel ####
+library("xlsx")
+
+nnSVG_top100_split <- nnSVG_all_summary |>
+  arrange(-top100_rank) |>
+  slice(1:50) |> 
+  group_split() 
+
+names(nnSVG_top100_split) <- unique(nnSVG_all_summary$domains)
+# nnSVG_top100_split <- map(nnSVG_top100_split, as.data.frame)
+
+map(nnSVG_top100_split, dim)
+
+load(here("processed-data", "rdata", "spe", "13_nnSVG", "02_compile_nnSVG_output","nnSVG_log_details.Rdata"), verbose = TRUE)
+# nnSVG_log_details
+write.xlsx(nnSVG_log_details, file = here(data_dir, 'nnSVG_n-top100_k9-model.xlsx'), sheetName="Input_Details", append =FALSE)
+
+map2(nnSVG_top100_split, names(nnSVG_top100_split),
+     ~write.xlsx(.x, file = here(data_dir, 'nnSVG_n-top100_k9-model.xlsx'), sheetName=.y, append =TRUE))
+     
+#### Exploratory plots ####
 n_gene_distribution <- nnSVG_all_summary |>
   ggplot(aes(n, color = domains)) +
   geom_density()
@@ -115,6 +140,8 @@ mean_rank_n_top100 <- nnSVG_all_summary |>
   theme(legend.position = "None")
 
 ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100_filter.png"), width = 12)
+
+
 
 
 
