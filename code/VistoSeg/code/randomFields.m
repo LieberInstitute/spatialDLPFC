@@ -1,6 +1,10 @@
 function randomFields(fname)
-load([fname(1:end-4),'_nuclei_WS_final.mat'])
 he = imread(fname);
+
+%load([fname(1:end-4),'_nuclei_WS_final.mat'])
+load([fname(1:end-4),'_nuclei.mat'])
+%load([fname(1:end-4),'_mask.mat'])
+%mask_dark_blue = mask{M};
 
 [x,y,~] = size(he);
 xn = randi([round(x/3) round(x/3)*3],3,1);
