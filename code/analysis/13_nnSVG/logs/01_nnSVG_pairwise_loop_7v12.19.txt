@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Oct 27 16:36:03 EDT 2022
+Fri Oct 28 15:30:43 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 387981
+Job id: 443378
 Job name: nnSVG_pairwise_loop_7v12
-Hostname: compute-110.cm.cluster
+Hostname: compute-048.cm.cluster
 Task id: 19
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -98,17 +98,22 @@ The following objects are masked from ‘package:matrixStats’:
     anyMissing, rowMedians
 
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-2022-10-27 16:36:33 - Loading spe
+2022-10-28 15:40:44 - Loading spe
 Running sample: Br6471_ant, DomainsbayesSpace_harmony_16: 7 vs. 12
-2022-10-27 16:39:27 - Subset spe
+2022-10-28 15:45:32 - Subset spe
 ncol: 432
 Gene filtering: removing mitochondrial genes
 removed 13 mitochondrial genes
 Gene filtering: retaining genes with at least 3 counts in at least 0.5% (n = 3) of spatial locations
 removed 25019 out of 28903 genes due to low expression
 nrow: 3884
-2022-10-27 16:39:30 - Run nnSVG
-Timing stopped at: 0.015 0 0.014
+2022-10-28 15:45:36 - Run nnSVG
+K9 model breakdown:
+
+  7 
+432 
+seed = 2822
+Timing stopped at: 0.03 0 0.031
 Error: BiocParallel errors
   1 remote errors, element index: 1
   3883 unevaluated and other errors
@@ -117,4 +122,4 @@ Error in BRISC_estimation(coords = coords, y = y_i, x = X, cov.model = "exponent
 
 Execution halted
 **** Job ends ****
-Thu Oct 27 16:39:32 EDT 2022
+Fri Oct 28 15:45:40 EDT 2022

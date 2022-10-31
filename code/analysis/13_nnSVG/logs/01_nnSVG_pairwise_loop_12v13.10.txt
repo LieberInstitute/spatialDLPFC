@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Oct 27 16:36:04 EDT 2022
+Fri Oct 28 15:31:23 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 387977
+Job id: 443374
 Job name: nnSVG_pairwise_loop_12v13
-Hostname: compute-076.cm.cluster
+Hostname: compute-147.cm.cluster
 Task id: 10
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -98,23 +98,28 @@ The following objects are masked from ‘package:matrixStats’:
     anyMissing, rowMedians
 
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-2022-10-27 16:36:39 - Loading spe
+2022-10-28 15:40:47 - Loading spe
 Running sample: Br8492_ant, DomainsbayesSpace_harmony_16: 12 vs. 13
-2022-10-27 16:41:15 - Subset spe
+2022-10-28 15:42:52 - Subset spe
 ncol: 81
 Gene filtering: removing mitochondrial genes
 removed 13 mitochondrial genes
 Gene filtering: retaining genes with at least 3 counts in at least 0.5% (n = 1) of spatial locations
 removed 27637 out of 28903 genes due to low expression
 nrow: 1266
-2022-10-27 16:41:20 - Run nnSVG
-Timing stopped at: 0.035 0 0.035
+2022-10-28 15:42:53 - Run nnSVG
+K9 model breakdown:
+
+ 4  5  6  7  8  9 
+18  2  1  8  1 51 
+seed = 2822
+Timing stopped at: 0.019 0 0.019
 Error: BiocParallel errors
-  1 remote errors, element index: 336
-  930 unevaluated and other errors
+  1 remote errors, element index: 511
+  755 unevaluated and other errors
   first remote error:
 Error in BRISC_estimation(coords = coords, y = y_i, x = X, cov.model = "exponential", : c++ error: dpotrf failed
 
 Execution halted
 **** Job ends ****
-Thu Oct 27 16:48:11 EDT 2022
+Fri Oct 28 15:50:12 EDT 2022

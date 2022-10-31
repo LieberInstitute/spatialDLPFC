@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Oct 27 16:36:17 EDT 2022
+Fri Oct 28 15:29:58 EDT 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 387982
+Job id: 443379
 Job name: nnSVG_pairwise_loop_7v12
-Hostname: compute-097.cm.cluster
+Hostname: compute-146.cm.cluster
 Task id: 4
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -98,13 +98,18 @@ The following objects are masked from ‘package:matrixStats’:
     anyMissing, rowMedians
 
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-2022-10-27 16:36:43 - Loading spe
+2022-10-28 15:39:28 - Loading spe
 Running sample: Br3942_ant, DomainsbayesSpace_harmony_16: 7 vs. 12
-2022-10-27 16:40:44 - Subset spe
+2022-10-28 15:41:37 - Subset spe
 ncol: 731
 Gene filtering: removing mitochondrial genes
 removed 13 mitochondrial genes
 Gene filtering: retaining genes with at least 3 counts in at least 0.5% (n = 4) of spatial locations
 removed 24923 out of 28903 genes due to low expression
 nrow: 3980
-2022-10-27 16:40:47 - Run nnSVG
+2022-10-28 15:41:40 - Run nnSVG
+K9 model breakdown:
+
+  3   4   5   7   8 
+  6  22  21 672  10 
+seed = 2822
