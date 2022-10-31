@@ -12,7 +12,7 @@ he = imread(fname);
 lab_he = rgb2lab(he);
 L_blue = lab_he(:,:,1) .* double(mask{M});
 L_blue = rescale(L_blue);
-idx_light_blue = imbinarize(nonzeros(L_blue));
+idx_light_blue = imbinarize(nonzeros(L_blue), 'adaptive', 'Sensitivity', 0.3);
 
 blue_idx = find(mask{M});
 mask_dark_blue = mask{M};
