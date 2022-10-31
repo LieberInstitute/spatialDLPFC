@@ -6,8 +6,8 @@
 #$ -e /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code/Logs/WS.$TASK_ID.txt
 #$ -m e
 #$ -M madhavitippani28@gmail.com
-#$ -t 12
-#$ -tc 2
+#$ -t 13-18
+#$ -tc 6
 
 echo "**** Job starts ****"
 date
