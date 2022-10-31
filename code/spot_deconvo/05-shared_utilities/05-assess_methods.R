@@ -612,9 +612,7 @@ marker_stats$cellType.target = tolower(
 marker_stats$cellType.target[
     grep('^(excit|inhib)', marker_stats$cellType.target)
 ] = "neuron"
-marker_stats$cellType.target[
-    marker_stats$cellType.target %in% c('opc', 'astro')
-] = "other"
+marker_stats$cellType.target[marker_stats$cellType.target == 'opc'] = "other"
 marker_stats$cellType.target = as.factor(marker_stats$cellType.target)
 
 stopifnot(
