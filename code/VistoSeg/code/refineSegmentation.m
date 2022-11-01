@@ -2,7 +2,7 @@ function refineSegmentation(fname)
 load([fname(1:end-4),'_nuclei_WS.mat'])
 he = imread(fname);
 
-BW = bwareafilt(mask_dark_blue,[15 4000]); 
+BW = bwareafilt(mask_dark_blue,[30 4000]); 
 stats =  struct2table(regionprops(BW, rgb2gray(he), 'Area', 'BoundingBox', 'Centroid', 'Circularity', 'Eccentricity', 'MajorAxisLength', 'MinorAxisLength', 'Perimeter', 'MeanIntensity' , 'WeightedCentroid'));
 
 % idx = find([stats.Eccentricity]<0.9);
