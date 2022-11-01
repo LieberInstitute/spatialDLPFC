@@ -759,18 +759,27 @@ counts_df = observed_df_long |>
 #   Create plots for each cell type
 plot_list = list()
 for (cell_type in cell_types) {
+    #   We won't show outliers, and we'll rescale the y-axis to better view
+    #   the whole distribution (specifically, the ymax will be 3 SDs above the
+    #   mean)
+    y_max = counts_df |>
+        filter(cell_type == {{ cell_type }}) |>
+        summarize(y_max = mean(count) + sd(count) * 3) |>
+        pull(y_max)
+    
     plot_list[[cell_type]] = ggplot(
         counts_df |> filter(cell_type == {{ cell_type }}),
         aes(x = label, y = count, color = deconvo_tool)
     ) +
-        geom_boxplot() +
+        geom_boxplot(outlier.shape = NA) +
         labs(
             x = "Annotated layer",
             y = paste("Average predicted", cell_type, "count"),
             color = "Deconvolution tool"
         ) +
         scale_color_discrete(labels = deconvo_labels) +
-        theme_bw(base_size = 10)
+        theme_bw(base_size = 15) +
+        coord_cartesian(ylim = c(0, y_max))
 }
 
 pdf(
