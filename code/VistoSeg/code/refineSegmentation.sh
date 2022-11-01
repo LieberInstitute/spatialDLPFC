@@ -6,7 +6,7 @@
 #$ -e /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/VistoSeg/code/Logs/refineSegmentation.$TASK_ID.txt
 #$ -m e
 #$ -M madhavitippani28@gmail.com
-#$ -t 13-18
+#$ -t 31-34
 #$ -tc 6
 
 echo "**** Job starts ****"
