@@ -53,11 +53,11 @@ layer_ann_path <- here(
 cell_types_actual <- c("astro", "micro", "neuron", "oligo", "other")
 if (cell_group == "broad") {
     cell_types <- c(
-        "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
+        "Astro", "Excit", "Inhib", "Micro", "Oligo", "OPC"
     )
 } else {
     cell_types <- c(
-        "Astro", "EndoMural", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
+        "Astro", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
         "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
         "Oligo", "OPC"
     )
@@ -164,14 +164,20 @@ across_spots <- function(count_df, plot_name) {
         geom_text(
             data = metrics_df,
             mapping = aes(
-                x = Inf, y = 5/7 * max(count_df$observed), label = corr
+                x = max(count_df$observed),
+                y = min(count_df$actual),
+                label = corr
             ),
-            hjust = 1, vjust = 1
+            hjust = 1, vjust = 0, size = 3
         ) +
         geom_text(
             data = metrics_df,
-            mapping = aes(x = Inf, y = Inf, label = rmse),
-            hjust = 1, vjust = 1
+            mapping = aes(
+                x = max(count_df$observed),
+                y =  0.15 * max(count_df$actual) + 0.85 * min(count_df$actual),
+                label = rmse
+            ),
+            hjust = 1, vjust = 0, size = 3
         ) +
         labs(x = "Software-estimated", y = "CART-calculated") +
         theme_bw(base_size = 10)
@@ -388,7 +394,7 @@ if (cell_group == "broad") {
         mutate(
             "neuron" = excit + inhib,
             "oligo" = oligo + opc,
-            "other" = endomural
+            "other" = 0
         ) %>%
         select(all_of(c(added_colnames, cell_types_actual)))
 } else {
@@ -397,7 +403,7 @@ if (cell_group == "broad") {
         mutate(
             "neuron" = sum(c_across(starts_with(c('excit_', 'inhib')))),
             "oligo" = oligo + opc,
-            "other" = endomural
+            "other" = 0
         ) %>%
         ungroup() %>%
         select(all_of(c(added_colnames, cell_types_actual)))
@@ -546,6 +552,7 @@ all_spots(prop_df, "props_all_spots_scatter.pdf")
 #   introduces NAs whenever either the observed or actual total cell count is 0
 #   for a spot.
 prop_df <- full_df %>%
+    filter(cell_type != "other") |>
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     group_by(sample_id, deconvo_tool) %>%
