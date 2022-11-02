@@ -4,6 +4,7 @@ library("scater")
 # library(scran)
 library("here")
 library("sessioninfo")
+library("spatialLIBD")
 
 plot_dir <- here("plots", "08_layer_differential_expression", "09_select_layer_DE_plots")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
@@ -11,16 +12,7 @@ if(!dir.exists(plot_dir)) dir.create(plot_dir)
 # data_dir <- here("processed-data", "rdata", "spe", "08_layer_differential_expression")
 # if(!dir.exists(data_dir)) dir.create(data_dir)
 
-## Load data
-message(Sys.time(), " - Loading spe")
-load(here("processed-data", "rdata","spe", "01_build_spe", "spe_filtered_final_with_clusters.Rdata"))
-
-## prep objet for plotting
-rownames(spe) <- rowData(spe)$gene_name
-spe$bayesSpace_harmony_9 <- as.factor(spe$bayesSpace_harmony_9)
-spe$bayesSpace_harmony_16 <- as.factor(spe$bayesSpace_harmony_16)
-
-source("my_plotExpression.R")
+source("custom_plotExpression.R")
 
 #### K9 violin plots ####
 # load(file = here("processed-data", "rdata", "spe", "pseudo_bulked_spe","sce_pseudobulk_bayesSpace_k9.Rdata"), verbose = TRUE) ## file doesn't exist?
@@ -33,8 +25,17 @@ names(k9_colors) <- c(1:9)
 
 k9_genes <- c("CLDN5", "TAGLN", "MYL9", "ACTA2", "SLC2A1", "HBA1", "EPAS1")
 
-k9_plot <- my_plotExpression(spe_k9, genes = k9_genes, assay = "logcounts", cat = "BayesSpace", fill_colors = k9_colors)
-ggsave(k9_plot, filename = here(plot_dir, "k9_expression_meninges.png"))
+spe_k9$highlight <- spe_k9$BayesSpace == 1
+
+# sce, genes, assay = "logcounts", cat, highlight = "highlight", fill_colors = NULL, title = NULL
+k9_plot <- custom_plotExpression(spe_k9, genes = k9_genes, assay = "logcounts", cat = "BayesSpace", fill_colors = k9_colors)
+ggsave(k9_plot, filename = here(plot_dir, "k9_expression_meninges.png"), height = 10)
+
+
+k9_plot_CLDN5 <- custom_plotExpression(spe_k9, genes = c("CLDN5"), assay = "logcounts", cat = "BayesSpace", fill_colors = k9_colors) +
+  labs(x = "Pseudobulk k9 Domains")
+ggsave(k9_plot_CLDN5, filename = here(plot_dir, "k9_expression_meninges_CLDN5.png"), height = 5)
+
 
 #### K9 violin plots ####
 # load(file = here("processed-data", "rdata", "spe", "pseudo_bulked_spe","sce_pseudobulk_bayesSpace_k9.Rdata"), verbose = TRUE) ## file doesn't exist?
@@ -49,19 +50,64 @@ names(k16_colors) <- c(1:16)
 k16_genes_1ab <- c("SPARC", "MSX1", "RELN", "APOE")
 k16_genes %in% rownames(spe_k16)
 
-k16_1ab_plot <- my_plotExpression(spe_k16, genes = k16_genes, assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors)
-ggsave(k16_1ab_plot, filename = here(plot_dir, "k16_expression_1a-1b.png"))
+spe_k16$highlight <- spe_k16$BayesSpace %in% c(1,2)
+
+k16_1ab_plot <- custom_plotExpression(spe_k16, genes = k16_genes_1ab, assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors)
+ggsave(k16_1ab_plot, filename = here(plot_dir, "k16_expression_1a-1b.png"), height = 10)
+
+k16_plot_SPARC <- custom_plotExpression(spe_k16, genes = c("SPARC"), assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors) +
+  labs(x = "Pseudobulk k16 Domains")
+ggsave(k16_plot_SPARC, filename = here(plot_dir, "k16_expression_1a-1b_SPARC.png"), height = 5)
 
 ## 6a 
-k16_6a_plot <- my_plotExpression(spe_k16, genes = c("SMIM32", "DACH1", "KIF1A", "GALNT14"), 
+k16_6a_plot <- custom_plotExpression(spe_k16, genes = c("SMIM32", "DACH1", "KIF1A", "GALNT14"), 
                                   assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors)
 
 ggsave(k16_6a_plot, filename = here(plot_dir, "k16_expression_6a.png"))
 
 ## 6b 
-k16_6b_plot <- my_plotExpression(spe_k16, genes = c("KRT17", "DIRAS2", "SEMA3E"), 
+k16_6b_plot <- custom_plotExpression(spe_k16, genes = c("KRT17", "DIRAS2", "SEMA3E"), 
                                  assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors)
 
 ggsave(k16_6b_plot, filename = here(plot_dir, "k16_expression_6b.png"))
+
+
+##### Spatial Dot plots ####
+# Load full data
+message(Sys.time(), " - Loading spe")
+load(here("processed-data", "rdata","spe", "01_build_spe", "spe_filtered_final_with_clusters.Rdata"))
+
+## prep objet for plotting
+rowData(spe)$gene_search <- rowData(spe)$gene_name
+spe$bayesSpace_harmony_9 <- as.factor(spe$bayesSpace_harmony_9)
+spe$bayesSpace_harmony_16 <- as.factor(spe$bayesSpace_harmony_16)
+
+## K9 CLDN5
+pdf(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.pdf"))
+vis_gene(
+  spe = spe,
+  sampleid = "Br6522_ant",
+  geneid = "CLDN5"
+)
+dev.off()
+
+png(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.png"))
+vis_gene(
+  spe = spe,
+  sampleid = "Br6522_ant",
+  geneid = "CLDN5"
+)
+dev.off()
+
+
+## K16 SPARC
+pdf(here(plot_dir, "vis_gene_SPARC-Br6522_ant.pdf"))
+vis_gene(
+  spe = spe,
+  sampleid = "Br6522_ant",
+  geneid = "SPARC"
+)
+dev.off()
+
 
 
