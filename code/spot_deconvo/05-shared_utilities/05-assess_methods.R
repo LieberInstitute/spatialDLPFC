@@ -52,11 +52,14 @@ layer_ann_path <- here(
 
 cell_types_actual <- c("astro", "micro", "neuron", "oligo", "other")
 if (cell_group == "broad") {
-    cell_types <- c("Astro", "Excit", "Inhib", "Micro", "Oligo", "OPC")
+    cell_types <- c(
+        "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
+    )
 } else {
     cell_types <- c(
-        "Astro", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4",
-        "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro", "Oligo", "OPC"
+        "Astro", "EndoMural", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
+        "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
+        "Oligo", "OPC"
     )
 }
 
@@ -382,15 +385,19 @@ colnames(observed_df) <- tolower(colnames(observed_df))
 
 if (cell_group == "broad") {
     observed_df <- observed_df %>%
-        mutate("neuron" = excit + inhib) %>%
-        mutate("other" = opc) %>%
+        mutate(
+            "neuron" = excit + inhib,
+            "oligo" = oligo + opc,
+            "other" = endomural
+        ) %>%
         select(all_of(c(added_colnames, cell_types_actual)))
 } else {
     observed_df = observed_df %>%
         rowwise() %>%
         mutate(
-            neuron = sum(c_across(starts_with(c('excit_', 'inhib')))),
-            other = opc
+            "neuron" = sum(c_across(starts_with(c('excit_', 'inhib')))),
+            "oligo" = oligo + opc,
+            "other" = endomural
         ) %>%
         ungroup() %>%
         select(all_of(c(added_colnames, cell_types_actual)))
@@ -612,7 +619,10 @@ marker_stats$cellType.target = tolower(
 marker_stats$cellType.target[
     grep('^(excit|inhib)', marker_stats$cellType.target)
 ] = "neuron"
-marker_stats$cellType.target[marker_stats$cellType.target == 'opc'] = "other"
+marker_stats$cellType.target[marker_stats$cellType.target == 'opc'] = "oligo"
+marker_stats$cellType.target[
+    marker_stats$cellType.target == 'endomural'
+] = "other"
 marker_stats$cellType.target = as.factor(marker_stats$cellType.target)
 
 stopifnot(

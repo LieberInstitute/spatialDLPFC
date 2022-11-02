@@ -110,13 +110,11 @@ sce$cellType_layer <- NULL
 #-------------------------------------------------------------------------------
 
 if (cell_group == "layer") {
-    #   Drop EndoMural, unclear excitatory cells, and suspicious subclusters
-    keep <- !is.na(sce$layer_level) & (sce$layer_level != "EndoMural") &
-        (sce$cellType_hc != "drop")
+    #   Drop poor/suspicious clusters and subclusters
+    keep <- !is.na(sce$layer_level) & (sce$cellType_hc != "drop")
 } else {
-    #   Drop rare cell types (EndoMural) and suspicious subclusters
-    keep <- !(sce$cellType_broad_hc == "EndoMural") &
-        (sce$cellType_hc != "drop")
+    #   Drop suspicious subclusters
+    keep <- sce$cellType_hc != "drop"
 }
 
 print("Distribution of cells to drop (FALSE) vs. keep (TRUE):")
@@ -145,15 +143,15 @@ write_anndata(sce, sce_out)
 
 #   Spatial objects are the same between broad and layer-level resolutions, and
 #   need only be saved once
-if (cell_group == "broad") {
+if (cell_group == "layer") {
     write_anndata(spe_IF, spe_IF_out)
     write_anndata(spe_nonIF, spe_nonIF_out)
+    
+    #   Write sample names to text files
+    writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
+    writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
 }
 gc()
-
-#   Write sample names to text files
-writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
-writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
 
 #-------------------------------------------------------------------------------
 #   Rank marker genes
