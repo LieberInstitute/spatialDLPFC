@@ -161,14 +161,14 @@ across_spots <- function(count_df, plot_name) {
         geom_text(
             data = metrics_df,
             mapping = aes(
-                x = Inf, y = max(count_df$observed) / 7, label = corr
+                x = Inf, y = 5/7 * max(count_df$observed), label = corr
             ),
-            hjust = 1
+            hjust = 1, vjust = 1
         ) +
         geom_text(
             data = metrics_df,
-            mapping = aes(x = Inf, y = 0, label = rmse),
-            hjust = 1, vjust = 0
+            mapping = aes(x = Inf, y = Inf, label = rmse),
+            hjust = 1, vjust = 1
         ) +
         labs(x = "Software-estimated", y = "CART-calculated") +
         theme_bw(base_size = 10)
