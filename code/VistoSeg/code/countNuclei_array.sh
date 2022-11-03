@@ -6,7 +6,7 @@
 #$ -o Logs/countNuclei.$TASK_ID.txt
 #$ -e Logs/countNuclei.$TASK_ID.txt
 #$ -m e
-#$ -t 28-30
+#$ -t 17-27
 #$ -tc 6
 
 echo "**** Job starts ****"
