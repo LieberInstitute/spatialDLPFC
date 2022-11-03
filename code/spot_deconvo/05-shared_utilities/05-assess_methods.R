@@ -439,6 +439,30 @@ full_df |>
     )
 
 #-------------------------------------------------------------------------------
+#   Plot distribution of correlation & RMSE by sample and deconvo tool
+#-------------------------------------------------------------------------------
+
+metrics_df <- full_df |>
+    filter(cell_type != 'other') |>
+    group_by(deconvo_tool, sample_id, cell_type) |>
+    summarize(
+        Correlation = round(cor(observed, actual), 2),
+        RMSE = signif(mean((observed - actual)**2)**0.5, 3)
+    ) |>
+    ungroup()
+
+pdf(file.path(plot_dir, 'corr_RMSE_scatter.pdf'), height = 2, width = 8)
+ggplot(
+    metrics_df,
+    aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
+    ) +
+    facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
+    geom_point() +
+    theme_bw(base_size = 12)
+dev.off()
+
+
+#-------------------------------------------------------------------------------
 #   Plot total counts per sample for tangram and cell2location
 #-------------------------------------------------------------------------------
 
@@ -795,12 +819,13 @@ for (cell_type in cell_types) {
             color = "Deconvolution tool"
         ) +
         scale_color_discrete(labels = deconvo_labels) +
-        theme_bw(base_size = 15) +
-        coord_cartesian(ylim = c(0, y_max))
+        theme_bw(base_size = 20) +
+        coord_cartesian(ylim = c(0, y_max)) +
+        scale_y_continuous(expand = c(0, 0))
 }
 
 pdf(
-    file.path(plot_dir, "layer_distribution.pdf"),
+    file.path(plot_dir, "layer_distribution.pdf"), width = 10
 )
 print(plot_list)
 dev.off()
