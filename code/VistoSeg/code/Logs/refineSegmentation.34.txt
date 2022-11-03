@@ -1,0 +1,38 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.1.x
+**** Job starts ****
+Tue Nov  1 11:56:02 EDT 2022
+**** JHPCE info ****
+User: mtippani
+Job id: 612733
+Job name: refineSegmentation.sh
+Hostname: compute-093.cm.cluster
+Task id: 34
+****
+Sample id: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC.tif 
+****
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+                  R2019a (9.6.0.1072779) 64-bit (glnxa64)
+                               March 8, 2019
+
+ 
+For online documentation, see https://www.mathworks.com/support
+For product information, visit www.mathworks.com.
+ 
+{Error using load
+Unable to read file
+'/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images/round4/V10B01-002_D1_Br2720_ant_DLPFC_nuclei_WS.mat'.
+No such file or directory.
+
+Error in refineSegmentation (line 2)
+load([fname(1:end-4),'_nuclei_WS.mat'])
+} 
+>> **** Job ends ****
+Tue Nov  1 11:56:08 EDT 2022
