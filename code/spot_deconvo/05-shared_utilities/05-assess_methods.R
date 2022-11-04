@@ -439,6 +439,42 @@ full_df |>
     )
 
 #-------------------------------------------------------------------------------
+#   Stacked barplot of cell-type proportions
+#-------------------------------------------------------------------------------
+
+prop_df <- full_df %>%
+    filter(cell_type != "other") |>
+    group_by(sample_id, deconvo_tool, cell_type) %>%
+    summarize(observed = sum(observed), actual = sum(actual)) %>%
+    group_by(sample_id, deconvo_tool) %>%
+    mutate(
+        observed = observed / sum(observed),
+        actual = actual / sum(actual),
+    ) %>%
+    ungroup() |>
+    pivot_longer(
+        cols = c("observed", "actual"), values_to = "prop", names_to = "source"
+    )
+
+plot_list = list()
+for (sample_id in sample_ids) {
+    plot_list[[sample_id]] = ggplot(
+        prop_df |> filter(sample_id == {{ sample_id }}),
+        aes(x = source, y = prop, fill = cell_type)
+    ) +
+        geom_bar(stat = "identity") +
+        facet_wrap(~ deconvo_tool, labeller = deconvo_labeller) +
+        labs(x= NULL, y = "Sample-Wide Proportion") +
+        scale_x_discrete(
+            labels = c("actual" = "Ground-Truth", "observed" = "Estimated")
+        ) +
+        theme_bw(base_size = 16)
+}
+pdf(file.path(plot_dir, 'prop_barplots.pdf'), height = 4, width = 10)
+print(plot_list)
+dev.off()
+
+#-------------------------------------------------------------------------------
 #   Plot distribution of correlation & RMSE by sample and deconvo tool
 #-------------------------------------------------------------------------------
 
