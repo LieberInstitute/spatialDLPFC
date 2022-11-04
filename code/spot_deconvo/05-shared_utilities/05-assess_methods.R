@@ -555,21 +555,22 @@ ggplot(count_df) +
     geom_text(
         data = metrics_df,
         mapping = aes(
-            x = Inf, y = max(count_df$observed) / 7, label = corr
+            x = max(count_df$observed), y = max(count_df$actual) / 7,
+            label = corr
         ),
-        hjust = 1
+        hjust = 1, size = 5
     ) +
     geom_text(
         data = metrics_df,
-        mapping = aes(x = Inf, y = 0, label = rmse),
-        hjust = 1, vjust = 0
+        mapping = aes(x = max(count_df$observed), y = 0, label = rmse),
+        hjust = 1, vjust = 0, size = 5
     ) +
     labs(
         x = "Calculated cell count",
         y = "Provided cell count (cellpose)",
         title = "Provided vs. calculated total cells per spot"
     ) +
-    theme_bw(base_size = 10)
+    theme_bw(base_size = 15)
 dev.off()
 
 #-------------------------------------------------------------------------------
