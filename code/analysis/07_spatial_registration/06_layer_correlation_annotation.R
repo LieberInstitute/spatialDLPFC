@@ -183,6 +183,34 @@ Heatmap(cor_all,
 dev.off()
 
 ## Add annotation colors 
+k_colors <- Polychrome::palette36.colors(28)
+names(k_colors) <- c(1:28)
+
+# k_color_bar <- HeatmapAnnotation(df = data.frame(color = as.integer(ss(rownames(cor_all), "D",2))), 
+
+k_color_bar <- rowAnnotation(color = as.integer(ss(rownames(cor_all), "D",2)),
+                             col = list(color = k_colors),
+                             show_legend = FALSE)
+
+layer_color_bar <- columnAnnotation(" " = colnames(cor_all), 
+                             col = list(" " = spatialLIBD::libd_layer_colors),
+                             show_legend = FALSE)
+
+pdf(here(plot_dir,"spatial_registration_heatmap_color.pdf"))
+Heatmap(cor_all,
+        name = "Cor",
+        col = my.col,
+        row_split = annotation_split,
+        rect_gp = gpar(col = "black", lwd = 1),
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        right_annotation = k_color_bar,
+        bottom_annotation = layer_color_bar,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
+        }
+)
+dev.off()
 
 
 # sgejobs::job_single('02_cellType_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 02_cellType_correlation_annotation.R")
