@@ -59,6 +59,15 @@ k16_plot_SPARC <- custom_plotExpression(spe_k16, genes = c("SPARC"), assay = "lo
   labs(x = "Pseudobulk k16 Domains")
 ggsave(k16_plot_SPARC, filename = here(plot_dir, "k16_expression_1a-1b_SPARC.png"), height = 5)
 
+spe_k16$highlight <- FALSE
+
+k16_plot_SPARC_HTRA1 <- custom_plotExpression(spe_k16[,spe_k16$BayesSpace %in% c(2,14)], 
+                                              genes = c("SPARC", "HTRA1"), assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors) +
+  labs(x = "Pseudobulk k16 Domains")
+
+ggsave(k16_plot_SPARC_HTRA1, filename = here(plot_dir, "k16_expression_1a-1b_SPARC_HTRA1.png"), height = 3, width = 11)
+
+
 ## 6a 
 k16_6a_plot <- custom_plotExpression(spe_k16, genes = c("SMIM32", "DACH1", "KIF1A", "GALNT14"), 
                                   assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors)
@@ -74,7 +83,6 @@ ggsave(k16_6b_plot, filename = here(plot_dir, "k16_expression_6b.png"))
 
 ##### Spatial Dot plots ####
 # Load full data
-message(Sys.time(), " - Loading spe")
 load(here("processed-data", "rdata","spe", "01_build_spe", "spe_filtered_final_with_clusters.Rdata"))
 
 ## prep objet for plotting
@@ -109,5 +117,50 @@ vis_gene(
 )
 dev.off()
 
+## K16 SPARC
+pdf(here(plot_dir, "vis_gene_HTRA1-Br6522_ant.pdf"))
+vis_gene(
+  spe = spe,
+  sampleid = "Br6522_ant",
+  geneid = "HTRA1"
+)
+dev.off()
 
+## filter to just 2 & 14
+pdf(here(plot_dir, "vis_gene_SPARC-Br6522_ant_filter.pdf"))
+vis_gene(
+  spe = spe[,spe$bayesSpace_harmony_16 %in% c(2, 14)],
+  sampleid = "Br6522_ant",
+  geneid = "SPARC"
+)
+dev.off()
+
+## K16 SPARC
+pdf(here(plot_dir, "vis_gene_HTRA1-Br6522_ant_filter.pdf"))
+vis_gene(
+  spe = spe[,spe$bayesSpace_harmony_16 %in% c(2, 14)],
+  sampleid = "Br6522_ant",
+  geneid = "HTRA1"
+)
+dev.off()
+
+## Visulize clusters 2 & 14
+pdf(here(plot_dir, "vis_clus_d16.pdf"))
+vis_clus(
+  spe = spe,
+  clustervar = "bayesSpace_harmony_16",
+  colors = k16_colors,
+  sampleid = "Br6522_ant"
+)
+dev.off()
+
+pdf(here(plot_dir, "vis_clust_d16_2-14.pdf"))
+vis_clus(
+  # spe = spe,
+  spe = spe[,spe$bayesSpace_harmony_16 %in% c(2, 14)],
+  clustervar = "bayesSpace_harmony_16",
+  colors = k16_colors,
+  sampleid = "Br6522_ant"
+)
+dev.off()
 
