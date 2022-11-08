@@ -3,6 +3,8 @@ library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
 library("xlsx")
+library("ComplexHeatmap")
+library("jaffelab")
 library("here")
 library("sessioninfo")
 
@@ -14,7 +16,7 @@ data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
 load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.RDS"), verbose = TRUE)
 
 ## Select t-stats from the registration enrichment data
-registration_t_stats <- sn_hc_registration$enrichment[, grep("^t_stat", colnames(sn_hc_registration$enrichment))]
+registration_t_stats <- sn_hc_registration$enrichment[, grep("^t_stat", colnames(sn_hc_registration$enrichment))]cd /
 colnames(registration_t_stats) <- gsub("^t_stat_", "", colnames(registration_t_stats))
 
 #### Calculate Correlation Matrix ####
@@ -47,7 +49,7 @@ dev.off()
 ## Plot seperatly for illistator
 map2(cor_top100, names(cor_top100), function(data, name){
   
-  pdf(here(plot_dir, paste0("spatial_registration_plot_sn-",name,".pdf")))
+  pdf(here(plot_dir, paste0("spatial_registration_sn_plot_sn-",name,".pdf")))
   layer_stat_cor_plot(data)
   dev.off()
   
@@ -127,7 +129,7 @@ layer_anno_all <- reduce(layer_anno, left_join, by = "cluster") |>
 
 ## Save for reference
 write.csv(layer_anno_all, file = here(data_dir, "cellType_layer_annotations.csv"))
-
+# layer_anno_all <- read_csv(here(data_dir, "cellType_layer_annotations.csv")) 
 
 #### Add Layer Annotations to colData ####
 ## Add to sce object for future use
@@ -189,10 +191,10 @@ layer_anno_long <- layer_anno_all |>
   # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
   mutate(layer_short = ifelse(Annotation == "layer",
                          ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers),
-                         paste0("k",str_pad(layers, 2,pad= "0"))), 
+                         paste0("D",str_pad(layers, 2,pad= "0"))), 
          layer_long = ifelse(Annotation == "layer",
                              gsub("L","Layer",layer_short),
-                             paste0(Annotation, "-", layers)))
+                             paste0(gsub("k","Sp", Annotation), "D", layers)))
 
 head(layer_anno_long)
 table(layer_anno_long$layers)
@@ -230,23 +232,22 @@ ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_
 
 
 #### Condensed Spatial Registration ####
-colnames(cor_top100$k9) <- paste0("k9-", colnames(cor_top100$k9))
-colnames(cor_top100$k16) <- paste0("k16-", colnames(cor_top100$k16))
+colnames(cor_top100$k9) <- paste0("Sp9D", colnames(cor_top100$k9))
+colnames(cor_top100$k16) <- paste0("Sp16D", colnames(cor_top100$k16))
 
 cor_top100$k9 <- cor_top100$k9[rownames(cor_top100$layer),]
 cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer),]
 
-cor_all <- do.call("cbind", cor_top100)
-
-library("ComplexHeatmap")
-library("jaffelab")
+cor_all <- t(do.call("cbind", cor_top100))
+corner(cor_all)
 
 ## match spatialLIBD color scale
 theSeq <- seq(min(cor_all), max(cor_all), by = 0.01)
 my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
 
 ## Add split for manual/k9/k16
-annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"-"))
+# annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"D"))
+annotation_split <- c(rep("layer", 7), rep("k9", 9), rep("k16", 16))
 
 ## Add annotations
 layer_anno_long |> count(layer_long, layer_short) |> print(n = 37)
@@ -266,8 +267,8 @@ corner(anno_matrix)
 setdiff(colnames(anno_matrix),colnames(cor_all))
 setdiff(rownames(anno_matrix),rownames(cor_all))
 
-pdf(here(plot_dir,"spatial_registration_heatmap.pdf"))
-Heatmap(t(cor_all),
+pdf(here(plot_dir,"spatial_registration_sn_heatmap.pdf"))
+Heatmap(cor_all,
         name = "Cor",
         col = my.col,
         row_split = annotation_split,
@@ -280,8 +281,8 @@ Heatmap(t(cor_all),
         )
 dev.off()
 
-pdf(here(plot_dir,"spatial_registration_heatmap-cluster.pdf"))
-Heatmap(t(cor_all),
+pdf(here(plot_dir,"spatial_registration_sn_heatmap_cluster.pdf"))
+Heatmap(cor_all,
         name = "Cor",
         col = my.col,
         # row_split = annotation_split,
@@ -290,6 +291,39 @@ Heatmap(t(cor_all),
         cell_fun = function(j, i, x, y, width, height, fill) {
           grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
         })
+dev.off()
+
+## Add annotation colors 
+k_colors <- Polychrome::palette36.colors(16)
+names(k_colors) <- c(1:16)
+
+# k_color_bar <- HeatmapAnnotation(df = data.frame(color = as.integer(ss(rownames(cor_all), "D",2))), 
+
+# k_color_bar <- rowAnnotation(color = ss(rownames(cor_all), "D",2),
+k_color_bar <- rowAnnotation(color = gsub("Sp[0-9]+D","",rownames(cor_all)),
+                             col = list(color = c(k_colors, spatialLIBD::libd_layer_colors)),
+                             show_legend = FALSE)
+
+load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors.Rdata", verbose = TRUE)
+
+cell_color_bar <- columnAnnotation(" " = colnames(cor_all),
+                                   col = list(" " = cell_type_colors),
+                                   show_legend = FALSE)
+
+pdf(here(plot_dir,"spatial_registration_sn_heatmap_colors.pdf"), height = 8, width = 12)
+Heatmap(cor_all,
+        name = "Cor",
+        col = my.col,
+        row_split = annotation_split,
+        rect_gp = gpar(col = "black", lwd = 1),
+        cluster_rows = FALSE,
+        cluster_columns = TRUE,
+        right_annotation = k_color_bar,
+        bottom_annotation = cell_color_bar,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
+        }
+)
 dev.off()
 
 # sgejobs::job_single('02_cellType_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 02_cellType_correlation_annotation.R")
