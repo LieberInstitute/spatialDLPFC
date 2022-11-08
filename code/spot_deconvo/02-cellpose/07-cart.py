@@ -24,8 +24,8 @@ predictions_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'model_predictions.csv'
 )
 
-manual_label_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'manual_labels_clean.csv'
+dataset_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', 'annotation_dataset.pkl'
 )
 
 tree_path = pyhere.here(
@@ -42,14 +42,9 @@ sample_info_path = pyhere.here(
 
 random_seed = 0
 
-#   Expected quantities: there should be 5 cell types and 30 cells per type per
-#   sample
-expected_num_labels = 30
-num_cell_types = 5
-
 #   Number of cells per type to predict and output to Loopy-compatible CSV for
 #   inspection
-num_examples_check = 5
+num_examples_check = 10
 
 ################################################################################
 #   Functions
@@ -81,7 +76,7 @@ def prune(tree):
 ################################################################################
 
 #-------------------------------------------------------------------------------
-#   Preprocess and gather fluorescence data + manual cell-type labels
+#   Read in sample IDs and manual-annotation dataset
 #-------------------------------------------------------------------------------
 
 sample_info = pd.read_excel(sample_info_path)[:4]
@@ -89,32 +84,8 @@ sample_ids = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
     '_' + pd.Series([x.split('_')[1] for x in sample_info['Br_Region']]) + \
     '_IF'
 
-#   Loop through labels and flourescence intensity tables for each sample and
-#   combine into a single data frame
-df = pd.DataFrame()
-for i in range(len(sample_ids)):
-    this_df_path = str(df_path).format(sample_ids[i])
-    this_manual_label_path = str(manual_label_path).format(sample_ids[i])
-    
-    this_df = pd.read_csv(this_df_path, index_col = 'id')
-    this_manual_labels = pd.read_csv(this_manual_label_path, index_col = 'id')
-    
-    this_df['label'] = this_manual_labels['label']
-    df = pd.concat([df, this_df.dropna()])
-
-#   Verify we have the correct amount of cells
-assert(df.shape[0] == len(sample_ids) * expected_num_labels * num_cell_types)
-
-#   Define the inputs (features we want the model to access) and outputs to the
-#   model
-x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
-y = df['label']
-
-#   Split data into training and test sets (80%: 20%), evenly stratified across
-#   classes
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size = 0.2, random_state = random_seed, stratify = y
-)
+with open(dataset_path, 'rb') as f:
+    x_train, x_test, y_train, y_test = pickle.load(f)
 
 #-------------------------------------------------------------------------------
 #   Train the DecisionTreeClassifier

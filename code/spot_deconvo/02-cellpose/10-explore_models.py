@@ -15,9 +15,14 @@ from sklearn import tree, svm
 
 import pyhere
 from pathlib import Path
+import pickle
 
 df_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df_unfiltered.csv'
+)
+
+dataset_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', 'annotation_dataset.pkl'
 )
 
 manual_label_path = pyhere.here(
@@ -28,8 +33,14 @@ sample_info_path = pyhere.here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
 )
 
+dataset_path_out = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', 'annotation_dataset.pkl'
+)
+
 expected_num_labels = 30
 num_cell_types = 5
+
+test_proportion = 0.2 # for training/test split
 
 random_seed = 0
 
@@ -49,14 +60,15 @@ sample_ids = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
 #   Loop through labels and flourescence intensity tables for each sample and
 #   combine into a single data frame
 df = pd.DataFrame()
-for i in range(len(sample_ids)):
-    this_df_path = str(df_path).format(sample_ids[i])
-    this_manual_label_path = str(manual_label_path).format(sample_ids[i])
+for sample_id in sample_ids:
+    this_df_path = str(df_path).format(sample_id)
+    this_manual_label_path = str(manual_label_path).format(sample_id)
     
     this_df = pd.read_csv(this_df_path, index_col = 'id')
     this_manual_labels = pd.read_csv(this_manual_label_path, index_col = 'id')
     
     this_df['label'] = this_manual_labels['label']
+    this_df['label_sample'] = this_df['label'] + '_' + sample_id
     df = pd.concat([df, this_df.dropna()])
 
 #   Verify we have the correct amount of cells
@@ -64,14 +76,38 @@ assert(df.shape[0] == len(sample_ids) * expected_num_labels * num_cell_types)
 
 #   Define the inputs (features we want the model to access) and outputs to the
 #   model
-x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
+x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area', 'label_sample']]
 y = df['label']
 
 #   Split data into training and test sets (80%: 20%), evenly stratified across
-#   classes
+#   classes and sample ID
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size = 0.2, random_state = random_seed, stratify = y
+    x, y, test_size = test_proportion, random_state = random_seed,
+    stratify = x['label_sample']
 )
+
+#   Verify the stratification worked (note the exact equality only works because
+#   of the nice divisibility of our data size)
+assert all(
+    [
+        x == expected_num_labels * (1 - test_proportion)
+            for x in x_train['label_sample'].value_counts()
+    ]
+)
+assert all(
+    [
+        x == expected_num_labels * test_proportion
+            for x in x_test['label_sample'].value_counts()
+    ]
+)
+
+#   Remove the column we only used to properly stratify the data
+x_train.drop('label_sample', axis = 1, inplace = True)
+x_test.drop('label_sample', axis = 1, inplace = True)
+
+#   Write the dataset to disk for later use
+with open(dataset_path_out, 'wb') as f:
+    pickle.dump((x_train, x_test, y_train, y_test), f)
 
 #-------------------------------------------------------------------------------
 #   Try a decision tree classifier
