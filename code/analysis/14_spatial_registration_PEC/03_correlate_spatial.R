@@ -3,6 +3,8 @@ library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
 library("xlsx")
+library("jaffelab")
+library("ComplexHeatmap")
 library("here")
 library("sessioninfo")
 
@@ -102,7 +104,6 @@ walk2(pe_correlation_annotation, names(pe_correlation_annotation), function(data
 source(here("code","analysis", "12_spatial_registration_sn","utils.R"))
 
 layer_anno <- transpose(pe_correlation_annotation)$layer_anno
-cor_top100 <- transpose(pe_correlation_annotation)$cor_top100
 
 layer_anno_all <- do.call("rbind", layer_anno) |>
   rownames_to_column("Dataset") |>
@@ -118,7 +119,7 @@ layer_anno_long <- layer_anno_all |>
   unnest_longer("layers") |>
   # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
   mutate(layer_long = ifelse(Annotation == "layer",
-                         ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers),
+                         ifelse(grepl("^[0-9]",layers), paste0("Layer",layers), gsub("L","Layer",layers)),
                          paste0(gsub("k","Sp", Annotation),"D",layers)
                          ),
          anno_confidence = ifelse(confidence, "high", "low"))
@@ -171,13 +172,15 @@ anno_all_test <- cell_type_anno_all |>
   
 ggsave(anno_all_test, filename = here(plot_dir, "anno_all_test.png"))
 
+## Add layer_combo to layer_anno_long to add bayes space details
+layer_anno_long <- layer_anno_long |> left_join(spatial_layer_anno |> select(Annotation, layer_long, layer_combo))
 
-## Dot(?) plots
+#### Dot plots ####
 layer_anno_plot <- layer_anno_long |>
   filter(Annotation == "layer") |>
-  ggplot(aes(x = cluster, y = layer_long)) +
+  ggplot(aes(x = cluster, y = layer_combo)) +
   geom_point(aes(color = Dataset, shape = anno_confidence), position=position_dodge(width = .8)) +
-  geom_tile(data = cell_type_anno, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
+  geom_tile(data = cell_type_anno_all |> filter(Annotation == "layer"), fill = "blue", alpha = 0.2) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
@@ -185,10 +188,10 @@ ggsave(layer_anno_plot, filename = here(plot_dir, "PE_datasets_layer_annotation.
 
 ## Filter to high confidence 
 layer_anno_plot_filter <- layer_anno_long |>
-  filter(Annotation == "layer", confidence) |>
-  ggplot(aes(x = cluster, y = layer_long)) +
+  filter(Annotation == "layer", confidence == "high") |>
+  ggplot(aes(x = cluster, y = layer_combo)) +
   geom_point(aes(color = Dataset), position=position_dodge(width = .8)) +
-  geom_tile(data = cell_type_anno, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
+  geom_tile(data = cell_type_anno_all |> filter(Annotation == "layer"), fill = "blue", alpha = 0.2) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
@@ -196,17 +199,54 @@ ggsave(layer_anno_plot_filter, filename = here(plot_dir, "PE_datasets_layer_anno
 
 ## All annotations 
 label_anno_plot <- layer_anno_long |>
-  filter(confidence) |>
-  ggplot(aes(x = cluster, y = layer_long)) +
-  geom_point(aes(color = Dataset), position=position_dodge(width = .8)) +
-  # geom_tile(data = cell_type_anno, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
-  geom_tile(data = cell_type_anno_all, aes(x = cluster, y = layers), fill = "blue", alpha = 0.2) +
-  facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+  ggplot(aes(x = cluster, y = layer_combo)) +
+  geom_point(aes(color = Dataset, shape = anno_confidence), position=position_dodge(width = .8)) +
+  geom_tile(data = cell_type_anno_all, fill = "blue", alpha = 0.2) +
+  # facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+  facet_grid(Annotation~., scales = "free_y", space = "free") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-        legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(y = "bayesSpace Domain & Annotation", x = "PsychEncode DLPFC Cell Types")
 
 ggsave(label_anno_plot, filename = here(plot_dir, "PE_datasets_all_annotations.png"), height = 10)
+
+label_anno_plot <- layer_anno_long |>
+  filter(anno_confidence == "high") |>
+  ggplot(aes(x = cluster, y = layer_combo)) +
+  geom_point(aes(color = Dataset), position=position_dodge(width = .8)) +
+  geom_tile(data = cell_type_anno_all, fill = "blue", alpha = 0.2) +
+  # facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+  facet_grid(Annotation~., scales = "free_y", space = "free") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.position = "top") +
+  labs(y = "bayesSpace Domain & Annotation", x = "PsychEncode DLPFC Cell Types")
+
+ggsave(label_anno_plot, filename = here(plot_dir, "PE_datasets_all_annotations_confident.png"), height = 7.25, width = 8)
+
+#### Heatmap ####
+cor_top100 <- transpose(pe_correlation_annotation)$cor_top100
+corner(cor_top100_2$CMC)
+
+## DEvBrain, IsoHub, and UrbanDLPFC missing 
+# [1] "Sst Chodl"
+cor_top100_2 <- map2(cor_top100, names(cor_top100), function(cor_data, dataset){
+  colnames(cor_data$k9) <- paste0("Sp9D", colnames(cor_data$k9))
+  colnames(cor_data$k16) <- paste0("Sp16D", colnames(cor_data$k16))
+  cor_data <- map(cor_data, function(cd){
+    if(!setequal(rownames(cd), cell_types)) return(setdiff(cell_types, rownames(cd)))
+    cd <- cd[cell_types,]
+    rownames(cd) <- paste0(dataset,"_",rownames(cd))
+    return(cd)
+  })
+  return(do.call("cbind",cor_data))
+})
+
+map(cor_top100$DevBrain$k9, ~.x[cell_types,])
+
+map(cor_top100$DevBrain, ~setdiff(rownames(.x), cell_types))
+map(cor_top100$DevBrain, ~setdiff(cell_types, rownames(.x)))
+map(cor_top100$DevBrain, ~union(cell_types, rownames(.x)))
 
 # sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
 
