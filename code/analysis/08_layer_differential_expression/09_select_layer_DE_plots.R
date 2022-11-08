@@ -1,10 +1,10 @@
-# library(edgeR)
+
 library("SpatialExperiment")
 library("scater")
-# library(scran)
+library("spatialLIBD")
 library("here")
 library("sessioninfo")
-library("spatialLIBD")
+
 
 plot_dir <- here("plots", "08_layer_differential_expression", "09_select_layer_DE_plots")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
@@ -25,19 +25,17 @@ names(k9_colors) <- c(1:9)
 
 k9_genes <- c("CLDN5", "TAGLN", "MYL9", "ACTA2", "SLC2A1", "HBA1", "EPAS1")
 
-spe_k9$highlight <- spe_k9$BayesSpace == 1
-
 # sce, genes, assay = "logcounts", cat, highlight = "highlight", fill_colors = NULL, title = NULL
 k9_plot <- custom_plotExpression(spe_k9, genes = k9_genes, assay = "logcounts", cat = "BayesSpace", fill_colors = k9_colors)
 ggsave(k9_plot, filename = here(plot_dir, "k9_expression_meninges.png"), height = 10)
 
 
-k9_plot_CLDN5 <- custom_plotExpression(spe_k9, genes = c("CLDN5"), assay = "logcounts", cat = "BayesSpace", fill_colors = k9_colors) +
+k9_plot_CLDN5 <- custom_plotExpression(spe_k9, genes = c("CLDN5"), assay = "logcounts", cat = "BayesSpace", fill_colors = k9_colors, highlight_sample = "Br6522_ant") +
   labs(x = "Pseudobulk k9 Domains")
 ggsave(k9_plot_CLDN5, filename = here(plot_dir, "k9_expression_meninges_CLDN5.png"), height = 5)
 
 
-#### K9 violin plots ####
+#### K16 violin plots ####
 # load(file = here("processed-data", "rdata", "spe", "pseudo_bulked_spe","sce_pseudobulk_bayesSpace_k9.Rdata"), verbose = TRUE) ## file doesn't exist?
 spe_k16 <- readRDS(file = here("processed-data", "rdata", "spe", "pseudo_bulked_spe","spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k16.RDS"))
 rownames(spe_k16) <- rowData(spe_k16)$gene_name
@@ -55,12 +53,19 @@ spe_k16$highlight <- spe_k16$BayesSpace %in% c(1,2)
 k16_1ab_plot <- custom_plotExpression(spe_k16, genes = k16_genes_1ab, assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors)
 ggsave(k16_1ab_plot, filename = here(plot_dir, "k16_expression_1a-1b.png"), height = 10)
 
-k16_plot_SPARC <- custom_plotExpression(spe_k16, genes = c("SPARC"), assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors) +
-  labs(x = "Pseudobulk k16 Domains")
-ggsave(k16_plot_SPARC, filename = here(plot_dir, "k16_expression_1a-1b_SPARC.png"), height = 5)
-
 spe_k16$highlight <- FALSE
 
+k16_plot_SPARC <- custom_plotExpression(spe_k16[,spe_k16$BayesSpace %in% c(2,14)],
+                                        genes = c("SPARC"), assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors, highlight_sample = "Br6522_ant") +
+  labs(x = "Pseudobulk k16 Domains", title = "14 > 2 p = 1.52e-13")
+ggsave(k16_plot_SPARC, filename = here(plot_dir, "k16_expression_1a-1b_SPARC.png"), width = 6, height = 3)
+
+k16_plot_HTRA1 <- custom_plotExpression(spe_k16[,spe_k16$BayesSpace %in% c(2,14)], 
+                                        genes = c("HTRA1"), assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors, highlight_sample = "Br6522_ant") +
+  labs(x = "Pseudobulk k16 Domains", title = "2>14 p=3.34e-07")
+ggsave(k16_plot_HTRA1, filename = here(plot_dir, "k16_expression_1a-1b_HTRA1.png"), width = 6, height = 3)
+
+##plot both
 k16_plot_SPARC_HTRA1 <- custom_plotExpression(spe_k16[,spe_k16$BayesSpace %in% c(2,14)], 
                                               genes = c("SPARC", "HTRA1"), assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors) +
   labs(x = "Pseudobulk k16 Domains")
