@@ -17,14 +17,26 @@ df_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df_unfiltered.csv'
 )
 
-manual_label_path_in = pyhere.here(
+manual_label_path_orig_in = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}',
     'manual_labels_raw.csv'
 )
+manual_label_path_conf_in = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}',
+    'manual_labels_confidence_raw.csv'
+)
 
-manual_label_path_out = pyhere.here(
+manual_label_path_orig_out = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}',
     'manual_labels_clean.csv'
+)
+manual_label_path_conf_out = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}',
+    'manual_labels_confidence_clean.csv'
+)
+
+confidence_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'confidence_unfiltered.csv'
 )
 
 sample_info_path = pyhere.here(
@@ -54,35 +66,56 @@ sample_ids = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
     '_' + pd.Series([x.split('_')[1] for x in sample_info['Br_Region']]) + \
     '_IF'
 
-for i in range(len(sample_ids)):
+for sample_id in sample_ids:
     #   Determine paths for this sample
-    this_df_path = str(df_path).format(sample_ids[i])
-    this_manual_label_path_in = str(manual_label_path_in).format(sample_ids[i])
-    this_manual_label_path_out = str(manual_label_path_out).format(sample_ids[i])
+    this_df_path = str(df_path).format(sample_id)
+    this_manual_label_path_orig_in = str(manual_label_path_orig_in).format(sample_id)
+    this_manual_label_path_orig_out = str(manual_label_path_orig_out).format(sample_id)
+    this_manual_label_path_conf_in = str(manual_label_path_conf_in).format(sample_id)
+    this_manual_label_path_conf_out = str(manual_label_path_conf_out).format(sample_id)
+    this_confidence_path = str(confidence_path).format(sample_id)
     
+    #   Read in all required CSVs
     this_df = pd.read_csv(this_df_path)
-    this_manual_labels = pd.read_csv(this_manual_label_path_in)
+    this_manual_labels_orig = pd.read_csv(this_manual_label_path_orig_in)
+    this_manual_labels_conf = pd.read_csv(this_manual_label_path_conf_in)
+    this_confidence = pd.read_csv(this_confidence_path)
     
     #   Check the columns are all as expected
     assert all(
         [x == y for x, y in zip(this_df.columns.tolist(), expected_df_cols)]
     )
     
-    #   Fix indices
-    this_manual_labels.index = this_manual_labels['id']
+    #   Fix indices (index rows by cell ID)
+    this_manual_labels_orig.index = this_manual_labels_orig['id']
+    this_manual_labels_conf.index = this_manual_labels_conf['id']
     this_df.index = this_df['id']
+    this_confidence.index = this_confidence['id']
+    
+    #   Clean up "confidence" manual labels
+    this_manual_labels_conf.dropna(inplace = True)
+    this_manual_labels_conf['label'] = [x.split('_')[0] for x in this_manual_labels_conf['label']]
+    assert set(this_manual_labels_conf['label']) == set(expected_labels)
+    print(f'New cell-type counts (confidence) for sample {sample_id}: \n{this_manual_labels_conf["label"].value_counts()}')
+    
+    #   Add confidence quantile (and old cell-type call) back from the original CSV
+    #   to annotate
+    this_manual_labels_conf['quantile'] = this_confidence['quantile']
+    this_manual_labels_conf['label_old'] = this_confidence['label']
     
     #   Drop non-labelled spots and check that labels are expected, after
     #   replacing some known values
-    print(f"Dropping {sum(this_manual_labels['label'].isna())} NA labels from sample {sample_ids[i]}.")
-    this_manual_labels.dropna(inplace = True)
-    this_manual_labels.replace(replace_from, replace_to, inplace=True)
-    assert set(expected_labels) == set(this_manual_labels['label'])
+    print(f"Dropping {sum(this_manual_labels_orig['label'].isna())} NA labels from sample {sample_id}.")
+    this_manual_labels_orig.dropna(inplace = True)
+    this_manual_labels_orig.replace(replace_from, replace_to, inplace = True)
+    assert set(expected_labels) == set(this_manual_labels_orig['label'])
     
     #   Verify the correct number of labels per cell type is present, and all cell
     #   IDs line up to the original data frame of fluorescence intensities
-    assert all([x == expected_label_counts for x in this_manual_labels['label'].value_counts()])
-    assert(all(this_manual_labels['id'].isin(this_df['id'])))
-    
-    #   Write a clean copy of the manual labels
-    this_manual_labels.to_csv(this_manual_label_path_out, index = False)
+    assert all([x == expected_label_counts for x in this_manual_labels_orig['label'].value_counts()])
+    assert(all(this_manual_labels_orig['id'].isin(this_df['id'])))
+    assert(all(this_manual_labels_conf['id'].isin(this_df['id'])))
+
+    #   Write a clean copy of both sets of manual labels
+    this_manual_labels_orig.to_csv(this_manual_label_path_orig_out, index = False)
+    this_manual_labels_conf.to_csv(this_manual_label_path_conf_out, index = False)
