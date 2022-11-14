@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("tidyverse"))
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 #  Paths
 sce_in <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
@@ -188,13 +188,13 @@ write_anndata(sce, sce_out)
 
 #   Spatial objects are the same between broad and layer-level resolutions, and
 #   need only be saved once
-if (cell_group == "layer") {
-    write_anndata(spe_IF, spe_IF_out)
+if (cell_group == "broad") {
+    # write_anndata(spe_IF, spe_IF_out)
     write_anndata(spe_nonIF, spe_nonIF_out)
     
     #   Write sample names to text files
-    writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
-    writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
+    # writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
+    # writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)
 }
 gc()
 

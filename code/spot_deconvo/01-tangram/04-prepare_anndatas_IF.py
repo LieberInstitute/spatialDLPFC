@@ -21,7 +21,7 @@ import json
 #   Variable definitions
 ################################################################################
 
-cell_group = "layer" # "broad" or "layer"
+cell_group = "broad" # "broad" or "layer"
 
 #-------------------------------------------------------------------------------
 #   Paths
