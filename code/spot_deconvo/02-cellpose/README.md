@@ -13,6 +13,7 @@ Latest workflow (in order):
 * `04-quantify_fluor.*`: quantify fluorescence within each nucleus (as well as a small area around it) to output a `DataFrame` of intensities for each cell
 * `09-prepare_loopy.*`: prepare a CSV of cell IDs and coordinates supported as input to the [Loopy Browser](https://loopybrowser.com/) so that cells can be manually labelled by cell type (to train a model).
 * `11-clean_annotations.*`: preprocess manual cell-type labels as outputted from Loopy, to create CSVs immediately usable to train a model.
-* `10-explore_models.*`: optional exploratory step to compare performance of common models trained on manually annotated cells. We'll use a `DecisionTreeClassifier` for the paper, trained in the next script.
+* `10-explore_models.*`: exploratory step to compare performance of common models trained on manually annotated cells. We'll use a `DecisionTreeClassifier` for the paper, trained in the next script. This step also writes the full manual-annotation dataset to disk for easy loading in the next scripts.
+* `12-check_confidence.*`: (optional) train a logistic regression model on the dataset to check if the model classifies examples in the test set with higher confidence than unlabelled examples (this might suggest there was a selection bias in annotation-- choosing to annotate easier, clear-cut cells)
 * `07-cart.*`: train a `DecisionTreeClassifier` on manually annotated cells, and save the model
 * `08-classify_nuclei_cart.*`: Use the saved `DecisionTreeClassifier` to classify cell types for all IF samples and all cells. Output a CSV of metrics (rows are cells and columns are things like fluorescence intensity, cell area, etc) and CSV of cell counts (rows are spots and columns are cell-type counts)
