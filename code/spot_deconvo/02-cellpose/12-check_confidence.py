@@ -80,9 +80,6 @@ print(f'Logistic regression test accuracy: {acc_test}%.')
 #   Compare confidences on test set vs. unlabelled examples
 #-------------------------------------------------------------------------------
 
-#   TODO: once training/test split is stratified by sample, take a random subset
-#   of the unlabelled examples to also stratify that by sample
-
 #   Read in all the original unfiltered cells for all samples
 this_df = pd.DataFrame()
 for sample_id in sample_ids:
@@ -183,6 +180,6 @@ for sample_id in sample_ids:
     small_df = conf_df \
         .loc[conf_df['sample_id'] == sample_id, :] \
         .rename({'cell_id': 'id'}, axis = 1) \
-        .drop(['sample_id', 'quantile'], axis = 1)
+        .drop('sample_id', axis = 1)
 
     small_df.to_csv(str(confidence_path).format(sample_id), index = False)
