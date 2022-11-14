@@ -25,16 +25,16 @@ dataset_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', 'annotation_dataset.pkl'
 )
 
-manual_label_path = pyhere.here(
+manual_label_orig_path = pyhere.here(
     'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'manual_labels_clean.csv'
+)
+
+manual_label_conf_path = pyhere.here(
+    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'manual_labels_confidence_clean.csv'
 )
 
 sample_info_path = pyhere.here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
-)
-
-dataset_path_out = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', 'annotation_dataset.pkl'
 )
 
 expected_num_labels = 30
@@ -49,7 +49,7 @@ random_seed = 0
 ################################################################################
 
 #-------------------------------------------------------------------------------
-#   Preprocess and gather fluorescence data + manual cell-type labels
+#   Preprocess and gather fluorescence data + original manual cell-type labels
 #-------------------------------------------------------------------------------
 
 sample_info = pd.read_excel(sample_info_path)[:4]
@@ -62,12 +62,12 @@ sample_ids = 'Br' + sample_info['BrNumbr'].astype(int).astype(str) + \
 df = pd.DataFrame()
 for sample_id in sample_ids:
     this_df_path = str(df_path).format(sample_id)
-    this_manual_label_path = str(manual_label_path).format(sample_id)
+    this_manual_label_orig_path = str(manual_label_orig_path).format(sample_id)
     
     this_df = pd.read_csv(this_df_path, index_col = 'id')
-    this_manual_labels = pd.read_csv(this_manual_label_path, index_col = 'id')
+    this_manual_labels_orig = pd.read_csv(this_manual_label_orig_path, index_col = 'id')
     
-    this_df['label'] = this_manual_labels['label']
+    this_df['label'] = this_manual_labels_orig['label']
     this_df['label_sample'] = this_df['label'] + '_' + sample_id
     df = pd.concat([df, this_df.dropna()])
 
@@ -104,6 +104,63 @@ assert all(
 #   Remove the column we only used to properly stratify the data
 x_train.drop('label_sample', axis = 1, inplace = True)
 x_test.drop('label_sample', axis = 1, inplace = True)
+
+#-------------------------------------------------------------------------------
+#   Preprocess and gather fluorescence data + additional manual annotation
+#   based on a variety of previously unlabelled examples across variable model
+#   confidence
+#-------------------------------------------------------------------------------
+
+df = pd.DataFrame()
+for sample_id in sample_ids:
+    this_df_path = str(df_path).format(sample_id)
+    this_manual_label_conf_path = str(manual_label_conf_path).format(sample_id)
+    
+    this_df = pd.read_csv(this_df_path, index_col = 'id')
+    this_manual_labels_conf = pd.read_csv(
+        this_manual_label_conf_path, index_col = 'id'
+    )
+    
+    #   Form a column combining old cell-type label, confidence quantile, and
+    #   sample ID
+    this_df['group'] = this_manual_labels_conf['label_old'] + '_' + this_manual_labels_conf['quantile'].astype(str) + '_' + sample_id
+    this_df['label'] = this_manual_labels_conf['label']
+    df = pd.concat([df, this_df.dropna()])
+
+#   There should be 4 annotated cells per sample per cell type per quantile
+assert all([x == 4 for x in df['group'].value_counts()])
+
+#   Define the inputs (features we want the model to access) and outputs to the
+#   model
+x = df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area', 'group']]
+y = df['label']
+
+x_train2, x_test2, y_train2, y_test2 = train_test_split(
+    x, y, test_size = 0.25, random_state = random_seed,
+    stratify = x['group']
+)
+
+#   Verify the stratification worked (note the exact equality only works because
+#   of the nice divisibility of our data size)
+assert all([x == 3 for x in x_train2['group'].value_counts()])
+assert all([x == 1 for x in x_test2['group'].value_counts()])
+
+#   Remove the column we only used to properly stratify the data
+x_train2.drop('group', axis = 1, inplace = True)
+x_test2.drop('group', axis = 1, inplace = True)
+
+#-------------------------------------------------------------------------------
+#   Combine the two different sets of manual annotation into one dataset and
+#   write to disk
+#-------------------------------------------------------------------------------
+
+x_train = pd.concat([x_train, x_train2])
+x_test = pd.concat([x_test, x_test2])
+y_train = pd.concat([y_train, y_train2])
+y_test = pd.concat([y_test, y_test2])
+
+perc_train = round(100 * x_train.shape[0] / (x_train.shape[0] + x_test.shape[0]), 2)
+print(f'Using {x_train.shape[0]} training and {x_test.shape[0]} test examples ({perc_train}% training).')
 
 #   Write the dataset to disk for later use
 with open(dataset_path_out, 'wb') as f:
