@@ -100,6 +100,7 @@ for sample_id in sample_ids:
     
     #   Add confidence quantile (and old cell-type call) back from the original CSV
     #   to annotate
+    assert set(this_manual_labels_conf.index) == set(this_confidence.index)
     this_manual_labels_conf['quantile'] = this_confidence['quantile']
     this_manual_labels_conf['label_old'] = this_confidence['label']
     
@@ -115,7 +116,7 @@ for sample_id in sample_ids:
     assert all([x == expected_label_counts for x in this_manual_labels_orig['label'].value_counts()])
     assert(all(this_manual_labels_orig['id'].isin(this_df['id'])))
     assert(all(this_manual_labels_conf['id'].isin(this_df['id'])))
-
+    
     #   Write a clean copy of both sets of manual labels
     this_manual_labels_orig.to_csv(this_manual_label_path_orig_out, index = False)
     this_manual_labels_conf.to_csv(this_manual_label_path_conf_out, index = False)
