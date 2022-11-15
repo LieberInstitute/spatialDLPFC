@@ -67,6 +67,9 @@ deconvo_labels = deconvo_tool_names
 names(deconvo_labels) = deconvo_tools
 deconvo_labeller = labeller(deconvo_tool = deconvo_labels)
 
+cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#FEFADC")
+names(cell_type_labels) = cell_types_actual
+
 ################################################################################
 #   Plotting functions
 ################################################################################
@@ -122,7 +125,6 @@ all_spots <- function(count_df, plot_name) {
                     mapping = aes(x = Inf, y = 0, label = rmse),
                     hjust = 1, vjust = 0
                 ) +
-                scale_fill_continuous(type = "viridis") +
                 theme_bw(base_size = 10)
         
             return(p)
@@ -179,6 +181,7 @@ across_spots <- function(count_df, plot_name) {
             ),
             hjust = 1, vjust = 0, size = 3
         ) +
+        scale_color_discrete(cell_type_labels) +
         labs(x = "Software-estimated", y = "CART-calculated") +
         theme_bw(base_size = 10)
 
@@ -470,6 +473,7 @@ for (sample_id in sample_ids) {
         scale_x_discrete(
             labels = c("actual" = "Ground-Truth", "observed" = "Estimated")
         ) +
+        scale_fill_discrete(cell_type_labels) +
         theme_bw(base_size = 16)
 }
 pdf(file.path(plot_dir, 'prop_barplots.pdf'), height = 4, width = 10)
@@ -495,6 +499,7 @@ ggplot(
     ) +
     facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
     geom_point() +
+    scale_color_discrete(cell_type_labels) +
     labs(color = "Cell Type", shape = "Sample ID") +
     theme_bw(base_size = 13)
 dev.off()
