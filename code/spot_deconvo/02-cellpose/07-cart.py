@@ -103,7 +103,7 @@ model = tree.DecisionTreeClassifier(
     max_depth = 4,
     min_samples_leaf = 1, 
     random_state = random_seed,
-    ccp_alpha = 0.01
+    ccp_alpha = 0
 )
 
 model.fit(x_train, y_train)
@@ -135,7 +135,8 @@ this_df = pd.read_csv(str(df_path).format(sample_id), index_col = 'id')
 this_df = this_df.loc[:, ['gfap', 'neun', 'olig2', 'tmem119', 'area']]
 
 #   Row IDs were not preserved during concatenation earlier, so we'll manually
-#   drop rows in 'this_df' that are present in 'x'
+#   drop rows in 'this_df' that are present in 'x_train' or 'x_test'
+x = pd.concat([x_train, x_test])
 this_df = this_df.merge(
     x, how='left', indicator=True,
     on = ['gfap', 'neun', 'olig2', 'tmem119', 'area']
