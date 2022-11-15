@@ -105,7 +105,7 @@ sample_name = ad_sp.obs[sample_id_var].unique()[
 sample_info = pd.read_csv(sample_info_path)
 spaceranger_id = sample_info[
     sample_info['short_id'] == sample_name
-]['long_id'][0]
+]['long_id'].iloc[0]
 
 print('Subsetting to just sample {}.'.format(sample_name))
 ad_sp = ad_sp[ad_sp.obs[sample_id_var] == sample_name, :]
