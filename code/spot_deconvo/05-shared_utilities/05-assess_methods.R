@@ -6,7 +6,7 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -53,11 +53,11 @@ layer_ann_path <- here(
 cell_types_actual <- c("astro", "micro", "neuron", "oligo", "other")
 if (cell_group == "broad") {
     cell_types <- c(
-        "Astro", "Excit", "Inhib", "Micro", "Oligo", "OPC"
+        "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
     )
 } else {
     cell_types <- c(
-        "Astro", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
+        "Astro", "EndoMural", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
         "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
         "Oligo", "OPC"
     )
@@ -394,7 +394,7 @@ if (cell_group == "broad") {
         mutate(
             "neuron" = excit + inhib,
             "oligo" = oligo + opc,
-            "other" = 0
+            "other" = endomural
         ) %>%
         select(all_of(c(added_colnames, cell_types_actual)))
 } else {
@@ -403,7 +403,7 @@ if (cell_group == "broad") {
         mutate(
             "neuron" = sum(c_across(starts_with(c('excit_', 'inhib')))),
             "oligo" = oligo + opc,
-            "other" = 0
+            "other" = endomural
         ) %>%
         ungroup() %>%
         select(all_of(c(added_colnames, cell_types_actual)))
@@ -443,7 +443,6 @@ full_df |>
 #-------------------------------------------------------------------------------
 
 prop_df <- full_df %>%
-    filter(cell_type != "other") |>
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     group_by(sample_id, deconvo_tool) %>%
@@ -479,7 +478,6 @@ dev.off()
 #-------------------------------------------------------------------------------
 
 metrics_df <- full_df |>
-    filter(cell_type != 'other') |>
     group_by(deconvo_tool, sample_id, cell_type) |>
     summarize(
         Correlation = round(cor(observed, actual), 2),
@@ -613,7 +611,6 @@ all_spots(prop_df, "props_all_spots_scatter.pdf")
 #   introduces NAs whenever either the observed or actual total cell count is 0
 #   for a spot.
 prop_df <- full_df %>%
-    filter(cell_type != "other") |>
     group_by(sample_id, deconvo_tool, cell_type) %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     group_by(sample_id, deconvo_tool) %>%
