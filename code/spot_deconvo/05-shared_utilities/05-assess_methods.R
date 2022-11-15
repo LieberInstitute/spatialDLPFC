@@ -463,7 +463,10 @@ for (sample_id in sample_ids) {
     ) +
         geom_bar(stat = "identity") +
         facet_wrap(~ deconvo_tool, labeller = deconvo_labeller) +
-        labs(x= NULL, y = "Sample-Wide Proportion") +
+        labs(
+            x = NULL, y = "Sample-Wide Proportion", fill = "Cell Type",
+            title = sample_id
+        ) +
         scale_x_discrete(
             labels = c("actual" = "Ground-Truth", "observed" = "Estimated")
         ) +
@@ -485,14 +488,15 @@ metrics_df <- full_df |>
     ) |>
     ungroup()
 
-pdf(file.path(plot_dir, 'corr_RMSE_scatter.pdf'), height = 2, width = 8)
+pdf(file.path(plot_dir, 'corr_RMSE_scatter.pdf'), height = 4, width = 9)
 ggplot(
     metrics_df,
     aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
     ) +
     facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
     geom_point() +
-    theme_bw(base_size = 12)
+    labs(color = "Cell Type", shape = "Sample ID") +
+    theme_bw(base_size = 13)
 dev.off()
 
 
@@ -743,7 +747,7 @@ stopifnot(all(!is.na(full_df$marker_express)))
 metrics_df <- full_df %>%
     group_by(deconvo_tool, sample_id, cell_type) %>%
     summarize(
-        corr = round(cor(observed, actual), 2),
+        corr = round(cor(observed, marker_express), 2),
     ) %>%
     ungroup()
 
@@ -834,12 +838,9 @@ counts_df = observed_df_long |>
 #   Create plots for each cell type
 plot_list = list()
 for (cell_type in cell_types) {
-    #   We won't show outliers, and we'll rescale the y-axis to better view
-    #   the whole distribution (specifically, the ymax will be 3 SDs above the
-    #   mean)
     y_max = counts_df |>
         filter(cell_type == {{ cell_type }}) |>
-        summarize(y_max = mean(count) + sd(count) * 3) |>
+        summarize(y_max = max(count)) |>
         pull(y_max)
     
     plot_list[[cell_type]] = ggplot(
@@ -848,14 +849,14 @@ for (cell_type in cell_types) {
     ) +
         geom_boxplot(outlier.shape = NA) +
         labs(
-            x = "Annotated layer",
-            y = paste("Average predicted", cell_type, "count"),
-            color = "Deconvolution tool"
+            x = "Annotated Layer",
+            y = paste("Average Predicted", cell_type, "Count"),
+            color = "Deconvolution Tool"
         ) +
         scale_color_discrete(labels = deconvo_labels) +
         theme_bw(base_size = 20) +
         coord_cartesian(ylim = c(0, y_max)) +
-        scale_y_continuous(expand = c(0, 0))
+        scale_y_continuous(expand = c(0, 0, 0, 0.05))
 }
 
 pdf(
