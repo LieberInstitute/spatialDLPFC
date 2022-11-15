@@ -94,9 +94,10 @@ for sample_id in sample_ids:
 #   Merge the DataFrame of all cells with that of just the test cells. This is
 #   just a trick to categorize which of the unfiltered cells belong to the test
 #   set vs. were never manually annotated
+x_test['cell_id'] = x_test.index
 this_df = this_df.merge(
     x_test, how='left', indicator=True,
-    on = ['gfap', 'neun', 'olig2', 'tmem119']
+    on = ['gfap', 'neun', 'olig2', 'tmem119', 'cell_id']
 )
 
 #   Use more informative value names
@@ -176,10 +177,10 @@ conf_df = conf_df \
 
 #   Write a CSV for import to loopy for each sample. These cells can be
 #   relabeled if necessary, and the model accordingly retrained
-for sample_id in sample_ids:
-    small_df = conf_df \
-        .loc[conf_df['sample_id'] == sample_id, :] \
-        .rename({'cell_id': 'id'}, axis = 1) \
-        .drop('sample_id', axis = 1)
+# for sample_id in sample_ids:
+#     small_df = conf_df \
+#         .loc[conf_df['sample_id'] == sample_id, :] \
+#         .rename({'cell_id': 'id'}, axis = 1) \
+#         .drop('sample_id', axis = 1)
 
-    small_df.to_csv(str(confidence_path).format(sample_id), index = False)
+#     small_df.to_csv(str(confidence_path).format(sample_id), index = False)
