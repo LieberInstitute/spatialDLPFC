@@ -179,7 +179,7 @@ corner(anno_matrix)
 setdiff(colnames(anno_matrix),colnames(cor_all))
 setdiff(rownames(anno_matrix),rownames(cor_all))
 
-pdf(here(plot_dir,"spatial_registration_heatmap.pdf"))
+pdf(here(plot_dir,"bayesSpace_spatial_registration_heatmap.pdf"))
 Heatmap(cor_all,
         name = "Cor",
         col = my.col,
@@ -193,17 +193,6 @@ Heatmap(cor_all,
         )
 dev.off()
 
-pdf(here(plot_dir,"spatial_registration_heatmap-cluster.pdf"))
-Heatmap(cor_all,
-        name = "Cor",
-        col = my.col,
-        # row_split = annotation_split,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = TRUE,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
-        })
-dev.off()
 
 ##### Reorder and add annotation colors  ####
 k_colors <- Polychrome::palette36.colors(28)
@@ -220,16 +209,27 @@ rownames(cor_all) <- layer_anno_colors$layer_combo
 anno_matrix <- anno_matrix[layer_anno_colors$cluster,]
 rownames(anno_matrix) <- layer_anno_colors$layer_combo
 
+source("libd_intermediate_layer_colors.R")
+
+libd_intermediate_layer_colors <- c(spatialLIBD::libd_layer_colors, libd_intermediate_layer_colors)
+names(libd_intermediate_layer_colors) <- gsub("ayer","",names(libd_intermediate_layer_colors))
+libd_intermediate_layer_colors
+# L1            L2            L3            L4            L5            L6            WM            NA 
+# "#F0027F"     "#377EB8"     "#4DAF4A"     "#984EA3"     "#FFD700"     "#FF7F00"     "#1A1A1A" "transparent" 
+# WM2          L1/2          L2/3          L3/4          L4/5          L5/6         L6/WM 
+# "#666666"     "#BF3889"     "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00" 
+
 k_color_bar <- rowAnnotation(df = layer_anno_colors |>
-                               select(layer_annotation, domain_color),
-                             col = list(domain_color = k_colors),
+                               select(domain_color, layer_anno = layer_annotation),
+                             col = list(domain_color = k_colors,
+                                        layer_anno = libd_intermediate_layer_colors),
                              show_legend = FALSE)
 
 layer_color_bar <- columnAnnotation(" " = colnames(cor_all), 
                              col = list(" " = spatialLIBD::libd_layer_colors),
                              show_legend = FALSE)
 
-pdf(here(plot_dir,"spatial_registration_heatmap_color_layerOrder.pdf"), height = 10)
+pdf(here(plot_dir,"bayesSpace_spatial_registration_heatmap_color.pdf"), height = 10)
 Heatmap(cor_all,
         name = "Cor",
         col = my.col,
