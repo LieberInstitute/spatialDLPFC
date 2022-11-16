@@ -9,8 +9,8 @@ library("here")
 library("sessioninfo")
 
 ## Set up plotting
-plot_dir <- here("plots", "07_spatial_registration")
-data_dir <- here("processed-data", "rdata", "spe", "07_spatial_registration")
+plot_dir <- here("plots", "08_spatial_registration")
+data_dir <- here("processed-data", "rdata", "spe", "08_spatial_registration")
 
 ## Load data 
 # load(here("processed-data", "rdata","spe", "01_build_spe", "spe_filtered_final_with_clusters.Rdata"))

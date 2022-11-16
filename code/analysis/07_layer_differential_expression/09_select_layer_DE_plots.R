@@ -6,10 +6,10 @@ library("here")
 library("sessioninfo")
 
 
-plot_dir <- here("plots", "08_layer_differential_expression", "09_select_layer_DE_plots")
+plot_dir <- here("plots", "07_layer_differential_expression", "09_select_layer_DE_plots")
 if(!dir.exists(plot_dir)) dir.create(plot_dir)
 
-# data_dir <- here("processed-data", "rdata", "spe", "08_layer_differential_expression")
+# data_dir <- here("processed-data", "rdata", "spe", "07_layer_differential_expression")
 # if(!dir.exists(data_dir)) dir.create(data_dir)
 
 source("custom_plotExpression.R")

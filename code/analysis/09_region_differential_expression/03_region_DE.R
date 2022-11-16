@@ -19,7 +19,7 @@ spe_pseudo <-
     )
 
 # boxplots of spots per cluster
-# pdf(file = here::here("plots", "08_layer_differential_expression", paste0("ncells_per_cluster_k", k, ".pdf")))
+# pdf(file = here::here("plots", "07_layer_differential_expression", paste0("ncells_per_cluster_k", k, ".pdf")))
 # boxplot(ncells ~ spe_pseudo$BayesSpace, data = colData(spe_pseudo))
 # dev.off()
 

@@ -78,7 +78,7 @@ Find inflection points of fasthplus graph
 `03_plot_fasthplus.R`
 Make plot of fasthplus measure for manuscript
 
-### 07_spatial_registration
+### 08_spatial_registration
 `01_spatial_registration.R`
 Perform spatial registration on BayesSpace clusters for k = 2 to k = 28 against manual annotations.
 
@@ -108,7 +108,7 @@ My version of layer_stat_cor_plot() function.
 `05_t_stat_cor_plot.R`
 Make t-stat correlation plot for figure 2. 
 
-### 08_layer_differential_expression
+### 07_layer_differential_expression
 `01_preliminary_analysis.R`
 This is where I created the pseudobulked objects for all values of k, filter and normalize. Then run pca. Save pseudobulked object for each k. 
 

@@ -3,7 +3,7 @@ library(ggplot2)
 library(ggpubr)
 
 k <- 7
-load(file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("parsed_modeling_results_k", k, ".Rdata")))
+load(file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", paste0("parsed_modeling_results_k", k, ".Rdata")))
 stats <- modeling_results$enrichment
 rownames(stats) <- stats$ensembl
 dim(stats)
@@ -88,7 +88,7 @@ length(top_genes)
 # [1] 584
 
 # make plot
-pdf(file = here::here("plots", "07_spatial_registration", "t_cor_k7_wm.pdf"))
+pdf(file = here::here("plots", "08_spatial_registration", "t_cor_k7_wm.pdf"))
 plot(stats_small[, 7], tstats_small$WM)
 dev.off()
 
@@ -98,10 +98,10 @@ dat_small <- cbind(stats_small, tstats_small)
 colnames(dat_small)
 colnames(dat_small)[15] <- "Layer"
 
-save(dat_small, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_spatial_registration/t_cor_plot_top_genes_k7.rda")
+save(dat_small, file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_spatial_registration/t_cor_plot_top_genes_k7.rda")
 
 # make plot
-pdf(file = here::here("plots", "07_spatial_registration", "ggplot_t_cor_k7_wm_colored.pdf"))
+pdf(file = here::here("plots", "08_spatial_registration", "ggplot_t_cor_k7_wm_colored.pdf"))
 ggplot(dat_small, aes(x = dat_small[, 7], y = WM)) +
     geom_point(aes(color = Layer), alpha = 0.7, size = 1) +
     scale_color_manual(values = c(
@@ -133,7 +133,7 @@ length(common_genes)
 stats <- stats[common_genes, ]
 tstats <- tstats[common_genes, ]
 
-pdf(file = here::here("plots", "07_spatial_registration", "t_cor_k7_wm_all_genes.pdf"))
+pdf(file = here::here("plots", "08_spatial_registration", "t_cor_k7_wm_all_genes.pdf"))
 plot(stats[, 7], tstats$WM)
 dev.off()
 
@@ -141,7 +141,7 @@ dat <- cbind(stats, tstats)
 dat$TopGene <- "FALSE"
 dat[top_genes, ]$TopGene <- "TRUE"
 
-pdf(file = here::here("plots", "07_spatial_registration", "ggplot_t_cor_k7_wm_all_genes.pdf"))
+pdf(file = here::here("plots", "08_spatial_registration", "ggplot_t_cor_k7_wm_all_genes.pdf"))
 ggplot(dat, aes(x = dat[, 7], y = WM, color = TopGene)) +
     geom_point(alpha = 0.7, size = 0.5) +
     labs(

@@ -30,7 +30,7 @@ layer_modeling_results <- fetch_data(type = "modeling_results")
 paths <- list(k9 = "parsed_modeling_results_k9.Rdata", k16 = "parsed_modeling_results_k16.Rdata")
 
 modeling_results <- lapply(paths, function(x) 
-  get(load(here("processed-data","rdata","spe","08_layer_differential_expression",x))))
+  get(load(here("processed-data","rdata","spe","07_layer_differential_expression",x))))
 
 modeling_results <- c(list(layer = layer_modeling_results), modeling_results)
 names(modeling_results)
@@ -255,7 +255,7 @@ walk2(cor_top100, names(cor_top100),
 
 #### Explore Annotations ####
 ## Load bayesSpace annotations
-bayes_layers <- get(load(here("processed-data", "rdata", "spe", "07_spatial_registration", "bayesSpace_layer_annotations.Rdata")))  |>
+bayes_layers <- get(load(here("processed-data", "rdata", "spe", "08_spatial_registration", "bayesSpace_layer_annotations.Rdata")))  |>
     select(Annotation = bayesSpace, layer_long = cluster, layer_combo) |>
   filter(Annotation %in% c("k9", "k16"))
 
@@ -352,7 +352,7 @@ cell_color_bar <- columnAnnotation(" " = colnames(cor_all),
 
 
 ## Add intermediate colors to layers
-source(here("code","analysis","07_spatial_registration","libd_intermediate_layer_colors.R"))
+source(here("code","analysis","08_spatial_registration","libd_intermediate_layer_colors.R"))
 libd_intermediate_layer_colors <- c(spatialLIBD::libd_layer_colors, libd_intermediate_layer_colors)
 names(libd_intermediate_layer_colors) <- gsub("ayer","",names(libd_intermediate_layer_colors))
 libd_intermediate_layer_colors

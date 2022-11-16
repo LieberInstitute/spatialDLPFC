@@ -24,7 +24,7 @@ y <- y[keep, ]
 summary(keep)
 
 
-# pdf(file = here::here("plots","08_layer_differential_expression",paste0("MDS_k",k,".pdf")))
+# pdf(file = here::here("plots","07_layer_differential_expression",paste0("MDS_k",k,".pdf")))
 # plotMDS(cpm(y, log=TRUE),
 #         col=ifelse(y$samples[[paste0("bayesSpace_harmony_",k)]]))
 # dev.off()
@@ -38,7 +38,7 @@ y <- estimateDisp(y, design)
 summary(y$trended.dispersion)
 
 
-pdf(file = here::here("plots", "08_layer_differential_expression", paste0("BCV_k", k, ".pdf")))
+pdf(file = here::here("plots", "07_layer_differential_expression", paste0("BCV_k", k, ".pdf")))
 plotBCV(y)
 dev.off()
 
@@ -47,7 +47,7 @@ summary(fit$var.prior)
 
 summary(fit$df.prior)
 
-pdf(file = here::here("plots", "08_layer_differential_expression", paste0("QLDisp_k", k, ".pdf")))
+pdf(file = here::here("plots", "07_layer_differential_expression", paste0("QLDisp_k", k, ".pdf")))
 plotQLDisp(fit)
 dev.off()
 
@@ -56,4 +56,4 @@ summary(decideTests(res))
 
 topTags(res)
 
-save(res, file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("res_layer_k", k, ".Rdata")))
+save(res, file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", paste0("res_layer_k", k, ".Rdata")))

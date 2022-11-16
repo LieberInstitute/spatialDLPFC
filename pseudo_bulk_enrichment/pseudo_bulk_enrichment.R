@@ -192,7 +192,7 @@ rownames(cor_t_layer_toPlot)[rownames(cor_t_layer_toPlot) == "Oligodendrocytes"]
 
 
 #implement layer_stat_cor_plot
-pdf(file = here::here("plots","07_spatial_registration",paste0("dlpfc_pseudobulked_bayesSpace_vs_mannual_annotations_k",k,".pdf")), width = 8)
+pdf(file = here::here("plots","08_spatial_registration",paste0("dlpfc_pseudobulked_bayesSpace_vs_mannual_annotations_k",k,".pdf")), width = 8)
 print(
   levelplot(
     cor_t_layer_toPlot,

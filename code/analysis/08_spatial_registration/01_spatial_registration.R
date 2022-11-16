@@ -23,7 +23,7 @@ sce_pseudobulk_bayesSpace <- spe_pseudo
 ###############################
 ##### get mean expression  ####
 mat <- assays(sce_pseudobulk_bayesSpace)$logcounts # make matrix of just the log normalized counts
-save(mat, file = here::here("processed-data", "rdata", "spe", "07_spatial_registration", paste0("dlpfc_pseudobulked_mat_k", k, ".Rdata")))
+save(mat, file = here::here("processed-data", "rdata", "spe", "08_spatial_registration", paste0("dlpfc_pseudobulked_mat_k", k, ".Rdata")))
 
 
 #####################
@@ -49,7 +49,7 @@ colnames(mod) <- gsub("cluster", "", colnames(mod))
 corfit <- duplicateCorrelation(mat, mod,
     block = sce_pseudobulk_bayesSpace$sample_id
 )
-save(corfit, file = here::here("processed-data", "rdata", "spe", "07_spatial_registration", paste0("dlpfc_pseudobulked_bayesSpace_dupCor_k", k, ".Rdata")))
+save(corfit, file = here::here("processed-data", "rdata", "spe", "08_spatial_registration", paste0("dlpfc_pseudobulked_bayesSpace_dupCor_k", k, ".Rdata")))
 
 ## Next for each layer test that layer vs the rest
 cell_idx <- splitit(sce_pseudobulk_bayesSpace$spatial.cluster)
@@ -71,7 +71,7 @@ eb0_list_cell <- lapply(cell_idx, function(x) {
         )
     )
 })
-save(eb0_list_cell, file = here::here("processed-data", "rdata", "spe", "07_spatial_registration", paste0("dlpfc_pseudobulked_bayesSpace_specific_Ts_k", k, ".Rdata")))
+save(eb0_list_cell, file = here::here("processed-data", "rdata", "spe", "08_spatial_registration", paste0("dlpfc_pseudobulked_bayesSpace_specific_Ts_k", k, ".Rdata")))
 
 
 ##########
@@ -124,7 +124,7 @@ cor_stats_layer <- layer_stat_cor(
 
 ## plot output directory
 dir_plots <-
-    here::here("plots", "07_spatial_registration")
+    here::here("plots", "08_spatial_registration")
 dir.create(dir_plots, showWarnings = FALSE)
 
 # http://research.libd.org/spatialLIBD/reference/layer_stat_cor_plot.html newer function for plotting
@@ -134,7 +134,7 @@ dir.create(dir_plots, showWarnings = FALSE)
 pdf(
     file = here::here(
         "plots",
-        "07_spatial_registration",
+        "08_spatial_registration",
         paste0(
             "dlpfc_pseudobulked_bayesSpace_vs_mannual_annotations_k",
             k,

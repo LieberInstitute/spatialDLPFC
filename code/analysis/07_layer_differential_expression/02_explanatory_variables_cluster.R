@@ -38,7 +38,7 @@ source(here("code", "analysis", "colors_bayesSpace.R"), echo = TRUE, max.deparse
 pdf(
     file = here::here(
         "plots",
-        "08_layer_differential_expression",
+        "07_layer_differential_expression",
         paste0("pca_explanatory_variables_k", k, ".pdf")
     ),
     width = 14, height = 14
@@ -68,7 +68,7 @@ vars <- getVarianceExplained(spe_pseudo_filter_cluster,
 head(vars)
 pdf(file = here::here(
     "plots",
-    "08_layer_differential_expression",
+    "07_layer_differential_expression",
     paste0("plot_explanatory_vars_cluster_k", k, ".pdf")
 ))
 plotExplanatoryVariables(vars)

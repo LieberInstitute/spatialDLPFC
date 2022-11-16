@@ -41,10 +41,10 @@ library("limma")
 
 
 ## output directory
-# dir_rdata <- here::here("processed-data","rdata","spe", "08_layer_differential_expression", opt$spetype)
+# dir_rdata <- here::here("processed-data","rdata","spe", "07_layer_differential_expression", opt$spetype)
 # dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 # stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
-# dir_plots <- here::here("plots", "08_layer_differential_expression", opt$spetype)
+# dir_plots <- here::here("plots", "07_layer_differential_expression", opt$spetype)
 # dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 # stopifnot(file.exists(dir_plots))
 
@@ -63,7 +63,7 @@ spe_pseudo <-
     )
 
 # boxplots of spots per cluster
-pdf(file = here::here("plots", "08_layer_differential_expression", paste0("ncells_per_cluster_k", k, ".pdf")))
+pdf(file = here::here("plots", "07_layer_differential_expression", paste0("ncells_per_cluster_k", k, ".pdf")))
 boxplot(ncells ~ spe_pseudo$BayesSpace, data = colData(spe_pseudo))
 dev.off()
 
@@ -228,7 +228,7 @@ save(
     f_stats,
     eb0_list,
     eb_contrasts,
-    file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("cluster_modeling_results_k", k, ".Rdata"))
+    file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", paste0("cluster_modeling_results_k", k, ".Rdata"))
 )
 
 ## Reproducibility information

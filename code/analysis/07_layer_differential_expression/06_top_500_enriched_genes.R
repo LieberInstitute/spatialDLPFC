@@ -2,7 +2,7 @@ library(spatialLIBD)
 
 # load parsed modeling results
 k <- 9
-load(file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("parsed_modeling_results_k", k, ".Rdata")))
+load(file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", paste0("parsed_modeling_results_k", k, ".Rdata")))
 stats <- modeling_results$enrichment
 rownames(stats) <- paste0(stats$gene, "_", stats$ensembl)
 dim(stats)
@@ -20,13 +20,13 @@ for (i in 1:ncol(stats)) {
 }
 
 write.csv(df_enriched,
-    file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/top_500_enriched_genes_k9.csv",
+    file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_layer_differential_expression/top_500_enriched_genes_k9.csv",
     row.names = TRUE, col.names = TRUE
 )
 
 # load parsed modeling results
 k <- 16
-load(file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("parsed_modeling_results_k", k, ".Rdata")))
+load(file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", paste0("parsed_modeling_results_k", k, ".Rdata")))
 stats <- modeling_results$enrichment
 rownames(stats) <- paste0(stats$gene, "_", stats$ensembl)
 dim(stats)
@@ -44,14 +44,14 @@ for (i in 1:ncol(stats)) {
 }
 
 write.csv(df_enriched,
-    file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/top_500_enriched_genes_k16.csv",
+    file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_layer_differential_expression/top_500_enriched_genes_k16.csv",
     row.names = TRUE, col.names = TRUE
 )
 
 #### top 25 genes from pairwise model k =16
 
 library(spatialLIBD)
-load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k16.Rdata")
+load(file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_layer_differential_expression/parsed_modeling_results_k16.Rdata")
 
 sig_genes <- sig_genes_extract(
     n = 25,
@@ -69,6 +69,6 @@ tests <- c("BayesSpace5-BayesSpace9", "BayesSpace4-BayesSpace16", "BayesSpace7-B
 
 sig_genes <- sig_genes[which(sig_genes$test %in% tests), ]
 write.csv(sig_genes,
-    file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/top_25_pairwise_k16_subset.csv",
+    file = "/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_layer_differential_expression/top_25_pairwise_k16_subset.csv",
     row.names = TRUE, col.names = TRUE
 )

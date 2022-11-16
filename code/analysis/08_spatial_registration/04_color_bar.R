@@ -24,7 +24,7 @@ for (i in seq_along(k)) {
     names(mycolors) <- c(1:k[i])
     print(mycolors)
     # print plot
-    # png(paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/07_spatial_registration_",k[i],".png"))
+    # png(paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/08_spatial_registration_",k[i],".png"))
     # color.bar(mycolors = mycolors)
     # dev.off()
     #
@@ -40,7 +40,7 @@ for (i in seq_along(k)) {
     if (k[i] == 28) {
         mycolors <- mycolors[c(16, 17, 20, 5, 28, 4, 13, 19, 7, 14, 11, 26, 27, 23, 12, 15, 22, 25, 5, 10, 24, 8, 9, 1, 2, 3)]
     }
-    png(paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/07_spatial_registration/colobar_k", k[i], ".png"))
+    png(paste0("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/08_spatial_registration/colobar_k", k[i], ".png"))
     color.bar(mycolors = mycolors)
     dev.off()
 }

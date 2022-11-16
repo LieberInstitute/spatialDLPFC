@@ -39,7 +39,7 @@ module load conda_R/devel
 module list
 
 ## Edit with your job command
-Rscript 07_spatial_registration.R
+Rscript 08_spatial_registration.R
 
 echo "**** Job ends ****"
 date

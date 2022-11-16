@@ -18,7 +18,7 @@ suppressPackageStartupMessages({
 spe_pseudo <- readRDS(here::here("processed-data", "rdata", "spe", "pseudo_bulked_spe", "spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS"))
 
 # Load modeling results
-load(file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", "parsed_modeling_results_k9.Rdata"))
+load(file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", "parsed_modeling_results_k9.Rdata"))
 
 # Get mean expression
 mat <- assays(spe_pseudo)$logcounts
@@ -103,7 +103,7 @@ annotation_row <- data.frame(Cluster = factor(c(gene_labels)))
 rownames(annotation_row) <- rownames(exprs_heatmap)
 
 # Plot heatmap of logcounts for clusters and samples
-pdf(file = here::here("plots", "08_layer_differential_expression", "top5_enrichment_heatmap.pdf"), width = 8, height = 8)
+pdf(file = here::here("plots", "07_layer_differential_expression", "top5_enrichment_heatmap.pdf"), width = 8, height = 8)
 pheatmap(
     exprs_heatmap,
     cluster_rows = TRUE,
@@ -118,7 +118,7 @@ pheatmap(
 dev.off()
 
 # Plot heatmap of logcounts for clusters and samples
-pdf(file = here::here("plots", "08_layer_differential_expression", "top5_enrichment_heatmap_clusRows.pdf"), width = 8, height = 8)
+pdf(file = here::here("plots", "07_layer_differential_expression", "top5_enrichment_heatmap_clusRows.pdf"), width = 8, height = 8)
 pheatmap(
     exprs_heatmap,
     cluster_rows = TRUE,
@@ -133,7 +133,7 @@ pheatmap(
 dev.off()
 
 # Plot heatmap of logcounts for clusters and samples
-pdf(file = here::here("plots", "08_layer_differential_expression", "top5_enrichment_heatmap_clusCols.pdf"), width = 8, height = 8)
+pdf(file = here::here("plots", "07_layer_differential_expression", "top5_enrichment_heatmap_clusCols.pdf"), width = 8, height = 8)
 pheatmap(
     exprs_heatmap,
     cluster_rows = FALSE,
@@ -148,7 +148,7 @@ pheatmap(
 dev.off()
 
 # Plot heatmap of logcounts for clusters and samples
-pdf(file = here::here("plots", "08_layer_differential_expression", "top5_enrichment_heatmap_noClus.pdf"), width = 8, height = 8)
+pdf(file = here::here("plots", "07_layer_differential_expression", "top5_enrichment_heatmap_noClus.pdf"), width = 8, height = 8)
 pheatmap(
     exprs_heatmap,
     cluster_rows = FALSE,

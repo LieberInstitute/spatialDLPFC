@@ -22,8 +22,8 @@ readRDS(file = here::here("processed-data", "rdata", "spe", "pseudo_bulked_spe",
 
 ###################
 ## load modeling outputs
-# load(file = here::here("processed-data","rdata","spe","08_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
-load(file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("cluster_modeling_results_k", k, ".Rdata")))
+# load(file = here::here("processed-data","rdata","spe","07_layer_differential_expression",paste0("parsed_modeling_results_k",k,".Rdata")))
+load(file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", paste0("cluster_modeling_results_k", k, ".Rdata")))
 
 ## Extract the p-values
 logFC0_contrasts <- sapply(eb0_list, function(x) {

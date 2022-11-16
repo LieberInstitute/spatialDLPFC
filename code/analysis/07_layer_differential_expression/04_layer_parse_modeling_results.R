@@ -48,7 +48,7 @@ library("SingleCellExperiment")
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## Load the modeling results
-load(file = here::here("processed-data", "rdata", "spe", "08_layer_differential_expression", paste0("cluster_modeling_results_k", k, ".Rdata")), verbose = TRUE)
+load(file = here::here("processed-data", "rdata", "spe", "07_layer_differential_expression", paste0("cluster_modeling_results_k", k, ".Rdata")), verbose = TRUE)
 
 ## load spe data
 spe_pseudo <-
@@ -226,7 +226,7 @@ save(
         "processed-data",
         "rdata",
         "spe",
-        "08_layer_differential_expression",
+        "07_layer_differential_expression",
         paste0("parsed_modeling_results_k", k, ".Rdata")
     )
 )
@@ -248,13 +248,13 @@ save(
 # cluster <- c(1:9)
 # genes <- c(9255,4051,1293,4739,2615,4422,3250,3332,417)
 # df <- data.frame(cluster, genes)
-# pdf(file = here::here("plots","08_layer_differential_expression","plot_enrichment_DEGs.pdf"))
+# pdf(file = here::here("plots","07_layer_differential_expression","plot_enrichment_DEGs.pdf"))
 # plot(df$genes~df$cluster)
 # dev.off()
 #
 #
 # library(vioplot)
-# pdf(file = here::here("plots","08_layer_differential_expression","boxplot_num_enrichment_DEGs.pdf"))
+# pdf(file = here::here("plots","07_layer_differential_expression","boxplot_num_enrichment_DEGs.pdf"))
 # x1 <- modeling_results$enrichment$fdr_1
 # x2 <- modeling_results$enrichment$fdr_2
 # x3 <- modeling_results$enrichment$fdr_3

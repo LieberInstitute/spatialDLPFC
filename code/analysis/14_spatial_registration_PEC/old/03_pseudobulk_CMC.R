@@ -139,7 +139,7 @@ layer_stat_cor_plot(cor)
 dev.off()
 
 # load my k = 9 modeling results
-load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k9.Rdata")
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_layer_differential_expression/parsed_modeling_results_k9.Rdata")
 cor <- layer_stat_cor(
     t0_contrasts_cluster,
     modeling_results,
@@ -152,7 +152,7 @@ layer_stat_cor_plot(cor)
 dev.off()
 
 # load my k = 16 modeling results
-load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/08_layer_differential_expression/parsed_modeling_results_k16.Rdata")
+load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/07_layer_differential_expression/parsed_modeling_results_k16.Rdata")
 cor <- layer_stat_cor(
     t0_contrasts_cluster,
     modeling_results,

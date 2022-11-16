@@ -18,7 +18,7 @@ layer_modeling_results <- fetch_data(type = "modeling_results")
 paths <- list(k9 = "parsed_modeling_results_k9.Rdata", k16 = "parsed_modeling_results_k16.Rdata")
 
 modeling_results <- lapply(paths, function(x) 
-  get(load(here("processed-data","rdata","spe","08_layer_differential_expression",x))))
+  get(load(here("processed-data","rdata","spe","07_layer_differential_expression",x))))
 
 modeling_results <- c(list(layer = layer_modeling_results), modeling_results)
 names(modeling_results)
@@ -148,7 +148,7 @@ cell_type_anno <- tibble(cluster = cell_types) |>
 cell_type_anno |> count(layers)
 
 ## Match with bayesSpace spatial annotations for k9 k16 exploration
-bayes_anno <- read.csv(file = here("processed-data", "rdata", "spe", "07_spatial_registration","bayesSpace_layer_annotations.csv")) |>
+bayes_anno <- read.csv(file = here("processed-data", "rdata", "spe", "08_spatial_registration","bayesSpace_layer_annotations.csv")) |>
   filter(bayesSpace != "k28") |>
   select(Annotation = bayesSpace, layer_long = cluster, layer_annotation, layer_combo)
 
