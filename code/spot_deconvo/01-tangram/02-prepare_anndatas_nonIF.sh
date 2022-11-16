@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "prepare_anndatas_nonIF"
-#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_broad_$TASK_ID.log
-#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_broad_$TASK_ID.log
+#$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_layer_$TASK_ID.log
+#$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/02-prepare_anndatas_nonIF_layer_$TASK_ID.log
 #$ -l mf=120G,h_vmem=120G,h_fsize=50G
 #$ -t 2-30
 #$ -tc 4

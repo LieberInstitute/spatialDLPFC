@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "registration_nonIF"
-#$ -o ../../../processed-data/spot_deconvo/03-cell2location/02-registration_nonIF_broad.log
-#$ -e ../../../processed-data/spot_deconvo/03-cell2location/02-registration_nonIF_broad.log
+#$ -o ../../../processed-data/spot_deconvo/03-cell2location/02-registration_nonIF_layer.log
+#$ -e ../../../processed-data/spot_deconvo/03-cell2location/02-registration_nonIF_layer.log
 #$ -l caracol,mf=150G,h_vmem=150G
 
 echo "**** Job starts ****"

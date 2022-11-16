@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "nonIF"
-#$ -o ../../../processed-data/spot_deconvo/04-spotlight/02-nonIF_broad.log
-#$ -e ../../../processed-data/spot_deconvo/04-spotlight/02-nonIF_broad.log
+#$ -o ../../../processed-data/spot_deconvo/04-spotlight/02-nonIF_layer.log
+#$ -e ../../../processed-data/spot_deconvo/04-spotlight/02-nonIF_layer.log
 #$ -l mf=60G,h_vmem=60G,h_fsize=50G
 
 echo "**** Job starts ****"
