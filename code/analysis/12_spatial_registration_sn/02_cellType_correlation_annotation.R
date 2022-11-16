@@ -187,7 +187,7 @@ layer_anno$layer |>
 source(here("code","analysis", "12_spatial_registration_sn","utils.R"))
 
 ## layer_annotation is the reordered layer label - removes detail from the ordering process but helps group
-layer_anno_all <- reduce(layer_anno, left_join, by = "cluster") |>
+cellType_layer_annotations <- reduce(layer_anno, left_join, by = "cluster") |>
   arrange(cluster) |>
   mutate(
     layer_annotation = fix_layer_order2(layer_label),
@@ -201,21 +201,21 @@ layer_anno_all <- reduce(layer_anno, left_join, by = "cluster") |>
   select(-cellType_broad)
 
 ## Save for reference
-write.csv(layer_anno_all, file = here(data_dir, "cellType_layer_annotations.csv"))
-# layer_anno_all <- read_csv(here(data_dir, "cellType_layer_annotations.csv")) 
+write.csv(cellType_layer_annotations, file = here(data_dir, "cellType_layer_annotations.csv"))
+# cellType_layer_annotations <- read_csv(here(data_dir, "cellType_layer_annotations.csv")) 
 
 #### Add Layer Annotations to colData ####
 ## Add to sce object for future use
 load(here(data_dir, "sce_DLPFC.Rdata"), verbose = TRUE)
 
-sce$cellType_layer <- factor(layer_anno_all$cellType_layer[match(sce$cellType_hc, layer_anno_all$cluster)],
+sce$cellType_layer <- factor(cellType_layer_annotations$cellType_layer[match(sce$cellType_hc, cellType_layer_annotations$cluster)],
     levels = c(
         "Astro", "EndoMural", "Micro", "Oligo", "OPC",
         "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4", "Excit_L5",
         "Excit_L5/6", "Excit_L6", "Inhib"
     )
 )
-sce$layer_annotation <- factor(layer_anno_all$layer_annotation[match(sce$cellType_hc, layer_anno_all$cluster)])
+sce$layer_annotation <- factor(cellType_layer_annotations$layer_annotation[match(sce$cellType_hc, cellType_layer_annotations$cluster)])
 
 table(sce$cellType_layer)
 # Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4 
@@ -247,7 +247,7 @@ annotation_xlsx <- here(data_dir,"sn_spatial_annotations.xlsx")
 write.xlsx(key, file=annotation_xlsx, sheetName="Key", append=FALSE, row.names=FALSE)
 
 ## write annotations
-write.xlsx(layer_anno_all, file=annotation_xlsx, sheetName= paste0("annotation"), append=TRUE, row.names=FALSE)
+write.xlsx(cellType_layer_annotations, file=annotation_xlsx, sheetName= paste0("annotation"), append=TRUE, row.names=FALSE)
 
 ## write correlations 
 walk2(cor_top100, names(cor_top100),
@@ -255,10 +255,11 @@ walk2(cor_top100, names(cor_top100),
 
 #### Explore Annotations ####
 ## Load bayesSpace annotations
-bayes_layers <- read.csv(here("processed-data", "rdata", "spe", "07_spatial_registration","bayesSpace_layer_annotations.csv")) |>
-  select(Annotation = bayesSpace, layer_long = cluster, layer_combo)
+bayes_layers <- get(load(here("processed-data", "rdata", "spe", "07_spatial_registration", "bayesSpace_layer_annotations.Rdata")))  |>
+    select(Annotation = bayesSpace, layer_long = cluster, layer_combo) |>
+  filter(Annotation %in% c("k9", "k16"))
 
-layer_anno_long <- layer_anno_all |>
+layer_anno_long <- cellType_layer_annotations |>
   select(cluster,ends_with("label")) |>
   pivot_longer(!cluster, names_to = "Annotation", values_to ="label") |>
   mutate(confidence = !grepl("\\*", label),
@@ -271,13 +272,16 @@ layer_anno_long <- layer_anno_all |>
                          paste0("D",str_pad(layers, 2,pad= "0"))), 
          layer_long = ifelse(Annotation == "layer",
                              gsub("L","Layer",layer_short),
-                             paste0(gsub("k","Sp", Annotation), "D", layers))) |>
-  left_join(bayes_layers) |> ## Add bayesSpace annotations
-  mutate(layer_combo = ifelse(is.na(layer_combo), layer_long, layer_combo)) #Fill in Layer with just layer
-
-
+                             paste0(gsub("k","Sp", Annotation), "D", str_pad(layers, nchar(Annotation)-1, pad ="0")))
+         ) |>
+  full_join(bayes_layers) |> ## Add bayesSpace annotations
+  mutate(layer_combo = factor(ifelse(is.na(layer_combo), layer_long, as.character(layer_combo)),
+         levels = (c(levels(layer_combo), c(paste0("Layer", 1:6), "WM"))))) |>#Fill in Layer with just layer - careful of factor order
+  arrange(Annotation)
+    
+layer_anno_long |> count(layer_long)
 layer_anno_long |> count(confidence)
-layer_anno_long |> count(layer_combo) |> print(n = 32)
+layer_anno_long |> count(Annotation, layer_combo) |> print(n = 32)
 
 ## Dot plot with bayes layer order
 label_anno_plot <- layer_anno_long |>
@@ -305,41 +309,61 @@ label_anno_plot_specific <- layer_anno_long |>
 ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_sn_all_specific.png"), height = 10)
 
 
-#### Condensed Spatial Registration ####
+#### Spatial Registration Heatmap ####
+## Build cor all
 colnames(cor_top100$k9) <- paste0("Sp9D", colnames(cor_top100$k9))
-colnames(cor_top100$k16) <- paste0("Sp16D", colnames(cor_top100$k16))
+colnames(cor_top100$k16) <- paste0("Sp16D", str_pad(colnames(cor_top100$k16), 2, pad = "0"))
 
 cor_top100$k9 <- cor_top100$k9[rownames(cor_top100$layer),]
 cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer),]
 
 cor_all <- t(do.call("cbind", cor_top100))
 corner(cor_all)
-
-## match spatialLIBD color scale
-theSeq <- seq(min(cor_all), max(cor_all), by = 0.01)
-my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
-
-## Add split for manual/k9/k16
-# annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"D"))
-annotation_split <- c(rep("layer", 7), rep("k9", 9), rep("k16", 16))
-
-## Add annotations
-layer_anno_long |> count(layer_long, layer_short) |> print(n = 37)
-
+rownames(cor_all)
+## Annotation matrix
 anno_matrix <- layer_anno_long |> 
   mutate(fill = ifelse(confidence, "X","*")) |> 
   select(cluster, layer_long, fill) |> 
   pivot_wider(names_from = "layer_long", values_from = "fill", values_fill = "") |>
+  filter(!is.na(cluster))|>
   column_to_rownames("cluster") |>
   t()
 
-missing_rows <- setdiff(rownames(cor_all),rownames(anno_matrix))
-blank_rows <- matrix(data = "", nrow= length(missing_rows), ncol = ncol(anno_matrix),
-                     dimnames = list(missing_rows, colnames(anno_matrix)))
-anno_matrix <- rbind(anno_matrix, blank_rows)
+## check rownames match
+setequal(rownames(cor_all),rownames(anno_matrix))
 
 anno_matrix <- anno_matrix[rownames(cor_all),colnames(cor_all)]
 corner(anno_matrix)
+corner(cor_all)
+
+## Color setup
+## match spatialLIBD color scale
+theSeq <- seq(min(cor_all), max(cor_all), by = 0.01)
+my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
+
+# domain colors from polychrome
+k_colors <- Polychrome::palette36.colors(28)
+names(k_colors) <- c(1:28)
+
+## cell color bar
+cell_color_bar <- columnAnnotation(" " = colnames(cor_all),
+                                   col = list(" " = cell_type_colors),
+                                   show_legend = FALSE)
+
+
+## Add intermediate colors to layers
+source(here("code","analysis","07_spatial_registration","libd_intermediate_layer_colors.R"))
+libd_intermediate_layer_colors <- c(spatialLIBD::libd_layer_colors, libd_intermediate_layer_colors)
+names(libd_intermediate_layer_colors) <- gsub("ayer","",names(libd_intermediate_layer_colors))
+libd_intermediate_layer_colors
+# L1            L2            L3            L4            L5            L6            WM            NA 
+# "#F0027F"     "#377EB8"     "#4DAF4A"     "#984EA3"     "#FFD700"     "#FF7F00"     "#1A1A1A" "transparent" 
+# WM2          L1/2          L2/3          L3/4          L4/5          L5/6         L6/WM 
+# "#666666"     "#BF3889"     "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00" 
+
+## Add split for manual/k9/k16
+# annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"D"))
+annotation_split <- c(rep("layer", 7), rep("k9", 9), rep("k16", 16))
 
 ## heatmap with annotations 
 pdf(here(plot_dir,"spatial_registration_sn_heatmap.pdf"))
@@ -356,36 +380,10 @@ Heatmap(cor_all,
         )
 dev.off()
 
-pdf(here(plot_dir,"spatial_registration_sn_heatmap_cluster.pdf"))
-Heatmap(cor_all,
-        name = "Cor",
-        col = my.col,
-        # row_split = annotation_split,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = TRUE,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
-        })
-dev.off()
-
-## Add annotation colors 
-k_colors <- Polychrome::palette36.colors(16)
-names(k_colors) <- c(1:16)
-
-# k_color_bar <- HeatmapAnnotation(df = data.frame(color = as.integer(ss(rownames(cor_all), "D",2))), 
-
-# k_color_bar <- rowAnnotation(color = ss(rownames(cor_all), "D",2),
-
-layer_color_expanded |> count(domain_color)
-layer_color_expanded |> count(layer_color)
-         
-k_color_bar <- rowAnnotation(color = gsub("Sp[0-9]+D","",rownames(cor_all)),
+## heatmap with basic colors
+k_color_bar <- rowAnnotation(color = as.integer(gsub("Sp[0-9]+D","",rownames(cor_all))),
                              col = list(color = c(k_colors, spatialLIBD::libd_layer_colors)),
                              show_legend = FALSE)
-
-cell_color_bar <- columnAnnotation(" " = colnames(cor_all),
-                                   col = list(" " = cell_type_colors),
-                                   show_legend = FALSE)
 
 pdf(here(plot_dir,"spatial_registration_sn_heatmap_colors.pdf"), height = 8, width = 12)
 Heatmap(cor_all,
@@ -411,49 +409,73 @@ layer_colors <- tibble(Annotation = "Layer",
                        domain_color = NA,
                        layer_color = c(paste0("L", 1:6), "WM"))
 
-layer_anno_expanded <- bayes_layers |>
+layer_anno_colors <- bayes_layers |>
   filter(Annotation %in% c("k9", "k16")) |>
-  mutate(domain_color = gsub("Sp[0-9]+D","",layer_long)) |>
-  separate(layer_combo, into = c("layer_color", NA), " ", remove = FALSE) |>
+  mutate(domain_color = as.integer(gsub("Sp[0-9]+D","",layer_long))) |>
+  separate(layer_combo, into = c(NA, "layer_color"), " ~ ", remove = FALSE) |>
   select(Annotation, layer_combo,layer_long, domain_color, layer_color) |>
-  mutate(layer_color = gsub("ayer","",layer_color),
-         layer_combo = paste(layer_long, "~", layer_color)) |>
   add_row(layer_colors) |>
-  arrange(layer_color) |>
   arrange(Annotation)
 
-## order by bayesSpace annos
-rownames(cor_all) <- layer_anno_expanded$layer_combo[match(rownames(cor_all), layer_anno_expanded$layer_long)]
-cor_all <- cor_all[layer_anno_expanded$layer_combo,]
+## order by bayesSpace layer annotation
+cor_all <- cor_all[layer_anno_colors$layer_long,]
+rownames(cor_all) <- layer_anno_colors$layer_combo
 
-rownames(anno_matrix) <- layer_anno_expanded$layer_combo[match(rownames(anno_matrix), layer_anno_expanded$layer_long)]
-anno_matrix <- anno_matrix[layer_anno_expanded$layer_combo,]
+anno_matrix <- anno_matrix[layer_anno_colors$layer_long,]
+rownames(anno_matrix) <- layer_anno_colors$layer_combo
 
 ## build row annotation
-sort(unique(layer_anno_expanded$layer_color))
-
-libd_intermed_colors <- c(`L2/3` = "#50DDAC", `L3/4` = "#8278B0", `L6/WM` = "#7A3D00")
-libd_layer_colors_expanded <- spatialLIBD::libd_layer_colors
-names(libd_layer_colors_expanded) <- gsub("ayer", "", names(libd_layer_colors_expanded))
-
-libd_layer_colors_expanded <- c(libd_layer_colors_expanded, libd_intermed_colors)
-
-bayes_color_bar <- rowAnnotation(df = layer_anno_expanded |>
-                                   select(layer_combo, domain_color, layer_color) |>
-                                   column_to_rownames("layer_combo"),
-                             col = list(domain_color = c(k_colors, libd_layer_colors_expanded),
-                                        layer_color = libd_layer_colors_expanded),
+bayes_color_bar <- rowAnnotation(df = layer_anno_colors |>
+                                   select(domain_color, layer_color) ,
+                             col = list(domain_color = k_colors,
+                                        layer_color = libd_intermediate_layer_colors),
                              show_legend = FALSE)
 
 ## Ordered heatmap
-pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno.pdf"), height = 8, width = 12)
+pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno.pdf"), height = 8, width = 10)
 Heatmap(cor_all,
         name = "Cor",
         col = my.col,
-        row_split = layer_anno_expanded$Annotation,
+        row_split = layer_anno_colors$Annotation,
         rect_gp = gpar(col = "black", lwd = 1),
         cluster_rows = FALSE,
         cluster_columns = TRUE,
+        right_annotation = bayes_color_bar,
+        bottom_annotation = cell_color_bar,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
+        }
+)
+dev.off()
+
+
+pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno_km.pdf"), height = 8, width = 10)
+Heatmap(cor_all,
+        name = "Cor",
+        col = my.col,
+        row_split = layer_anno_colors$Annotation,
+        rect_gp = gpar(col = "black", lwd = 1),
+        cluster_rows = FALSE,
+        cluster_columns = TRUE,
+        column_km = 3,
+        right_annotation = bayes_color_bar,
+        bottom_annotation = cell_color_bar,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
+        }
+)
+dev.off()
+
+pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno_cluster.pdf"), height = 8, width = 10)
+Heatmap(cor_all,
+        name = "Cor",
+        col = my.col,
+        # row_split = layer_anno_colors$Annotation,
+        rect_gp = gpar(col = "black", lwd = 1),
+        cluster_rows = TRUE,
+        cluster_columns = TRUE,
+        column_km = 3,
+        row_km = 2,
         right_annotation = bayes_color_bar,
         bottom_annotation = cell_color_bar,
         cell_fun = function(j, i, x, y, width, height, fill) {
