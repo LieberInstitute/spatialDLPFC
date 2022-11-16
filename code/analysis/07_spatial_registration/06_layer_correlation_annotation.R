@@ -176,12 +176,12 @@ bayes_layer_anno_plot <- layer_anno_long |>
 ggsave(bayes_layer_anno_plot, filename = here(plot_dir, "bayesSpace_layer_anno.png"))
 
 #### bayesSpace Spatial Registration heatmaps ####
-
+## color set up
 ## match spatialLIBD color scale
 theSeq <- seq(min(cor_kplus), max(cor_kplus), by = 0.01)
 my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
 
-# domain colors from plychrome
+# domain colors from polychrome
 k_colors <- Polychrome::palette36.colors(28)
 names(k_colors) <- c(1:28)
 
