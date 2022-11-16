@@ -31,7 +31,7 @@ ggsave(k9_plot, filename = here(plot_dir, "k9_expression_meninges.png"), height 
 
 
 k9_plot_CLDN5 <- custom_plotExpression(spe_k9, genes = c("CLDN5"), assay = "logcounts", cat = "BayesSpace", fill_colors = k9_colors, highlight_sample = "Br6522_ant") +
-  labs(x = "Pseudobulk k9 Domains")
+  labs(x = "Pseudobulk k9 Domains", title = "1 > others p=2.04e-75")
 ggsave(k9_plot_CLDN5, filename = here(plot_dir, "k9_expression_meninges_CLDN5.png"), height = 5)
 
 
@@ -57,7 +57,7 @@ spe_k16$highlight <- FALSE
 
 k16_plot_SPARC <- custom_plotExpression(spe_k16[,spe_k16$BayesSpace %in% c(2,14)],
                                         genes = c("SPARC"), assay = "logcounts", cat = "BayesSpace", fill_colors = k16_colors, highlight_sample = "Br6522_ant") +
-  labs(x = "Pseudobulk k16 Domains", title = "14 > 2 p = 1.52e-13")
+  labs(x = "Pseudobulk k16 Domains", title = "14 > 2 p=1.52e-13")
 ggsave(k16_plot_SPARC, filename = here(plot_dir, "k16_expression_1a-1b_SPARC.png"), width = 6, height = 3)
 
 k16_plot_HTRA1 <- custom_plotExpression(spe_k16[,spe_k16$BayesSpace %in% c(2,14)], 
