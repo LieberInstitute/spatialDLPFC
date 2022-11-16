@@ -78,36 +78,6 @@ Find inflection points of fasthplus graph
 `03_plot_fasthplus.R`
 Make plot of fasthplus measure for manuscript
 
-### 08_spatial_registration
-`01_spatial_registration.R`
-Perform spatial registration on BayesSpace clusters for k = 2 to k = 28 against manual annotations.
-
-`01_spatial_registration.sh`
-
-`01a_spatial_registration_16_23.sh`
-
-`01b_spatial_registration_24_28.sh`
-
-`02_bad_clusters.R`
-Originally created script to investigate BayesSpace clusters that didn't look like any of the manual annotations according to spatial registration. Then made heatmaps of the number of spots from each BayesSpace at k = 9 fall into which of the BayesSpace clusters at k = 16. Also did this with k = 9 vs k = 28. This is a supplementary figure called spots_in_cluster.
-
-`03_custom_spatial_registration_plots.R`
-Make custom versions of spatial registration plots for manuscript. 
-
-`03_custom_spatial_registration_plots.sh`
-
-`04_color_bar.R`
-Make color bar to go under spatial registration plots of figure 2.
-
-`layer_matrix_plot_AS.R`
-My version of layer_matrix_plot() function.
-
-`layer_stat_cor_plot_AS.R`
-My version of layer_stat_cor_plot() function.
-
-`05_t_stat_cor_plot.R`
-Make t-stat correlation plot for figure 2. 
-
 ### 07_layer_differential_expression
 `01_preliminary_analysis.R`
 This is where I created the pseudobulked objects for all values of k, filter and normalize. Then run pca. Save pseudobulked object for each k. 
@@ -147,6 +117,36 @@ Create heatmap of top 5 enriched genes for each layer.
 
 `08_other_enrichment_plots.R`
 Plots of the numbers of enriched and downregulated genes in each layer. 
+
+### 08_spatial_registration
+`01_spatial_registration.R`
+Perform spatial registration on BayesSpace clusters for k = 2 to k = 28 against manual annotations.
+
+`01_spatial_registration.sh`
+
+`01a_spatial_registration_16_23.sh`
+
+`01b_spatial_registration_24_28.sh`
+
+`02_bad_clusters.R`
+Originally created script to investigate BayesSpace clusters that didn't look like any of the manual annotations according to spatial registration. Then made heatmaps of the number of spots from each BayesSpace at k = 9 fall into which of the BayesSpace clusters at k = 16. Also did this with k = 9 vs k = 28. This is a supplementary figure called spots_in_cluster.
+
+`03_custom_spatial_registration_plots.R`
+Make custom versions of spatial registration plots for manuscript. 
+
+`03_custom_spatial_registration_plots.sh`
+
+`04_color_bar.R`
+Make color bar to go under spatial registration plots of figure 2.
+
+`layer_matrix_plot_AS.R`
+My version of layer_matrix_plot() function.
+
+`layer_stat_cor_plot_AS.R`
+My version of layer_stat_cor_plot() function.
+
+`05_t_stat_cor_plot.R`
+Make t-stat correlation plot for figure 2. 
 
 ### 09_region_differential_expression
 `01_preliminary_analysis_region.R`
