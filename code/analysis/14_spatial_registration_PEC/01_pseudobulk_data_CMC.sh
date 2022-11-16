@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=100G,h_vmem=100G,h_fsize=100G
+#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
 #$ -N pseudobulk_data_CMC
 #$ -o logs/01_pseudobulk_data_CMC.txt
 #$ -e logs/01_pseudobulk_data_CMC.txt
@@ -23,7 +23,7 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R CMC
+Rscript 01_pseudobulk_data.R CMC CMC-CellHashing_annotated.h5ad
 
 echo "**** Job ends ****"
 date

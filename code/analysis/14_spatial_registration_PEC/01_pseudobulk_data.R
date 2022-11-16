@@ -7,8 +7,12 @@ library("sessioninfo")
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
 dataset <- args[1]
+input_file <- args[2]
 message("\n#### Running: ", dataset, " ####")
-filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
+# filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
+
+## for v3 data
+filepath <- here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized", dataset, input_file)
 stopifnot(file.exists(filepath))
 
 message(Sys.time(), " - Reading data from: ", filepath)
@@ -50,13 +54,6 @@ saveRDS(sce_pseudo,
         paste0("pseudobulk_", dataset, ".rds")
     )
 )
-
-# sgejobs::job_single('01_pseudobulk_data_DevBrain', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R DevBrain")
-# sgejobs::job_single('01_pseudobulk_data_SZBD', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R SZBD")
-# sgejobs::job_single('01_pseudobulk_data_CMC', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R CMC")
-# sgejobs::job_single('01_pseudobulk_data_IsoHUB', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R IsoHUB")
-# sgejobs::job_single('01_pseudobulk_data_UCLA', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R UCLA")
-# sgejobs::job_single('01_pseudobulk_data_Urban-DLPFC', create_shell = TRUE, memory = '25G', command = "Rscript 01_pseudobulk_data.R Urban-DLPFC")
 
 ## Reproducibility information
 print("Reproducibility information:")

@@ -4,8 +4,8 @@
 #$ -o ../../../processed-data/spot_deconvo/01-tangram/logs/03-align_tangram_nonIF_layer_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/01-tangram/logs/03-align_tangram_nonIF_layer_$TASK_ID.log
 #$ -l caracol,mf=128G,h_vmem=128G
-#$ -t 1
-#$ -tc 1
+#$ -t 2-30
+#$ -tc 2
 
 echo "**** Job starts ****"
 date

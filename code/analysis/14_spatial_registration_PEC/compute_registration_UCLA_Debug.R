@@ -48,7 +48,7 @@ names(assays(sce2))
 
 
 
-datasets <- c("DevBrain", "IsoHuB","CMC","UCLA-ASD","SZBD-Multi")
+datasets <- c("DevBrain", "IsoHuB","CMC","UCLA-ASD","SZBDMulti")
 names(datasets) <- datasets
 purrr::map(datasets, ~list.files(here("raw-data", "psychENCODE", "version2", .x), pattern = ".h5ad"))
 
