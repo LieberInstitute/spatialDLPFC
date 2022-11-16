@@ -67,7 +67,7 @@ deconvo_labels = deconvo_tool_names
 names(deconvo_labels) = deconvo_tools
 deconvo_labeller = labeller(deconvo_tool = deconvo_labels)
 
-cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#FEFADC")
+cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1")
 names(cell_type_labels) = cell_types_actual
 
 ################################################################################
@@ -139,7 +139,7 @@ all_spots <- function(count_df, plot_name) {
 
 #   Scatterplot of observed vs. actual total counts summed across spots,
 #   faceted by deconvolution tool
-across_spots <- function(count_df, plot_name) {
+across_spots <- function(count_df, plot_name, x_angle = 0) {
     #   Compute metrics for each deconvolution tool: correlation between
     #   observed and actual values as well as RMSE
     metrics_df <- count_df %>%
@@ -158,7 +158,7 @@ across_spots <- function(count_df, plot_name) {
         geom_point(
             aes(x = observed, y = actual, shape = sample_id, color = cell_type)
         ) +
-        coord_fixed() +
+        #coord_fixed() +
         facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
         geom_abline(
             intercept = 0, slope = 1, linetype = "dashed", color = "red"
@@ -170,22 +170,34 @@ across_spots <- function(count_df, plot_name) {
                 y = min(count_df$actual),
                 label = corr
             ),
-            hjust = 1, vjust = 0, size = 3
+            hjust = 1, vjust = 0
         ) +
         geom_text(
             data = metrics_df,
             mapping = aes(
                 x = max(count_df$observed),
-                y =  0.15 * max(count_df$actual) + 0.85 * min(count_df$actual),
+                y =  0.15 * max(count_df$actual),
                 label = rmse
             ),
-            hjust = 1, vjust = 0, size = 3
+            hjust = 1, vjust = 0
         ) +
-        scale_color_discrete(cell_type_labels) +
-        labs(x = "Software-estimated", y = "CART-calculated") +
-        theme_bw(base_size = 10)
+        scale_color_manual(values = cell_type_labels) +
+        scale_x_continuous(
+            limits = c(0, max(count_df$observed) * 1.05),
+            expand = c(0, 0)
+        ) +
+        scale_y_continuous(
+            limits = c(0, max(count_df$actual) * 1.05),
+            expand = c(0, 0)
+        ) +
+        labs(
+            x = "Software-estimated", y = "CART-calculated",
+            color = "Cell Type", shape = "Sample ID"
+        ) +
+        theme_bw(base_size = 15) +
+        theme(axis.text.x = element_text(angle = x_angle))
 
-    pdf(file.path(plot_dir, plot_name))
+    pdf(file.path(plot_dir, plot_name), height = 4, width = 10)
     print(p)
     dev.off()
     # return(p)
@@ -473,7 +485,7 @@ for (sample_id in sample_ids) {
         scale_x_discrete(
             labels = c("actual" = "Ground-Truth", "observed" = "Estimated")
         ) +
-        scale_fill_discrete(cell_type_labels) +
+        scale_fill_manual(values = cell_type_labels) +
         theme_bw(base_size = 16)
 }
 pdf(file.path(plot_dir, 'prop_barplots.pdf'), height = 4, width = 10)
@@ -499,7 +511,7 @@ ggplot(
     ) +
     facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
     geom_point() +
-    scale_color_discrete(cell_type_labels) +
+    scale_color_manual(values = cell_type_labels) +
     labs(color = "Cell Type", shape = "Sample ID") +
     theme_bw(base_size = 13)
 dev.off()
@@ -593,7 +605,12 @@ count_df <- full_df %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     ungroup()
 
-across_spots(count_df, "counts_across_spots_scatter.pdf")
+across_spots(count_df, "counts_across_spots_scatter.pdf", x_angle = 90)
+across_spots(
+    count_df |> filter(cell_type != "other"),
+    "counts_across_spots_scatter_no_other.pdf",
+    x_angle = 90
+)
 
 #-------------------------------------------------------------------------------
 #   Proportions: "all" and "across"
@@ -629,7 +646,12 @@ prop_df <- full_df %>%
     ) %>%
     ungroup()
 
+#   Plot versions with and without the "other" cell type
 across_spots(prop_df, "props_across_spots_scatter.pdf")
+across_spots(
+    prop_df |> filter(cell_type != "other"),
+    "props_across_spots_scatter_no_other.pdf"
+)
 
 #-------------------------------------------------------------------------------
 #   Adjusted counts: "all" and "across"
@@ -653,7 +675,13 @@ count_df <- full_df %>%
     mutate(observed = sum(actual) * observed / sum(observed)) %>%
     ungroup()
 
-across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf")
+#   Plot versions with and without the "other" cell type
+across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf", x_angle = 90)
+across_spots(
+    count_df |> filter(cell_type != "other"),
+    "adjusted_counts_across_spots_scatter_no_other.pdf",
+    x_angle = 90
+)
 
 #-------------------------------------------------------------------------------
 #   Spatial distribution of counts for each sample, cell_type, deconvo method
@@ -898,7 +926,9 @@ for (sample_id in sample_ids) {
         spatial = FALSE
     )[[1]] +
         scale_color_discrete() +
-        scale_fill_discrete()
+        scale_fill_discrete() +
+        theme_bw(base_size = 15) +
+        coord_fixed()
 }
 
 pdf(file.path(plot_dir, 'spot_layer_labels.pdf'))
