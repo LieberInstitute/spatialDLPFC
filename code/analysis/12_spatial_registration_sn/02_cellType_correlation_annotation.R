@@ -12,6 +12,9 @@ library("sessioninfo")
 plot_dir <- here("plots", "12_spatial_registration_sn")
 data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
 
+## cell type colors
+load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors.Rdata", verbose = TRUE)
+
 ## Load Registration Results
 load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.RDS"), verbose = TRUE)
 
@@ -57,13 +60,82 @@ map2(cor_top100, names(cor_top100), function(data, name){
 })
 
 #### Annotate Layers ####
-layer_anno <- map2(cor_top100, names(cor_top100), function(cor, name){
+## Explore correlation distribution 
+cor_long <- map(cor_top100, ~.x |> 
+  melt() |>
+  rename(cellType = Var1, domain = Var2, cor = value) |>
+    mutate(domain = as.character(domain)))
+
+cor_long <- do.call("rbind", cor_long) |>
+  rownames_to_column("Annotation") |>
+  mutate(Annotation = gsub("\\.[0-9]+","", Annotation))
+
+cor_histo <- cor_long |>
+  filter(cor > 0) |>
+  ggplot(aes(cor, fill = cellType)) +
+  geom_histogram(binwidth = 0.05) +
+  geom_vline(xintercept = 0.25) +
+  scale_fill_manual(values = cell_type_colors) +
+  facet_grid(Annotation~cellType) +
+  # facet_grid(Annotation~cellType) +
+  facet_wrap(~Annotation, ncol = 1) +
+  theme_bw() +
+  theme(legend.position = "None")
+
+# ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
+ggsave(cor_histo, filename = here(plot_dir, "cor_histogram2.png"))
+
+cor_density <- cor_long |>
+  filter(cor > 0) |>
+  ggplot(aes(cor, color = cellType)) +
+  geom_density() +
+  geom_vline(xintercept = 0.25) +
+  scale_color_manual(values = cell_type_colors) +
+  facet_wrap(~Annotation, ncol = 1) +
+  theme_bw() +
+  theme(legend.position = "None")
+
+ggsave(cor_density, filename = here(plot_dir, "cor_density.png"))
+
+
+## whats the max cor for each cell type?
+max_cor <- cor_long |>
+  group_by(Annotation, cellType) |>
+  arrange(-cor) |>
+  slice(1)
+
+cor_max_histo <- max_cor |>
+  ggplot(aes(cor, fill = cellType)) +
+  geom_histogram(binwidth = 0.05) +
+  geom_vline(xintercept = 0.25) +
+  scale_fill_manual(values = cell_type_colors) +
+  facet_wrap(~Annotation, ncol = 1) +
+  theme_bw() +
+  theme(legend.position = "None")
+
+# ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
+ggsave(cor_max_histo, filename = here(plot_dir, "cor_max_histo.png"))
+
+
+## Annotate 
+layer_anno_easy <- map2(cor_top100, names(cor_top100), function(cor, name){
   anno <- annotate_registered_clusters(cor_stats_layer = cor,
                                        confidence_threshold = 0.25,
                                        cutoff_merge_ratio = 0.25)
   colnames(anno) <- gsub("layer",name, colnames(anno))
   return(anno)
 })
+
+layer_anno_strict <- map2(cor_top100, names(cor_top100), function(cor, name){
+  anno <- annotate_registered_clusters(cor_stats_layer = cor,
+                                       confidence_threshold = 0.25,
+                                       cutoff_merge_ratio = 0.1)
+  colnames(anno) <- gsub("layer",name, colnames(anno))
+  return(anno)
+})
+
+## use easy params for layer, and strict for specific domains
+layer_anno <- c(layer_anno_easy["layer"], layer_anno_strict[c("k9","k16")])
 
 #### Annotate Cell Types by Layer ####
 layer_anno$layer |> arrange(cluster)
@@ -261,13 +333,15 @@ anno_matrix <- layer_anno_long |>
   column_to_rownames("cluster") |>
   t()
 
+missing_rows <- setdiff(rownames(cor_all),rownames(anno_matrix))
+blank_rows <- matrix(data = "", nrow= length(missing_rows), ncol = ncol(anno_matrix),
+                     dimnames = list(missing_rows, colnames(anno_matrix)))
+anno_matrix <- rbind(anno_matrix, blank_rows)
+
 anno_matrix <- anno_matrix[rownames(cor_all),colnames(cor_all)]
 corner(anno_matrix)
 
-## all match
-setdiff(colnames(anno_matrix),colnames(cor_all))
-setdiff(rownames(anno_matrix),rownames(cor_all))
-
+## heatmap with annotations 
 pdf(here(plot_dir,"spatial_registration_sn_heatmap.pdf"))
 Heatmap(cor_all,
         name = "Cor",
@@ -309,8 +383,6 @@ k_color_bar <- rowAnnotation(color = gsub("Sp[0-9]+D","",rownames(cor_all)),
                              col = list(color = c(k_colors, spatialLIBD::libd_layer_colors)),
                              show_legend = FALSE)
 
-load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors.Rdata", verbose = TRUE)
-
 cell_color_bar <- columnAnnotation(" " = colnames(cor_all),
                                    col = list(" " = cell_type_colors),
                                    show_legend = FALSE)
@@ -344,9 +416,10 @@ layer_anno_expanded <- bayes_layers |>
   mutate(domain_color = gsub("Sp[0-9]+D","",layer_long)) |>
   separate(layer_combo, into = c("layer_color", NA), " ", remove = FALSE) |>
   select(Annotation, layer_combo,layer_long, domain_color, layer_color) |>
-  mutate(layer_color = gsub("ayer","",layer_color)) |>
+  mutate(layer_color = gsub("ayer","",layer_color),
+         layer_combo = paste(layer_long, "~", layer_color)) |>
   add_row(layer_colors) |>
-  arrange(layer_combo) |>
+  arrange(layer_color) |>
   arrange(Annotation)
 
 ## order by bayesSpace annos
@@ -366,13 +439,11 @@ names(libd_layer_colors_expanded) <- gsub("ayer", "", names(libd_layer_colors_ex
 libd_layer_colors_expanded <- c(libd_layer_colors_expanded, libd_intermed_colors)
 
 bayes_color_bar <- rowAnnotation(df = layer_anno_expanded |>
-                                   select(layer_combo, layer_color, domain_color) |>
+                                   select(layer_combo, domain_color, layer_color) |>
                                    column_to_rownames("layer_combo"),
                              col = list(domain_color = c(k_colors, libd_layer_colors_expanded),
                                         layer_color = libd_layer_colors_expanded),
                              show_legend = FALSE)
-
-layerHeights = c(0, 40, 55, 75, 85, 110, 120, 135)
 
 ## Ordered heatmap
 pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno.pdf"), height = 8, width = 12)
