@@ -445,7 +445,7 @@ full_df <- rbind(observed_df, actual_df) %>%
 #   Consider the count of each cell type in each spot a single data point, and
 #   compute correlation and RMSE between ground-truth counts and those measured
 #   by each deconvolution software
-print("Overall performance of deconvolution methods:")
+print("Overall performance of deconvolution methods (accuracy of spatial variation):")
 full_df |>
     group_by(deconvo_tool) |>
     summarize(
@@ -491,6 +491,26 @@ for (sample_id in sample_ids) {
 pdf(file.path(plot_dir, 'prop_barplots.pdf'), height = 4, width = 10)
 print(plot_list)
 dev.off()
+
+print("Accuracy of overall cell-type proportions per section (Mean KL divergence from ground-truth):")
+full_df %>%
+    #   Compute cell-type proportions in each spot
+    group_by(sample_id, deconvo_tool, cell_type) %>%
+    summarize(observed = sum(observed), actual = sum(actual)) %>%
+    group_by(sample_id, deconvo_tool) %>%
+    mutate(
+        observed = observed / sum(observed),
+        actual = actual / sum(actual),
+    ) |>
+    #   Compute each term in the sum for KL divergence
+    group_by(sample_id, deconvo_tool, cell_type) |>
+    summarize(kl_piece = observed * log(observed / actual)) |>
+    #   Add all terms to form the sum for each sample
+    group_by(sample_id, deconvo_tool) |>
+    summarize(kl = sum(kl_piece)) |>
+    #   Take the mean across samples to form one value per tool
+    group_by(deconvo_tool) |>
+    summarize(kl = mean(kl))
 
 #-------------------------------------------------------------------------------
 #   Plot distribution of correlation & RMSE by sample and deconvo tool
