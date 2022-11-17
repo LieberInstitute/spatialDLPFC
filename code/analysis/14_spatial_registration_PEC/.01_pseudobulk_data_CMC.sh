@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=100G,h_vmem=100G,h_fsize=200G
-#$ -N pseudobulk_data_DevBrain
-#$ -o logs/01_pseudobulk_data_DevBrain.txt
-#$ -e logs/01_pseudobulk_data_DevBrain.txt
+#$ -l mem_free=100G,h_vmem=100G,h_fsize=100G
+#$ -N pseudobulk_data_CMC
+#$ -o logs/01_pseudobulk_data_CMC.txt
+#$ -e logs/01_pseudobulk_data_CMC.txt
 #$ -m e
 
 echo "**** Job starts ****"
@@ -23,10 +23,12 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R DevBrain
+Rscript 01_pseudobulk_data.R CMC/CMC-CellHashing_annotated.h5ad
 
 echo "**** Job ends ****"
 date
 
 ## This script was made using sgejobs version 0.99.1
 ## available from http://research.libd.org/sgejobs/
+
+

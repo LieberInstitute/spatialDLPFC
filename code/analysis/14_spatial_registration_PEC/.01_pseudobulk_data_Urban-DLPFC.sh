@@ -23,10 +23,12 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R Urban-DLPFC
+Rscript 01_pseudobulk_data.R Urban-DLPFC/Urban-DLPFC-snRNAseq_annotated.h5ad
 
 echo "**** Job ends ****"
 date
 
 ## This script was made using sgejobs version 0.99.1
 ## available from http://research.libd.org/sgejobs/
+
+

@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=300G,h_vmem=300G,h_fsize=100G
-#$ -N pseudobulk_data_SZBD
-#$ -o logs/01_pseudobulk_data_SZBD.txt
-#$ -e logs/01_pseudobulk_data_SZBD.txt
+#$ -l mem_free=100G,h_vmem=100G,h_fsize=100G
+#$ -N pseudobulk_data_UCLA-ASD
+#$ -o logs/01_pseudobulk_data_UCLA-ASD.txt
+#$ -e logs/01_pseudobulk_data_UCLA-ASD.txt
 #$ -m e
 
 echo "**** Job starts ****"
@@ -23,10 +23,12 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data_SZBD.R
+Rscript 01_pseudobulk_data.R UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad
 
 echo "**** Job ends ****"
 date
 
 ## This script was made using sgejobs version 0.99.1
 ## available from http://research.libd.org/sgejobs/
+
+

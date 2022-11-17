@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
-#$ -N pseudobulk_data_IsoHUB
-#$ -o logs/01_pseudobulk_data_IsoHuB.txt
-#$ -e logs/01_pseudobulk_data_IsoHuB.txt
+#$ -N pseudobulk_data_DevBrain-snRNAseq
+#$ -o logs/01_pseudobulk_data_DevBrain-snRNAseq.txt
+#$ -e logs/01_pseudobulk_data_DevBrain-snRNAseq.txt
 #$ -m e
 
 echo "**** Job starts ****"
@@ -23,10 +23,12 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R IsoHuB
+Rscript 01_pseudobulk_data.R DevBrain-snRNAseq/DevBrain-snRNAseq_annotated.h5ad
 
 echo "**** Job ends ****"
 date
 
 ## This script was made using sgejobs version 0.99.1
 ## available from http://research.libd.org/sgejobs/
+
+

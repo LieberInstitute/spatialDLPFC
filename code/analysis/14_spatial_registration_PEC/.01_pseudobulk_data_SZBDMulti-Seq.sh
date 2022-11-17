@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=200G,h_vmem=200G,h_fsize=100G
-#$ -N pseudobulk_data_UCLA
-#$ -o logs/01_pseudobulk_data_UCLA.txt
-#$ -e logs/01_pseudobulk_data_UCLA.txt
+#$ -N pseudobulk_data_SZBDMulti-Seq
+#$ -o logs/01_pseudobulk_data_SZBDMulti-Seq.txt
+#$ -e logs/01_pseudobulk_data_SZBDMulti-Seq.txt
 #$ -m e
 
 echo "**** Job starts ****"
@@ -23,10 +23,12 @@ module load conda_R/4.2
 module list
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R UCLA-ASD
+Rscript 01_pseudobulk_data.R SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad
 
 echo "**** Job ends ****"
 date
 
 ## This script was made using sgejobs version 0.99.1
 ## available from http://research.libd.org/sgejobs/
+
+
