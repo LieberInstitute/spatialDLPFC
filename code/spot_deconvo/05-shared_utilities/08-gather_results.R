@@ -103,14 +103,18 @@ for (cell_group in c("broad", "layer")) {
                 #   about barcode, sample_id, deconvo tool, and cell-type counts
                 observed_df_small$barcode <- ss(observed_df_small$key, "_", 1)
                 observed_df_small$sample_id <- sample_id
-                observed_df_small$deconvo_tool <- deconvo_tool
+                observed_df_small$deconvo_tool <- deconvo_tool_names[
+                    match(deconvo_tool, deconvo_tools)
+                ]
                 observed_df_small$obs_type <- "observed"
                 observed_df_small <- observed_df_small[
                     , c(added_colnames, cell_types)
                 ]
                 
                 if (dataset == "IF") {
-                    actual_df_small$deconvo_tool <- deconvo_tool
+                    actual_df_small$deconvo_tool <- deconvo_tool_names[
+                        match(deconvo_tool, deconvo_tools)
+                    ]
                     
                     actual_list[[index]] <- actual_df_small[
                         , c(added_colnames, cell_types_actual)

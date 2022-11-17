@@ -13,8 +13,7 @@ sample_ids_path <- here(
     "sample_ids.txt"
 )
 
-deconvo_tools <- c("01-tangram", "03-cell2location", "04-spotlight")
-deconvo_tool_names = c('tangram', 'cell2location', 'SPOTlight')
+deconvo_tools = c('tangram', 'cell2location', 'SPOTlight')
 
 plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
@@ -62,10 +61,6 @@ if (cell_group == "broad") {
     )
 }
 
-deconvo_labels = deconvo_tool_names
-names(deconvo_labels) = deconvo_tools
-deconvo_labeller = labeller(deconvo_tool = deconvo_labels)
-
 cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1")
 names(cell_type_labels) = cell_types_actual
 
@@ -102,8 +97,7 @@ all_spots <- function(count_df, plot_name) {
                     intercept = 0, slope = 1, linetype = "dashed", color = "red"
                 ) +
                 facet_grid(
-                    rows = vars(sample_id), cols = vars(deconvo_tool),
-                    labeller = deconvo_labeller
+                    rows = vars(sample_id), cols = vars(deconvo_tool)
                 ) +
                 guides(col = guide_legend(override.aes = list(alpha = 1))) +
                 labs(
@@ -157,8 +151,7 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
         geom_point(
             aes(x = observed, y = actual, shape = sample_id, color = cell_type)
         ) +
-        #coord_fixed() +
-        facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
+        facet_wrap(~deconvo_tool) +
         geom_abline(
             intercept = 0, slope = 1, linetype = "dashed", color = "red"
         ) +
@@ -262,10 +255,7 @@ spatial_counts_plot_full = function(
                 temp = spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type,
                     'observed',
-                    paste0(
-                        cell_type, ' counts\n(',
-                        deconvo_tool_names[match(deconvo_tool, deconvo_tools)], ')'
-                    )
+                    paste0(cell_type, ' counts\n(', deconvo_tool, ')')
                 )
                 plot_list[[i]] = temp[[1]]
                 max_list[[i]] = temp[[2]]
@@ -400,7 +390,7 @@ for (sample_id in sample_ids) {
         aes(x = source, y = prop, fill = cell_type)
     ) +
         geom_bar(stat = "identity") +
-        facet_wrap(~ deconvo_tool, labeller = deconvo_labeller) +
+        facet_wrap(~ deconvo_tool) +
         labs(
             x = NULL, y = "Sample-Wide Proportion", fill = "Cell Type",
             title = sample_id
@@ -452,7 +442,7 @@ ggplot(
     metrics_df,
     aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
     ) +
-    facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
+    facet_wrap(~deconvo_tool) +
     geom_point() +
     scale_color_manual(values = cell_type_labels) +
     labs(color = "Cell Type", shape = "Sample ID") +
@@ -465,7 +455,7 @@ dev.off()
 #-------------------------------------------------------------------------------
 
 count_df = full_df |>
-    filter(deconvo_tool %in% c("01-tangram", "03-cell2location")) |>
+    filter(deconvo_tool %in% c("tangram", "cell2location")) |>
     group_by(sample_id, deconvo_tool) |>
     summarize(observed = sum(observed), actual = sum(actual)) |>
     mutate(diff = abs((observed - actual) / (observed + actual)))
@@ -474,7 +464,6 @@ pdf(file.path(plot_dir, 'total_cells_sample.pdf'))
 ggplot(count_df, aes(x = deconvo_tool, y = diff, color = sample_id)) +
     geom_point() +
     theme_bw(base_size = 10) +
-    scale_x_discrete(labels = c('tangram', 'cell2location')) +
     scale_y_continuous(limits = c(0, max(count_df$diff) * 1.1), expand = c(0, 0)) +
     labs(x = "Deconvolution tool", y = "Absolute proportion difference")
 dev.off()
@@ -487,7 +476,7 @@ dev.off()
 #   deconvolution methods that aren't constrained to use the same totals as
 #   provided (tangram and cell2location)
 count_df <- full_df %>%
-    filter(deconvo_tool %in% c("01-tangram", "03-cell2location")) %>%
+    filter(deconvo_tool %in% c("tangram", "cell2location")) %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     ungroup()
@@ -509,7 +498,7 @@ metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
 pdf(file.path(plot_dir, 'total_cells_spot.pdf'))
 ggplot(count_df) +
     geom_point(aes(x = observed, y = actual), alpha = 0.01) +
-    facet_wrap(~deconvo_tool, labeller = deconvo_labeller) +
+    facet_wrap(~deconvo_tool) +
     coord_fixed() +
     geom_abline(
         intercept = 0, slope = 1, linetype = "dashed", color = "red"
@@ -745,8 +734,7 @@ plot_list <- lapply(
                 alpha = 0.01
             ) +
             facet_grid(
-                rows = vars(sample_id), cols = vars(deconvo_tool),
-                labeller = deconvo_labeller
+                rows = vars(sample_id), cols = vars(deconvo_tool)
             ) +
             guides(col = guide_legend(override.aes = list(alpha = 1))) +
             geom_text(
@@ -829,7 +817,6 @@ for (cell_type in cell_types) {
             y = paste("Average Predicted", cell_type, "Count"),
             color = "Deconvolution Tool"
         ) +
-        scale_color_discrete(labels = deconvo_labels) +
         theme_bw(base_size = 20) +
         coord_cartesian(ylim = c(0, y_max)) +
         scale_y_continuous(expand = c(0, 0, 0, 0.05))
