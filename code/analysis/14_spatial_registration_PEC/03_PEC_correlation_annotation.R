@@ -67,7 +67,7 @@ correlate_and_annotate <- function(dataset){
   return(list(cor_top100 = cor_top100, layer_anno = layer_anno))
 }
 
-datasets <- c("DevBrain", "IsoHuB","CMC","UCLA-ASD", "Urban-DLPFC")
+datasets <- c("CMC", "DevBrain-snRNAseq", "IsoHuB", "SZBDMulti-Seq", "UCLA-ASD", "Urban-DLPFC")
 names(datasets) <- datasets
 
 ## Caluclate correlatiosn and annotaions for each dataset
