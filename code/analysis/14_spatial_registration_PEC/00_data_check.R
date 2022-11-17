@@ -17,18 +17,33 @@ map(datasets, ~list.files(here(raw_data_dir, .x), pattern = "-snRNAseq_annotated
 
 map(datasets, ~list.files(here(raw_data_dir, .x), pattern = ".h5ad"))
 
-h5ad_files <- c(CMC = "CMC-CellHashing_annotated.h5ad",
-                  `DevBrain-snRNAseq` = "DevBrain-snRNAseq_annotated.h5ad",
-                   IsoHuB = "IsoHuB-snRNAseq_annotated.h5ad",
-                   `SZBDMulti-Seq` = "SZBDMulti-Seq_annotated.h5ad",
-                  `UCLA-ASD` = "UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad",# "UCLA-ASD-snRNAseq_annotated.h5ad" which file?
-                  `Urban-DLPFC` = "Urban-DLPFC-snRNAseq_annotated.h5ad")
+h5ad_files <- c(CMC = "CMC/CMC-CellHashing_annotated.h5ad",
+                  `DevBrain-snRNAseq` = "DevBrain-snRNAseq/DevBrain-snRNAseq_annotated.h5ad",
+                   IsoHuB = "IsoHuB/IsoHuB-snRNAseq_annotated.h5ad",
+                   `SZBDMulti-Seq` = "SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad",
+                  `UCLA-ASD` = "UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad",# "UCLA-ASD-snRNAseq_annotated.h5ad" which file?
+                  `Urban-DLPFC` = "Urban-DLPFC/Urban-DLPFC-snRNAseq_annotated.h5ad")
 
-ss(h5ad_files, "-")
+ss(h5ad_files, "/")
 # CMC DevBrain-snRNAseq            IsoHuB     SZBDMulti-Seq          UCLA-ASD       Urban-DLPFC 
 # "CMC"        "DevBrain"          "IsoHuB"       "SZBDMulti"            "UCLA"           "Urban" 
 
-map2(h5ad_files, names(h5ad_files), ~file.exists(here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized", .y, .x)))
+map(h5ad_files, ~file.exists(here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized", .x)))
+
+## Check input from 01_pseudobulk
+map(h5ad_files, function(input_file){
+  dataset <- gsub("-(s|S).*$","",dirname(input_file))
+  message("\n#### Running: ", dataset, " ####")
+  # filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
+  
+  ## for v3 data
+  filepath <- here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized", input_file)
+  stopifnot(file.exists(filepath))
+})
+
+map(h5ad_files, ~gsub("-(s|S).*$","",dirname(.x)))
+
+
 
 job_loop(
   loops = list(PE_data = h5ad_files),
