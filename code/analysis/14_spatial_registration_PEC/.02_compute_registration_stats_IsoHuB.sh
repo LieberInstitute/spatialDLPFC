@@ -1,11 +1,11 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
-#$ -N compute_registration_stats_Urban-DLPFC
-#$ -o logs/02_compute_registration_stats_Urban-DLPFC.txt
-#$ -e logs/02_compute_registration_stats_Urban-DLPFC.txt
+#$ -N compute_registration_stats_IsoHuB
+#$ -o logs/02_compute_registration_stats_IsoHuB.txt
+#$ -e logs/02_compute_registration_stats_IsoHuB.txt
+#$ -hold_jid pseudobulk_data_IsoHuB
 #$ -m e
-#$ -hold_jid pseudobulk_data_Urban-DLPFC
 
 echo "**** Job starts ****"
 date
@@ -23,11 +23,13 @@ module load conda_R/4.2
 ## List current modules for reproducibility
 module list
 
-## Edit with your job command
-Rscript 02_compute_registration_stats.R Urban-DLPFC
+## Sumbit Rscript
+Rscript 02_compute_registration_stats.R IsoHuB
 
 echo "**** Job ends ****"
 date
 
 ## This script was made using sgejobs version 0.99.1
 ## available from http://research.libd.org/sgejobs/
+
+

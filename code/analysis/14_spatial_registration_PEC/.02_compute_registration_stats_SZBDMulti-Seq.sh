@@ -1,11 +1,11 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
-#$ -N compute_registration_stats_CMC
-#$ -o logs/02_compute_registration_stats_CMC.txt
-#$ -e logs/02_compute_registration_stats_CMC.txt
+#$ -N compute_registration_stats_SZBDMulti-Seq
+#$ -o logs/02_compute_registration_stats_SZBDMulti-Seq.txt
+#$ -e logs/02_compute_registration_stats_SZBDMulti-Seq.txt
+#$ -hold_jid pseudobulk_data_SZBDMulti-Seq
 #$ -m e
-#$ -hold_jid pseudobulk_data_CMC
 
 echo "**** Job starts ****"
 date
@@ -23,11 +23,13 @@ module load conda_R/4.2
 ## List current modules for reproducibility
 module list
 
-## Edit with your job command
-Rscript 02_compute_registration_stats.R CMC
+## Sumbit Rscript
+Rscript 02_compute_registration_stats.R SZBDMulti-Seq
 
 echo "**** Job ends ****"
 date
 
 ## This script was made using sgejobs version 0.99.1
 ## available from http://research.libd.org/sgejobs/
+
+
