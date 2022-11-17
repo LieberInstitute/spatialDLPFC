@@ -16,19 +16,18 @@ sample_ids_path <- here(
 deconvo_tools <- c("01-tangram", "03-cell2location", "04-spotlight")
 deconvo_tool_names = c('tangram', 'cell2location', 'SPOTlight')
 
-#   "Ground-truth" cell counts from cellpose + trained classification tree
-actual_paths <- here(
-    "processed-data", "spot_deconvo", "02-cellpose", "{sample_id}", "clusters.csv"
-)
-
-#   Cell counts estimated by each deconvolution tool
-observed_paths <- here(
-    "processed-data", "spot_deconvo", "{deconvo_tool}", "IF", cell_group,
-    "{sample_id}", "clusters.csv"
-)
-
 plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
+)
+
+raw_results_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    paste0("results_raw_", cell_group, ".csv")
+)
+
+collapsed_results_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    paste0("results_collapsed_", cell_group, ".csv")
 )
 
 spe_IF_in <- here(
@@ -329,62 +328,12 @@ spatial_counts_plot_full = function(
 ################################################################################
 
 sample_ids <- readLines(sample_ids_path)
-
-actual_list <- list()
-observed_list <- list()
-index <- 1
-
 added_colnames <- c("barcode", "sample_id", "deconvo_tool", "obs_type")
 
-#   Read in counts for all cell types for all samples and deconvolution tools
-#   (as well as the "ground-truth")
-for (sample_id in sample_ids) {
-    #   Read in the "ground-truth" counts for this sample
-    actual_path <- sub("\\{sample_id\\}", sample_id, actual_paths)
-    actual_df_small <- read.csv(actual_path)
+observed_df <- as_tibble(read.csv(raw_results_path))
+observed_df$obs_type = "observed"
 
-    #   Make sure we have just counts for each cell type, barcode, and
-    #   sample ID variables-- nothing else. Order column names
-    actual_df_small$barcode <- ss(actual_df_small$key, "_", 1)
-    actual_df_small$sample_id <- sample_id
-    actual_df_small$obs_type <- "actual"
-
-    for (deconvo_tool in deconvo_tools) {
-        #   Read in estimated cell counts for this deconvo tool and sample
-        observed_path <- sub("\\{sample_id\\}", sample_id, observed_paths)
-        observed_path <- sub("\\{deconvo_tool\\}", deconvo_tool, observed_path)
-        observed_df_small <- read.csv(observed_path)
-        colnames(observed_df_small) = gsub(
-            '\\.', '_', colnames(observed_df_small)
-        )
-
-        #   Make sure column names are consistent and include only info about
-        #   barcode, sample_id, deconvo tool, and cell-type counts
-        observed_df_small$barcode <- ss(observed_df_small$key, "_", 1)
-        observed_df_small$sample_id <- sample_id
-        observed_df_small$deconvo_tool <- deconvo_tool
-        observed_df_small$obs_type <- "observed"
-        observed_df_small <- observed_df_small[
-            , c(added_colnames, cell_types)
-        ]
-
-        actual_df_small$deconvo_tool <- deconvo_tool
-
-        actual_list[[index]] <- actual_df_small[
-            , c(added_colnames, cell_types_actual)
-        ]
-        observed_list[[index]] <- observed_df_small
-        index <- index + 1
-    }
-}
-
-#   Form data frames containing cell-type counts for all spots, samples, and
-#   deconvolution tools
-actual_df <- as_tibble(do.call(rbind, actual_list))
-observed_df <- as_tibble(do.call(rbind, observed_list))
-
-#   Plot counts for each cell type before collapsing cell categories, a step
-#   performed to allow comparison to the ground-truth counts
+#   Plot counts for each cell type without collapsing cell categories
 observed_df_long <- observed_df %>%
     melt(
         id.vars = added_colnames, variable.name = "cell_type",
@@ -400,36 +349,10 @@ spatial_counts_plot_full(
     spe, observed_df_long, cell_types, FALSE, 'spatial_counts_fullres_'
 )
 
-#   Combine cell types as appropriate for comparison against the relatively
-#   narrow types in the ground-truth
-colnames(observed_df) <- tolower(colnames(observed_df))
-
-if (cell_group == "broad") {
-    observed_df <- observed_df %>%
-        mutate(
-            "neuron" = excit + inhib,
-            "oligo" = oligo + opc,
-            "other" = endomural
-        ) %>%
-        select(all_of(c(added_colnames, cell_types_actual)))
-} else {
-    observed_df = observed_df %>%
-        rowwise() %>%
-        mutate(
-            "neuron" = sum(c_across(starts_with(c('excit_', 'inhib')))),
-            "oligo" = oligo + opc,
-            "other" = endomural
-        ) %>%
-        ungroup() %>%
-        select(all_of(c(added_colnames, cell_types_actual)))
-}
-
-stopifnot(all(colnames(observed_df) == colnames(actual_df)))
-
-#   Combine observed and actual cell counts so that each row is a unique
+#   Gather collapsed cell counts so that each row is a unique
 #   cell type, spot, sample, and deconvolution method with two values: measured
 #   and ground-truth
-full_df <- rbind(observed_df, actual_df) %>%
+full_df <- read.csv(collapsed_results_path) %>%
     melt(
         id.vars = added_colnames, variable.name = "cell_type",
         value.name = "count"
