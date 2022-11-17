@@ -57,12 +57,19 @@ saveRDS(results_enrichment,
     )
 )
 
-# sgejobs::job_single('02_compute_registration_stats_DevBrain', create_shell = TRUE, memory = '25G', command = "Rscript 02_compute_registration_stats.R DevBrain")
-# sgejobs::job_single('02_compute_registration_stats_CMC', create_shell = TRUE, memory = '25G', command = "Rscript 02_compute_registration_stats.R CMC")
-# sgejobs::job_single('02_compute_registration_stats_IsoHuB', create_shell = TRUE, memory = '25G', command = "Rscript 02_compute_registration_stats.R IsoHuB")
-# sgejobs::job_single('02_compute_registration_stats_UCLA', create_shell = TRUE, memory = '25G', command = "Rscript 02_compute_registration_stats.R UCLA-ASD")
-# sgejobs::job_single('02_compute_registration_stats_SZBD', create_shell = TRUE, memory = '25G', command = "Rscript 02_compute_registration_stats.R SZBDMulti")
-# sgejobs::job_single('02_compute_registration_stats_Urban-DLPFC', create_shell = TRUE, memory = '25G', command = "Rscript 02_compute_registration_stats.R Urban-DLPFC")
+# # Run with job_loop 
+# datasets <- c("CMC",
+#               "DevBrain",
+#               "IsoHuB",
+#               "SZBDMulti",
+#               "UCLA-ASD",
+#               "Urban-DLPFC")
+# 
+# job_loop(
+#   loops = list(dataset = datasets),
+#   name = '02_compute_registration_stats',
+#   create_shell = TRUE
+# )
 
 ## Reproducibility information
 print("Reproducibility information:")

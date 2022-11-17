@@ -8,13 +8,15 @@ library("sessioninfo")
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
 input_file <- args[1]
-dataset <- gsub("-(s|S).*$","",dirname(input_file))
+message("input = ",input_file)
+
+dataset <- dirname(input_file)
 message("\n#### Running: ", dataset, " ####")
 # filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
 
 ## for v3 data
 filepath <- here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized", input_file)
-stopifnow(file.exists(filepath))
+stopifnot(file.exists(filepath))
 
 message(Sys.time(), " - Reading data from: ", filepath)
 sce <- readH5AD(file = filepath)
