@@ -6,18 +6,22 @@
 ## Create the logs directory
 mkdir -p logs
 
-for PE_data in CMC-CellHashing_annotated.h5ad DevBrain-snRNAseq_annotated.h5ad IsoHuB-snRNAseq_annotated.h5ad SZBDMulti-Seq_annotated.h5ad UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad Urban-DLPFC-snRNAseq_annotated.h5ad; do
-
-    ## Internal script name
-    SHORT="01_pseudobulk_data_${PE_data}"
+for PE_data in CMC/CMC-CellHashing_annotated.h5ad DevBrain-snRNAseq/DevBrain-snRNAseq_annotated.h5ad IsoHuB/IsoHuB-snRNAseq_annotated.h5ad SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad Urban-DLPFC/Urban-DLPFC-snRNAseq_annotated.h5ad; do
+	
+	## Use dirname from file
+	PE_data2=(${PE_data//// })
+	PE_data2=${PE_data2[0]}
+	## Internal script name
+    SHORT="01_pseudobulk_data_${PE_data2}"
+	NAME="pseudobulk_data_${PE_data2}" 
 
     # Construct shell file
-    echo "Creating script 01_pseudobulk_data_${PE_data}"
+    echo "Creating script 01_pseudobulk_data_${PE_data2}"
     cat > .${SHORT}.sh <<EOF
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
-#$ -N ${SHORT}
+#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -N ${NAME}
 #$ -o logs/${SHORT}.txt
 #$ -e logs/${SHORT}.txt
 #$ -m e
@@ -33,13 +37,13 @@ echo "Hostname: \${HOSTNAME}"
 echo "Task id: \${SGE_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
-module load conda_R
+module load conda_R/4.2
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript -e "options(width = 120); print('${PE_data}'); sessioninfo::session_info()"
+Rscript 01_pseudobulk_data.R ${PE_data}
 
 echo "**** Job ends ****"
 date
