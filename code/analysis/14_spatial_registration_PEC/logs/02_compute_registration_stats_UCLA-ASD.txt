@@ -6,11 +6,11 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Nov 17 15:31:10 EST 2022
+Thu Nov 17 15:15:37 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 1236794
-Job name: compute_registration_stats_CMC
+Job id: 1236798
+Job name: compute_registration_stats_UCLA-ASD
 Hostname: compute-076.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
@@ -98,20 +98,20 @@ The following objects are masked from ‘package:matrixStats’:
 
 Loading required package: SpatialExperiment
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-Running - CMC
+Running - UCLA-ASD
 
 SCE Dimesions:
-[1] 29460  2029
-2022-11-17 15:32:20 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+[1] 30440  1302
+2022-11-17 15:16:21 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
-        99         77         52        101         99         87         35 
+        63         54         50         63         61         50         39 
      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 Lamp5.Lhx6 
-       100         95         98         76         82         93         95 
+        63         55         62         50         52         57         53 
  Micro.PVM      Oligo        OPC       Pax6      Pvalb       Sncg        Sst 
-        85         99         97         75         99         90         97 
+        60         63         63         41         62         57         62 
  Sst.Chodl        Vip       VLMC 
-         5         98         95 
-2022-11-17 15:32:24 create model matrix
-2022-11-17 15:32:24 run duplicateCorrelation()
+         2         62         58 
+2022-11-17 15:16:25 create model matrix
+2022-11-17 15:16:25 run duplicateCorrelation()

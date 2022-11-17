@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Tue Oct 11 10:37:34 EDT 2022
+Thu Nov 17 14:52:48 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 200878
+Job id: 1236796
 Job name: compute_registration_stats_IsoHuB
-Hostname: compute-142.cm.cluster
+Hostname: compute-099.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -102,7 +102,7 @@ Running - IsoHuB
 
 SCE Dimesions:
 [1] 27461   106
-2022-10-11 10:38:12 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2022-11-17 14:53:15 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
@@ -114,15 +114,15 @@ Cell Types:
  Sst.Chodl        Vip       VLMC 
          0          5          5 
 Dropping Empty Levels: Sst.Chodl 
-2022-10-11 10:38:13 create model matrix
-2022-10-11 10:38:13 run duplicateCorrelation()
-2022-10-11 10:38:54 The estimated correlation is: 0.162409432020333
-2022-10-11 10:38:54 computing enrichment statistics
-2022-10-11 10:39:05 extract and reformat enrichment results
+2022-11-17 14:53:16 create model matrix
+2022-11-17 14:53:16 run duplicateCorrelation()
+2022-11-17 14:54:29 The estimated correlation is: 0.162409432020333
+2022-11-17 14:54:29 computing enrichment statistics
+2022-11-17 14:54:46 extract and reformat enrichment results
 [1] "Reproducibility information:"
-[1] "2022-10-11 10:39:16 EDT"
+[1] "2022-11-17 14:54:48 EST"
    user  system elapsed 
- 67.479   1.517  99.461 
+112.828   2.242 118.120 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.1 Patched (2022-08-30 r82775)
@@ -133,7 +133,7 @@ Dropping Empty Levels: Sst.Chodl
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2022-10-11
+ date     2022-11-17
  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -173,7 +173,7 @@ Dropping Empty Levels: Sst.Chodl
  DBI                      1.1.3     2022-06-18 [2] CRAN (R 4.2.1)
  dbplyr                   2.2.1     2022-06-27 [2] CRAN (R 4.2.1)
  DelayedArray             0.22.0    2022-04-26 [2] Bioconductor
- DelayedMatrixStats       1.18.1    2022-09-27 [1] Bioconductor
+ DelayedMatrixStats       1.18.2    2022-10-13 [1] Bioconductor
  desc                     1.4.2     2022-09-08 [1] CRAN (R 4.2.1)
  digest                   0.6.29    2021-12-01 [2] CRAN (R 4.2.1)
  doParallel               1.0.17    2022-02-07 [2] CRAN (R 4.2.1)
@@ -200,7 +200,7 @@ Dropping Empty Levels: Sst.Chodl
  ggplot2                  3.3.6     2022-05-03 [2] CRAN (R 4.2.1)
  ggrepel                  0.9.1     2021-01-15 [2] CRAN (R 4.2.1)
  glue                     1.6.2     2022-02-24 [2] CRAN (R 4.2.1)
- golem                    0.3.4     2022-09-26 [1] CRAN (R 4.2.1)
+ golem                    0.3.5     2022-10-18 [1] CRAN (R 4.2.1)
  gridExtra                2.3       2017-09-09 [2] CRAN (R 4.2.1)
  gtable                   0.3.1     2022-09-01 [1] CRAN (R 4.2.1)
  HDF5Array                1.24.2    2022-08-02 [2] Bioconductor
@@ -303,4 +303,4 @@ Dropping Empty Levels: Sst.Chodl
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Oct 11 10:39:19 EDT 2022
+Thu Nov 17 14:54:50 EST 2022

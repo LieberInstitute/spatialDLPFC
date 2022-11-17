@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Tue Oct 11 20:46:07 EDT 2022
+Thu Nov 17 15:03:17 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 200881
-Job name: compute_registration_stats_SZBD
-Hostname: compute-141.cm.cluster
+Job id: 1236820
+Job name: compute_registration_stats_SZBDMulti-Seq
+Hostname: compute-076.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -98,20 +98,12 @@ The following objects are masked from ‘package:matrixStats’:
 
 Loading required package: SpatialExperiment
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-Running - SZBDMulti
-
-SCE Dimesions:
-[1] 30912  9058
-2022-10-11 20:47:01 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-Cell Types:
-
-     Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
-       487        261         15        567        537        343        236 
-     L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 Lamp5.Lhx6 
-       556        418        535        395        466        469        384 
- Micro.PVM      Oligo        OPC       Pax6      Pvalb       Sncg        Sst 
-       285        529        445        135        532        365        505 
- Sst.Chodl        Vip       VLMC 
-         2        527         64 
-2022-10-11 20:47:05 create model matrix
-2022-10-11 20:47:05 run duplicateCorrelation()
+Running - SZBDMulti-Seq
+Error in gzfile(file, "rb") : cannot open the connection
+Calls: readRDS -> gzfile
+In addition: Warning message:
+In gzfile(file, "rb") :
+  cannot open compressed file '/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/14_spatial_registration_PEC/pseudobulk_SZBDMulti-Seq.rds', probable reason 'No such file or directory'
+Execution halted
+**** Job ends ****
+Thu Nov 17 15:03:50 EST 2022
