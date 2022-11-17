@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Fri Oct 14 16:03:50 EDT 2022
+Thu Nov 17 12:17:21 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 250655
+Job id: 1236257
 Job name: pseudobulk_data_Urban-DLPFC
-Hostname: compute-059.cm.cluster
+Hostname: compute-124.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
 Loading conda_R/4.2
@@ -97,10 +97,119 @@ The following objects are masked from ‘package:matrixStats’:
     anyMissing, rowMedians
 
 Loading required package: SpatialExperiment
+Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 
 #### Running: Urban-DLPFC ####
-2022-10-14 16:04:53 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version2/Urban-DLPFC/Urban-DLPFC-snRNAseq_annotated.h5ad
+Error in stopifnow(file.exists(filepath)) : 
+  could not find function "stopifnow"
+Execution halted
+**** Job ends ****
+Thu Nov 17 12:17:37 EST 2022
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.2
+**** Job starts ****
+Thu Nov 17 12:21:11 EST 2022
+**** JHPCE info ****
+User: lhuuki
+Job id: 1236274
+Job name: pseudobulk_data_Urban-DLPFC
+Hostname: compute-076.cm.cluster
+Task id: undefined
+Unloading conda_R/4.2
+Loading conda_R/4.2
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, basename, cbind, colnames,
+    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,
+    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,
+    union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SpatialExperiment
+Loading required package: rafalib
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+
+#### Running: Urban-DLPFC ####
+2022-11-17 12:21:47 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version3/scRNAseq_AllenCTHarmonized/Urban-DLPFC/Urban-DLPFC-snRNAseq_annotated.h5ad
 Warning messages:
 1: The names of these selected uns$uns_dict items have been modified to match R conventions: '1041-Schizophrenia-DLPFC' -> 'X1041.Schizophrenia.DLPFC', '1317-Bipolar-DLPFC' -> 'X1317.Bipolar.DLPFC', '1320-Schizophrenia-DLPFC' -> 'X1320.Schizophrenia.DLPFC', '1390-Control-DLPFC' -> 'X1390.Control.DLPFC', '1414-Bipolar-DLPFC' -> 'X1414.Bipolar.DLPFC', '1461-Bipolar-DLPFC' -> 'X1461.Bipolar.DLPFC', '1507-Schizophrenia-DLPFC' -> 'X1507.Schizophrenia.DLPFC', '1601-Bipolar-DLPFC' -> 'X1601.Bipolar.DLPFC', '1676-Schizophrenia-DLPFC' -> 'X1676.Schizophrenia.DLPFC', '1713-Bipolar-DLPFC' -> 'X1713.Bipolar.DLPFC', '1734-Bipolar-DLPFC' -> 'X1734.Bipolar.DLPFC', '2052-Control-DLPFC' -> 'X2052.Control.DLPFC', '2083-Bipolar-DLPFC' -> 'X2083.Bipolar.DLPFC', '2275-Bipolar-DLPFC' -> 'X2275.Bipolar.DLPFC', '2520-Bipolar-DLPFC' -> 'X2520.Bipolar.DLPFC', '2653-Schizophrenia-DLPFC' -> 'X2653.Schizophrenia.DLPFC', '2677-Schizophrenia-DLPFC' -> 'X2677.Schizophrenia.DLPFC', '2686-Bipolar-DLPFC' -> 'X2686.Bipolar. [... truncated] 
 2: The names of these selected uns$var_dict items have been modified to match R conventions: '1041-Schizophrenia-DLPFC' -> 'X1041.Schizophrenia.DLPFC', '1317-Bipolar-DLPFC' -> 'X1317.Bipolar.DLPFC', '1320-Schizophrenia-DLPFC' -> 'X1320.Schizophrenia.DLPFC', '1390-Control-DLPFC' -> 'X1390.Control.DLPFC', '1414-Bipolar-DLPFC' -> 'X1414.Bipolar.DLPFC', '1461-Bipolar-DLPFC' -> 'X1461.Bipolar.DLPFC', '1507-Schizophrenia-DLPFC' -> 'X1507.Schizophrenia.DLPFC', '1601-Bipolar-DLPFC' -> 'X1601.Bipolar.DLPFC', '1676-Schizophrenia-DLPFC' -> 'X1676.Schizophrenia.DLPFC', '1713-Bipolar-DLPFC' -> 'X1713.Bipolar.DLPFC', '1734-Bipolar-DLPFC' -> 'X1734.Bipolar.DLPFC', '2052-Control-DLPFC' -> 'X2052.Control.DLPFC', '2083-Bipolar-DLPFC' -> 'X2083.Bipolar.DLPFC', '2275-Bipolar-DLPFC' -> 'X2275.Bipolar.DLPFC', '2520-Bipolar-DLPFC' -> 'X2520.Bipolar.DLPFC', '2653-Schizophrenia-DLPFC' -> 'X2653.Schizophrenia.DLPFC', '2677-Schizophrenia-DLPFC' -> 'X2677.Schizophrenia.DLPFC', '2686-Bipolar-DLPFC' -> 'X2686.Bipolar. [... truncated] 
@@ -121,18 +230,18 @@ Cell Types:
       6603      41884       6855        320       6293       1001       4486 
  Sst.Chodl        Vip       VLMC 
         44       3640       3152 
-2022-10-14 16:10:25 revert to counts
-2022-10-14 16:11:10 make pseudobulk object
-2022-10-14 16:23:26 dropping 51 pseudo-bulked samples that are below 'min_ncells'.
-2022-10-14 16:23:27 drop lowly expressed genes
-2022-10-14 16:23:29 normalize expression
+2022-11-17 12:26:07 revert to counts
+2022-11-17 12:26:59 make pseudobulk object
+2022-11-17 12:39:57 dropping 51 pseudo-bulked samples that are below 'min_ncells'.
+2022-11-17 12:39:58 drop lowly expressed genes
+2022-11-17 12:40:00 normalize expression
 
 SCE Pseudobulk Dimesions:
 [1] 24273   448
 [1] "Reproducibility information:"
-[1] "2022-10-14 16:23:56 EDT"
+[1] "2022-11-17 12:40:39 EST"
     user   system  elapsed 
- 976.788  118.451 1201.770 
+1016.457  127.164 1165.694 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.1 Patched (2022-08-30 r82775)
@@ -143,7 +252,7 @@ SCE Pseudobulk Dimesions:
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2022-10-14
+ date     2022-11-17
  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -185,7 +294,7 @@ SCE Pseudobulk Dimesions:
  DBI                      1.1.3     2022-06-18 [2] CRAN (R 4.2.1)
  dbplyr                   2.2.1     2022-06-27 [2] CRAN (R 4.2.1)
  DelayedArray             0.22.0    2022-04-26 [2] Bioconductor
- DelayedMatrixStats       1.18.1    2022-09-27 [1] Bioconductor
+ DelayedMatrixStats       1.18.2    2022-10-13 [1] Bioconductor
  desc                     1.4.2     2022-09-08 [1] CRAN (R 4.2.1)
  digest                   0.6.29    2021-12-01 [2] CRAN (R 4.2.1)
  dir.expiry               1.4.0     2022-04-26 [2] Bioconductor
@@ -204,6 +313,7 @@ SCE Pseudobulk Dimesions:
  filelock                 1.0.2     2018-10-05 [2] CRAN (R 4.2.1)
  foreach                  1.5.2     2022-02-02 [2] CRAN (R 4.2.1)
  fs                       1.5.2     2021-12-08 [2] CRAN (R 4.2.1)
+ gargle                   1.2.0     2021-07-02 [2] CRAN (R 4.2.1)
  generics                 0.1.3     2022-07-05 [2] CRAN (R 4.2.1)
  GenomeInfoDb           * 1.32.4    2022-09-06 [1] Bioconductor
  GenomeInfoDbData         1.2.8     2022-08-30 [2] Bioconductor
@@ -213,7 +323,8 @@ SCE Pseudobulk Dimesions:
  ggplot2                  3.3.6     2022-05-03 [2] CRAN (R 4.2.1)
  ggrepel                  0.9.1     2021-01-15 [2] CRAN (R 4.2.1)
  glue                     1.6.2     2022-02-24 [2] CRAN (R 4.2.1)
- golem                    0.3.4     2022-09-26 [1] CRAN (R 4.2.1)
+ golem                    0.3.5     2022-10-18 [1] CRAN (R 4.2.1)
+ googledrive              2.0.0     2021-07-08 [2] CRAN (R 4.2.1)
  gridExtra                2.3       2017-09-09 [2] CRAN (R 4.2.1)
  gtable                   0.3.1     2022-09-01 [1] CRAN (R 4.2.1)
  HDF5Array                1.24.2    2022-08-02 [2] Bioconductor
@@ -226,6 +337,7 @@ SCE Pseudobulk Dimesions:
  IRanges                * 2.30.1    2022-08-18 [2] Bioconductor
  irlba                    2.3.5.1   2022-10-03 [1] CRAN (R 4.2.1)
  iterators                1.0.14    2022-02-05 [2] CRAN (R 4.2.1)
+ jaffelab               * 0.99.32   2022-09-06 [1] Github (LieberInstitute/jaffelab@7b7afe3)
  jquerylib                0.1.4     2021-04-26 [2] CRAN (R 4.2.1)
  jsonlite                 1.8.2     2022-10-02 [1] CRAN (R 4.2.1)
  KEGGREST                 1.36.3    2022-07-12 [2] Bioconductor
@@ -239,12 +351,14 @@ SCE Pseudobulk Dimesions:
  magick                   2.7.3     2021-08-18 [2] CRAN (R 4.2.1)
  magrittr                 2.0.3     2022-03-30 [2] CRAN (R 4.2.1)
  maps                     3.4.0     2021-09-25 [2] CRAN (R 4.2.1)
+ MASS                     7.3-58.1  2022-08-03 [3] CRAN (R 4.2.1)
  Matrix                   1.5-1     2022-09-13 [1] CRAN (R 4.2.1)
  MatrixGenerics         * 1.8.1     2022-06-26 [2] Bioconductor
  matrixStats            * 0.62.0    2022-04-19 [2] CRAN (R 4.2.1)
  memoise                  2.0.1     2021-11-26 [2] CRAN (R 4.2.1)
  mime                     0.12      2021-09-28 [2] CRAN (R 4.2.1)
  munsell                  0.5.0     2018-06-12 [2] CRAN (R 4.2.1)
+ nlme                     3.1-158   2022-06-15 [3] CRAN (R 4.2.1)
  paletteer                1.4.1     2022-08-15 [2] CRAN (R 4.2.1)
  pillar                   1.8.1     2022-08-19 [2] CRAN (R 4.2.1)
  pkgconfig                2.0.3     2019-09-22 [2] CRAN (R 4.2.1)
@@ -257,6 +371,7 @@ SCE Pseudobulk Dimesions:
  R.oo                     1.25.0    2022-06-12 [2] CRAN (R 4.2.1)
  R.utils                  2.12.0    2022-06-28 [2] CRAN (R 4.2.1)
  R6                       2.5.1     2021-08-19 [2] CRAN (R 4.2.1)
+ rafalib                * 1.0.0     2015-08-09 [1] CRAN (R 4.2.1)
  rappdirs                 0.3.3     2021-01-31 [2] CRAN (R 4.2.1)
  RColorBrewer             1.1-3     2022-04-03 [2] CRAN (R 4.2.1)
  Rcpp                     1.0.9     2022-07-08 [2] CRAN (R 4.2.1)
@@ -282,6 +397,7 @@ SCE Pseudobulk Dimesions:
  scales                   1.2.1     2022-08-20 [2] CRAN (R 4.2.1)
  scater                   1.24.0    2022-04-26 [2] Bioconductor
  scuttle                  1.6.3     2022-08-23 [2] Bioconductor
+ segmented                1.6-0     2022-05-31 [1] CRAN (R 4.2.1)
  sessioninfo            * 1.2.2     2021-12-06 [2] CRAN (R 4.2.1)
  shiny                    1.7.2     2022-07-19 [2] CRAN (R 4.2.1)
  shinyWidgets             0.7.4     2022-10-05 [1] CRAN (R 4.2.1)
@@ -328,4 +444,4 @@ SCE Pseudobulk Dimesions:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Fri Oct 14 16:24:05 EDT 2022
+Thu Nov 17 12:40:50 EST 2022

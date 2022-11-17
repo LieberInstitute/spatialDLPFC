@@ -6,11 +6,11 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Nov 17 14:35:45 EST 2022
+Thu Nov 17 14:37:29 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 1236771
-Job name: pseudobulk_data_CMC
+Job id: 1236772
+Job name: pseudobulk_data_UCLA-ASD
 Hostname: compute-126.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
@@ -99,23 +99,29 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-input = CMC/CMC-CellHashing_annotated.h5ad
+input = UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad
 
-#### Running: CMC ####
-2022-11-17 14:36:05 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version3/scRNAseq_AllenCTHarmonized/CMC/CMC-CellHashing_annotated.h5ad
-There were 50 or more warnings (use warnings() to see the first 50)
+#### Running: UCLA-ASD ####
+2022-11-17 14:37:42 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version3/scRNAseq_AllenCTHarmonized/UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad
+Warning messages:
+1: The names of these selected uns$uns_dict items have been modified to match R conventions: '12BW' -> 'X12BW', '13BW' -> 'X13BW', '14BW' -> 'X14BW', '15BW' -> 'X15BW', '16BW' -> 'X16BW', '17BW' -> 'X17BW', '18BW' -> 'X18BW', '19BW' -> 'X19BW', '20BW' -> 'X20BW', '21BW' -> 'X21BW', '22BW' -> 'X22BW', '23BW' -> 'X23BW', '24BW' -> 'X24BW', '25BW' -> 'X25BW', '26BW' -> 'X26BW', '27BW' -> 'X27BW', '28BW' -> 'X28BW', '29BW' -> 'X29BW', '2BW' -> 'X2BW', '30BW' -> 'X30BW', '31BW' -> 'X31BW', '32BW' -> 'X32BW', '33BW' -> 'X33BW', '34BW' -> 'X34BW', '35BW' -> 'X35BW', '39BW' -> 'X39BW', '40BW' -> 'X40BW', '41BW' -> 'X41BW', '42BW' -> 'X42BW', '43BW' -> 'X43BW', '44BW' -> 'X44BW', '46BW' -> 'X46BW', '47BW' -> 'X47BW', '48BW' -> 'X48BW', '49BW' -> 'X49BW', '4BW' -> 'X4BW', '50BW' -> 'X50BW', '51BW' -> 'X51BW', '52BW' -> 'X52BW', '53BW' -> 'X53BW', '54BW' -> 'X54BW', '55BW' -> 'X55BW', '56BW' -> 'X56BW', '57BW' -> 'X57BW', '58BW' -> 'X58BW', '59BW' -> 'X59BW', '60BW' -> 'X60BW', '61BW' -> 'X61BW', '6 [... truncated] 
+2: The names of these selected uns$var_dict items have been modified to match R conventions: '12BW' -> 'X12BW', '13BW' -> 'X13BW', '14BW' -> 'X14BW', '15BW' -> 'X15BW', '16BW' -> 'X16BW', '17BW' -> 'X17BW', '18BW' -> 'X18BW', '19BW' -> 'X19BW', '20BW' -> 'X20BW', '21BW' -> 'X21BW', '22BW' -> 'X22BW', '23BW' -> 'X23BW', '24BW' -> 'X24BW', '25BW' -> 'X25BW', '26BW' -> 'X26BW', '27BW' -> 'X27BW', '28BW' -> 'X28BW', '29BW' -> 'X29BW', '2BW' -> 'X2BW', '30BW' -> 'X30BW', '31BW' -> 'X31BW', '32BW' -> 'X32BW', '33BW' -> 'X33BW', '34BW' -> 'X34BW', '35BW' -> 'X35BW', '39BW' -> 'X39BW', '40BW' -> 'X40BW', '41BW' -> 'X41BW', '42BW' -> 'X42BW', '43BW' -> 'X43BW', '44BW' -> 'X44BW', '46BW' -> 'X46BW', '47BW' -> 'X47BW', '48BW' -> 'X48BW', '49BW' -> 'X49BW', '4BW' -> 'X4BW', '50BW' -> 'X50BW', '51BW' -> 'X51BW', '52BW' -> 'X52BW', '53BW' -> 'X53BW', '54BW' -> 'X54BW', '55BW' -> 'X55BW', '56BW' -> 'X56BW', '57BW' -> 'X57BW', '58BW' -> 'X58BW', '59BW' -> 'X59BW', '60BW' -> 'X60BW', '61BW' -> 'X61BW', '6 [... truncated] 
+3: The names of these selected uns items have been modified to match R conventions: '_attr2type' -> 'X_attr2type' 
+4: conversion failed for the item 'de_res' in 'varm' with the following error and has been skipped
+Conversion error message: Error in py_ref_to_r(x): Conversion from numpy array type 20 is not supported
+ 
 
 SCE Dimesions:
-[1]  33825 569715
+[1]  34180 486996
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
-     40048       3790       1764     118892      43531       5754        905 
+     49496       2773       6088     114915      16932       3192       2374 
      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 Lamp5.Lhx6 
-     39061       7253      16491       3426       7498      12887       6416 
+     28658       4510      28584       2618       4704       7797       3030 
  Micro.PVM      Oligo        OPC       Pax6      Pvalb       Sncg        Sst 
-      9462     143340      20585       2645      26560       8721      16165 
+     22996      80545      37881       1391      17085       4664      17134 
  Sst.Chodl        Vip       VLMC 
-       290      27215       7016 
-2022-11-17 14:41:24 revert to counts
-2022-11-17 14:42:26 make pseudobulk object
+       166      17613      11850 
+2022-11-17 14:41:38 revert to counts
+2022-11-17 14:42:39 make pseudobulk object

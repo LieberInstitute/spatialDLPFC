@@ -6,11 +6,11 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Nov 17 14:35:45 EST 2022
+Thu Nov 17 14:48:23 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 1236771
-Job name: pseudobulk_data_CMC
+Job id: 1236788
+Job name: pseudobulk_data_SZBDMulti-Seq
 Hostname: compute-126.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2
@@ -99,23 +99,28 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-input = CMC/CMC-CellHashing_annotated.h5ad
+input = SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad
 
-#### Running: CMC ####
-2022-11-17 14:36:05 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version3/scRNAseq_AllenCTHarmonized/CMC/CMC-CellHashing_annotated.h5ad
+#### Running: SZBDMulti-Seq ####
+2022-11-17 14:48:37 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version3/scRNAseq_AllenCTHarmonized/SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad
 There were 50 or more warnings (use warnings() to see the first 50)
 
 SCE Dimesions:
-[1]  33825 569715
+[1]  34291 486050
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
-     40048       3790       1764     118892      43531       5754        905 
+     21030       2836        713     146265      41849       5797       2553 
      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 Lamp5.Lhx6 
-     39061       7253      16491       3426       7498      12887       6416 
+     54115       8394      33123       5853      12362       8778       4346 
  Micro.PVM      Oligo        OPC       Pax6      Pvalb       Sncg        Sst 
-      9462     143340      20585       2645      26560       8721      16165 
+      4971      53692      10594       1936      26115       4123      17153 
  Sst.Chodl        Vip       VLMC 
-       290      27215       7016 
-2022-11-17 14:41:24 revert to counts
-2022-11-17 14:42:26 make pseudobulk object
+       402      17918       1132 
+2022-11-17 14:57:14 revert to counts
+Error in registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID",  : 
+  var_sample_id %in% colnames(colData(sce)) is not TRUE
+Calls: registration_pseudobulk -> stopifnot
+Execution halted
+**** Job ends ****
+Thu Nov 17 14:59:13 EST 2022
