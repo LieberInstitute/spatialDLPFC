@@ -6,7 +6,7 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -31,6 +31,12 @@ collapsed_results_path <- here(
 
 spe_IF_in <- here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
+)
+
+#   Only needed to get colors for software-estimated cell types
+sce_in <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("sce_", cell_group, ".rds")
 )
 
 marker_object_in <- here(
@@ -808,6 +814,7 @@ dev.off()
 
 #-------------------------------------------------------------------------------
 #   Spatial distribution of cell-types compared against manual layer annotation
+#   (boxplots)
 #-------------------------------------------------------------------------------
 
 #   Read layer annotation in for each sample and match to a barcode
@@ -871,6 +878,42 @@ pdf(
     file.path(plot_dir, "layer_distribution.pdf"), width = 10
 )
 print(plot_list)
+dev.off()
+
+#-------------------------------------------------------------------------------
+#   Spatial distribution of cell-types compared against manual layer annotation
+#   (barplots)
+#-------------------------------------------------------------------------------
+
+#   Read in SCE just to get colors for software-estimated cell types
+sce = readRDS(sce_in)
+estimated_cell_labels = metadata(sce)[[paste0('cell_type_colors_', cell_group)]]
+names(estimated_cell_labels) = gsub('/', '_', names(estimated_cell_labels))
+
+counts_df = counts_df |>
+    group_by(label, deconvo_tool, cell_type) |>
+    summarize(count = mean(count)) |>
+    ungroup() |>
+    #   "EndoMural" gets collapsed into "other", which we aren't considering
+    filter(cell_type != "EndoMural")
+
+pdf(
+    file.path(plot_dir, 'layer_distribution_barplot.pdf'), width = 10,
+    height = 5
+)
+ggplot(
+        counts_df,
+        aes(x = label, y = count, fill = cell_type)
+    ) +
+    facet_wrap(~ deconvo_tool) +
+    geom_bar(stat = "identity") +
+    labs(
+        x = "Annotated Layer", y = "Average Predicted Count",
+        fill = "Cell Type"
+    ) +
+    scale_fill_manual(values = estimated_cell_labels) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 90))
 dev.off()
 
 #-------------------------------------------------------------------------------
