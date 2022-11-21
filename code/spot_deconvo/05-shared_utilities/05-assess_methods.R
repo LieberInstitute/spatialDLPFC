@@ -6,7 +6,7 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -437,18 +437,27 @@ metrics_df <- full_df |>
     ) |>
     ungroup()
 
-pdf(file.path(plot_dir, 'corr_RMSE_scatter.pdf'), height = 4, width = 9)
-ggplot(
-    metrics_df,
-    aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
+corr_rmse_plot = function(metrics_df, filename) {
+    p = ggplot(
+        metrics_df,
+        aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
     ) +
-    facet_wrap(~deconvo_tool) +
-    geom_point() +
-    scale_color_manual(values = cell_type_labels) +
-    labs(color = "Cell Type", shape = "Sample ID") +
-    theme_bw(base_size = 13)
-dev.off()
+        facet_wrap(~deconvo_tool) +
+        geom_point() +
+        scale_color_manual(values = cell_type_labels) +
+        labs(color = "Cell Type", shape = "Sample ID") +
+        theme_bw(base_size = 13)
 
+    pdf(file.path(plot_dir, filename), height = 4, width = 9)
+    print(p)
+    dev.off()
+}
+
+corr_rmse_plot(metrics_df, 'corr_RMSE_scatter.pdf')
+corr_rmse_plot(
+    metrics_df |> filter(cell_type != "other"),
+    'corr_RMSE_scatter_no_other.pdf'
+)
 
 #-------------------------------------------------------------------------------
 #   Plot total counts per sample for tangram and cell2location
