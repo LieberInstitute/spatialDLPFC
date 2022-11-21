@@ -392,30 +392,6 @@ prop_df <- full_df %>%
         cols = c("observed", "actual"), values_to = "prop", names_to = "source"
     )
 
-#   Style 1: 2 bars per facet; facet by deconvo_tool
-plot_list = list()
-for (sample_id in sample_ids) {
-    plot_list[[sample_id]] = ggplot(
-        prop_df |> filter(sample_id == {{ sample_id }}),
-        aes(x = source, y = prop, fill = cell_type)
-    ) +
-        geom_bar(stat = "identity") +
-        facet_wrap(~ deconvo_tool) +
-        labs(
-            x = NULL, y = "Sample-Wide Proportion", fill = "Cell Type",
-            title = sample_id
-        ) +
-        scale_x_discrete(
-            labels = c("actual" = "Ground-Truth", "observed" = "Estimated")
-        ) +
-        scale_fill_manual(values = cell_type_labels) +
-        theme_bw(base_size = 16)
-}
-pdf(file.path(plot_dir, 'prop_barplots.pdf'), height = 4, width = 10)
-print(plot_list)
-dev.off()
-
-#   Style 2: 1 bars per deconvo_tool, which includes ground-truth
 temp_actual = prop_df |>
     filter(source == "actual", deconvo_tool == "tangram") |>
     mutate(deconvo_tool = "actual")
@@ -423,24 +399,31 @@ temp_observed = prop_df |>
     filter(source == "observed")
 prop_df = rbind(temp_actual, temp_observed)
 
-plot_list = list()
-for (sample_id in sample_ids) {
-    plot_list[[sample_id]] = ggplot(
-        prop_df |> filter(sample_id == {{ sample_id }}),
-        aes(x = deconvo_tool, y = prop, fill = cell_type)
-    ) +
-        geom_bar(stat = "identity") +
-        labs(
-            x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
-            title = sample_id
+prop_barplot = function(prop_df, filename) {
+    plot_list = list()
+    for (sample_id in sample_ids) {
+        plot_list[[sample_id]] = ggplot(
+            prop_df |> filter(sample_id == {{ sample_id }}),
+            aes(x = deconvo_tool, y = prop, fill = cell_type)
         ) +
-        scale_x_discrete(labels = c("actual" = "Ground-Truth")) +
-        scale_fill_manual(values = cell_type_labels) +
-        theme_bw(base_size = 16)
+            geom_bar(stat = "identity") +
+            labs(
+                x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
+                title = sample_id
+            ) +
+            scale_x_discrete(labels = c("actual" = "Ground-Truth")) +
+            scale_fill_manual(values = cell_type_labels) +
+            theme_bw(base_size = 16)
+    }
+    pdf(file.path(plot_dir, filename))
+    print(plot_list)
+    dev.off()
 }
-pdf(file.path(plot_dir, 'prop_barplots2.pdf'), height = 4, width = 10)
-print(plot_list)
-dev.off()
+
+prop_barplot(prop_df, 'prop_barplots.pdf')
+prop_barplot(
+    prop_df |> filter(cell_type != "other"), 'prop_barplots_no_other.pdf'
+)
 
 kl_table = function(full_df) {
     full_df %>%
