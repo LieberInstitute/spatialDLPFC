@@ -313,6 +313,74 @@ spatial_counts_plot_full = function(
     }
 }
 
+#   Write a PDF to 'filename' of a barplot of section-wide cell-type
+#   proportions against the ground-truth
+#
+#   prop_df: tibble with columns 'sample_id', 'deconvo_tool' (which should
+#       include the ground-truth), and 'prop'. One row per sample per deconvo
+#       tool per cell type.
+#   filename: character relative to 'plot_dir', with extension ".pdf"
+prop_barplot = function(prop_df, filename) {
+    plot_list = list()
+    for (sample_id in sample_ids) {
+        plot_list[[sample_id]] = ggplot(
+            prop_df |> filter(sample_id == {{ sample_id }}),
+            aes(x = deconvo_tool, y = prop, fill = cell_type)
+        ) +
+            geom_bar(stat = "identity") +
+            labs(
+                x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
+                title = sample_id
+            ) +
+            scale_x_discrete(labels = c("actual" = "Ground-Truth")) +
+            scale_fill_manual(values = cell_type_labels) +
+            theme_bw(base_size = 16)
+    }
+    pdf(file.path(plot_dir, filename))
+    print(plot_list)
+    dev.off()
+}
+
+#   Print a table of KL divergences between measured cell-type proportions in
+#   each section (averaged across sections) against the ground truth
+kl_table = function(full_df) {
+    full_df %>%
+        #   Compute cell-type proportions in each spot
+        group_by(sample_id, deconvo_tool, cell_type) %>%
+        summarize(observed = sum(observed), actual = sum(actual)) %>%
+        group_by(sample_id, deconvo_tool) %>%
+        mutate(
+            observed = observed / sum(observed),
+            actual = actual / sum(actual),
+        ) |>
+        #   Compute each term in the sum for KL divergence
+        group_by(sample_id, deconvo_tool, cell_type) |>
+        summarize(kl_piece = observed * log(observed / actual)) |>
+        #   Add all terms to form the sum for each sample
+        group_by(sample_id, deconvo_tool) |>
+        summarize(kl = sum(kl_piece)) |>
+        #   Take the mean across samples to form one value per tool
+        group_by(deconvo_tool) |>
+        summarize(kl = mean(kl))
+}
+
+#   Given a tibble 'metrics_df', write a scatterplot to PDF at 'filename'
+corr_rmse_plot = function(metrics_df, filename) {
+    p = ggplot(
+        metrics_df,
+        aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
+    ) +
+        facet_wrap(~deconvo_tool) +
+        geom_point() +
+        scale_color_manual(values = cell_type_labels) +
+        labs(color = "Cell Type", shape = "Sample ID") +
+        theme_bw(base_size = 13)
+    
+    pdf(file.path(plot_dir, filename), height = 4, width = 9)
+    print(p)
+    dev.off()
+}
+
 ################################################################################
 #   Read in and format cell counts into a table apt for plotting with ggplot
 ################################################################################
@@ -399,52 +467,10 @@ temp_observed = prop_df |>
     filter(source == "observed")
 prop_df = rbind(temp_actual, temp_observed)
 
-prop_barplot = function(prop_df, filename) {
-    plot_list = list()
-    for (sample_id in sample_ids) {
-        plot_list[[sample_id]] = ggplot(
-            prop_df |> filter(sample_id == {{ sample_id }}),
-            aes(x = deconvo_tool, y = prop, fill = cell_type)
-        ) +
-            geom_bar(stat = "identity") +
-            labs(
-                x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
-                title = sample_id
-            ) +
-            scale_x_discrete(labels = c("actual" = "Ground-Truth")) +
-            scale_fill_manual(values = cell_type_labels) +
-            theme_bw(base_size = 16)
-    }
-    pdf(file.path(plot_dir, filename))
-    print(plot_list)
-    dev.off()
-}
-
 prop_barplot(prop_df, 'prop_barplots.pdf')
 prop_barplot(
     prop_df |> filter(cell_type != "other"), 'prop_barplots_no_other.pdf'
 )
-
-kl_table = function(full_df) {
-    full_df %>%
-        #   Compute cell-type proportions in each spot
-        group_by(sample_id, deconvo_tool, cell_type) %>%
-        summarize(observed = sum(observed), actual = sum(actual)) %>%
-        group_by(sample_id, deconvo_tool) %>%
-        mutate(
-            observed = observed / sum(observed),
-            actual = actual / sum(actual),
-        ) |>
-        #   Compute each term in the sum for KL divergence
-        group_by(sample_id, deconvo_tool, cell_type) |>
-        summarize(kl_piece = observed * log(observed / actual)) |>
-        #   Add all terms to form the sum for each sample
-        group_by(sample_id, deconvo_tool) |>
-        summarize(kl = sum(kl_piece)) |>
-        #   Take the mean across samples to form one value per tool
-        group_by(deconvo_tool) |>
-        summarize(kl = mean(kl))
-}
 
 print("Accuracy of overall cell-type proportions per section (Mean KL divergence from ground-truth):")
 print(kl_table(full_df))
@@ -462,22 +488,6 @@ metrics_df <- full_df |>
         RMSE = signif(mean((observed - actual)**2)**0.5, 3)
     ) |>
     ungroup()
-
-corr_rmse_plot = function(metrics_df, filename) {
-    p = ggplot(
-        metrics_df,
-        aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
-    ) +
-        facet_wrap(~deconvo_tool) +
-        geom_point() +
-        scale_color_manual(values = cell_type_labels) +
-        labs(color = "Cell Type", shape = "Sample ID") +
-        theme_bw(base_size = 13)
-
-    pdf(file.path(plot_dir, filename), height = 4, width = 9)
-    print(p)
-    dev.off()
-}
 
 corr_rmse_plot(metrics_df, 'corr_RMSE_scatter.pdf')
 corr_rmse_plot(
