@@ -366,6 +366,15 @@ full_df |>
         rmse = signif(mean((observed - actual)**2)**0.5, 3)
     )
 
+print("Overall performance of deconvolution methods w/o 'other' (accuracy of spatial variation):")
+full_df |>
+    group_by(deconvo_tool) |>
+    filter(cell_type != "other") |>
+    summarize(
+        corr = round(cor(observed, actual), 2),
+        rmse = signif(mean((observed - actual)**2)**0.5, 3)
+    )
+
 #-------------------------------------------------------------------------------
 #   Stacked barplot of cell-type proportions
 #-------------------------------------------------------------------------------
@@ -433,25 +442,31 @@ pdf(file.path(plot_dir, 'prop_barplots2.pdf'), height = 4, width = 10)
 print(plot_list)
 dev.off()
 
+kl_table = function(full_df) {
+    full_df %>%
+        #   Compute cell-type proportions in each spot
+        group_by(sample_id, deconvo_tool, cell_type) %>%
+        summarize(observed = sum(observed), actual = sum(actual)) %>%
+        group_by(sample_id, deconvo_tool) %>%
+        mutate(
+            observed = observed / sum(observed),
+            actual = actual / sum(actual),
+        ) |>
+        #   Compute each term in the sum for KL divergence
+        group_by(sample_id, deconvo_tool, cell_type) |>
+        summarize(kl_piece = observed * log(observed / actual)) |>
+        #   Add all terms to form the sum for each sample
+        group_by(sample_id, deconvo_tool) |>
+        summarize(kl = sum(kl_piece)) |>
+        #   Take the mean across samples to form one value per tool
+        group_by(deconvo_tool) |>
+        summarize(kl = mean(kl))
+}
+
 print("Accuracy of overall cell-type proportions per section (Mean KL divergence from ground-truth):")
-full_df %>%
-    #   Compute cell-type proportions in each spot
-    group_by(sample_id, deconvo_tool, cell_type) %>%
-    summarize(observed = sum(observed), actual = sum(actual)) %>%
-    group_by(sample_id, deconvo_tool) %>%
-    mutate(
-        observed = observed / sum(observed),
-        actual = actual / sum(actual),
-    ) |>
-    #   Compute each term in the sum for KL divergence
-    group_by(sample_id, deconvo_tool, cell_type) |>
-    summarize(kl_piece = observed * log(observed / actual)) |>
-    #   Add all terms to form the sum for each sample
-    group_by(sample_id, deconvo_tool) |>
-    summarize(kl = sum(kl_piece)) |>
-    #   Take the mean across samples to form one value per tool
-    group_by(deconvo_tool) |>
-    summarize(kl = mean(kl))
+print(kl_table(full_df))
+print("Accuracy of overall cell-type proportions per section w/o 'other' (Mean KL divergence from ground-truth):")
+print(kl_table(full_df |> filter(cell_type != "other")))
 
 #-------------------------------------------------------------------------------
 #   Plot distribution of correlation & RMSE by sample and deconvo tool
