@@ -6,7 +6,7 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -68,13 +68,13 @@ if (cell_group == "broad") {
     
     #   For excitatory layers, make a list of the layers contained
     corresponding_layers = list(
-        "Excit_L2_3" = c("layer2", "layer3"),
-        "Excit_L3" = c("layer3"),
-        "Excit_L3_4_5" = c("layer3", "layer4", "layer5"),
-        "Excit_L4" = c("layer4"),
-        "Excit_L5" = c("layer5"),
-        "Excit_L5_6" = c("layer5", "layer6"),
-        "Excit_L6" = c("layer6")
+        "Excit_L2_3" = c("Layer 2", "Layer 3"),
+        "Excit_L3" = c("Layer 3"),
+        "Excit_L3_4_5" = c("Layer 3", "Layer 4", "Layer 5"),
+        "Excit_L4" = c("Layer 4"),
+        "Excit_L5" = c("Layer 5"),
+        "Excit_L5_6" = c("Layer 5", "Layer 6"),
+        "Excit_L6" = c("Layer 6")
     )
 }
 
@@ -778,7 +778,6 @@ metrics_df <- full_df %>%
     ) %>%
     ungroup()
 
-#   Improve label for plotting
 metrics_df$corr <- paste("Cor =", metrics_df$corr)
 
 #   For each cell type, plot counts of this cell type, measured by each
@@ -850,6 +849,8 @@ observed_df_long = left_join(
 
 #   Clean up labels
 observed_df_long$label = tolower(observed_df_long$label)
+observed_df_long$label = sub("layer", "Layer ", observed_df_long$label)
+observed_df_long$label[observed_df_long$label == "wm"] = "White Matter"
 
 #   Average counts of each cell type in each layer as annotated; filter NA
 #   labels (there are 2 inentional NAs where spots should be dropped)
@@ -881,6 +882,7 @@ for (cell_type in cell_types) {
             color = "Deconvolution Tool"
         ) +
         theme_bw(base_size = 20) +
+        theme(axis.text.x = element_text(angle = 90)) +
         coord_cartesian(ylim = c(0, y_max)) +
         scale_y_continuous(expand = c(0, 0, 0, 0.05))
 }
