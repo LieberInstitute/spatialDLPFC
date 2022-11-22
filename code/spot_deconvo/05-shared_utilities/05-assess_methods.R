@@ -882,7 +882,7 @@ dev.off()
 
 #-------------------------------------------------------------------------------
 #   Spatial distribution of cell-types compared against manual layer annotation
-#   (barplots)
+#   (barplots- raw counts)
 #-------------------------------------------------------------------------------
 
 #   Read in SCE just to get colors for software-estimated cell types
@@ -897,8 +897,16 @@ counts_df = counts_df |>
     #   "EndoMural" gets collapsed into "other", which we aren't considering
     filter(cell_type != "EndoMural")
 
+#   Meaning of an example section of one bar in one facet of this plot:
+#   Orange bar at white matter for cell2location: of all spots manually
+#   annotated as white matter, the size of the bar section is the across-sample
+#   mean of average oligo counts in those spots for each sample. Total bar
+#   heights vary within deconvo tool because cell-count density varies between
+#   layers. Total bar heights may vary between deconvo tools when total counts
+#   per spot aren't preserved (e.g. C2L doesn't match the cell counts you
+#   provide it)
 pdf(
-    file.path(plot_dir, 'layer_distribution_barplot.pdf'), width = 10,
+    file.path(plot_dir, 'layer_distribution_barplot_raw.pdf'), width = 10,
     height = 5
 )
 ggplot(
@@ -912,6 +920,50 @@ ggplot(
         fill = "Cell Type"
     ) +
     scale_fill_manual(values = estimated_cell_labels) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 90))
+dev.off()
+
+#-------------------------------------------------------------------------------
+#   Spatial distribution of cell-types compared against manual layer annotation
+#   (barplots- proportions by layer)
+#-------------------------------------------------------------------------------
+
+counts_df = observed_df_long |> 
+    filter(!is.na(label)) |>
+    #   For each manually annotated label and deconvo tool, normalize by the
+    #   total counts of all cell types and samples
+    group_by(deconvo_tool, label) |>
+    mutate(observed = observed / sum(observed)) |>
+    #   Now for each label, deconvo tool and cell type, add up counts for all
+    #   samples and relevant spots
+    group_by(deconvo_tool, label, cell_type) |>
+    summarize(observed = sum(observed)) |>
+    #   Now add a column 'layer_match' to indicate rows where each cell type
+    #   has a maximal proportion across layers. We'll mark these with an "X"
+    #   on the barplots
+    group_by(deconvo_tool, cell_type) |>
+    mutate(layer_match = observed == max(observed)) |>
+    ungroup()
+
+pdf(
+    file.path(plot_dir, 'layer_distribution_barplot_prop.pdf'), width = 10,
+    height = 5
+)
+ggplot(
+    counts_df,
+    aes(x = label, y = observed, fill = cell_type)
+) +
+    facet_wrap(~ deconvo_tool) +
+    geom_bar(stat = "identity") +
+    labs(
+        x = "Annotated Layer", y = "Proportion of Counts", fill = "Cell Type"
+    ) +
+    scale_fill_manual(values = estimated_cell_labels) +
+    geom_text(
+        aes(label = ifelse(layer_match, "X", "")),
+        position = position_stack(vjust = 0.5)
+    ) +
     theme_bw(base_size = 16) +
     theme(axis.text.x = element_text(angle = 90))
 dev.off()
