@@ -65,6 +65,17 @@ if (cell_group == "broad") {
         "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
         "Oligo", "OPC"
     )
+    
+    #   For excitatory layers, make a list of the layers contained
+    corresponding_layers = list(
+        "Excit_L2_3" = c("layer2", "layer3"),
+        "Excit_L3" = c("layer3"),
+        "Excit_L3_4_5" = c("layer3", "layer4", "layer5"),
+        "Excit_L4" = c("layer4"),
+        "Excit_L5" = c("layer5"),
+        "Excit_L5_6" = c("layer5", "layer6"),
+        "Excit_L6" = c("layer6")
+    )
 }
 
 cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1")
@@ -945,6 +956,30 @@ counts_df = observed_df_long |>
     group_by(deconvo_tool, cell_type) |>
     mutate(layer_match = observed == max(observed)) |>
     ungroup()
+
+if (cell_group == "layer") {
+    #   Take just the excitatory cell types
+    match_df = counts_df |>
+        filter(layer_match, str_detect(cell_type, "^Excit"))
+    
+    #   Add a column 'is_match' indicating whether for an excitatory cell type
+    #   and deconvo tool, the cell_type has maximal proportion in the correct/
+    #   expected layer
+    match_df$is_match = sapply(
+        1:nrow(match_df),
+        function(i) {
+            match_df$label[i] %in%
+                corresponding_layers[[as.character(match_df$cell_type)[i]]]
+        }
+    )
+    
+    #   For each deconvo tool, add up how many times excitatory cell types
+    #   have maximal proportion in the correct layers
+    print('Number of times excitatory cell types have maximal proportion in the correct layer:')
+    match_df |>
+        group_by(deconvo_tool) |>
+        summarize(num_matches = sum(is_match))
+}
 
 pdf(
     file.path(plot_dir, 'layer_distribution_barplot_prop.pdf'), width = 10,
