@@ -941,7 +941,7 @@ dev.off()
 #-------------------------------------------------------------------------------
 
 counts_df = observed_df_long |> 
-    filter(!is.na(label)) |>
+    filter(!is.na(label), cell_type != "EndoMural") |>
     #   For each manually annotated label and deconvo tool, normalize by the
     #   total counts of all cell types and samples
     group_by(deconvo_tool, label) |>
