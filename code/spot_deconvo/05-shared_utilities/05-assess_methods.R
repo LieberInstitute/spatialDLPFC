@@ -160,10 +160,32 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
             rmse = signif(mean((observed - actual)**2)**0.5, 3)
         ) %>%
         ungroup()
+    
+    #   Add KL divergence from observed section-wide cell-type proportions to
+    #   ground-truth proportions, averaged across sections
+    metrics_df = count_df |>
+        #   Ensure counts or proportions are normalized to add to 1 across
+        #   cell types
+        group_by(sample_id, deconvo_tool) |>
+        mutate(
+            observed = observed / sum(observed),
+            actual = actual / sum(actual),
+        ) |>
+        #   Compute each term in the sum for KL divergence
+        group_by(sample_id, deconvo_tool, cell_type) |>
+        summarize(kl_piece = actual * log(actual / observed)) |>
+        #   Add all terms to form the sum for each sample
+        group_by(sample_id, deconvo_tool) |>
+        summarize(kl = sum(kl_piece)) |>
+        #   Take the mean across samples to form one value per tool
+        group_by(deconvo_tool) |>
+        summarize(kl = round(mean(kl), 2)) |>
+        left_join(metrics_df)
 
     #   Improve labels for plotting
     metrics_df$corr <- paste("Cor =", metrics_df$corr)
     metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
+    metrics_df$kl <- paste("KL Div. =", metrics_df$kl)
 
     p <- ggplot(count_df) +
         geom_point(
@@ -173,21 +195,33 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
         geom_abline(
             intercept = 0, slope = 1, linetype = "dashed", color = "red"
         ) +
+        #   Correlation label
         geom_text(
             data = metrics_df,
             mapping = aes(
                 x = max(count_df$observed),
-                y = min(count_df$actual),
+                y = 0.05 * max(count_df$actual),
                 label = corr
             ),
             hjust = 1, vjust = 0
         ) +
+        #   RMSE label
         geom_text(
             data = metrics_df,
             mapping = aes(
                 x = max(count_df$observed),
                 y =  0.15 * max(count_df$actual),
                 label = rmse
+            ),
+            hjust = 1, vjust = 0
+        ) +
+        #   KL divergence label
+        geom_text(
+            data = metrics_df,
+            mapping = aes(
+                x = max(count_df$observed),
+                y =  0.25 * max(count_df$actual),
+                label = kl
             ),
             hjust = 1, vjust = 0
         ) +
