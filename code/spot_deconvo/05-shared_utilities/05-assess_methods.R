@@ -383,27 +383,35 @@ kl_table = function(full_df) {
 
 #   Given a tibble 'metrics_df', write a scatterplot to PDF at 'filename'
 corr_rmse_plot = function(metrics_df, filename) {
+    #   A tibble of labels for the average points on the plot
     text_df = metrics_df |>
         filter(sample_id == "average") |>
         mutate(
             text_label = paste0(
-                '(', round(Correlation, 2), ', ', round(RMSE, 2), ')'
+                '(', round(Correlation, 2), ', ', round(1 / RMSE, 2), ')'
             )
         )
     
     p = ggplot(
         metrics_df,
-        aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
+        aes(x = Correlation, y = 1 / RMSE, color = cell_type, shape = sample_id)
     ) +
         facet_wrap(~deconvo_tool) +
         geom_point() +
         geom_text_repel(
-            data = text_df, aes(label = text_label), show.legend = FALSE
+            data = text_df, aes(label = text_label), show.legend = FALSE,
+            size = 3
         ) +
-        scale_color_manual(values = cell_type_labels) +
-        scale_shape_manual(values = shape_scale) +
-        labs(color = "Cell Type", shape = "Sample ID") +
-        theme_bw(base_size = 13)
+        scale_color_manual(
+            values = cell_type_labels,
+            breaks = names(cell_type_labels)
+        ) +
+        scale_shape_manual(
+            values = shape_scale,
+            breaks = names(shape_scale)
+        ) +
+        labs(color = "Cell Type", shape = "Sample ID", y = "1 / RMSE") +
+        theme_bw(base_size = 15)
     
     pdf(file.path(plot_dir, filename), height = 4, width = 9)
     print(p)
@@ -535,16 +543,24 @@ metrics_df <- full_df |>
     ) |>
     ungroup()
 
-metrics_df = metrics_df |>
+metrics_df_other = metrics_df |>
     group_by(deconvo_tool) |>
     summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
     ungroup() |>
     mutate(cell_type = "average", sample_id = "average") |>
     rbind(metrics_df)
 
-corr_rmse_plot(metrics_df, 'corr_RMSE_scatter.pdf')
+metrics_df_no_other = metrics_df |>
+    filter(cell_type != "other") |>
+    group_by(deconvo_tool) |>
+    summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
+    ungroup() |>
+    mutate(cell_type = "average", sample_id = "average") |>
+    rbind(metrics_df |> filter(cell_type != "other"))
+
+corr_rmse_plot(metrics_df_other, 'corr_RMSE_scatter.pdf')
 corr_rmse_plot(
-    metrics_df |> filter(cell_type != "other"),
+    metrics_df_no_other |> filter(cell_type != "other"),
     'corr_RMSE_scatter_no_other.pdf'
 )
 
