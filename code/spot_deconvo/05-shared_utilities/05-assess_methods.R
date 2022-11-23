@@ -407,7 +407,7 @@ kl_table = function(full_df) {
         ) |>
         #   Compute each term in the sum for KL divergence
         group_by(sample_id, deconvo_tool, cell_type) |>
-        summarize(kl_piece = observed * log(observed / actual)) |>
+        summarize(kl_piece = actual * log(actual / observed)) |>
         #   Add all terms to form the sum for each sample
         group_by(sample_id, deconvo_tool) |>
         summarize(kl = sum(kl_piece)) |>
