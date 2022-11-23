@@ -5,6 +5,7 @@ library("tidyverse")
 library("reshape2")
 library("spatialLIBD")
 library("cowplot")
+library("ggrepel")
 
 cell_group <- "layer" # "broad" or "layer"
 
@@ -958,9 +959,7 @@ names(estimated_cell_labels) = gsub('/', '_', names(estimated_cell_labels))
 counts_df = counts_df |>
     group_by(label, deconvo_tool, cell_type) |>
     summarize(count = mean(count)) |>
-    ungroup() |>
-    #   "EndoMural" gets collapsed into "other", which we aren't considering
-    filter(cell_type != "EndoMural")
+    ungroup()
 
 #   Meaning of an example section of one bar in one facet of this plot:
 #   Orange bar at white matter for cell2location: of all spots manually
@@ -995,7 +994,6 @@ dev.off()
 #-------------------------------------------------------------------------------
 
 counts_df = observed_df_long |> 
-    filter(!is.na(label), cell_type != "EndoMural") |>
     #   For each manually annotated label and deconvo tool, normalize by the
     #   total counts of all cell types and samples
     group_by(deconvo_tool, label) |>
