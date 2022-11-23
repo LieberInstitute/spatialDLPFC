@@ -78,8 +78,8 @@ if (cell_group == "broad") {
     )
 }
 
-cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1")
-names(cell_type_labels) = cell_types_actual
+cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1", "#000000")
+names(cell_type_labels) = c(cell_types_actual, 'average')
 
 ################################################################################
 #   Plotting functions
@@ -383,13 +383,25 @@ kl_table = function(full_df) {
 
 #   Given a tibble 'metrics_df', write a scatterplot to PDF at 'filename'
 corr_rmse_plot = function(metrics_df, filename) {
+    text_df = metrics_df |>
+        filter(sample_id == "average") |>
+        mutate(
+            text_label = paste0(
+                '(', round(Correlation, 2), ', ', round(RMSE, 2), ')'
+            )
+        )
+    
     p = ggplot(
         metrics_df,
         aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
     ) +
         facet_wrap(~deconvo_tool) +
         geom_point() +
+        geom_text_repel(
+            data = text_df, aes(label = text_label), show.legend = FALSE
+        ) +
         scale_color_manual(values = cell_type_labels) +
+        scale_shape_manual(values = shape_scale) +
         labs(color = "Cell Type", shape = "Sample ID") +
         theme_bw(base_size = 13)
     
@@ -404,6 +416,9 @@ corr_rmse_plot = function(metrics_df, filename) {
 
 sample_ids <- readLines(sample_ids_path)
 added_colnames <- c("barcode", "sample_id", "deconvo_tool", "obs_type")
+
+shape_scale = c(16, 17, 15, 3, 8)
+names(shape_scale) = c(sample_ids, 'average')
 
 observed_df <- as_tibble(read.csv(raw_results_path))
 observed_df$obs_type = "observed"
@@ -445,19 +460,33 @@ full_df <- read.csv(collapsed_results_path) %>%
 #   by each deconvolution software
 print("Overall performance of deconvolution methods (accuracy of spatial variation):")
 full_df |>
+    #   For each sample ID and deconvo tool, compute correlation of all counts
+    #   for all cell types
+    group_by(deconvo_tool, sample_id) |>
+    summarize(
+        corr = cor(observed, actual),
+        rmse = mean((observed - actual)**2)**0.5
+    ) |>
+    #   Now average across samples
     group_by(deconvo_tool) |>
     summarize(
-        corr = round(cor(observed, actual), 2),
-        rmse = signif(mean((observed - actual)**2)**0.5, 3)
+        corr = round(mean(corr), 2), rmse = signif(mean(rmse), 3)
     )
 
 print("Overall performance of deconvolution methods w/o 'other' (accuracy of spatial variation):")
 full_df |>
-    group_by(deconvo_tool) |>
     filter(cell_type != "other") |>
+    #   For each sample ID and deconvo tool, compute correlation of all counts
+    #   for all cell types
+    group_by(deconvo_tool, sample_id) |>
     summarize(
-        corr = round(cor(observed, actual), 2),
-        rmse = signif(mean((observed - actual)**2)**0.5, 3)
+        corr = cor(observed, actual),
+        rmse = mean((observed - actual)**2)**0.5
+    ) |>
+    #   Now average across samples
+    group_by(deconvo_tool) |>
+    summarize(
+        corr = round(mean(corr), 2), rmse = signif(mean(rmse), 3)
     )
 
 #-------------------------------------------------------------------------------
@@ -501,10 +530,17 @@ print(kl_table(full_df |> filter(cell_type != "other")))
 metrics_df <- full_df |>
     group_by(deconvo_tool, sample_id, cell_type) |>
     summarize(
-        Correlation = round(cor(observed, actual), 2),
-        RMSE = signif(mean((observed - actual)**2)**0.5, 3)
+        Correlation = cor(observed, actual),
+        RMSE = mean((observed - actual)**2)**0.5
     ) |>
     ungroup()
+
+metrics_df = metrics_df |>
+    group_by(deconvo_tool) |>
+    summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
+    ungroup() |>
+    mutate(cell_type = "average", sample_id = "average") |>
+    rbind(metrics_df)
 
 corr_rmse_plot(metrics_df, 'corr_RMSE_scatter.pdf')
 corr_rmse_plot(
@@ -1034,7 +1070,7 @@ for (sample_id in sample_ids) {
     )[[1]] +
         scale_color_discrete() +
         scale_fill_discrete() +
-        theme_bw(base_size = 15) +
+        #theme_bw(base_size = 15) +
         coord_fixed()
 }
 
