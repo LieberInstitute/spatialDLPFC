@@ -66,18 +66,26 @@ if (cell_group == "broad") {
         "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
         "Oligo", "OPC"
     )
-    
-    #   For excitatory layers, make a list of the layers contained
-    corresponding_layers = list(
-        "Excit_L2_3" = c("Layer 2", "Layer 3"),
-        "Excit_L3" = c("Layer 3"),
-        "Excit_L3_4_5" = c("Layer 3", "Layer 4", "Layer 5"),
-        "Excit_L4" = c("Layer 4"),
-        "Excit_L5" = c("Layer 5"),
-        "Excit_L5_6" = c("Layer 5", "Layer 6"),
-        "Excit_L6" = c("Layer 6")
-    )
 }
+
+#   Make a list of which layers we expect each cell type to be most highly
+#   expressed in
+corresponding_layers = list(
+    "Astro" = "Layer 1",
+    "EndoMural" = "Layer 1",
+    "Excit" = paste("Layer", 2:6),
+    "Excit_L2_3" = c("Layer 2", "Layer 3"),
+    "Excit_L3" = "Layer 3",
+    "Excit_L3_4_5" = c("Layer 3", "Layer 4", "Layer 5"),
+    "Excit_L4" = "Layer 4",
+    "Excit_L5" = "Layer 5",
+    "Excit_L5_6" = c("Layer 5", "Layer 6"),
+    "Excit_L6" = "Layer 6",
+    "Inhib" = c("Layer 2", "Layer 3", "Layer 4"),
+    "Micro" = c("Layer 1", "White Matter"),
+    "Oligo" = "White Matter",
+    "OPC" = c("Layer 1", "White Matter")
+)
 
 cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1", "#000000")
 names(cell_type_labels) = c(cell_types_actual, 'average')
@@ -938,6 +946,9 @@ observed_df_long = left_join(
 observed_df_long$label = tolower(observed_df_long$label)
 observed_df_long$label = sub("layer", "Layer ", observed_df_long$label)
 observed_df_long$label[observed_df_long$label == "wm"] = "White Matter"
+stopifnot(
+    all(unlist(corresponding_layers) %in% unique(observed_df_long$label))
+)
 
 #   Average counts of each cell type in each layer as annotated; filter NA
 #   labels (there are 2 inentional NAs where spots should be dropped)
@@ -1027,7 +1038,8 @@ dev.off()
 #   (barplots- proportions by layer)
 #-------------------------------------------------------------------------------
 
-counts_df = observed_df_long |> 
+counts_df = observed_df_long |>
+    filter(!is.na(label)) |>
     #   For each manually annotated label and deconvo tool, normalize by the
     #   total counts of all cell types and samples
     group_by(deconvo_tool, label) |>
@@ -1042,30 +1054,34 @@ counts_df = observed_df_long |>
     group_by(deconvo_tool, cell_type) |>
     mutate(layer_match = observed == max(observed)) |>
     ungroup()
+    
+#   Add a column 'correct_layer' indicating whether for an excitatory cell type
+#   and deconvo tool, the cell_type has maximal proportion in the correct/
+#   expected layer
+counts_df$correct_layer = sapply(
+    1:nrow(counts_df),
+    function(i) {
+        counts_df$layer_match[i] &&
+        (counts_df$label[i] %in%
+             corresponding_layers[[as.character(counts_df$cell_type)[i]]])
+    }
+)
 
-if (cell_group == "layer") {
-    #   Take just the excitatory cell types
-    match_df = counts_df |>
-        filter(layer_match, str_detect(cell_type, "^Excit"))
-    
-    #   Add a column 'is_match' indicating whether for an excitatory cell type
-    #   and deconvo tool, the cell_type has maximal proportion in the correct/
-    #   expected layer
-    match_df$is_match = sapply(
-        1:nrow(match_df),
-        function(i) {
-            match_df$label[i] %in%
-                corresponding_layers[[as.character(match_df$cell_type)[i]]]
-        }
-    )
-    
-    #   For each deconvo tool, add up how many times excitatory cell types
-    #   have maximal proportion in the correct layers
-    print('Number of times excitatory cell types have maximal proportion in the correct layer:')
-    match_df |>
-        group_by(deconvo_tool) |>
-        summarize(num_matches = sum(is_match))
-}
+#   For each deconvo tool, add up how many times cell types have maximal
+#   proportion in the correct layers
+print('Number of times cell types have maximal proportion in the correct layer:')
+counts_df |>
+    group_by(deconvo_tool) |>
+    summarize(num_matches = sum(correct_layer)) |>
+    ungroup()
+
+print("Full list of which cell types matched the expected layer, by method:")
+counts_df |>
+    group_by(deconvo_tool) |>
+    filter(correct_layer) |>
+    select(cell_type) |>
+    ungroup() |>
+    print(n = nrow(counts_df))
 
 pdf(
     file.path(plot_dir, 'layer_distribution_barplot_prop.pdf'), width = 10,
@@ -1082,7 +1098,7 @@ ggplot(
     ) +
     scale_fill_manual(values = estimated_cell_labels) +
     geom_text(
-        aes(label = ifelse(layer_match, "X", "")),
+        aes(label = ifelse(correct_layer, "O", ifelse(layer_match, "X", ""))),
         position = position_stack(vjust = 0.5)
     ) +
     theme_bw(base_size = 16) +
