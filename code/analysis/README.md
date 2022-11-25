@@ -242,6 +242,10 @@ This study contained 2 annotated datasets with different numbers of cells. I onl
 
 `05_pseudobulk_UCLA.R`
 
+### 15_cell_composition
+Some exploratory down-stream analyses using spot deconvolution results to understand the cell composition in ant/mid/post controlling for spatial domains
+
+
 
 
 
