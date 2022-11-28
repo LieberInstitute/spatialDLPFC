@@ -33,7 +33,7 @@ dir_rdata <- here::here(
 )
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
-dir_plots <-  here::here(
+dir_plots <- here::here(
     "plots",
     "07_layer_differential_expression"
 )
