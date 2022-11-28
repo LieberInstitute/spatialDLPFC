@@ -7,7 +7,7 @@ data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
 
 #### Load sn data & exclude drop cells ####
 load(file = here(data_dir, "sce_DLPFC.Rdata"), verbose = TRUE)
-sce <- sce[,sce$cellType_hc != "drop"]
+sce <- sce[, sce$cellType_hc != "drop"]
 sce$cellType_hc <- droplevels(sce$cellType_hc)
 
 table(sce$cellType_hc)

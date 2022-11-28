@@ -8,71 +8,87 @@ library("patchwork")
 # if(!dir.exists(data_dir)) dir.create(data_dir)
 
 plot_dir <- here("plots", "13_nnSVG", "03_summarize_nnSVG_output")
-if(!dir.exists(plot_dir)) dir.create(plot_dir)
+if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
 data_dir <- here("processed-data", "rdata", "spe", "13_nnSVG", "03_summarize_nnSVG_output")
-if(!dir.exists(data_dir)) dir.create(data_dir)
+if (!dir.exists(data_dir)) dir.create(data_dir)
 
 #### Explore Data ####
 
 ## Load all
 load(here("processed-data", "rdata", "spe", "13_nnSVG", "02_compile_nnSVG_output", "nnSVG_all.Rdata"))
 
-nnSVG_all  |> filter(FDR < 0.05) |> count()
+nnSVG_all |>
+    filter(FDR < 0.05) |>
+    count()
 
 nnSVG_all_summary <- nnSVG_all |>
-  group_by(domains, gene_id, gene_name) |> 
-  summarize(n = n(), 
-            n_signif = sum(FDR < 0.05),
-            max_FDR = max(FDR),
-            min_FDR = min(FDR),
-            min_rank = min(rank),
-            max_rank = max(rank),
-            mean_rank = mean(rank), 
-            median_rank = median(rank),
-            top100_rank = sum(rank <= 100)) |>
-  ungroup()  |>
-  group_by(domains)
+    group_by(domains, gene_id, gene_name) |>
+    summarize(
+        n = n(),
+        n_signif = sum(FDR < 0.05),
+        max_FDR = max(FDR),
+        min_FDR = min(FDR),
+        min_rank = min(rank),
+        max_rank = max(rank),
+        mean_rank = mean(rank),
+        median_rank = median(rank),
+        top100_rank = sum(rank <= 100)
+    ) |>
+    ungroup() |>
+    group_by(domains)
 
-nnSVG_all_summary |> filter(n == 30) |> count()
+nnSVG_all_summary |>
+    filter(n == 30) |>
+    count()
 # domains     n
 # <chr>   <int>
 # 1 4v16      465
 # 2 5v9       568
-nnSVG_all_summary |> filter(max_FDR !=1) |> ungroup()  |> count(n ==1)
+nnSVG_all_summary |>
+    filter(max_FDR != 1) |>
+    ungroup() |>
+    count(n == 1)
 
-nnSVG_all_summary |> filter(max_FDR !=1, n !=1)
+nnSVG_all_summary |> filter(max_FDR != 1, n != 1)
 
-nnSVG_all_summary |> arrange(-top100_rank) |> slice(1:3)
+nnSVG_all_summary |>
+    arrange(-top100_rank) |>
+    slice(1:3)
 
 ## lowest max rank for each domains
-low_max <- nnSVG_all_summary |> filter(n > 20) |> arrange(max_rank) |> slice(1)
+low_max <- nnSVG_all_summary |>
+    filter(n > 20) |>
+    arrange(max_rank) |>
+    slice(1)
 
 
 #### Export 50 top100_rank genes in excel ####
 library("xlsx")
 
 nnSVG_top100_split <- nnSVG_all_summary |>
-  arrange(-top100_rank) |>
-  slice(1:50) |> 
-  group_split() 
+    arrange(-top100_rank) |>
+    slice(1:50) |>
+    group_split()
 
 names(nnSVG_top100_split) <- unique(nnSVG_all_summary$domains)
 # nnSVG_top100_split <- map(nnSVG_top100_split, as.data.frame)
 
 map(nnSVG_top100_split, dim)
 
-load(here("processed-data", "rdata", "spe", "13_nnSVG", "02_compile_nnSVG_output","nnSVG_log_details.Rdata"), verbose = TRUE)
+load(here("processed-data", "rdata", "spe", "13_nnSVG", "02_compile_nnSVG_output", "nnSVG_log_details.Rdata"), verbose = TRUE)
 # nnSVG_log_details
-write.xlsx(nnSVG_log_details, file = here(data_dir, 'nnSVG_n-top100_k9-model.xlsx'), sheetName="Input_Details", append =FALSE)
+write.xlsx(nnSVG_log_details, file = here(data_dir, "nnSVG_n-top100_k9-model.xlsx"), sheetName = "Input_Details", append = FALSE)
 
-map2(nnSVG_top100_split, names(nnSVG_top100_split),
-     ~write.xlsx(.x, file = here(data_dir, 'nnSVG_n-top100_k9-model.xlsx'), sheetName=.y, append =TRUE))
-     
+map2(
+    nnSVG_top100_split, names(nnSVG_top100_split),
+    ~ write.xlsx(.x, file = here(data_dir, "nnSVG_n-top100_k9-model.xlsx"), sheetName = .y, append = TRUE)
+)
+
 #### Exploratory plots ####
 n_gene_distribution <- nnSVG_all_summary |>
-  ggplot(aes(n, color = domains)) +
-  geom_density()
+    ggplot(aes(n, color = domains)) +
+    geom_density()
 
 ggsave(n_gene_distribution, filename = here(plot_dir, "n_gene_distribution.png"), width = 10)
 
@@ -83,66 +99,60 @@ low_max <- low_max |> left_join(nnSVG_all)
 low_max |> count()
 
 low_max_FDR <- low_max |>
-  ggplot(aes(x = domains , y = FDR, fill = domains)) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.25) +
-  geom_jitter(aes(color = domains)) +
-  geom_hline(yintercept = 0.05, color = "red", linetype = "dashed")
+    ggplot(aes(x = domains, y = FDR, fill = domains)) +
+    geom_boxplot(outlier.shape = NA, alpha = 0.25) +
+    geom_jitter(aes(color = domains)) +
+    geom_hline(yintercept = 0.05, color = "red", linetype = "dashed")
 
 ggsave(low_max_FDR, filename = here(plot_dir, "low_max_FDR.png"))
 
 ## Mean rank vs. n
 mean_rank_n_box <- nnSVG_all_summary |>
-  ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
-  geom_boxplot() +
-  facet_wrap(~domains) +
-  theme(legend.position = "None")
+    ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
+    geom_boxplot() +
+    facet_wrap(~domains) +
+    theme(legend.position = "None")
 
 
 ggsave(mean_rank_n_box, filename = here(plot_dir, "mean_rank_n_box.png"), width = 12)
 
-mean_rank_top_n_scatter <- nnSVG_all_summary |> 
-  arrange(mean_rank) |>
-  slice(1:500) |>
-  # ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
-  ggplot(aes(x = n, y = mean_rank, color = top100_rank)) +
-  geom_point(alpha = 0.2) +
-  facet_wrap(~domains) 
+mean_rank_top_n_scatter <- nnSVG_all_summary |>
+    arrange(mean_rank) |>
+    slice(1:500) |>
+    # ggplot(aes(x = as.factor(n), y = mean_rank, fill = domains)) +
+    ggplot(aes(x = n, y = mean_rank, color = top100_rank)) +
+    geom_point(alpha = 0.2) +
+    facet_wrap(~domains)
 
 ggsave(mean_rank_top_n_scatter, filename = here(plot_dir, "mean_rank_top_n_scatter.png"), width = 12)
 
-nnSVG_all_summary |> 
-  arrange(mean_rank) |>
-  slice(1:5)
+nnSVG_all_summary |>
+    arrange(mean_rank) |>
+    slice(1:5)
 
 ## n rank > 100 vs. mean
 library("ggrepel")
 
 mean_rank_n_top100 <- nnSVG_all_summary |>
-  # slice(1:100) |>
-  ggplot(aes(x = top100_rank, y = mean_rank)) +
-  geom_point(alpha = 0.2) +
-  geom_text_repel(aes(label = ifelse(top100_rank > 10, gene_name, NA)), size = 2) +
-  # geom_jitter(alpha = 0.2) +
-  facet_wrap(~domains) +
-  theme(legend.position = "None")
+    # slice(1:100) |>
+    ggplot(aes(x = top100_rank, y = mean_rank)) +
+    geom_point(alpha = 0.2) +
+    geom_text_repel(aes(label = ifelse(top100_rank > 10, gene_name, NA)), size = 2) +
+    # geom_jitter(alpha = 0.2) +
+    facet_wrap(~domains) +
+    theme(legend.position = "None")
 
 ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100.png"), width = 12)
 
 mean_rank_n_top100 <- nnSVG_all_summary |>
-  arrange(-top100_rank) |>
-  slice(1:100) |>
-  ggplot(aes(x = top100_rank, y = mean_rank)) +
-  geom_point(alpha = 0.2) +
-  geom_text_repel(aes(label = gene_name), size = 2) +
-  # geom_text(aes(label = gene_name), size = 2) +
-  # geom_jitter(alpha = 0.2) +
-  facet_wrap(~domains) +
-  theme(legend.position = "None")
+    arrange(-top100_rank) |>
+    slice(1:100) |>
+    ggplot(aes(x = top100_rank, y = mean_rank)) +
+    geom_point(alpha = 0.2) +
+    geom_text_repel(aes(label = gene_name), size = 2) +
+    # geom_text(aes(label = gene_name), size = 2) +
+    # geom_jitter(alpha = 0.2) +
+    facet_wrap(~domains) +
+    theme(legend.position = "None")
 
 ggsave(mean_rank_n_top100, filename = here(plot_dir, "mean_rank_n_top100_filter.png"), width = 12)
-
-
-
-
-
-

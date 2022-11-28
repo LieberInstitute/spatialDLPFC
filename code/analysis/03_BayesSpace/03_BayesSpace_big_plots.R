@@ -25,7 +25,6 @@ vis_clus_p_AS <-
     image_id = "lowres",
     alpha = 1,
     point_size = 1.25) {
-
         ## Some variables
         pxl_row_in_fullres <- pxl_col_in_fullres <- key <- NULL
         # stopifnot(all(c("pxl_col_in_fullres", "pxl_row_in_fullres", "key") %in% colnames(d)))

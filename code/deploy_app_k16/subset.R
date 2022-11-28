@@ -22,12 +22,13 @@ lobstr::obj_size(spe_pseudo)
 # 75.50 MB
 
 # load modeling results for k16 clustering/pseudobulking
-load(here(
-    "code",
-    "deploy_app_k16",
-    "parsed_modeling_results_k16.Rdata"
-),
-verbose = TRUE
+load(
+    here(
+        "code",
+        "deploy_app_k16",
+        "parsed_modeling_results_k16.Rdata"
+    ),
+    verbose = TRUE
 )
 lobstr::obj_size(modeling_results)
 # 33.28 MB

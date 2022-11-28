@@ -66,18 +66,31 @@ if (cell_group == "broad") {
         "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
         "Oligo", "OPC"
     )
-    
-    #   For excitatory layers, make a list of the layers contained
-    corresponding_layers = list(
-        "Excit_L2_3" = c("Layer 2", "Layer 3"),
-        "Excit_L3" = c("Layer 3"),
-        "Excit_L3_4_5" = c("Layer 3", "Layer 4", "Layer 5"),
-        "Excit_L4" = c("Layer 4"),
-        "Excit_L5" = c("Layer 5"),
-        "Excit_L5_6" = c("Layer 5", "Layer 6"),
-        "Excit_L6" = c("Layer 6")
-    )
 }
+
+#   Make a list of which layers we expect each cell type to be most highly
+#   expressed in
+corresponding_layers = list(
+    "Astro" = "Layer 1",
+    "EndoMural" = "Layer 1",
+    "Excit" = paste("Layer", 2:6),
+    "Excit_L2_3" = c("Layer 2", "Layer 3"),
+    "Excit_L3" = "Layer 3",
+    "Excit_L3_4_5" = c("Layer 3", "Layer 4", "Layer 5"),
+    "Excit_L4" = "Layer 4",
+    "Excit_L5" = "Layer 5",
+    "Excit_L5_6" = c("Layer 5", "Layer 6"),
+    "Excit_L6" = "Layer 6",
+    "Inhib" = paste("Layer", 2:6),
+    "Micro" = c("Layer 1", "White Matter"),
+    "Oligo" = "White Matter",
+    "OPC" = c("Layer 1", "White Matter")
+)
+
+#   Name spatialLIBD colors with the layer names used in this script
+names(libd_layer_colors)[
+    match(c(paste0("Layer", 1:6), "WM"), names(libd_layer_colors))
+] = c(paste("Layer", 1:6), "White Matter")
 
 cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1", "#000000")
 names(cell_type_labels) = c(cell_types_actual, 'average')
@@ -420,22 +433,40 @@ kl_table = function(full_df) {
 corr_rmse_plot = function(metrics_df, filename) {
     #   A tibble of labels for the average points on the plot
     text_df = metrics_df |>
-        filter(sample_id == "average") |>
+        group_by(deconvo_tool) |>
+        summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
+        ungroup() |>
         mutate(
-            text_label = paste0(
-                '(', round(Correlation, 2), ', ', round(1 / RMSE, 2), ')'
-            )
+            Correlation = paste0('Avg. Cor = ', round(Correlation, 2)),
+            RMSE = paste0('Avg. RMSE = ', round(RMSE, 2))
         )
     
     p = ggplot(
         metrics_df,
-        aes(x = Correlation, y = 1 / RMSE, color = cell_type, shape = sample_id)
+        aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
     ) +
         facet_wrap(~deconvo_tool) +
         geom_point() +
-        geom_text_repel(
-            data = text_df, aes(label = text_label), show.legend = FALSE,
-            size = 3
+        geom_text(
+            data = text_df,
+            aes(
+                x = max(metrics_df$Correlation), y = 0.05 * max(metrics_df$RMSE), label = Correlation,
+                color = NULL, shape = NULL
+            ),
+            vjust = 0, hjust = 1, show.legend = FALSE
+        ) +
+        geom_text(
+            data = text_df,
+            aes(
+                x = max(metrics_df$Correlation),
+                y = 0.1 * max(metrics_df$RMSE),
+                label = RMSE, color = NULL, shape = NULL
+            ),
+            vjust = 0, hjust = 1, show.legend = FALSE
+        ) +
+        scale_y_continuous(
+            limits = c(0, max(metrics_df$RMSE) * 1.05),
+            expand = c(0, 0)
         ) +
         scale_color_manual(
             values = cell_type_labels,
@@ -445,10 +476,91 @@ corr_rmse_plot = function(metrics_df, filename) {
             values = shape_scale,
             breaks = names(shape_scale)
         ) +
-        labs(color = "Cell Type", shape = "Sample ID", y = "1 / RMSE") +
+        labs(color = "Cell Type", shape = "Sample ID") +
         theme_bw(base_size = 15)
     
     pdf(file.path(plot_dir, filename), height = 4, width = 9)
+    print(p)
+    dev.off()
+}
+
+#   Given a tibble with columns 'label' (manual layer label), 'deconvo_tool',
+#   'cell_type', and 'count', write a set of barplots to PDF under [plot_dir]
+#   with name [filename]. 'ylab' give the y-axis label.
+#
+#   The barplots are faceted by deconvo_tool, with x-axis including each
+#   manually annotated layer. Each barplot includes counts for each cell type
+#   in each layer. Each cell type is expected to have a maximal value (across
+#   all bars in the facet) at a particular layer; an "O" is placed at the layer
+#   with maximal value for each cell type if the layer is "correct" (e.g.
+#   'Excit_L3' has maximal value in layer 3), and an "X" is placed if the layer
+#   is incorrect. Total counts of "O"s for each facet across all cell types is
+#   tallied and reported in the facet titles.
+layer_dist_barplot = function(counts_df, filename, ylab) {
+    #   Add a column 'layer_match' to indicate rows where each cell type
+    #   has a maximal value across layers. We'll mark these with an "X"
+    #   on the barplots
+    counts_df = counts_df |>
+        group_by(deconvo_tool, cell_type) |>
+        mutate(layer_match = count == max(count)) |>
+        ungroup()
+    
+    #   Add a column 'correct_layer' indicating whether for a cell type
+    #   and deconvo tool, the cell_type has maximal value in the correct/
+    #   expected layer
+    counts_df$correct_layer = sapply(
+        1:nrow(counts_df),
+        function(i) {
+            counts_df$layer_match[i] &&
+                (counts_df$label[i] %in%
+                     corresponding_layers[[
+                         as.character(counts_df$cell_type)[i]
+                     ]]
+                )
+        }
+    )
+    
+    #   For each deconvo tool, add up how many times cell types have maximal
+    #   value in the correct layers
+    correct_df = counts_df |>
+        group_by(deconvo_tool) |>
+        summarize(num_matches = sum(correct_layer)) |>
+        ungroup()
+    print('Number of times cell types have maximal value in the correct layer:')
+    print(correct_df)
+    
+    print("Full list of which cell types matched the expected layer, by method:")
+    counts_df |>
+        group_by(deconvo_tool) |>
+        filter(correct_layer) |>
+        select(cell_type) |>
+        ungroup() |>
+        print(n = nrow(counts_df))
+    
+    #   Add the "layer accuracy" in the facet titles in the upcoming plot
+    correct_labeller = paste0(
+        correct_df$deconvo_tool, ': ', correct_df$num_matches, '/',
+        length(cell_types)
+    )
+    names(correct_labeller) = correct_df |> pull(deconvo_tool)
+    correct_labeller = labeller(deconvo_tool = correct_labeller)
+    
+    p = ggplot(
+        counts_df,
+        aes(x = label, y = count, fill = cell_type)
+    ) +
+        facet_wrap(~ deconvo_tool, labeller = correct_labeller) +
+        geom_bar(stat = "identity") +
+        labs(x = "Annotated Layer", y = ylab, fill = "Cell Type") +
+        scale_fill_manual(values = estimated_cell_labels) +
+        geom_text(
+            aes(label = ifelse(correct_layer, "O", ifelse(layer_match, "X", ""))),
+            position = position_stack(vjust = 0.5)
+        ) +
+        theme_bw(base_size = 16) +
+        theme(axis.text.x = element_text(angle = 90))
+    
+    pdf(file.path(plot_dir, filename), width = 10, height = 5)
     print(p)
     dev.off()
 }
@@ -578,24 +690,9 @@ metrics_df <- full_df |>
     ) |>
     ungroup()
 
-metrics_df_other = metrics_df |>
-    group_by(deconvo_tool) |>
-    summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
-    ungroup() |>
-    mutate(cell_type = "average", sample_id = "average") |>
-    rbind(metrics_df)
-
-metrics_df_no_other = metrics_df |>
-    filter(cell_type != "other") |>
-    group_by(deconvo_tool) |>
-    summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
-    ungroup() |>
-    mutate(cell_type = "average", sample_id = "average") |>
-    rbind(metrics_df |> filter(cell_type != "other"))
-
-corr_rmse_plot(metrics_df_other, 'corr_RMSE_scatter.pdf')
+corr_rmse_plot(metrics_df, 'corr_RMSE_scatter.pdf')
 corr_rmse_plot(
-    metrics_df_no_other |> filter(cell_type != "other"),
+    metrics_df |> filter(cell_type != "other"),
     'corr_RMSE_scatter_no_other.pdf'
 )
 
@@ -938,14 +1035,14 @@ observed_df_long = left_join(
 observed_df_long$label = tolower(observed_df_long$label)
 observed_df_long$label = sub("layer", "Layer ", observed_df_long$label)
 observed_df_long$label[observed_df_long$label == "wm"] = "White Matter"
+stopifnot(
+    all(unlist(corresponding_layers) %in% unique(observed_df_long$label))
+)
 
 #   Average counts of each cell type in each layer as annotated; filter NA
-#   labels (there are 2 inentional NAs where spots should be dropped)
+#   labels (there are 2 intentional NAs where spots should be dropped)
 counts_df = observed_df_long |> 
-    filter(
-        !is.na(label),
-        label != ""
-    ) |>
+    filter(!is.na(label)) |>
     group_by(label, deconvo_tool, sample_id, cell_type) |>
     summarize(count = mean(observed)) |>
     ungroup()
@@ -990,7 +1087,12 @@ sce = readRDS(sce_in)
 estimated_cell_labels = metadata(sce)[[paste0('cell_type_colors_', cell_group)]]
 names(estimated_cell_labels) = gsub('/', '_', names(estimated_cell_labels))
 
-counts_df = counts_df |>
+counts_df = observed_df_long |> 
+    filter(!is.na(label)) |>
+    #   Average counts within sample for a given layer/cell type/ deconvo tool
+    group_by(label, deconvo_tool, sample_id, cell_type) |>
+    summarize(count = mean(observed)) |>
+    #   Average these averages across sample
     group_by(label, deconvo_tool, cell_type) |>
     summarize(count = mean(count)) |>
     ungroup()
@@ -1003,31 +1105,17 @@ counts_df = counts_df |>
 #   layers. Total bar heights may vary between deconvo tools when total counts
 #   per spot aren't preserved (e.g. C2L doesn't match the cell counts you
 #   provide it)
-pdf(
-    file.path(plot_dir, 'layer_distribution_barplot_raw.pdf'), width = 10,
-    height = 5
+layer_dist_barplot(
+    counts_df, 'layer_distribution_barplot_raw.pdf', "Average Predicted Count"
 )
-ggplot(
-        counts_df,
-        aes(x = label, y = count, fill = cell_type)
-    ) +
-    facet_wrap(~ deconvo_tool) +
-    geom_bar(stat = "identity") +
-    labs(
-        x = "Annotated Layer", y = "Average Predicted Count",
-        fill = "Cell Type"
-    ) +
-    scale_fill_manual(values = estimated_cell_labels) +
-    theme_bw(base_size = 16) +
-    theme(axis.text.x = element_text(angle = 90))
-dev.off()
 
 #-------------------------------------------------------------------------------
 #   Spatial distribution of cell-types compared against manual layer annotation
 #   (barplots- proportions by layer)
 #-------------------------------------------------------------------------------
 
-counts_df = observed_df_long |> 
+counts_df = observed_df_long |>
+    filter(!is.na(label)) |>
     #   For each manually annotated label and deconvo tool, normalize by the
     #   total counts of all cell types and samples
     group_by(deconvo_tool, label) |>
@@ -1035,59 +1123,11 @@ counts_df = observed_df_long |>
     #   Now for each label, deconvo tool and cell type, add up counts for all
     #   samples and relevant spots
     group_by(deconvo_tool, label, cell_type) |>
-    summarize(observed = sum(observed)) |>
-    #   Now add a column 'layer_match' to indicate rows where each cell type
-    #   has a maximal proportion across layers. We'll mark these with an "X"
-    #   on the barplots
-    group_by(deconvo_tool, cell_type) |>
-    mutate(layer_match = observed == max(observed)) |>
-    ungroup()
+    summarize(count = sum(observed))
 
-if (cell_group == "layer") {
-    #   Take just the excitatory cell types
-    match_df = counts_df |>
-        filter(layer_match, str_detect(cell_type, "^Excit"))
-    
-    #   Add a column 'is_match' indicating whether for an excitatory cell type
-    #   and deconvo tool, the cell_type has maximal proportion in the correct/
-    #   expected layer
-    match_df$is_match = sapply(
-        1:nrow(match_df),
-        function(i) {
-            match_df$label[i] %in%
-                corresponding_layers[[as.character(match_df$cell_type)[i]]]
-        }
-    )
-    
-    #   For each deconvo tool, add up how many times excitatory cell types
-    #   have maximal proportion in the correct layers
-    print('Number of times excitatory cell types have maximal proportion in the correct layer:')
-    match_df |>
-        group_by(deconvo_tool) |>
-        summarize(num_matches = sum(is_match))
-}
-
-pdf(
-    file.path(plot_dir, 'layer_distribution_barplot_prop.pdf'), width = 10,
-    height = 5
+layer_dist_barplot(
+    counts_df, 'layer_distribution_barplot_prop.pdf', "Proportion of Counts"
 )
-ggplot(
-    counts_df,
-    aes(x = label, y = observed, fill = cell_type)
-) +
-    facet_wrap(~ deconvo_tool) +
-    geom_bar(stat = "identity") +
-    labs(
-        x = "Annotated Layer", y = "Proportion of Counts", fill = "Cell Type"
-    ) +
-    scale_fill_manual(values = estimated_cell_labels) +
-    geom_text(
-        aes(label = ifelse(layer_match, "X", "")),
-        position = position_stack(vjust = 0.5)
-    ) +
-    theme_bw(base_size = 16) +
-    theme(axis.text.x = element_text(angle = 90))
-dev.off()
 
 #-------------------------------------------------------------------------------
 #   Spatial plots of manual layer annotation
@@ -1112,14 +1152,10 @@ for (sample_id in sample_ids) {
         spe_small = spe_small[, !is.na(spe_small$manual_layer)]
     }
     
-    plot_list[[sample_id]] = vis_grid_gene(
-        spe_small, geneid = 'manual_layer', return_plots = TRUE,
-        spatial = FALSE
-    )[[1]] +
-        scale_color_discrete() +
-        scale_fill_discrete() +
-        #theme_bw(base_size = 15) +
-        coord_fixed()
+    plot_list[[sample_id]] = vis_clus(
+        spe_small, clustervar = 'manual_layer', return_plots = TRUE,
+        spatial = FALSE, sampleid = sample_id, colors = libd_layer_colors
+    )
 }
 
 pdf(file.path(plot_dir, 'spot_layer_labels.pdf'))

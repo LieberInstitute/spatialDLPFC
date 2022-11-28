@@ -31,7 +31,6 @@ res_list <- as.list(rep(NA, length(sample_ids)))
 names(res_list) <- sample_ids
 
 for (s in seq_along(sample_ids)) {
-
     # select sample_id
     ix <- colData(spe)$sample_id == sample_ids[s]
     spe_sub <- spe[, ix]
@@ -65,7 +64,6 @@ bayes_res_list <- as.list(rep(NA, length(sample_ids)))
 names(bayes_res_list) <- sample_ids
 
 for (s in seq_along(sample_ids)) {
-
     # select sample_id
     ix <- colData(spe)$sample_id == sample_ids[s]
     spe_subS <- spe[, ix]
