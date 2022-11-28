@@ -1,50 +1,42 @@
 # library(sgejobs)
-# sgejobs::job_loop(
-#    loops = list(spetype = c(
-#        "wholegenome", "targeted"
-#     )),
+# sgejobs::job_single(
 #     name = "02_explore_expr_variability",
 #     create_shell = TRUE,
 #     queue = "bluejay",
-#     memory = "15G")
-# To execute the script builder, use: sh 02_explore_expr_variability.sh
+#     memory = "15G",
+#     task_num = 28,
+#     tc = 10
+# )
+# To execute the script builder, use: qsub 02_explore_expr_variability.sh
 
-# Required libraries
-library("getopt")
-
-## Specify parameters
-spec <- matrix(c(
-    "spetype", "s", 2, "character", "SPE spetype: wholegenome or targeted",
-    "help", "h", 0, "logical", "Display help"
-), byrow = TRUE, ncol = 5)
-opt <- getopt(spec = spec)
-
-## if help was asked for print a friendly message
-## and exit with a non-zero error code
-if (!is.null(opt$help)) {
-    cat(getopt(spec, usage = TRUE))
-    q(status = 1)
-}
+k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## For testing
 if (FALSE) {
-    opt <- list(spetype = "wholegenome")
+    k <- 2
 }
-
 
 library("here")
 library("sessioninfo")
 library("SingleCellExperiment")
 library("scater")
 
-## Load pathology colors
-source(here("code", "colors_pathology.R"), echo = TRUE, max.deparse.length = 500)
+## Load BayesSpace colors
+source(here("code", "analysis", "colors_bayesSpace.R"), echo = TRUE, max.deparse.length = 500)
 
 ## output directory
-dir_rdata <- here::here("processed-data", "11_grey_matter_only", opt$spetype)
+dir_rdata <- here::here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "07_layer_differential_expression"
+)
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
-dir_plots <- here::here("plots", "11_grey_matter_only", opt$spetype)
+dir_plots <- here::here(
+    "plots",
+    "07_layer_differential_expression"
+)
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
 
@@ -53,7 +45,7 @@ sce_pseudo <-
     readRDS(
         file.path(
             dir_rdata,
-            paste0("sce_pseudo_pathology_", opt$spetype, ".rds")
+            paste0("sce_pseudo_BayesSpace_", k, ".rds")
         )
     )
 
@@ -61,16 +53,15 @@ sce_pseudo <-
 vars <- c(
     "age",
     "sample_id",
-    "path_groups",
+    "BayesSpace",
     "subject",
     "sex",
-    "pmi",
-    "APOe"
+    "position"
 )
 
 ## Plot PCs with different colors
 ## Each point here is a sample
-pdf(file = file.path(dir_plots, paste0("sce_pseudo_pca.pdf")), width = 14, height = 14)
+pdf(file = file.path(dir_plots, paste0("sce_pseudo_k", sprintf("%02d", k), ".pdf")), width = 14, height = 14)
 for (var in vars) {
     p <- plotPCA(
         sce_pseudo,
@@ -80,8 +71,8 @@ for (var in vars) {
         label_format = c("%s %02i", " (%i%%)"),
         percentVar = metadata(sce_pseudo)$PCA_var_explained
     )
-    if (var == "path_groups") {
-        p <- p + scale_color_manual("path_groups", values = colors_pathology)
+    if (var == "BayesSpace") {
+        p <- p + scale_color_manual("BayesSpace", values = colors_bayesSpace)
     }
     print(p)
 }
@@ -95,7 +86,7 @@ vars <- getVarianceExplained(sce_pseudo,
 )
 
 ## Now visualize the percent of variance explained across all genes
-pdf(file = file.path(dir_plots, paste0("sce_pseudo_gene_explanatory_vars.pdf")))
+pdf(file = file.path(dir_plots, paste0("sce_pseudo_gene_explanatory_vars_k", sprintf("%02d", k), ".pdf")))
 plotExplanatoryVariables(vars)
 dev.off()
 
