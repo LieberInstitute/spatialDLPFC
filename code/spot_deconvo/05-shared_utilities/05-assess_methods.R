@@ -81,11 +81,16 @@ corresponding_layers = list(
     "Excit_L5" = "Layer 5",
     "Excit_L5_6" = c("Layer 5", "Layer 6"),
     "Excit_L6" = "Layer 6",
-    "Inhib" = c("Layer 2", "Layer 3", "Layer 4"),
+    "Inhib" = paste("Layer", 2:6),
     "Micro" = c("Layer 1", "White Matter"),
     "Oligo" = "White Matter",
     "OPC" = c("Layer 1", "White Matter")
 )
+
+#   Name spatialLIBD colors with the layer names used in this script
+names(libd_layer_colors)[
+    match(c(paste0("Layer", 1:6), "WM"), names(libd_layer_colors))
+] = c(paste("Layer", 1:6), "White Matter")
 
 cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1", "#000000")
 names(cell_type_labels) = c(cell_types_actual, 'average')
@@ -1131,14 +1136,10 @@ for (sample_id in sample_ids) {
         spe_small = spe_small[, !is.na(spe_small$manual_layer)]
     }
     
-    plot_list[[sample_id]] = vis_grid_gene(
-        spe_small, geneid = 'manual_layer', return_plots = TRUE,
-        spatial = FALSE
-    )[[1]] +
-        scale_color_discrete() +
-        scale_fill_discrete() +
-        #theme_bw(base_size = 15) +
-        coord_fixed()
+    plot_list[[sample_id]] = vis_clus(
+        spe_small, clustervar = 'manual_layer', return_plots = TRUE,
+        spatial = FALSE, sampleid = sample_id, colors = libd_layer_colors
+    )
 }
 
 pdf(file.path(plot_dir, 'spot_layer_labels.pdf'))
