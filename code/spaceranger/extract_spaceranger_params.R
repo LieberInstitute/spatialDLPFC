@@ -9,12 +9,13 @@ round1 <-
         full.names = TRUE
     )
 round2_4 <-
-    list.files(list.files(
-        here("processed-data", "NextSeq"),
-        pattern = "Round",
+    list.files(
+        list.files(
+            here("processed-data", "NextSeq"),
+            pattern = "Round",
+            full.names = TRUE
+        ),
         full.names = TRUE
-    ),
-    full.names = TRUE
     )
 invocation_files <- file.path(c(round1, round2_4), "_invocation")
 invocation_files <- invocation_files[file.exists(invocation_files)]

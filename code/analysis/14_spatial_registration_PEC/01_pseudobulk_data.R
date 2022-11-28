@@ -8,7 +8,7 @@ library("sessioninfo")
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
 input_file <- args[1]
-message("input = ",input_file)
+message("input = ", input_file)
 
 dataset <- dirname(input_file)
 message("\n#### Running: ", dataset, " ####")
@@ -24,6 +24,7 @@ sce <- readH5AD(file = filepath)
 message("\nSCE Dimesions:")
 dim(sce)
 
+print(colnames(colData(sce)))
 message("Cell Types:")
 ## must be syntactically valid
 colData(sce)$cellType <- as.factor(make.names(colData(sce)$subclass))
@@ -38,13 +39,14 @@ rownames(sce) <- rowData(sce)$featureid # have to make row names of object the e
 message(Sys.time(), " revert to counts")
 
 ## check for all 0s (just first 100 cols for mem)
-stopifnot(any(assays(sce)$X[,1:100] != 0))
+stopifnot(any(assays(sce)$X[, 1:100] != 0))
 
 counts(sce) <- assays(sce)$X # change to normalized counts
 # counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
 counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
 #### Pseudobulk ####
+message(Sys.time(), " Pseudobulk")
 sce_pseudo <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
 
 message("\nSCE Pseudobulk Dimesions:")

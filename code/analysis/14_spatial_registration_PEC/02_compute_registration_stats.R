@@ -57,14 +57,14 @@ saveRDS(results_enrichment,
     )
 )
 
-# # Run with job_loop 
+# # Run with job_loop
 # datasets <- c("CMC",
 #               "DevBrain",
 #               "IsoHuB",
 #               "SZBDMulti",
 #               "UCLA-ASD",
 #               "Urban-DLPFC")
-# 
+#
 # job_loop(
 #   loops = list(dataset = datasets),
 #   name = '02_compute_registration_stats',

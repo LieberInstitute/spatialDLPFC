@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "assess_methods"
-#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/05-assess_methods_broad.log
-#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/05-assess_methods_broad.log
+#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/05-assess_methods_layer.log
+#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/05-assess_methods_layer.log
 #$ -l mf=10G,h_vmem=10G
 
 echo "**** Job starts ****"
