@@ -1077,11 +1077,12 @@ counts_df$correct_layer = sapply(
 
 #   For each deconvo tool, add up how many times cell types have maximal
 #   proportion in the correct layers
-print('Number of times cell types have maximal proportion in the correct layer:')
-counts_df |>
+correct_df = counts_df |>
     group_by(deconvo_tool) |>
     summarize(num_matches = sum(correct_layer)) |>
     ungroup()
+print('Number of times cell types have maximal proportion in the correct layer:')
+print(correct_df)
 
 print("Full list of which cell types matched the expected layer, by method:")
 counts_df |>
@@ -1091,6 +1092,14 @@ counts_df |>
     ungroup() |>
     print(n = nrow(counts_df))
 
+#   Add the "layer accuracy" in the facet titles in the upcoming plot
+correct_labeller = paste0(
+    correct_df$deconvo_tool, ': ', correct_df$num_matches, '/',
+    length(cell_types)
+)
+names(correct_labeller) = correct_df |> pull(deconvo_tool)
+correct_labeller = labeller(deconvo_tool = correct_labeller)
+
 pdf(
     file.path(plot_dir, 'layer_distribution_barplot_prop.pdf'), width = 10,
     height = 5
@@ -1099,7 +1108,7 @@ ggplot(
     counts_df,
     aes(x = label, y = observed, fill = cell_type)
 ) +
-    facet_wrap(~ deconvo_tool) +
+    facet_wrap(~ deconvo_tool, labeller = correct_labeller) +
     geom_bar(stat = "identity") +
     labs(
         x = "Annotated Layer", y = "Proportion of Counts", fill = "Cell Type"
