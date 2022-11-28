@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
+#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
 #$ -N explore_expr_variability
 #$ -o logs/02_explore_expr_variability.$TASK_ID.txt
 #$ -e logs/02_explore_expr_variability.$TASK_ID.txt

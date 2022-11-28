@@ -3,7 +3,7 @@
 #     name = "01_create_pseudobulk_data",
 #     create_shell = TRUE,
 #     queue = "bluejay",
-#     memory = "20G",
+#     memory = "15G",
 #     task_num = 28,
 #     tc = 10
 # )

@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
+#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
 #$ -N model_position
 #$ -o logs/01_model_position.$TASK_ID.txt
 #$ -e logs/01_model_position.$TASK_ID.txt

@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=20G,h_vmem=20G,h_fsize=100G
+#$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
 #$ -N create_pseudobulk_data
 #$ -o logs/01_create_pseudobulk_data.$TASK_ID.txt
 #$ -e logs/01_create_pseudobulk_data.$TASK_ID.txt

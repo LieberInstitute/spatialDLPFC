@@ -3,7 +3,7 @@
 #     name = "01_model_position",
 #     create_shell = TRUE,
 #     queue = "bluejay",
-#     memory = "15G",
+#     memory = "5G",
 #     task_num = 28,
 #     tc = 10
 # )
