@@ -604,24 +604,9 @@ metrics_df <- full_df |>
     ) |>
     ungroup()
 
-metrics_df_other = metrics_df |>
-    group_by(deconvo_tool) |>
-    summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
-    ungroup() |>
-    mutate(cell_type = "average", sample_id = "average") |>
-    rbind(metrics_df)
-
-metrics_df_no_other = metrics_df |>
-    filter(cell_type != "other") |>
-    group_by(deconvo_tool) |>
-    summarize(Correlation = mean(Correlation), RMSE = mean(RMSE)) |>
-    ungroup() |>
-    mutate(cell_type = "average", sample_id = "average") |>
-    rbind(metrics_df |> filter(cell_type != "other"))
-
-corr_rmse_plot(metrics_df_other, 'corr_RMSE_scatter.pdf')
+corr_rmse_plot(metrics_df, 'corr_RMSE_scatter.pdf')
 corr_rmse_plot(
-    metrics_df_no_other |> filter(cell_type != "other"),
+    metrics_df |> filter(cell_type != "other"),
     'corr_RMSE_scatter_no_other.pdf'
 )
 
