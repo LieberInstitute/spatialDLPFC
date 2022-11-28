@@ -80,16 +80,16 @@ results_pairwise <-
         gene_ensembl = gene_ensembl,
         gene_name = gene_name
     )
-if(k >= 3) {
+if (k >= 3) {
     results_anova <-
-    registration_stats_anova(
-        sce_pseudo,
-        block_cor = block_cor,
-        covars = covars,
-        gene_ensembl = gene_ensembl,
-        gene_name = gene_name,
-        suffix = suffix
-    )
+        registration_stats_anova(
+            sce_pseudo,
+            block_cor = block_cor,
+            covars = covars,
+            gene_ensembl = gene_ensembl,
+            gene_name = gene_name,
+            suffix = suffix
+        )
 } else {
     results_anova <- NULL
 }

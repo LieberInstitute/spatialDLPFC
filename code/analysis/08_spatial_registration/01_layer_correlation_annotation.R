@@ -120,7 +120,7 @@ layer_anno$k9 |>
 # 9 Sp09D09             good          WM         WM
 
 ## Add additonal annotaitons
-source(here("code", "analysis", "12_spatial_registration_sn", "utils.R"))
+source(here("code", "analysis", "12_spatial_registration_sn", "utils.R"), echo = TRUE, max.deparse.length = 500)
 
 ## layer_annotation is the reordered layer label - removes detail from the ordering process but helps group
 layer_anno_all <- do.call("rbind", layer_anno) |>
@@ -128,7 +128,7 @@ layer_anno_all <- do.call("rbind", layer_anno) |>
         layer_annotation = fix_layer_order2(layer_label),
         layer_combo = factor(paste(cluster, "~", layer_annotation)),
         layer_combo2 = paste(layer_annotation, cluster),
-        bayesSpace = factor(gsub("Sp", "k", ss(cluster, "D")), levels = c("k7", "k9", "k16", "k28")), .before = cluster
+        bayesSpace = factor(gsub("Sp", "k", ss(cluster, "D")), levels = c("k07", "k09", "k16", "k28")), .before = cluster
     ) |>
     mutate(layer_combo = fct_reorder(layer_combo, layer_combo2, .desc = FALSE)) |>
     arrange(layer_combo) |>
@@ -226,6 +226,9 @@ ggsave(bayes_layer_anno_plot, filename = here(plot_dir, "bayesSpace_layer_anno.p
 #### bayesSpace Spatial Registration heatmaps ####
 ## color set up
 ## match spatialLIBD color scale
+cor_kplus <- do.call("rbind", cor_top100[c("k9", "k16", "k28")])
+max(cor_kplus)
+# [1] 0.9452202
 theSeq <- seq(min(cor_kplus), max(cor_kplus), by = 0.01)
 my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
 
@@ -234,7 +237,7 @@ k_colors <- Polychrome::palette36.colors(28)
 names(k_colors) <- c(1:28)
 
 ## Add intermediate colors to layers
-source("libd_intermediate_layer_colors.R")
+source(here("code", "analysis", "08_spatial_registration", "libd_intermediate_layer_colors.R"), echo = TRUE, max.deparse.length = 500)
 libd_intermediate_layer_colors <- c(spatialLIBD::libd_layer_colors, libd_intermediate_layer_colors)
 names(libd_intermediate_layer_colors) <- gsub("ayer", "", names(libd_intermediate_layer_colors))
 libd_intermediate_layer_colors
@@ -261,12 +264,12 @@ layer_color_bar <- columnAnnotation(
 )
 
 ## Just k7 plot
-layer_anno_k7 <- layer_anno_colors |> filter(bayesSpace == "k7")
+layer_anno_k7 <- layer_anno_colors |> filter(bayesSpace == "k07")
 
 cor_k7 <- cor_top100$k7[layer_anno_k7$cluster, ]
 rownames(cor_k7) <- layer_anno_k7$layer_combo
 
-anno_matrix_k7 <- anno_matrix[grepl("Sp7", rownames(anno_matrix)), colnames(cor_k7)]
+anno_matrix_k7 <- anno_matrix[grepl("Sp07", rownames(anno_matrix)), colnames(cor_k7)]
 anno_matrix_k7 <- anno_matrix_k7[layer_anno_k7$cluster, ]
 rownames(anno_matrix_k7) <- layer_anno_k7$layer_combo
 
@@ -297,14 +300,13 @@ Heatmap(cor_k7,
 dev.off()
 
 ## 'kplus' = k9, 16, 28 in main plot
-layer_anno_colors <- layer_anno_colors |> filter(bayesSpace != "k7")
+layer_anno_colors <- layer_anno_colors |> filter(bayesSpace != "k07")
 
-cor_kplus <- do.call("rbind", cor_top100[c("k9", "k16", "k28")])
 ## order by bayesSpace annos
 cor_kplus <- cor_kplus[layer_anno_colors$cluster, ]
 rownames(cor_kplus) <- layer_anno_colors$layer_combo
 
-anno_matrix_kplus <- anno_matrix[!grepl("Sp7", rownames(anno_matrix)), colnames(cor_kplus)]
+anno_matrix_kplus <- anno_matrix[!grepl("Sp07", rownames(anno_matrix)), colnames(cor_kplus)]
 
 anno_matrix_kplus <- anno_matrix_kplus[layer_anno_colors$cluster, ]
 rownames(anno_matrix_kplus) <- layer_anno_colors$layer_combo
