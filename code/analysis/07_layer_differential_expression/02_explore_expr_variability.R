@@ -24,7 +24,7 @@ library("scater")
 ## Load BayesSpace colors
 source(here("code", "analysis", "colors_bayesSpace.R"), echo = TRUE, max.deparse.length = 500)
 names(colors_bayesSpace) <-
-    paste0("c", sprintf("%02d", as.integer(names(colors_bayesSpace))))
+    paste0("Sp", sprintf("%02d", k), "D", sprintf("%02d", as.integer(names(colors_bayesSpace))))
 
 ## output directory
 dir_rdata <- here::here(
