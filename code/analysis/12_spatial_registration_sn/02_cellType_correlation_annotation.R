@@ -19,7 +19,7 @@ load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-
 load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.RDS"), verbose = TRUE)
 
 ## Select t-stats from the registration enrichment data
-registration_t_stats <- sn_hc_registration$enrichment[, grep("^t_stat", colnames(sn_hc_registration$enrichment))]cd /
+registration_t_stats <- sn_hc_registration$enrichment[, grep("^t_stat", colnames(sn_hc_registration$enrichment))]
 colnames(registration_t_stats) <- gsub("^t_stat_", "", colnames(registration_t_stats))
 
 #### Calculate Correlation Matrix ####
@@ -29,113 +29,117 @@ layer_modeling_results <- fetch_data(type = "modeling_results")
 
 paths <- list(k9 = "parsed_modeling_results_k9.Rdata", k16 = "parsed_modeling_results_k16.Rdata")
 
-modeling_results <- lapply(paths, function(x) 
-  get(load(here("processed-data","rdata","spe","07_layer_differential_expression",x))))
+modeling_results <- lapply(paths, function(x) {
+    get(load(here("processed-data", "rdata", "spe", "07_layer_differential_expression", x)))
+})
 
 modeling_results <- c(list(layer = layer_modeling_results), modeling_results)
 names(modeling_results)
 
 #### Correlate with modeling results ####
-cor_top100 <- map(modeling_results, ~layer_stat_cor(registration_t_stats,
-                                                    .x,
-                                                    model_type = "enrichment",
-                                                    reverse = FALSE,
-                                                    top_n = 100))
+cor_top100 <- map(modeling_results, ~ layer_stat_cor(registration_t_stats,
+    .x,
+    model_type = "enrichment",
+    reverse = FALSE,
+    top_n = 100
+))
 
 save(cor_top100, file = here(data_dir, "sn_hc_cor_top100.RDS"))
 # load(here(data_dir, "sn_hc_cor_top100.RDS"))
- 
+
 ## Plot all for portability
 pdf(here(plot_dir, "spatial_registration_plot_sn.pdf"))
 map(cor_top100, layer_stat_cor_plot)
 dev.off()
 
 ## Plot separately for illustrator
-map2(cor_top100, names(cor_top100), function(data, name){
-  
-  pdf(here(plot_dir, paste0("spatial_registration_sn_plot_sn-",name,".pdf")))
-  layer_stat_cor_plot(data)
-  dev.off()
-  
+map2(cor_top100, names(cor_top100), function(data, name) {
+    pdf(here(plot_dir, paste0("spatial_registration_sn_plot_sn-", name, ".pdf")))
+    layer_stat_cor_plot(data)
+    dev.off()
 })
 
 #### Annotate Layers ####
-## Explore correlation distribution 
-cor_long <- map(cor_top100, ~.x |> 
-  melt() |>
-  rename(cellType = Var1, domain = Var2, cor = value) |>
+## Explore correlation distribution
+cor_long <- map(cor_top100, ~ .x |>
+    melt() |>
+    rename(cellType = Var1, domain = Var2, cor = value) |>
     mutate(domain = as.character(domain)))
 
 cor_long <- do.call("rbind", cor_long) |>
-  rownames_to_column("Annotation") |>
-  mutate(Annotation = gsub("\\.[0-9]+","", Annotation))
+    rownames_to_column("Annotation") |>
+    mutate(Annotation = gsub("\\.[0-9]+", "", Annotation))
 
 cor_histo <- cor_long |>
-  filter(cor > 0) |>
-  ggplot(aes(cor, fill = cellType)) +
-  geom_histogram(binwidth = 0.05) +
-  geom_vline(xintercept = 0.25) +
-  scale_fill_manual(values = cell_type_colors) +
-  facet_grid(Annotation~cellType) +
-  # facet_grid(Annotation~cellType) +
-  facet_wrap(~Annotation, ncol = 1) +
-  theme_bw() +
-  theme(legend.position = "None")
+    filter(cor > 0) |>
+    ggplot(aes(cor, fill = cellType)) +
+    geom_histogram(binwidth = 0.05) +
+    geom_vline(xintercept = 0.25) +
+    scale_fill_manual(values = cell_type_colors) +
+    facet_grid(Annotation ~ cellType) +
+    # facet_grid(Annotation~cellType) +
+    facet_wrap(~Annotation, ncol = 1) +
+    theme_bw() +
+    theme(legend.position = "None")
 
 # ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
 ggsave(cor_histo, filename = here(plot_dir, "cor_histogram2.png"))
 
 cor_density <- cor_long |>
-  filter(cor > 0) |>
-  ggplot(aes(cor, color = cellType)) +
-  geom_density() +
-  geom_vline(xintercept = 0.25) +
-  scale_color_manual(values = cell_type_colors) +
-  facet_wrap(~Annotation, ncol = 1) +
-  theme_bw() +
-  theme(legend.position = "None")
+    filter(cor > 0) |>
+    ggplot(aes(cor, color = cellType)) +
+    geom_density() +
+    geom_vline(xintercept = 0.25) +
+    scale_color_manual(values = cell_type_colors) +
+    facet_wrap(~Annotation, ncol = 1) +
+    theme_bw() +
+    theme(legend.position = "None")
 
 ggsave(cor_density, filename = here(plot_dir, "cor_density.png"))
 
 
 ## whats the max cor for each cell type?
 max_cor <- cor_long |>
-  group_by(Annotation, cellType) |>
-  arrange(-cor) |>
-  slice(1)
+    group_by(Annotation, cellType) |>
+    arrange(-cor) |>
+    slice(1)
 
 cor_max_histo <- max_cor |>
-  ggplot(aes(cor, fill = cellType)) +
-  geom_histogram(binwidth = 0.05) +
-  geom_vline(xintercept = 0.25) +
-  scale_fill_manual(values = cell_type_colors) +
-  facet_wrap(~Annotation, ncol = 1) +
-  theme_bw() +
-  theme(legend.position = "None")
+    ggplot(aes(cor, fill = cellType)) +
+    geom_histogram(binwidth = 0.05) +
+    geom_vline(xintercept = 0.25) +
+    scale_fill_manual(values = cell_type_colors) +
+    facet_wrap(~Annotation, ncol = 1) +
+    theme_bw() +
+    theme(legend.position = "None")
 
 # ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
 ggsave(cor_max_histo, filename = here(plot_dir, "cor_max_histo.png"))
 
 
-## Annotate 
-layer_anno_easy <- map2(cor_top100, names(cor_top100), function(cor, name){
-  anno <- annotate_registered_clusters(cor_stats_layer = cor,
-                                       confidence_threshold = 0.25,
-                                       cutoff_merge_ratio = 0.25)
-  colnames(anno) <- gsub("layer",name, colnames(anno))
-  return(anno)
+## Annotate
+layer_anno_easy <- map2(cor_top100, names(cor_top100), function(cor, name) {
+    anno <- annotate_registered_clusters(
+        cor_stats_layer = cor,
+        confidence_threshold = 0.25,
+        cutoff_merge_ratio = 0.25
+    )
+    colnames(anno) <- gsub("layer", name, colnames(anno))
+    return(anno)
 })
 
-layer_anno_strict <- map2(cor_top100, names(cor_top100), function(cor, name){
-  anno <- annotate_registered_clusters(cor_stats_layer = cor,
-                                       confidence_threshold = 0.25,
-                                       cutoff_merge_ratio = 0.1)
-  colnames(anno) <- gsub("layer",name, colnames(anno))
-  return(anno)
+layer_anno_strict <- map2(cor_top100, names(cor_top100), function(cor, name) {
+    anno <- annotate_registered_clusters(
+        cor_stats_layer = cor,
+        confidence_threshold = 0.25,
+        cutoff_merge_ratio = 0.1
+    )
+    colnames(anno) <- gsub("layer", name, colnames(anno))
+    return(anno)
 })
 
 ## use easy params for layer, and strict for specific domains
-layer_anno <- c(layer_anno_easy["layer"], layer_anno_strict[c("k9","k16")])
+layer_anno <- c(layer_anno_easy["layer"], layer_anno_strict[c("k9", "k16")])
 
 #### Annotate Cell Types by Layer ####
 layer_anno$layer |> arrange(cluster)
@@ -183,26 +187,26 @@ layer_anno$layer |>
 # 7        L5/6 1
 # 8          L6 2
 
-## Add additonal annotaitons 
-source(here("code","analysis", "12_spatial_registration_sn","utils.R"))
+## Add additonal annotaitons
+source(here("code", "analysis", "12_spatial_registration_sn", "utils.R"))
 
 ## layer_annotation is the reordered layer label - removes detail from the ordering process but helps group
 cellType_layer_annotations <- reduce(layer_anno, left_join, by = "cluster") |>
-  arrange(cluster) |>
-  mutate(
-    layer_annotation = fix_layer_order2(layer_label),
-    cellType_broad = gsub("_.*", "", cluster),
-    cellType_layer = case_when(
-      layer_confidence == "good" & grepl("Excit", cluster) ~ paste0(cellType_broad, "_", layer_annotation),
-      grepl("Excit", cluster) ~ as.character(NA),
-      TRUE ~ cellType_broad
-    )
-  ) |>
-  select(-cellType_broad)
+    arrange(cluster) |>
+    mutate(
+        layer_annotation = fix_layer_order2(layer_label),
+        cellType_broad = gsub("_.*", "", cluster),
+        cellType_layer = case_when(
+            layer_confidence == "good" & grepl("Excit", cluster) ~ paste0(cellType_broad, "_", layer_annotation),
+            grepl("Excit", cluster) ~ as.character(NA),
+            TRUE ~ cellType_broad
+        )
+    ) |>
+    select(-cellType_broad)
 
 ## Save for reference
 write.csv(cellType_layer_annotations, file = here(data_dir, "cellType_layer_annotations.csv"))
-# cellType_layer_annotations <- read_csv(here(data_dir, "cellType_layer_annotations.csv")) 
+# cellType_layer_annotations <- read_csv(here(data_dir, "cellType_layer_annotations.csv"))
 
 #### Add Layer Annotations to colData ####
 ## Add to sce object for future use
@@ -218,13 +222,13 @@ sce$cellType_layer <- factor(cellType_layer_annotations$cellType_layer[match(sce
 sce$layer_annotation <- factor(cellType_layer_annotations$layer_annotation[match(sce$cellType_hc, cellType_layer_annotations$cluster)])
 
 table(sce$cellType_layer)
-# Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4 
-# 3979         2157         1601        10894         1940           82        10459         3043         2388 
-# Excit_L5   Excit_L5/6     Excit_L6        Inhib 
-# 2505         2487         1792        11067 
+# Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4
+# 3979         2157         1601        10894         1940           82        10459         3043         2388
+# Excit_L5   Excit_L5/6     Excit_L6        Inhib
+# 2505         2487         1792        11067
 
 table(sce$layer_annotation)
-# L1    L1*     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4  L4/5*     L5   L5/6     L6     WM  WM/L1 
+# L1    L1*     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4  L4/5*     L5   L5/6     L6     WM  WM/L1
 # 6136     66   1192   1932   5448  10459   1310   1567   3043   3655    420   2505   2487   1792  10894   3541
 
 ## Drop nuc are NA
@@ -234,77 +238,94 @@ sum(is.na(sce$cellType_layer))
 # save(sce, file = here(data_dir, "sce_DLPFC.Rdata"))
 
 #### Save Output to XLSX sheet ####
-data_dir <- here("processed-data","rdata","spe","12_spatial_registration_sn")
+data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
 
-key <- data.frame(data = c("annotation", paste0("cor_", names(modeling_results))),
-                  description = c("Annotations of spatial registration, with coresponding layer cell type lables used in spatial deconvolution",
-                                  "Correlation values with manual layer annotations",
-                                  "Correlation values with k9 domains",
-                                  "Correlation values with k16 domains"))
+key <- data.frame(
+    data = c("annotation", paste0("cor_", names(modeling_results))),
+    description = c(
+        "Annotations of spatial registration, with coresponding layer cell type lables used in spatial deconvolution",
+        "Correlation values with manual layer annotations",
+        "Correlation values with k9 domains",
+        "Correlation values with k16 domains"
+    )
+)
 
 ## Clear file and write key
-annotation_xlsx <- here(data_dir,"sn_spatial_annotations.xlsx")
-write.xlsx(key, file=annotation_xlsx, sheetName="Key", append=FALSE, row.names=FALSE)
+annotation_xlsx <- here(data_dir, "sn_spatial_annotations.xlsx")
+write.xlsx(key, file = annotation_xlsx, sheetName = "Key", append = FALSE, row.names = FALSE)
 
 ## write annotations
-write.xlsx(cellType_layer_annotations, file=annotation_xlsx, sheetName= paste0("annotation"), append=TRUE, row.names=FALSE)
+write.xlsx(cellType_layer_annotations, file = annotation_xlsx, sheetName = paste0("annotation"), append = TRUE, row.names = FALSE)
 
-## write correlations 
-walk2(cor_top100, names(cor_top100),
-        ~write.xlsx(t(.x), file=annotation_xlsx, sheetName= paste0("cor_", .y), append=TRUE, row.names=TRUE))
+## write correlations
+walk2(
+    cor_top100, names(cor_top100),
+    ~ write.xlsx(t(.x), file = annotation_xlsx, sheetName = paste0("cor_", .y), append = TRUE, row.names = TRUE)
+)
 
 #### Explore Annotations ####
 ## Load bayesSpace annotations
-bayes_layers <- get(load(here("processed-data", "rdata", "spe", "08_spatial_registration", "bayesSpace_layer_annotations.Rdata")))  |>
+bayes_layers <- get(load(here("processed-data", "rdata", "spe", "08_spatial_registration", "bayesSpace_layer_annotations.Rdata"))) |>
     select(Annotation = bayesSpace, layer_long = cluster, layer_combo) |>
-  filter(Annotation %in% c("k9", "k16"))
+    filter(Annotation %in% c("k9", "k16"))
 
 layer_anno_long <- cellType_layer_annotations |>
-  select(cluster,ends_with("label")) |>
-  pivot_longer(!cluster, names_to = "Annotation", values_to ="label") |>
-  mutate(confidence = !grepl("\\*", label),
-         layers = str_split(gsub("\\*","",label),"/"),
-         Annotation = gsub("_label","", Annotation)) |>
-  unnest_longer("layers") |>
-  # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
-  mutate(layer_short = ifelse(Annotation == "layer",
-                         ifelse(grepl("^[0-9]",layers), paste0("L",layers), layers),
-                         paste0("D",str_pad(layers, 2,pad= "0"))), 
-         layer_long = ifelse(Annotation == "layer",
-                             gsub("L","Layer",layer_short),
-                             paste0(gsub("k","Sp", Annotation), "D", str_pad(layers, nchar(Annotation)-1, pad ="0")))
-         ) |>
-  full_join(bayes_layers) |> ## Add bayesSpace annotations
-  mutate(layer_combo = factor(ifelse(is.na(layer_combo), layer_long, as.character(layer_combo)),
-         levels = (c(levels(layer_combo), c(paste0("Layer", 1:6), "WM"))))) |>#Fill in Layer with just layer - careful of factor order
-  arrange(Annotation)
-    
+    select(cluster, ends_with("label")) |>
+    pivot_longer(!cluster, names_to = "Annotation", values_to = "label") |>
+    mutate(
+        confidence = !grepl("\\*", label),
+        layers = str_split(gsub("\\*", "", label), "/"),
+        Annotation = gsub("_label", "", Annotation)
+    ) |>
+    unnest_longer("layers") |>
+    # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
+    mutate(
+        layer_short = ifelse(Annotation == "layer",
+            ifelse(grepl("^[0-9]", layers), paste0("L", layers), layers),
+            paste0("D", str_pad(layers, 2, pad = "0"))
+        ),
+        layer_long = ifelse(Annotation == "layer",
+            gsub("L", "Layer", layer_short),
+            paste0(gsub("k", "Sp", Annotation), "D", str_pad(layers, nchar(Annotation) - 1, pad = "0"))
+        )
+    ) |>
+    full_join(bayes_layers) |> ## Add bayesSpace annotations
+    mutate(layer_combo = factor(ifelse(is.na(layer_combo), layer_long, as.character(layer_combo)),
+        levels = (c(levels(layer_combo), c(paste0("Layer", 1:6), "WM")))
+    )) |> # Fill in Layer with just layer - careful of factor order
+    arrange(Annotation)
+
 layer_anno_long |> count(layer_long)
 layer_anno_long |> count(confidence)
-layer_anno_long |> count(Annotation, layer_combo) |> print(n = 32)
+layer_anno_long |>
+    count(Annotation, layer_combo) |>
+    print(n = 32)
 
 ## Dot plot with bayes layer order
 label_anno_plot <- layer_anno_long |>
-  ggplot(aes(x = cluster, y = layer_combo)) +
-  geom_point(aes(color = confidence), size = 3) +
-  facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+    ggplot(aes(x = cluster, y = layer_combo)) +
+    geom_point(aes(color = confidence), size = 3) +
+    facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 ggsave(label_anno_plot, filename = here(plot_dir, "spatial_annotations_sn_all.png"), height = 10)
 
 ## which are specific?
-n_anno <- layer_anno_long|> filter(confidence) |> group_by(Annotation, cluster) |> summarize(n_anno = n())
+n_anno <- layer_anno_long |>
+    filter(confidence) |>
+    group_by(Annotation, cluster) |>
+    summarize(n_anno = n())
 
 label_anno_plot_specific <- layer_anno_long |>
-  left_join(n_anno) |>
-  filter(confidence) |>
-  ggplot(aes(x = cluster, y = layer_combo)) +
-  geom_point(aes(color = n_anno == 1), size = 3) +
-  # geom_tile(aes( fill = confidence), color = "black") +
-  facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+    left_join(n_anno) |>
+    filter(confidence) |>
+    ggplot(aes(x = cluster, y = layer_combo)) +
+    geom_point(aes(color = n_anno == 1), size = 3) +
+    # geom_tile(aes( fill = confidence), color = "black") +
+    facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_sn_all_specific.png"), height = 10)
 
@@ -314,25 +335,25 @@ ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_
 colnames(cor_top100$k9) <- paste0("Sp9D", colnames(cor_top100$k9))
 colnames(cor_top100$k16) <- paste0("Sp16D", str_pad(colnames(cor_top100$k16), 2, pad = "0"))
 
-cor_top100$k9 <- cor_top100$k9[rownames(cor_top100$layer),]
-cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer),]
+cor_top100$k9 <- cor_top100$k9[rownames(cor_top100$layer), ]
+cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer), ]
 
 cor_all <- t(do.call("cbind", cor_top100))
 corner(cor_all)
 rownames(cor_all)
 ## Annotation matrix
-anno_matrix <- layer_anno_long |> 
-  mutate(fill = ifelse(confidence, "X","*")) |> 
-  select(cluster, layer_long, fill) |> 
-  pivot_wider(names_from = "layer_long", values_from = "fill", values_fill = "") |>
-  filter(!is.na(cluster))|>
-  column_to_rownames("cluster") |>
-  t()
+anno_matrix <- layer_anno_long |>
+    mutate(fill = ifelse(confidence, "X", "*")) |>
+    select(cluster, layer_long, fill) |>
+    pivot_wider(names_from = "layer_long", values_from = "fill", values_fill = "") |>
+    filter(!is.na(cluster)) |>
+    column_to_rownames("cluster") |>
+    t()
 
 ## check rownames match
-setequal(rownames(cor_all),rownames(anno_matrix))
+setequal(rownames(cor_all), rownames(anno_matrix))
 
-anno_matrix <- anno_matrix[rownames(cor_all),colnames(cor_all)]
+anno_matrix <- anno_matrix[rownames(cor_all), colnames(cor_all)]
 corner(anno_matrix)
 corner(cor_all)
 
@@ -346,141 +367,151 @@ k_colors <- Polychrome::palette36.colors(28)
 names(k_colors) <- c(1:28)
 
 ## cell color bar
-cell_color_bar <- columnAnnotation(" " = colnames(cor_all),
-                                   col = list(" " = cell_type_colors),
-                                   show_legend = FALSE)
+cell_color_bar <- columnAnnotation(
+    " " = colnames(cor_all),
+    col = list(" " = cell_type_colors),
+    show_legend = FALSE
+)
 
 
 ## Add intermediate colors to layers
-source(here("code","analysis","08_spatial_registration","libd_intermediate_layer_colors.R"))
+source(here("code", "analysis", "08_spatial_registration", "libd_intermediate_layer_colors.R"))
 libd_intermediate_layer_colors <- c(spatialLIBD::libd_layer_colors, libd_intermediate_layer_colors)
-names(libd_intermediate_layer_colors) <- gsub("ayer","",names(libd_intermediate_layer_colors))
+names(libd_intermediate_layer_colors) <- gsub("ayer", "", names(libd_intermediate_layer_colors))
 libd_intermediate_layer_colors
-# L1            L2            L3            L4            L5            L6            WM            NA 
-# "#F0027F"     "#377EB8"     "#4DAF4A"     "#984EA3"     "#FFD700"     "#FF7F00"     "#1A1A1A" "transparent" 
-# WM2          L1/2          L2/3          L3/4          L4/5          L5/6         L6/WM 
-# "#666666"     "#BF3889"     "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00" 
+# L1            L2            L3            L4            L5            L6            WM            NA
+# "#F0027F"     "#377EB8"     "#4DAF4A"     "#984EA3"     "#FFD700"     "#FF7F00"     "#1A1A1A" "transparent"
+# WM2          L1/2          L2/3          L3/4          L4/5          L5/6         L6/WM
+# "#666666"     "#BF3889"     "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00"
 
 ## Add split for manual/k9/k16
 # annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"D"))
 annotation_split <- c(rep("layer", 7), rep("k9", 9), rep("k16", 16))
 
-## heatmap with annotations 
-pdf(here(plot_dir,"spatial_registration_sn_heatmap.pdf"))
+## heatmap with annotations
+pdf(here(plot_dir, "spatial_registration_sn_heatmap.pdf"))
 Heatmap(cor_all,
-        name = "Cor",
-        col = my.col,
-        row_split = annotation_split,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE,
-        cluster_columns = TRUE,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
-        }
-        )
+    name = "Cor",
+    col = my.col,
+    row_split = annotation_split,
+    rect_gp = gpar(col = "black", lwd = 1),
+    cluster_rows = FALSE,
+    cluster_columns = TRUE,
+    cell_fun = function(j, i, x, y, width, height, fill) {
+        grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+    }
+)
 dev.off()
 
 ## heatmap with basic colors
-k_color_bar <- rowAnnotation(color = as.integer(gsub("Sp[0-9]+D","",rownames(cor_all))),
-                             col = list(color = c(k_colors, spatialLIBD::libd_layer_colors)),
-                             show_legend = FALSE)
+k_color_bar <- rowAnnotation(
+    color = as.integer(gsub("Sp[0-9]+D", "", rownames(cor_all))),
+    col = list(color = c(k_colors, spatialLIBD::libd_layer_colors)),
+    show_legend = FALSE
+)
 
-pdf(here(plot_dir,"spatial_registration_sn_heatmap_colors.pdf"), height = 8, width = 12)
+pdf(here(plot_dir, "spatial_registration_sn_heatmap_colors.pdf"), height = 8, width = 12)
 Heatmap(cor_all,
-        name = "Cor",
-        col = my.col,
-        row_split = annotation_split,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE,
-        cluster_columns = TRUE,
-        right_annotation = k_color_bar,
-        bottom_annotation = cell_color_bar,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
-        }
+    name = "Cor",
+    col = my.col,
+    row_split = annotation_split,
+    rect_gp = gpar(col = "black", lwd = 1),
+    cluster_rows = FALSE,
+    cluster_columns = TRUE,
+    right_annotation = k_color_bar,
+    bottom_annotation = cell_color_bar,
+    cell_fun = function(j, i, x, y, width, height, fill) {
+        grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+    }
 )
 dev.off()
 
 #### Reorder and annotate with bayesSpace layer annotations ####
 
-layer_colors <- tibble(Annotation = "Layer",
-                       layer_combo = c(paste0("Layer", 1:6), "WM"),
-                       layer_long = layer_combo,
-                       domain_color = NA,
-                       layer_color = c(paste0("L", 1:6), "WM"))
+layer_colors <- tibble(
+    Annotation = "Layer",
+    layer_combo = c(paste0("Layer", 1:6), "WM"),
+    layer_long = layer_combo,
+    domain_color = NA,
+    layer_color = c(paste0("L", 1:6), "WM")
+)
 
 layer_anno_colors <- bayes_layers |>
-  filter(Annotation %in% c("k9", "k16")) |>
-  mutate(domain_color = as.integer(gsub("Sp[0-9]+D","",layer_long))) |>
-  separate(layer_combo, into = c(NA, "layer_color"), " ~ ", remove = FALSE) |>
-  select(Annotation, layer_combo,layer_long, domain_color, layer_color) |>
-  add_row(layer_colors) |>
-  arrange(Annotation)
+    filter(Annotation %in% c("k9", "k16")) |>
+    mutate(domain_color = as.integer(gsub("Sp[0-9]+D", "", layer_long))) |>
+    separate(layer_combo, into = c(NA, "layer_color"), " ~ ", remove = FALSE) |>
+    select(Annotation, layer_combo, layer_long, domain_color, layer_color) |>
+    add_row(layer_colors) |>
+    arrange(Annotation)
 
 ## order by bayesSpace layer annotation
-cor_all <- cor_all[layer_anno_colors$layer_long,]
+cor_all <- cor_all[layer_anno_colors$layer_long, ]
 rownames(cor_all) <- layer_anno_colors$layer_combo
 
-anno_matrix <- anno_matrix[layer_anno_colors$layer_long,]
+anno_matrix <- anno_matrix[layer_anno_colors$layer_long, ]
 rownames(anno_matrix) <- layer_anno_colors$layer_combo
 
 ## build row annotation
-bayes_color_bar <- rowAnnotation(df = layer_anno_colors |>
-                                   select(domain_color, layer_color) ,
-                             col = list(domain_color = k_colors,
-                                        layer_color = libd_intermediate_layer_colors),
-                             show_legend = FALSE)
+bayes_color_bar <- rowAnnotation(
+    df = layer_anno_colors |>
+        select(domain_color, layer_color),
+    col = list(
+        domain_color = k_colors,
+        layer_color = libd_intermediate_layer_colors
+    ),
+    show_legend = FALSE
+)
 
 ## Ordered heatmap
-pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "spatial_registration_sn_heatmap_bayesAnno.pdf"), height = 8, width = 10)
 Heatmap(cor_all,
-        name = "Cor",
-        col = my.col,
-        row_split = layer_anno_colors$Annotation,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE,
-        cluster_columns = TRUE,
-        right_annotation = bayes_color_bar,
-        bottom_annotation = cell_color_bar,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
-        }
+    name = "Cor",
+    col = my.col,
+    row_split = layer_anno_colors$Annotation,
+    rect_gp = gpar(col = "black", lwd = 1),
+    cluster_rows = FALSE,
+    cluster_columns = TRUE,
+    right_annotation = bayes_color_bar,
+    bottom_annotation = cell_color_bar,
+    cell_fun = function(j, i, x, y, width, height, fill) {
+        grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+    }
 )
 dev.off()
 
 
-pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno_km.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "spatial_registration_sn_heatmap_bayesAnno_km.pdf"), height = 8, width = 10)
 Heatmap(cor_all,
-        name = "Cor",
-        col = my.col,
-        row_split = layer_anno_colors$Annotation,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE,
-        cluster_columns = TRUE,
-        column_km = 3,
-        right_annotation = bayes_color_bar,
-        bottom_annotation = cell_color_bar,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
-        }
+    name = "Cor",
+    col = my.col,
+    row_split = layer_anno_colors$Annotation,
+    rect_gp = gpar(col = "black", lwd = 1),
+    cluster_rows = FALSE,
+    cluster_columns = TRUE,
+    column_km = 3,
+    right_annotation = bayes_color_bar,
+    bottom_annotation = cell_color_bar,
+    cell_fun = function(j, i, x, y, width, height, fill) {
+        grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+    }
 )
 dev.off()
 
-pdf(here(plot_dir,"spatial_registration_sn_heatmap_bayesAnno_cluster.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "spatial_registration_sn_heatmap_bayesAnno_cluster.pdf"), height = 8, width = 10)
 Heatmap(cor_all,
-        name = "Cor",
-        col = my.col,
-        # row_split = layer_anno_colors$Annotation,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = TRUE,
-        cluster_columns = TRUE,
-        column_km = 3,
-        row_km = 2,
-        right_annotation = bayes_color_bar,
-        bottom_annotation = cell_color_bar,
-        cell_fun = function(j, i, x, y, width, height, fill) {
-          grid.text(anno_matrix[i,j], x, y, gp = gpar(fontsize = 10))
-        }
+    name = "Cor",
+    col = my.col,
+    # row_split = layer_anno_colors$Annotation,
+    rect_gp = gpar(col = "black", lwd = 1),
+    cluster_rows = TRUE,
+    cluster_columns = TRUE,
+    column_km = 3,
+    row_km = 2,
+    right_annotation = bayes_color_bar,
+    bottom_annotation = cell_color_bar,
+    cell_fun = function(j, i, x, y, width, height, fill) {
+        grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+    }
 )
 dev.off()
 
