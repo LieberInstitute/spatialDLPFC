@@ -96,7 +96,7 @@ sce_pseudo <- scater::runPCA(sce_pseudo, name = "runPCA")
 
 ## We don't want to model the pathology groups as integers / numeric
 ## so let's double check this
-stopifnot(is.factor(sce_pseudo$path_groups))
+stopifnot(is.factor(sce_pseudo$BayesSpace))
 
 ## For the spatialLIBD shiny app
 rowData(sce_pseudo)$gene_search <-
