@@ -38,7 +38,7 @@ dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
 dir_plots <- here::here(
     "plots",
-    "07_layer_differential_expression"
+    "09_position_differential_expression"
 )
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
@@ -47,7 +47,7 @@ stopifnot(file.exists(dir_plots))
 sce_pseudo <-
     readRDS(
         file.path(
-            dir_rdata,
+            dir_input,
             paste0("sce_pseudo_BayesSpace_k", sprintf("%02d", k), ".rds")
         )
     )
