@@ -1,137 +1,76 @@
 # library(sgejobs)
-
-# sgejobs::job_loop(
-#    loops = list(spetype = c(
-#        "wholegenome", "targeted"
-#     )),
+# sgejobs::job_single(
 #     name = "01_create_pseudobulk_data",
 #     create_shell = TRUE,
 #     queue = "bluejay",
-#     memory = "15G")
-# To execute the script builder, use: sh 01_create_pseudobulk_data.sh
+#     memory = "20G",
+#     task_num = 28,
+#     tc = 10
+# )
+# To execute the script builder, use: qsub 01_create_pseudobulk_data.sh
 
-# Required libraries
-library("getopt")
-
-## Specify parameters
-spec <- matrix(c(
-    "spetype", "s", 2, "character", "SPE spetype: wholegenome or targeted",
-    "help", "h", 0, "logical", "Display help"
-), byrow = TRUE, ncol = 5)
-opt <- getopt(spec = spec)
-
-## if help was asked for print a friendly message
-## and exit with a non-zero error code
-if (!is.null(opt$help)) {
-    cat(getopt(spec, usage = TRUE))
-    q(status = 1)
-}
+k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## For testing
 if (FALSE) {
-    opt <- list(spetype = "wholegenome")
+    k <- 2
 }
 
 library("here")
 library("spatialLIBD")
-stopifnot(packageVersion("spatialLIBD") >= "1.9.18")
 library("sessioninfo")
 library("scater")
 
 ## output directory
-dir_rdata <- here::here("processed-data", "11_grey_matter_only", opt$spetype)
+dir_rdata <- here::here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "07_layer_differential_expression"
+)
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
 
 ## load spe data
-spe <-
-    readRDS(
-        here::here(
-            "processed-data",
-            "08_harmony_BayesSpace",
-            opt$spetype,
-            paste0("spe_harmony_", opt$spetype, ".rds")
-        )
-    )
-
-spe <- cluster_import(
-    spe,
-    cluster_dir = here::here(
+load(
+    here(
         "processed-data",
-        "08_harmony_BayesSpace",
-        opt$spetype,
-        "clusters_BayesSpace"
+        "rdata",
+        "spe",
+        "01_build_spe",
+        "spe_filtered_final_with_clusters.Rdata"
     ),
-    prefix = ""
+    verbose = TRUE
 )
 
-spe <- cluster_import(
-    spe,
-    cluster_dir = here::here(
-        "processed-data",
-        "09_pathology_vs_BayesSpace",
-        "pathology_levels"
-    ),
-    prefix = ""
-)
-
-## Convert from character to a factor, so they appear in the order
-## we want
-spe$path_groups <-
+## Convert from character to a factor
+spe$BayesSpace <-
     factor(
-        spe$path_groups,
-        levels = c(
-            "none",
-            "Ab",
-            "n_Ab",
-            "pTau",
-            "n_pTau",
-            "both",
-            "n_both"
-        )
+        colData(spe)[[paste0("bayesSpace_harmony_", k)]]
     )
 
-## subset spe data based on subject and cluster 1 for k = 2
-spe <- spe[, !spe$subject %in% c("Br3874")]
-
-if (opt$spetype == "wholegenome") {
-    spe <- spe[, spe$BayesSpace_harmony_k02 != 2]
-} else {
-    spe <- spe[, spe$BayesSpace_harmony_k04 != 4]
-}
-dim(spe)
-
-summary(spe$path_groups)
-stopifnot(is.factor(spe$path_groups))
-
-
-## pseudobulk across pathology labels
+## pseudobulk across a given BayesSpace k
 sce_pseudo <-
     registration_pseudobulk(spe,
-        var_registration = "path_groups",
+        var_registration = "BayesSpace",
         var_sample_id = "sample_id",
-        min_ncells = 15
+        min_ncells = 10
     )
 dim(sce_pseudo)
 
-## Add APOe genotype info
-sce_pseudo$APOe <- c("Br3854" = "E3/E4", "Br3873" = "E3/E3", "Br3880" = "E3/E3", "Br3874" = "E2/E3")[sce_pseudo$subject]
+## Rename "region" into "position" for consistency with
+## https://github.com/LieberInstitute/DLPFC_snRNAseq
+sce_pseudo$position <- sce_pseudo$region
 
 ## Simplify the colData()  for the pseudo-bulked data
 colData(sce_pseudo) <- colData(sce_pseudo)[, sort(c(
     "age",
     "sample_id",
-    "path_groups",
+    "BayesSpace",
     "subject",
     "sex",
-    "pmi",
-    "APOe",
-    "race",
+    "position",
     "diagnosis",
-    "rin",
-    "BCrating",
-    "braak",
-    "cerad",
     "ncells"
 ))]
 
@@ -169,15 +108,15 @@ rowData(sce_pseudo)$gene_search <-
 
 ## Load pathology colors
 ## This info is used by spatialLIBD v1.7.18 or newer
-source(here("code", "colors_pathology.R"), echo = TRUE, max.deparse.length = 500)
-sce_pseudo$path_groups_colors <- colors_pathology[as.character(sce_pseudo$path_groups)]
+source(here("code", "analysis", "colors_bayesSpace.R"), echo = TRUE, max.deparse.length = 500)
+sce_pseudo$BayesSpace_colors <- colors_bayesSpace[as.character(sce_pseudo$BayesSpace)]
 
 ## save RDS file
 saveRDS(
     sce_pseudo,
     file = file.path(
         dir_rdata,
-        paste0("sce_pseudo_pathology_", opt$spetype, ".rds")
+        paste0("sce_pseudo_BayesSpace_", k, ".rds")
     )
 )
 
