@@ -1,10 +1,10 @@
 # library(sgejobs)
-# sgejobs::job_loop(
+# sgejobs::job_single(
 #     name = "02_explore_expr_variability",
 #     create_shell = TRUE,
 #     queue = "bluejay",
 #     memory = "15G",
-#     tasknum = 28,
+#     task_num = 28,
 #     tc = 10
 # )
 # To execute the script builder, use: qsub 02_explore_expr_variability.sh
