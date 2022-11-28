@@ -92,8 +92,12 @@ names(libd_layer_colors)[
     match(c(paste0("Layer", 1:6), "WM"), names(libd_layer_colors))
 ] = c(paste("Layer", 1:6), "White Matter")
 
-cell_type_labels = c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1", "#000000")
+cell_type_labels = c(
+    "#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1", "#000000"
+)
 names(cell_type_labels) = c(cell_types_actual, 'average')
+
+set.seed(11282022)
 
 ################################################################################
 #   Plotting functions
@@ -1065,11 +1069,14 @@ for (cell_type in cell_types) {
         aes(x = label, y = count, color = deconvo_tool)
     ) +
         geom_boxplot(outlier.shape = NA) +
+        geom_jitter(width = 0.05) +
         labs(
             x = "Annotated Layer",
-            y = paste("Average Predicted", cell_type, "Count"),
+            y = "Average Predicted Count",
             color = "Deconvolution Tool"
         ) +
+        #   Facet purely for aesthetic purposes: there is only one cell type
+        facet_wrap(~cell_type) + 
         theme_bw(base_size = 20) +
         theme(axis.text.x = element_text(angle = 90)) +
         coord_cartesian(ylim = c(0, y_max)) +
