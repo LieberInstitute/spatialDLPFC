@@ -4,7 +4,7 @@
 #$ -N model_BayesSpace
 #$ -o logs/03_model_BayesSpace.$TASK_ID.txt
 #$ -e logs/03_model_BayesSpace.$TASK_ID.txt
-#$ -hold_jid explore_expr_variability
+#$ -hold_jid explore_expr_variability,create_pseudobulk_data
 #$ -m e
 #$ -t 2-28
 #$ -tc 10

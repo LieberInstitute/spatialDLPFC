@@ -46,7 +46,7 @@ load(
 ## Convert from character to a factor
 spe$BayesSpace <-
     factor(
-        colData(spe)[[paste0("bayesSpace_harmony_", k)]]
+        paste0("c", sprintf("%02d", colData(spe)[[paste0("bayesSpace_harmony_", k)]]))
     )
 
 ## pseudobulk across a given BayesSpace k
@@ -109,6 +109,8 @@ rowData(sce_pseudo)$gene_search <-
 ## Load pathology colors
 ## This info is used by spatialLIBD v1.7.18 or newer
 source(here("code", "analysis", "colors_bayesSpace.R"), echo = TRUE, max.deparse.length = 500)
+names(colors_bayesSpace) <-
+    paste0("c", sprintf("%02d", as.integer(names(colors_bayesSpace))))
 sce_pseudo$BayesSpace_colors <- colors_bayesSpace[as.character(sce_pseudo$BayesSpace)]
 
 ## save RDS file

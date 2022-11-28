@@ -51,7 +51,7 @@ sce_pseudo$registration_variable <- sce_pseudo$BayesSpace
 sce_pseudo$registration_sample_id <- sce_pseudo$sample_id
 
 ## Set arguments used in spatialLIBD::registration_wrapper()
-covars <-c("position", "age", "sex")
+covars <- c("position", "age", "sex")
 gene_ensembl <- "gene_id"
 gene_name <- "gene_name"
 suffix <- "all"
