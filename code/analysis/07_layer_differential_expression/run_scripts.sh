@@ -13,7 +13,7 @@ rm logs/02*.txt
 qsub 02_explore_expr_variability.sh
 
 rm logs/03*.txt
-qsub 03_model_BayesSpace.txt
+qsub 03_model_BayesSpace.sh
 
 echo "**** Job ends ****"
 date
