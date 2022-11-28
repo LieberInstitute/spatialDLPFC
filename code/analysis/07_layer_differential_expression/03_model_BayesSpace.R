@@ -80,7 +80,8 @@ results_pairwise <-
         gene_ensembl = gene_ensembl,
         gene_name = gene_name
     )
-results_anova <-
+if(k >= 3) {
+    results_anova <-
     registration_stats_anova(
         sce_pseudo,
         block_cor = block_cor,
@@ -89,6 +90,9 @@ results_anova <-
         gene_name = gene_name,
         suffix = suffix
     )
+} else {
+    results_anova <- NULL
+}
 
 modeling_results <- list(
     "anova" = results_anova,
