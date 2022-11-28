@@ -42,7 +42,7 @@ sce_pseudo <-
     readRDS(
         file.path(
             dir_rdata,
-            paste0("sce_pseudo_BayesSpace_", k, ".rds")
+            paste0("sce_pseudo_BayesSpace_k", sprintf("%02d", k), ".rds")
         )
     )
 

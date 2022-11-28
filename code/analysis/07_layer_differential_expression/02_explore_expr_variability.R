@@ -45,7 +45,7 @@ sce_pseudo <-
     readRDS(
         file.path(
             dir_rdata,
-            paste0("sce_pseudo_BayesSpace_", k, ".rds")
+            paste0("sce_pseudo_BayesSpace_k", sprintf("%02d", k), ".rds")
         )
     )
 
@@ -61,7 +61,7 @@ vars <- c(
 
 ## Plot PCs with different colors
 ## Each point here is a sample
-pdf(file = file.path(dir_plots, paste0("sce_pseudo_k", sprintf("%02d", k), ".pdf")), width = 14, height = 14)
+pdf(file = file.path(dir_plots, paste0("sce_pseudo_PCs_k", sprintf("%02d", k), ".pdf")), width = 14, height = 14)
 for (var in vars) {
     p <- plotPCA(
         sce_pseudo,
