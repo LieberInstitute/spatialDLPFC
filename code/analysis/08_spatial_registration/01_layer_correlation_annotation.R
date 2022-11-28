@@ -1,5 +1,3 @@
-
-library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
 library("xlsx")
@@ -7,6 +5,14 @@ library("jaffelab")
 library("ComplexHeatmap")
 library("here")
 library("sessioninfo")
+
+## Input dir
+dir_input <- here::here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "07_layer_differential_expression"
+)
 
 ## Set up plotting
 plot_dir <- here("plots", "08_spatial_registration")
@@ -19,19 +25,15 @@ data_dir <- here("processed-data", "rdata", "spe", "08_spatial_registration")
 k_list <- c(7, 9, 16, 28)
 names(k_list) <- paste0("k", k_list) ## Use paper naming convention
 
-bayesSpace_registration_fn <- map(k_list, ~ here(data_dir, paste0("dlpfc_pseudobulked_bayesSpace_specific_Ts_k", .x, ".Rdata")))
+bayesSpace_registration_fn <- map(k_list, ~ here(dir_input, paste0("modeling_results_BayesSpace_k", sprintf("%02d", .x), ".Rdata")))
 bayesSpace_registration <- lapply(bayesSpace_registration_fn, function(x) get(load(x)))
 
 ## Select t-stats from the registration enrichment data
 
-registration_t_stats <- map2(bayesSpace_registration, k_list, function(data, k) {
-    t_stats <- sapply(data, function(x) {
-        x$t[, 2, drop = FALSE]
-    })
-
-    rownames(t_stats) <- rownames(data[[1]]$t)
-    colnames(t_stats) <- paste0("Sp", k, "D", str_pad(colnames(t_stats), nchar(k), pad = "0"))
-
+registration_t_stats <- map(bayesSpace_registration, function(data) {
+    x <- data$enrichment
+    t_stats <- x[, grep("^t_stat_", colnames(x))]
+    colnames(t_stats) <- gsub("^t_stat_", "", colnames(t_stats))
     return(t_stats)
 })
 
@@ -53,7 +55,7 @@ save(cor_top100, file = here(data_dir, "bayesSpacce_layer_cor_top100.Rdata"))
 
 ## Plot all for portability
 pdf(here(plot_dir, "cor_top100_spatial_registration.pdf"))
-map(cor_top100, layer_stat_cor_plot)
+map(cor_top100, layer_stat_cor_plot, max = 1)
 dev.off()
 
 ## Plot separately for illustrator
@@ -87,35 +89,35 @@ layer_anno_strict <- map2(cor_top100, names(cor_top100), function(cor, name) {
 layer_anno <- c(layer_anno_easy[c("k7", "k9")], layer_anno_strict[c("k16", "k28")])
 
 #### Annotate Cell Types by Layer ####
-anno_abby <- data.frame(cluster = paste0("Sp9D", 1:9), layer_abby = c("Vas", "L1", "L2/3", "L5", "L3", "WM", "L6A", "L4", "WM"))
+anno_abby <- data.frame(cluster = paste0("Sp09D0", 1:9), layer_abby = c("Vas", "L1", "L2/3", "L5", "L3", "WM", "L6A", "L4", "WM"))
 
 layer_anno_strict$k9 |>
     arrange(cluster) |>
     left_join(anno_abby)
-# cluster layer_confidence layer_label layer_abby
-# 1   Sp9D1             good          L1        Vas
-# 2   Sp9D2             good          L1         L1
-# 3   Sp9D3             good          L2       L2/3
-# 4   Sp9D4             good          L5         L5
-# 5   Sp9D5             good          L3         L3
-# 6   Sp9D6             good          WM         WM
-# 7   Sp9D7             good          L6        L6A
-# 8   Sp9D8             good          L4         L4
-# 9   Sp9D9             good          WM         WM
+#   cluster layer_confidence layer_label layer_abby
+# 1 Sp09D01             good          L1        Vas
+# 2 Sp09D02             good          L1         L1
+# 3 Sp09D03             good          L2       L2/3
+# 4 Sp09D04             good          L5         L5
+# 5 Sp09D05             good          L3         L3
+# 6 Sp09D06             good          WM         WM
+# 7 Sp09D07             good          L6        L6A
+# 8 Sp09D08             good          L4         L4
+# 9 Sp09D09             good          WM         WM
 
 layer_anno$k9 |>
     arrange(cluster) |>
     left_join(anno_abby)
-# cluster layer_confidence layer_label layer_abby
-# 1   Sp9D1             good          L1        Vas
-# 2   Sp9D2             good          L1         L1
-# 3   Sp9D3             good          L2       L2/3
-# 4   Sp9D4             good          L5         L5
-# 5   Sp9D5             good          L3         L3
-# 6   Sp9D6             good          WM         WM
-# 7   Sp9D7             good          L6        L6A
-# 8   Sp9D8             good          L4         L4
-# 9   Sp9D9             good       WM/L6         WM
+#   cluster layer_confidence layer_label layer_abby
+# 1 Sp09D01             good          L1        Vas
+# 2 Sp09D02             good          L1         L1
+# 3 Sp09D03             good        L2/3       L2/3
+# 4 Sp09D04             good          L5         L5
+# 5 Sp09D05             good          L3         L3
+# 6 Sp09D06             good          WM         WM
+# 7 Sp09D07             good          L6        L6A
+# 8 Sp09D08             good          L4         L4
+# 9 Sp09D09             good          WM         WM
 
 ## Add additonal annotaitons
 source(here("code", "analysis", "12_spatial_registration_sn", "utils.R"))
@@ -136,6 +138,18 @@ levels(layer_anno_all$layer_combo)
 rownames(layer_anno_all) <- layer_anno_all$cluster
 
 layer_anno_all |> count(layer_annotation)
+#    layer_annotation  n
+# 1                L1 12
+# 2                L2  2
+# 3              L2/3  3
+# 4                L3  6
+# 5              L3/4  4
+# 6                L4  5
+# 7                L5  6
+# 8              L5/6  1
+# 9                L6  6
+# 10            L6/WM  1
+# 11               WM 12
 
 ## Save for reference
 write.csv(layer_anno_all, file = here(data_dir, "bayesSpace_layer_annotations.csv"), row.names = FALSE)
@@ -182,7 +196,21 @@ layer_anno_long <- layer_anno_all |>
     select(-layers)
 
 layer_anno_long |> count(layer_long, layer_short)
+# # A tibble: 7 × 3
+#   layer_long layer_short     n
+#   <chr>      <chr>       <int>
+# 1 Layer1     L1             12
+# 2 Layer2     L2              5
+# 3 Layer3     L3             13
+# 4 Layer4     L4              9
+# 5 Layer5     L5              7
+# 6 Layer6     L6              8
+# 7 WM         WM             13
 layer_anno_long |> count(confidence)
+# # A tibble: 1 × 2
+#   confidence     n
+#   <lgl>      <int>
+# 1 TRUE          67
 
 ## Spot_plots
 bayes_layer_anno_plot <- layer_anno_long |>
