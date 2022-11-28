@@ -24,6 +24,7 @@ sce <- readH5AD(file = filepath)
 message("\nSCE Dimesions:")
 dim(sce)
 
+print(colnames(colData(sce)))
 message("Cell Types:")
 ## must be syntactically valid
 colData(sce)$cellType <- as.factor(make.names(colData(sce)$subclass))
@@ -45,6 +46,7 @@ counts(sce) <- assays(sce)$X # change to normalized counts
 counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
 #### Pseudobulk ####
+message(Sys.time(), " Pseudobulk")
 sce_pseudo <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
 
 message("\nSCE Pseudobulk Dimesions:")

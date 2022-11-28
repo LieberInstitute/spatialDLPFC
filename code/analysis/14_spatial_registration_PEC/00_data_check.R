@@ -18,11 +18,11 @@ map(datasets, ~list.files(here(raw_data_dir, .x), pattern = "-snRNAseq_annotated
 map(datasets, ~list.files(here(raw_data_dir, .x), pattern = ".h5ad"))
 
 h5ad_files <- c(CMC = "CMC/CMC-CellHashing_annotated.h5ad",
-                  `DevBrain-snRNAseq` = "DevBrain-snRNAseq/DevBrain-snRNAseq_annotated.h5ad",
-                   IsoHuB = "IsoHuB/IsoHuB-snRNAseq_annotated.h5ad",
-                   `SZBDMulti-Seq` = "SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad",
-                  `UCLA-ASD` = "UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad",# "UCLA-ASD-snRNAseq_annotated.h5ad" which file?
-                  `Urban-DLPFC` = "Urban-DLPFC/Urban-DLPFC-snRNAseq_annotated.h5ad")
+                `DevBrain-snRNASeq` = "DevBrain-snRNAseq/DevBrain-snRNAseq_annotated.h5ad",
+                IsoHuB = "IsoHuB/IsoHuB-snRNAseq_annotated.h5ad",
+                `SZBDMulti-Seq` = "SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad",
+                `UCLA-ASD` = "UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad",# "UCLA-ASD-snRNAseq_annotated.h5ad" which file?
+                `Urban-DLPFC` = "Urban-DLPFC/Urban-DLPFC-snRNAseq_annotated.h5ad")
 
 ss(h5ad_files, "/")
 # CMC DevBrain-snRNAseq            IsoHuB     SZBDMulti-Seq          UCLA-ASD       Urban-DLPFC 
@@ -41,9 +41,6 @@ map(h5ad_files, function(input_file){
   stopifnot(file.exists(filepath))
 })
 
-map(h5ad_files, ~gsub("-(s|S).*$","",dirname(.x)))
-
-
 
 job_loop(
   loops = list(PE_data = h5ad_files),
@@ -52,9 +49,12 @@ job_loop(
 )
 
 ## What outputs exist?
-output_dir <- here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized")
-list.files(raw_data_dir)
+output_dir <- here("processed-data", "rdata","spe","14_spatial_registration_PEC")
+list.files(output_dir, pattern = "pseudobulk")
 
-
-walk(datasets, ~message(gsub("DATASET", .x,
-                    "file.remove('01_pseudobulk_data_DATASET.sh')\nsgejobs::job_single('01_pseudobulk_data_DATASET', create_shell = TRUE, memory = '25G', command = 'Rscript 01_pseudobulk_data.R DATASET DATASET.h5ad')\n")))
+# CMC - 
+# DevBrain - done
+# IsoHuB - done
+# SZBDMulti - queueu 200G
+# UCLA-ASD - queue 100G
+# Urban-DLPFC -running

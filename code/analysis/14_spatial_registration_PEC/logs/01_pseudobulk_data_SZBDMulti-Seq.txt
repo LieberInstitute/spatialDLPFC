@@ -6,10 +6,10 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2
 **** Job starts ****
-Thu Nov 17 14:48:23 EST 2022
+Thu Nov 17 16:31:18 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 1236788
+Job id: 1237230
 Job name: pseudobulk_data_SZBDMulti-Seq
 Hostname: compute-126.cm.cluster
 Task id: undefined
@@ -102,11 +102,13 @@ here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 input = SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad
 
 #### Running: SZBDMulti-Seq ####
-2022-11-17 14:48:37 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version3/scRNAseq_AllenCTHarmonized/SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad
+2022-11-17 16:31:31 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version3/scRNAseq_AllenCTHarmonized/SZBDMulti-Seq/SZBDMulti-Seq_annotated.h5ad
 There were 50 or more warnings (use warnings() to see the first 50)
 
 SCE Dimesions:
 [1]  34291 486050
+[1] "n_genes"     "n_counts"    "Channel"     "demux_type"  "assignment" 
+[6] "anno"        "subclass"    "azimuth"     "indvidualID"
 Cell Types:
 
      Astro Chandelier       Endo    L2.3.IT      L4.IT    L5.6.NP      L5.ET 
@@ -117,10 +119,11 @@ Cell Types:
       4971      53692      10594       1936      26115       4123      17153 
  Sst.Chodl        Vip       VLMC 
        402      17918       1132 
-2022-11-17 14:57:14 revert to counts
+2022-11-17 16:39:20 revert to counts
+2022-11-17 16:41:07 Pseudobulk
 Error in registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID",  : 
   var_sample_id %in% colnames(colData(sce)) is not TRUE
 Calls: registration_pseudobulk -> stopifnot
 Execution halted
 **** Job ends ****
-Thu Nov 17 14:59:13 EST 2022
+Thu Nov 17 16:41:11 EST 2022
