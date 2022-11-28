@@ -1,69 +1,60 @@
 # library(sgejobs)
-# sgejobs::job_loop(
-#    loops = list(spetype = c(
-#        "wholegenome", "targeted"
-#     )),
-#     name = "03_model_pathology",
+# sgejobs::job_single(
+#     name = "03_model_BayesSpace",
 #     create_shell = TRUE,
 #     queue = "bluejay",
-#     memory = "15G")
-# To execute the script builder, use: sh 03_model_pathology.sh
+#     memory = "15G",
+#     task_num = 28,
+#     tc = 10
+# )
+# To execute the script builder, use: qsub 03_model_BayesSpace.sh
 
-# Required libraries
-library("getopt")
-
-## Specify parameters
-spec <- matrix(c(
-    "spetype", "s", 2, "character", "SPE spetype: wholegenome or targeted",
-    "help", "h", 0, "logical", "Display help"
-), byrow = TRUE, ncol = 5)
-opt <- getopt(spec = spec)
-
-## if help was asked for print a friendly message
-## and exit with a non-zero error code
-if (!is.null(opt$help)) {
-    cat(getopt(spec, usage = TRUE))
-    q(status = 1)
-}
+k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## For testing
 if (FALSE) {
-    opt <- list(spetype = "wholegenome")
+    k <- 2
 }
 
 
 library("here")
 library("sessioninfo")
 library("spatialLIBD")
-stopifnot(packageVersion("spatialLIBD") >= "1.9.19")
-
 
 ## output directory
-dir_rdata <- here::here("processed-data", "11_grey_matter_only", opt$spetype)
+dir_rdata <- here::here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "07_layer_differential_expression"
+)
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
-dir_plots <- here::here("plots", "11_grey_matter_only", opt$spetype)
+dir_plots <- here::here(
+    "plots",
+    "07_layer_differential_expression"
+)
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
 
-## load spe data
+## load sce_pseudo data
 sce_pseudo <-
     readRDS(
         file.path(
             dir_rdata,
-            paste0("sce_pseudo_pathology_", opt$spetype, ".rds")
+            paste0("sce_pseudo_BayesSpace_", k, ".rds")
         )
     )
 
 ## To avoid having to change parameters later on
-sce_pseudo$registration_variable <- sce_pseudo$path_groups
+sce_pseudo$registration_variable <- sce_pseudo$BayesSpace
 sce_pseudo$registration_sample_id <- sce_pseudo$sample_id
 
 ## Set arguments used in spatialLIBD::registration_wrapper()
-covars <- NULL
+covars <-c("position", "age", "sex")
 gene_ensembl <- "gene_id"
 gene_name <- "gene_name"
-suffix <- "noWM"
+suffix <- "all"
 
 ## Taken from spatialLIBD::registration_wrapper()
 ## https://github.com/LieberInstitute/spatialLIBD/blob/master/R/registration_wrapper.R
@@ -110,7 +101,7 @@ save(
     modeling_results,
     file = file.path(
         dir_rdata,
-        "Visium_IF_AD_modeling_results.Rdata"
+        paste0("modeling_results_BayesSpace_k", sprintf("%02d", k), ".Rdata")
     )
 )
 
