@@ -40,7 +40,7 @@ dir_plots <- here::here(
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
 
-## load spe data
+## load sce_pseudo data
 sce_pseudo <-
     readRDS(
         file.path(
