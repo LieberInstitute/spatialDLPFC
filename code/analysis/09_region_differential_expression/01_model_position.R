@@ -1,13 +1,13 @@
 # library(sgejobs)
 # sgejobs::job_single(
-#     name = "03_model_BayesSpace",
+#     name = "01_model_position",
 #     create_shell = TRUE,
 #     queue = "bluejay",
 #     memory = "15G",
 #     task_num = 28,
 #     tc = 10
 # )
-# To execute the script builder, use: qsub 03_model_BayesSpace.sh
+# To execute the script builder, use: qsub 01_model_position.sh
 
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
@@ -22,11 +22,17 @@ library("sessioninfo")
 library("spatialLIBD")
 
 ## output directory
-dir_rdata <- here::here(
+dir_input <- here::here(
     "processed-data",
     "rdata",
     "spe",
     "07_layer_differential_expression"
+)
+dir_rdata <- here::here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "09_position_differential_expression"
 )
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
@@ -47,11 +53,11 @@ sce_pseudo <-
     )
 
 ## To avoid having to change parameters later on
-sce_pseudo$registration_variable <- sce_pseudo$BayesSpace
+sce_pseudo$registration_variable <- sce_pseudo$position
 sce_pseudo$registration_sample_id <- sce_pseudo$sample_id
 
 ## Set arguments used in spatialLIBD::registration_wrapper()
-covars <- c("position", "age", "sex")
+covars <- c("BayesSpace", "age", "sex")
 gene_ensembl <- "gene_id"
 gene_name <- "gene_name"
 suffix <- "all"
@@ -80,19 +86,15 @@ results_pairwise <-
         gene_ensembl = gene_ensembl,
         gene_name = gene_name
     )
-if (k >= 3) {
-    results_anova <-
-        registration_stats_anova(
-            sce_pseudo,
-            block_cor = block_cor,
-            covars = covars,
-            gene_ensembl = gene_ensembl,
-            gene_name = gene_name,
-            suffix = suffix
-        )
-} else {
-    results_anova <- NULL
-}
+results_anova <-
+    registration_stats_anova(
+        sce_pseudo,
+        block_cor = block_cor,
+        covars = covars,
+        gene_ensembl = gene_ensembl,
+        gene_name = gene_name,
+        suffix = suffix
+    )
 
 modeling_results <- list(
     "anova" = results_anova,
@@ -105,7 +107,7 @@ save(
     modeling_results,
     file = file.path(
         dir_rdata,
-        paste0("modeling_results_BayesSpace_k", sprintf("%02d", k), ".Rdata")
+        paste0("modeling_results_position_k", sprintf("%02d", k), ".Rdata")
     )
 )
 
