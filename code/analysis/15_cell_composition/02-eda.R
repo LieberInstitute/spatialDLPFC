@@ -52,7 +52,7 @@ cell_count_fnl_dat <- fnl_dat |>
     rowwise() |>
     mutate(n_cell_deconv = sum(c_across(Astro:OPC))) |>
     ungroup() |>
-    rename(n_cell_VS = count)
+    dplyr::rename(n_cell_VS = count)
 #NOTE: count should be the cell count from vistoseg
 # see https://jhu-genomics.slack.com/archives/D04BRDW7Q8Y/p1669149653581219
 
@@ -96,14 +96,14 @@ fnl_dat |>
 
 
 ## Are the percentage of each domain change across pos
-fnl_dat |>
-    group_by(region) |>
-    summarize(n_spots = n(),
-              n_sp9_miss = sum(is.na(sp9)),
-              n_sp16_miss = sum(is.na(sp16)),
-              avg_sp9_miss = n_sp9_miss/n_spots,
-              avg_sp16_miss = n_sp16_miss/n_spots) |>
-    filter(avg_sp9_miss!=0)
+# fnl_dat |>
+#     group_by(region) |>
+#     summarize(n_spots = n(),
+#               n_sp9_miss = sum(is.na(sp9)),
+#               n_sp16_miss = sum(is.na(sp16)),
+#               avg_sp9_miss = n_sp9_miss/n_spots,
+#               avg_sp16_miss = n_sp16_miss/n_spots) |>
+#     filter(avg_sp9_miss!=0)
 
 
 
