@@ -6,7 +6,7 @@
 library("here")
 library("jaffelab")
 library("spatialLIBD")
-library('sessioninfo')
+library("sessioninfo")
 
 cell_groups <- c("broad", "layer")
 
@@ -36,61 +36,61 @@ observed_paths <- here(
     "{sample_id}", "clusters.csv"
 )
 
-spe = readRDS(spe_IF_in)
+spe <- readRDS(spe_IF_in)
 
 #   For each sample, resolution, and deconvolution tool (and ground-truth CART
 #   counts), read in cell-type counts and add each as a column to colData(spe)
 for (sample_id in unique(spe$sample_id)) {
     #   Read in the "ground-truth" counts for this sample
     actual_path <- sub("\\{sample_id\\}", sample_id, actual_paths)
-    a = read.csv(actual_path)
+    a <- read.csv(actual_path)
     stopifnot(all(a$key %in% spe$key))
-    
+
     #   Use informative column names, and don't duplicate the 'key' column
-    actual_key = a$key
-    a$counts = a$n_cells
-    a$n_cells = NULL
-    a$key = NULL
-    colnames(a) = paste0('CART_', colnames(a))
-    
+    actual_key <- a$key
+    a$counts <- a$n_cells
+    a$n_cells <- NULL
+    a$key <- NULL
+    colnames(a) <- paste0("CART_", colnames(a))
+
     #   Add CART counts to the object
     for (cname in colnames(a)) {
         if (sample_id == unique(spe$sample_id)[1]) {
-            spe[[cname]] = NA
+            spe[[cname]] <- NA
         }
-        
-        spe[[cname]][match(actual_key, spe$key)] = a[[cname]]
+
+        spe[[cname]][match(actual_key, spe$key)] <- a[[cname]]
     }
-    
+
     for (cell_group in cell_groups) {
         for (deconvo_tool in deconvo_tools) {
-            short_deconvo_tool = ss(deconvo_tool, '-', 2)
-            
+            short_deconvo_tool <- ss(deconvo_tool, "-", 2)
+
             #   Fill in the path with the actual values instead of the
             #   placeholders
             observed_path <- sub("\\{sample_id\\}", sample_id, observed_paths)
             observed_path <- sub("\\{deconvo_tool\\}", deconvo_tool, observed_path)
             observed_path <- sub("\\{cell_group\\}", cell_group, observed_path)
-            
+
             #   Read in cell-type counts for this deconvo tool
-            a = read.csv(observed_path)
+            a <- read.csv(observed_path)
             stopifnot(all(a$key %in% spe$key))
-            
+
             #   Use unique column names to add to the SPE object
-            observed_key = a$key
-            a$key = NULL
-            colnames(a) = paste0(
-                short_deconvo_tool, '_', cell_group, '_',
-                gsub('\\.', '_', colnames(a))
+            observed_key <- a$key
+            a$key <- NULL
+            colnames(a) <- paste0(
+                short_deconvo_tool, "_", cell_group, "_",
+                gsub("\\.", "_", colnames(a))
             )
-            
+
             #   Add counts to the object
             for (cname in colnames(a)) {
                 if (sample_id == unique(spe$sample_id)[1]) {
-                    spe[[cname]] = NA
+                    spe[[cname]] <- NA
                 }
-                
-                spe[[cname]][match(observed_key, spe$key)] = a[[cname]]
+
+                spe[[cname]][match(observed_key, spe$key)] <- a[[cname]]
             }
         }
     }

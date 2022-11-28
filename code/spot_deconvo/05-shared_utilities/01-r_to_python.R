@@ -131,16 +131,16 @@ sce <- sce[, keep]
 #   Add cell counts to nonIF spatial object
 #-------------------------------------------------------------------------------
 
-id_table = read.csv(nonIF_id_path)
+id_table <- read.csv(nonIF_id_path)
 
-spe_nonIF$count = NA
+spe_nonIF$count <- NA
 for (sample_id in unique(spe_nonIF$sample_id)) {
     #   Correctly determine the path for the cell counts for this sample, then
     #   read in
-    long_id = id_table[match(sample_id, id_table$short_id), 'long_id']
-    this_path = sub('{sample_id}', long_id, nonIF_counts_path, fixed = TRUE)
-    cell_counts = read.csv(this_path)
-    
+    long_id <- id_table[match(sample_id, id_table$short_id), "long_id"]
+    this_path <- sub("{sample_id}", long_id, nonIF_counts_path, fixed = TRUE)
+    cell_counts <- read.csv(this_path)
+
     #   All spots in the object should have counts
     stopifnot(
         all(
@@ -148,17 +148,17 @@ for (sample_id in unique(spe_nonIF$sample_id)) {
                 cell_counts$barcode
         )
     )
-    
+
     #   Line up the rows of 'cell_counts' with the sample-subsetted SPE object
-    cell_counts = cell_counts[
+    cell_counts <- cell_counts[
         match(
             colnames(spe_nonIF[, spe_nonIF$sample_id == sample_id]),
             cell_counts$barcode
         ),
     ]
-    
+
     #   Add this sample's counts to the SPE object
-    spe_nonIF$count[spe_nonIF$sample_id == sample_id] = cell_counts$Nmask_dark_blue
+    spe_nonIF$count[spe_nonIF$sample_id == sample_id] <- cell_counts$Nmask_dark_blue
 }
 
 #   Ensure counts were read in for all spots in the object
@@ -191,7 +191,7 @@ write_anndata(sce, sce_out)
 if (cell_group == "broad") {
     # write_anndata(spe_IF, spe_IF_out)
     write_anndata(spe_nonIF, spe_nonIF_out)
-    
+
     #   Write sample names to text files
     # writeLines(unique(spe_IF$sample_id), con = sample_IF_out)
     # writeLines(unique(spe_nonIF$sample_id), con = sample_nonIF_out)

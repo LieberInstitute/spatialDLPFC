@@ -38,7 +38,7 @@ counts(sce) <- assays(sce)$X # change to normalized counts
 # counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
 counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
-sce_subset <- sce[,1:1000]
+sce_subset <- sce[, 1:1000]
 #### Pseudobulk ####
 sce_pseudo <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
 
@@ -71,15 +71,16 @@ counts(sce) <- assays(sce)$X # change to normalized counts
 # counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
 counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
-sce_subset2 <- sce[,1:1000]
+sce_subset2 <- sce[, 1:1000]
 #### Pseudobulk ####
 sce_pseudo2 <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
 
 
-save(sce_subset, sce_pseudo,sce_subset2, sce_pseudo2,
-     file = here(
-       "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
-       "sce_subsets_SZBD.Rdata")
+save(sce_subset, sce_pseudo, sce_subset2, sce_pseudo2,
+    file = here(
+        "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
+        "sce_subsets_SZBD.Rdata"
+    )
 )
 
 message(Sys.time(), " Combine two parts")
@@ -87,8 +88,8 @@ message(Sys.time(), " Combine two parts")
 common_genes <- intersect(rownames(sce_pseudo), rownames(sce_pseudo2))
 length(common_genes)
 
-sce_pseudo <- sce_pseudo[common_genes,]
-sce_pseudo2 <- sce_pseudo2[common_genes,]
+sce_pseudo <- sce_pseudo[common_genes, ]
+sce_pseudo2 <- sce_pseudo2[common_genes, ]
 
 sce_pseudo <- cbind(sce_pseudo, sce_pseudo2)
 

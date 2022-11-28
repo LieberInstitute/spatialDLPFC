@@ -2,8 +2,8 @@ suppressPackageStartupMessages(library("SpatialExperiment"))
 suppressPackageStartupMessages(library("sessioninfo"))
 suppressPackageStartupMessages(library("here"))
 suppressPackageStartupMessages(library("tidyverse"))
-suppressPackageStartupMessages(library('spatialLIBD'))
-suppressPackageStartupMessages(library('cowplot'))
+suppressPackageStartupMessages(library("spatialLIBD"))
+suppressPackageStartupMessages(library("cowplot"))
 
 spe_IF_in <- here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
@@ -24,26 +24,28 @@ actual_paths <- here(
 #   Functions
 ################################################################################
 
-plot_counts = function(spe_IF, spe_nonIF, plot_name) {
-    plot_list = list()
-    i = 1
-    
+plot_counts <- function(spe_IF, spe_nonIF, plot_name) {
+    plot_list <- list()
+    i <- 1
+
     for (sample_id in unique(spe_IF$sample_id)) {
-        plot_list[[i]] = vis_grid_gene(
-            spe_nonIF[, spe_nonIF$sample_id == sample_id], geneid = 'count',
+        plot_list[[i]] <- vis_grid_gene(
+            spe_nonIF[, spe_nonIF$sample_id == sample_id],
+            geneid = "count",
             return_plots = TRUE
         )[[1]] +
-            labs(title = paste0(sample_id, ' (non-IF): VistoSeg counts'))
-        
-        plot_list[[i + 1]]  = vis_grid_gene(
-            spe_IF[, spe_IF$sample_id == sample_id], geneid = 'counts_cellpose',
+            labs(title = paste0(sample_id, " (non-IF): VistoSeg counts"))
+
+        plot_list[[i + 1]] <- vis_grid_gene(
+            spe_IF[, spe_IF$sample_id == sample_id],
+            geneid = "counts_cellpose",
             return_plots = TRUE
         )[[1]] +
-            labs(title = paste0(sample_id, ' (IF): cellpose counts'))
-        
-        i = i + 2
+            labs(title = paste0(sample_id, " (IF): cellpose counts"))
+
+        i <- i + 2
     }
-    
+
     pdf(
         file.path(plot_dir, plot_name),
         width = 14, height = 7 * length(unique(spe_IF$sample_id))
@@ -68,39 +70,39 @@ gc()
 #-------------------------------------------------------------------------------
 
 #   Read in cellpose counts
-counts_list = list()
+counts_list <- list()
 for (sample_id in unique(spe_IF$sample_id)) {
     #   Read in the "ground-truth" counts for this sample
     actual_path <- sub("\\{sample_id\\}", sample_id, actual_paths)
     counts_list[[sample_id]] <- read.csv(actual_path)
 }
 
-counts = do.call(rbind, counts_list)
+counts <- do.call(rbind, counts_list)
 
 stopifnot(all(counts$key %in% spe_IF$key))
 stopifnot(all(spe_IF$key %in% counts$key))
 
 #   Add to IF SPE
-spe_IF$counts_cellpose = counts$n_cells[match(spe_IF$key, counts$key)]
+spe_IF$counts_cellpose <- counts$n_cells[match(spe_IF$key, counts$key)]
 
 #-------------------------------------------------------------------------------
 #   Plot cell counts for adjacent sections
 #-------------------------------------------------------------------------------
 
 #   Use the same naming convention for sample names
-spe_nonIF$sample_id = tolower(spe_nonIF$sample_id)
-spe_IF$sample_id = tolower(sub('_IF', '', spe_IF$sample_id))
+spe_nonIF$sample_id <- tolower(spe_nonIF$sample_id)
+spe_IF$sample_id <- tolower(sub("_IF", "", spe_IF$sample_id))
 
 #   Subset nonIF samples to those taken from the same sections as from the IF
 #   samples
-spe_nonIF = spe_nonIF[, spe_nonIF$sample_id %in% unique(spe_IF$sample_id)]
+spe_nonIF <- spe_nonIF[, spe_nonIF$sample_id %in% unique(spe_IF$sample_id)]
 
-plot_counts(spe_IF, spe_nonIF, 'cellpose_v_vistoseg_counts_raw.pdf')
+plot_counts(spe_IF, spe_nonIF, "cellpose_v_vistoseg_counts_raw.pdf")
 
 #   Cap VistoSeg at 15 cells, since there are regions throwing off the scale of
 #   gigantic counts
 
-a = spe_nonIF
-a$count[a$count > 15] = 15
+a <- spe_nonIF
+a$count[a$count > 15] <- 15
 
-plot_counts(spe_IF, a, 'cellpose_v_vistoseg_counts_trimmed.pdf')
+plot_counts(spe_IF, a, "cellpose_v_vistoseg_counts_trimmed.pdf")

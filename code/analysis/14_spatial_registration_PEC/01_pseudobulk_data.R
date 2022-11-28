@@ -8,7 +8,7 @@ library("sessioninfo")
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
 input_file <- args[1]
-message("input = ",input_file)
+message("input = ", input_file)
 
 dataset <- dirname(input_file)
 message("\n#### Running: ", dataset, " ####")
@@ -39,7 +39,7 @@ rownames(sce) <- rowData(sce)$featureid # have to make row names of object the e
 message(Sys.time(), " revert to counts")
 
 ## check for all 0s (just first 100 cols for mem)
-stopifnot(any(assays(sce)$X[,1:100] != 0))
+stopifnot(any(assays(sce)$X[, 1:100] != 0))
 
 counts(sce) <- assays(sce)$X # change to normalized counts
 # counts(sce)[counts(sce) != 0] <- (2^counts(sce)[counts(sce) != 0])-1 # Replace just non-zero values
