@@ -1,11 +1,12 @@
 #!/bin/bash
 #$ -cwd
 #$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
-#$ -N 03_model_BayesSpace
+#$ -N model_BayesSpace
 #$ -o logs/03_model_BayesSpace.$TASK_ID.txt
 #$ -e logs/03_model_BayesSpace.$TASK_ID.txt
+#$ -hold_jid explore_expr_variability
 #$ -m e
-#$ -t 1-28
+#$ -t 2-28
 #$ -tc 10
 
 echo "**** Job starts ****"
@@ -19,13 +20,13 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
-module load conda_R
+module load conda_R/4.2.x
 
 ## List current modules for reproducibility
 module list
 
 ## Edit with your job command
-Rscript -e "options(width = 120); sessioninfo::session_info()"
+Rscript 03_model_BayesSpace.R
 
 echo "**** Job ends ****"
 date
