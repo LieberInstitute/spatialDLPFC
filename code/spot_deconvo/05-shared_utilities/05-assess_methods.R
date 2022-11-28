@@ -486,7 +486,10 @@ corr_rmse_plot = function(metrics_df, filename) {
 
 #   Given a tibble with columns 'label' (manual layer label), 'deconvo_tool',
 #   'cell_type', and 'count', write a set of barplots to PDF under [plot_dir]
-#   with name [filename]. 'ylab' give the y-axis label.
+#   with name [filename]. 'ylab' give the y-axis label; 'x_var' is the x-axis
+#   variable (as a string); 'fill_var' is the fill variable as a string;
+#   'fill_scale' is passed to 'scale_fill_manual(values = [fill_scale])';
+#   'fill_lab' is the fill label; 'xlab' is the x-axis label
 #
 #   The barplots are faceted by deconvo_tool, with x-axis including each
 #   manually annotated layer. Each barplot includes counts for each cell type
@@ -496,7 +499,9 @@ corr_rmse_plot = function(metrics_df, filename) {
 #   'Excit_L3' has maximal value in layer 3), and an "X" is placed if the layer
 #   is incorrect. Total counts of "O"s for each facet across all cell types is
 #   tallied and reported in the facet titles.
-layer_dist_barplot = function(counts_df, filename, ylab) {
+layer_dist_barplot = function(
+        counts_df, filename, ylab, x_var, fill_var, fill_scale, fill_lab, xlab
+    ) {
     #   Add a column 'layer_match' to indicate rows where each cell type
     #   has a maximal value across layers. We'll mark these with an "X"
     #   on the barplots
@@ -547,12 +552,12 @@ layer_dist_barplot = function(counts_df, filename, ylab) {
     
     p = ggplot(
         counts_df,
-        aes(x = label, y = count, fill = cell_type)
+        aes_string(x = x_var, y = 'count', fill = fill_var)
     ) +
         facet_wrap(~ deconvo_tool, labeller = correct_labeller) +
         geom_bar(stat = "identity") +
-        labs(x = "Annotated Layer", y = ylab, fill = "Cell Type") +
-        scale_fill_manual(values = estimated_cell_labels) +
+        labs(x = xlab, y = ylab, fill = fill_lab) +
+        scale_fill_manual(values = fill_scale) +
         geom_text(
             aes(label = ifelse(correct_layer, "O", ifelse(layer_match, "X", ""))),
             position = position_stack(vjust = 0.5)
@@ -1106,7 +1111,18 @@ counts_df = observed_df_long |>
 #   per spot aren't preserved (e.g. C2L doesn't match the cell counts you
 #   provide it)
 layer_dist_barplot(
-    counts_df, 'layer_distribution_barplot_raw.pdf', "Average Predicted Count"
+    counts_df, filename = 'layer_distribution_barplot_raw.pdf',
+    xlab = "Annotated Layer", ylab = "Average Predicted Count", x_var = "label",
+    fill_lab = "Cell Type", fill_var = "cell_type",
+    fill_scale = estimated_cell_labels
+)
+
+#   Also write a copy where will switch the x-axis and fill
+layer_dist_barplot(
+    counts_df, filename = 'layer_distribution_barplot_raw_inverted.pdf',
+    xlab = "Cell Type", ylab = "Average Predicted Count", x_var = "cell_type",
+    fill_lab = "Annotated Layer", fill_var = "label",
+    fill_scale = libd_layer_colors
 )
 
 #-------------------------------------------------------------------------------
@@ -1126,7 +1142,53 @@ counts_df = observed_df_long |>
     summarize(count = sum(observed))
 
 layer_dist_barplot(
-    counts_df, 'layer_distribution_barplot_prop.pdf', "Proportion of Counts"
+    counts_df, filename = 'layer_distribution_barplot_prop.pdf',
+    xlab = "Annotated Layer", ylab = "Proportion of Counts", x_var = "label",
+    fill_lab = "Cell Type", fill_var = "cell_type",
+    fill_scale = estimated_cell_labels
+)
+
+#   Also write a copy where will switch the x-axis and fill
+layer_dist_barplot(
+    counts_df, filename = 'layer_distribution_barplot_prop_inverted.pdf',
+    xlab = "Cell Type", ylab = "Proportion of Counts", x_var = "cell_type",
+    fill_lab = "Annotated Layer", fill_var = "label",
+    fill_scale = libd_layer_colors
+)
+
+#-------------------------------------------------------------------------------
+#   Spatial distribution of cell-types compared against manual layer annotation
+#   (barplots- proportions by layer). Inverted so that x-axis is cell type
+#-------------------------------------------------------------------------------
+
+counts_df = observed_df_long |>
+    filter(!is.na(label)) |>
+    #   Normalize counts by the sum within sample ID, cell type, and deconvo
+    #   tool (each sample contributes equally)
+    group_by(sample_id, deconvo_tool, cell_type) |>
+    mutate(observed = observed / sum(observed)) |>
+    #   Add up counts for all spots in each layer for each sample ID, cell
+    #   type, and deconvo tool
+    group_by(deconvo_tool, label, sample_id, cell_type) |>
+    summarize(count = sum(observed)) |>
+    #   Now average counts across samples (Note 'sum(count) / 4' must be used
+    #   and not 'mean(count)', since not all samples have all layers 
+    group_by(deconvo_tool, label, cell_type) |>
+    summarize(count = sum(count) / length(sample_ids)) |>
+    ungroup()
+
+#   Interpretation of this plot:
+#   For a given deconvo tool, examine one cell type. The size of each component
+#   of the bar can be interpreted as the probability a randomly selected cell of
+#   this cell type belongs in this particular layer. Note that this does not
+#   normalize for layer size (i.e. if more spots belong to layer 3 than white
+#   matter, the maximal layer for a given cell type is more likely to be layer
+#   3)!
+layer_dist_barplot(
+    counts_df, filename = 'layer_distribution_barplot_probability_inverted.pdf',
+    xlab = "Cell Type", ylab = "Proportion of Counts", x_var = "cell_type",
+    fill_lab = "Annotated Layer", fill_var = "label",
+    fill_scale = libd_layer_colors
 )
 
 #-------------------------------------------------------------------------------
