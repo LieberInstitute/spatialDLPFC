@@ -14,33 +14,36 @@ for (dataset in c("IF", "nonIF")) {
             "processed-data", "spot_deconvo", "05-shared_utilities", dataset,
             paste0("results_raw_", cell_group, ".csv")
         )
-        
+
         clean_results_path <- here(
             "processed-data", "spot_deconvo", "01-tangram", dataset, cell_group,
             "raw_results", "clusters.csv"
         )
-        
+
         dir.create(
-            dirname(clean_results_path), showWarnings = FALSE, recursive = TRUE
+            dirname(clean_results_path),
+            showWarnings = FALSE, recursive = TRUE
         )
-        
+
         #   Read in just the tangram results
-        raw_results = read.csv(raw_results_path) |>
+        raw_results <- read.csv(raw_results_path) |>
             filter(deconvo_tool == "tangram")
-        
+
         #   Add the 'key' column and remove unnecessary columns
-        raw_results$key = paste(
-            raw_results$barcode, raw_results$sample_id, sep = '_'
+        raw_results$key <- paste(
+            raw_results$barcode, raw_results$sample_id,
+            sep = "_"
         )
-        raw_results = raw_results[
+        raw_results <- raw_results[
             , -match(
                 c("barcode", "sample_id", "deconvo_tool"), colnames(raw_results)
             )
         ]
-        
+
         #   Write to disk
         write.csv(
-            raw_results, file = clean_results_path, row.names = FALSE,
+            raw_results,
+            file = clean_results_path, row.names = FALSE,
             quote = FALSE
         )
     }

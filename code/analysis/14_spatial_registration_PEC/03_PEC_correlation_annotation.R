@@ -203,7 +203,7 @@ anno_all_test <- cell_type_anno_all |>
     ggplot(aes(x = cluster, y = layer_combo)) +
     geom_tile(fill = "blue", alpha = 0.2) +
     facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
-    scale_y_discrete(limits=rev)
+    scale_y_discrete(limits = rev)
 
 ggsave(anno_all_test, filename = here(plot_dir, "anno_all_test.png"))
 
@@ -219,7 +219,7 @@ layer_anno_plot <- layer_anno_long |>
     geom_tile(data = cell_type_anno_all |> filter(Annotation == "layer"), fill = "blue", alpha = 0.2) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    scale_y_discrete(limits=rev)
+    scale_y_discrete(limits = rev)
 
 ggsave(layer_anno_plot, filename = here(plot_dir, "PE_datasets_layer_annotation.png"), width = 10, height = 5)
 
@@ -231,7 +231,7 @@ layer_anno_plot_filter <- layer_anno_long |>
     geom_tile(data = cell_type_anno_all |> filter(Annotation == "layer"), fill = "blue", alpha = 0.2) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    scale_y_discrete(limits=rev)
+    scale_y_discrete(limits = rev)
 
 ggsave(layer_anno_plot_filter, filename = here(plot_dir, "PE_datasets_layer_annotation_confident.png"), width = 10, height = 5)
 
@@ -245,7 +245,7 @@ label_anno_plot <- layer_anno_long |>
     theme_bw() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     labs(y = "bayesSpace Domain & Annotation", x = "PsychEncode DLPFC Cell Types") +
-    scale_y_discrete(limits=rev)
+    scale_y_discrete(limits = rev)
 
 ggsave(label_anno_plot, filename = here(plot_dir, "PE_datasets_all_annotations.png"), height = 10)
 
@@ -262,7 +262,7 @@ label_anno_plot <- layer_anno_long |>
         legend.position = "top"
     ) +
     labs(y = "bayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types") +
-    scale_y_discrete(limits=rev)
+    scale_y_discrete(limits = rev)
 
 ggsave(label_anno_plot, filename = here(plot_dir, "PE_datasets_all_annotations_confident.png"), height = 7.25, width = 8)
 

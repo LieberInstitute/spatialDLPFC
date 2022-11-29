@@ -228,10 +228,10 @@ table(sce$cellType_layer)
 #    11067
 
 table(sce$layer_annotation)
- #    L1    L1*  L1/WM     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4
- #  6136     66   3541   1192   1932   5448  10459   1310   1567   3043   3655
- # L4/5*     L5   L5/6     L6     WM
- #   420   2505   2487   1792  10894
+#    L1    L1*  L1/WM     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4
+#  6136     66   3541   1192   1932   5448  10459   1310   1567   3043   3655
+# L4/5*     L5   L5/6     L6     WM
+#   420   2505   2487   1792  10894
 
 ## Drop nuc are NA
 sum(is.na(sce$cellType_layer))
