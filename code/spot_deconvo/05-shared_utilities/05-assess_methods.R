@@ -7,7 +7,7 @@ library("spatialLIBD")
 library("cowplot")
 library("ggrepel")
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -18,6 +18,10 @@ deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
 
 plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
+)
+
+processed_dir <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF"
 )
 
 raw_results_path <- here(
@@ -334,7 +338,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
             for (cell_type in cell_types_actual) {
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type, "actual",
-                    paste0(cell_type, " counts\n(Ground-truth)")
+                    paste0(cell_type, " counts\n(CART-calculated)")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
@@ -399,7 +403,7 @@ prop_barplot <- function(prop_df, filename) {
                 x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
                 title = sample_id
             ) +
-            scale_x_discrete(labels = c("actual" = "Ground-Truth")) +
+            scale_x_discrete(labels = c("actual" = "CART-calculated")) +
             scale_fill_manual(values = cell_type_labels) +
             theme_bw(base_size = 16)
     }
@@ -563,7 +567,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
             position = position_stack(vjust = 0.5)
         ) +
         theme_bw(base_size = 16) +
-        theme(axis.text.x = element_text(angle = 90))
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
     pdf(file.path(plot_dir, filename), width = 10, height = 5)
     print(p)
@@ -778,6 +782,24 @@ dev.off()
 #-------------------------------------------------------------------------------
 #   Counts: "all" and "across"
 #-------------------------------------------------------------------------------
+
+#   For the "all_spots" plot, also write a CSV (to be used as a suppl. table)
+#   of metrics
+metrics_df <- full_df %>%
+    group_by(deconvo_tool, sample_id, cell_type) %>%
+    summarize(
+        corr = cor(observed, actual),
+        rmse = mean((observed - actual)**2)**0.5
+    ) %>%
+    ungroup()
+
+write.csv(
+    metrics_df,
+    file.path(
+        processed_dir, paste0('spatial_cell_type_metrics_', cell_group, '.csv')
+    ),
+    row.names = FALSE, quote = FALSE
+)
 
 #   Plot cell-type counts for all spots
 all_spots(full_df, "counts_all_spots_scatter.pdf")
@@ -1075,7 +1097,7 @@ for (cell_type in cell_types) {
         #   Facet purely for aesthetic purposes: there is only one cell type
         facet_wrap(~cell_type) +
         theme_bw(base_size = 20) +
-        theme(axis.text.x = element_text(angle = 90)) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
         coord_cartesian(ylim = c(0, y_max)) +
         scale_y_continuous(expand = c(0, 0, 0, 0.05))
 }
