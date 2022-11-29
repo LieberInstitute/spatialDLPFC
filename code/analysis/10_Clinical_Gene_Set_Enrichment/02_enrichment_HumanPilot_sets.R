@@ -8,6 +8,7 @@
 # To execute the script builder, use: qsub 02_enrichment_HumanPilot_sets.sh
 
 library("here")
+library("purrr")
 library("sessioninfo")
 
 ## output directory
@@ -28,6 +29,30 @@ stopifnot(file.exists(dir_plots))
 
 ## Load the gene sets from the HumanPilot project
 load(here(dir_rdata, "gene_sets_HumanPilot.Rdata"), verbose = TRUE)
+
+## Input dir
+dir_input <- here::here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "07_layer_differential_expression"
+)
+
+## Load the modeling results from the BayesSpace models
+bayesSpace_registration_fn <-
+    map(k_list, ~ here(
+        dir_input,
+        paste0(
+            "modeling_results_BayesSpace_k",
+            sprintf("%02d", .x),
+            ".Rdata"
+        )
+    ))
+bayesSpace_registration <-
+    lapply(bayesSpace_registration_fn, function(x) {
+        get(load(x))
+    })
+
 
 
 ## Reproducibility information
