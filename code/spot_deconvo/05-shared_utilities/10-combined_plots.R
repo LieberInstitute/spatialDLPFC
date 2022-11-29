@@ -190,7 +190,7 @@ counts_df <- observed_df_long |>
     summarize(count = sum(count)) |>
     #   Now average across samples
     group_by(deconvo_tool, label, cell_type, resolution) |>
-    summarize(count = mean(count)) |>
+    summarize(count = sum(count) / length(sample_ids)) |>
     ungroup()
 
 #-------------------------------------------------------------------------------
