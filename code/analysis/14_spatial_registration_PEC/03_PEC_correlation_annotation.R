@@ -450,30 +450,30 @@ ggsave(
     width = 8
 )
 
-#### Heatmap ####
-cor_top100 <- transpose(pe_correlation_annotation)$cor_top100
-corner(cor_top100_2$CMC)
-
-## DEvBrain, IsoHub, and UrbanDLPFC missing
-# [1] "Sst Chodl"
-cor_top100_2 <-
-    map2(cor_top100, names(cor_top100), function(cor_data, dataset) {
-        cor_data <- map(cor_data, function(cd) {
-            if (!setequal(rownames(cd), cell_types)) {
-                return(setdiff(cell_types, rownames(cd)))
-            }
-            cd <- cd[cell_types, ]
-            rownames(cd) <- paste0(dataset, "_", rownames(cd))
-            return(cd)
-        })
-        return(do.call("cbind", cor_data))
-    })
-
-map(cor_top100$DevBrain$k09, ~ .x[cell_types, ])
-
-map(cor_top100$DevBrain, ~ setdiff(rownames(.x), cell_types))
-map(cor_top100$DevBrain, ~ setdiff(cell_types, rownames(.x)))
-map(cor_top100$DevBrain, ~ union(cell_types, rownames(.x)))
+# #### Heatmap ####
+# cor_top100 <- transpose(pe_correlation_annotation)$cor_top100
+# corner(cor_top100_2$CMC)
+#
+# ## DEvBrain, IsoHub, and UrbanDLPFC missing
+# # [1] "Sst Chodl"
+# cor_top100_2 <-
+#     map2(cor_top100, names(cor_top100), function(cor_data, dataset) {
+#         cor_data <- map(cor_data, function(cd) {
+#             if (!setequal(rownames(cd), cell_types)) {
+#                 return(setdiff(cell_types, rownames(cd)))
+#             }
+#             cd <- cd[cell_types, ]
+#             rownames(cd) <- paste0(dataset, "_", rownames(cd))
+#             return(cd)
+#         })
+#         return(do.call("cbind", cor_data))
+#     })
+#
+# map(cor_top100$DevBrain$k09, ~ .x[cell_types, ])
+#
+# map(cor_top100$DevBrain, ~ setdiff(rownames(.x), cell_types))
+# map(cor_top100$DevBrain, ~ setdiff(cell_types, rownames(.x)))
+# map(cor_top100$DevBrain, ~ union(cell_types, rownames(.x)))
 
 # sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
 
