@@ -334,7 +334,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
             for (cell_type in cell_types_actual) {
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type, "actual",
-                    paste0(cell_type, " counts\n(Ground-truth)")
+                    paste0(cell_type, " counts\n(CART-calculated)")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
@@ -399,7 +399,7 @@ prop_barplot <- function(prop_df, filename) {
                 x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
                 title = sample_id
             ) +
-            scale_x_discrete(labels = c("actual" = "Ground-Truth")) +
+            scale_x_discrete(labels = c("actual" = "CART-calculated")) +
             scale_fill_manual(values = cell_type_labels) +
             theme_bw(base_size = 16)
     }
