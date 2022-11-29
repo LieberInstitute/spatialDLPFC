@@ -531,6 +531,45 @@ Heatmap(cor_all,
 )
 dev.off()
 
+#### Excit Only Heatmap ####
+excit_anno <- cellType_layer_annotations |> 
+  select(cluster, cellType_layer) |>
+  filter(grepl("Excit", cluster)) |>
+  arrange(cellType_layer)
+
+cor_excit <- t(cor_top100$layer[excit_anno$cluster,])
+anno_matrix_excit <- anno_matrix[1:7, colnames(cor_excit)]
+
+load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors_layer.Rdata", verbose = TRUE)
+
+excit_color_bar <- columnAnnotation(
+  df = excit_anno,
+  col = list(cluster = cell_type_colors,
+             cellType_layer = cell_type_colors_layer),
+  show_legend = FALSE
+)
+
+layer_color_bar <- rowAnnotation(
+  " " = rownames(cor_excit),
+  col = list(" " = spatialLIBD::libd_layer_colors),
+  show_legend = FALSE
+)
+
+pdf(here(plot_dir, "spatial_registration_sn_heatmap_Excit.pdf"), height = 4, width = 5)
+Heatmap(cor_excit,
+        name = "Cor",
+        col = my.col,
+        rect_gp = gpar(col = "black", lwd = 1),
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        right_annotation = layer_color_bar,
+        bottom_annotation = excit_color_bar,
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix_excit[i, j], x, y, gp = gpar(fontsize = 10))
+        }
+)
+dev.off()
+
 # sgejobs::job_single('02_cellType_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 02_cellType_correlation_annotation.R")
 
 ## Reproducibility information
