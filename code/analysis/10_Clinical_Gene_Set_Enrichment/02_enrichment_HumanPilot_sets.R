@@ -11,7 +11,15 @@ library("here")
 library("purrr")
 library("sessioninfo")
 
-## output directory
+## Input dir
+dir_input <- here::here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "07_layer_differential_expression"
+)
+
+## Output directories
 dir_rdata <- here::here(
     "processed-data",
     "rdata",
@@ -29,14 +37,6 @@ stopifnot(file.exists(dir_plots))
 
 ## Load the gene sets from the HumanPilot project
 load(here(dir_rdata, "gene_sets_HumanPilot.Rdata"), verbose = TRUE)
-
-## Input dir
-dir_input <- here::here(
-    "processed-data",
-    "rdata",
-    "spe",
-    "07_layer_differential_expression"
-)
 
 ## Load the modeling results from the BayesSpace models
 bayesSpace_registration_fn <-
