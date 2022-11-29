@@ -619,6 +619,62 @@ full_df <- read.csv(collapsed_results_path) %>%
 #   Exploratory plots
 ################################################################################
 
+#   As a figure for the paper, plot the "all_spots" plot of counts for just one
+#   sample and facet by cell type instead of sample
+count_df = full_df |>
+    filter(sample_id == "Br6522_Ant_IF")
+
+metrics_df <- count_df %>%
+    group_by(deconvo_tool, cell_type) %>%
+    summarize(
+        corr = round(cor(observed, actual), 2),
+        rmse = signif(mean((observed - actual)**2)**0.5, 3)
+    ) %>%
+    ungroup()
+
+#   Improve labels for plotting
+metrics_df$corr <- paste("Cor =", metrics_df$corr)
+metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
+
+p <- ggplot(count_df) +
+    geom_point(
+        aes(x = observed, y = actual, color = cell_type),
+        alpha = 0.01
+    ) +
+    geom_abline(
+        intercept = 0, slope = 1, linetype = "dashed", color = "red"
+    ) +
+    facet_grid(
+        rows = vars(cell_type), cols = vars(deconvo_tool)
+    ) +
+    guides(col = guide_legend(override.aes = list(alpha = 1))) +
+    labs(x = "Software-estimated", y = "CART-calculated") +
+    geom_text(
+        data = metrics_df,
+        mapping = aes(
+            x = Inf, y = max(count_df$actual) / 5,
+            label = corr
+        ),
+        hjust = 1
+    ) +
+    geom_text(
+        data = metrics_df,
+        mapping = aes(x = Inf, y = 0, label = rmse),
+        hjust = 1, vjust = 0
+    ) +
+    scale_color_manual(values = cell_type_labels) +
+    theme_bw(base_size = 15) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+    
+
+pdf(file.path(plot_dir, 'counts_all_spots_figure.pdf'))
+print(p)
+dev.off()
+
+#-------------------------------------------------------------------------------
+#   Report overall performance to log
+#-------------------------------------------------------------------------------
+
 #   Consider the count of each cell type in each spot a single data point, and
 #   compute correlation and RMSE between ground-truth counts and those measured
 #   by each deconvolution software
