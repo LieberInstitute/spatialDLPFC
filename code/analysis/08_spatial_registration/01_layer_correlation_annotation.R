@@ -223,6 +223,12 @@ bayes_layer_anno_plot <- layer_anno_long |>
 
 ggsave(bayes_layer_anno_plot, filename = here(plot_dir, "bayesSpace_layer_anno.png"))
 
+## To switch the order in order to have L1 to L6, then WM on the x-axis
+layer_order <- c(paste0("Layer", 1:6), "WM")
+cor_top100 <- lapply(cor_top100, function(x) {
+    x[, layer_order]
+})
+
 #### bayesSpace Spatial Registration heatmaps ####
 ## color set up
 ## match spatialLIBD color scale
