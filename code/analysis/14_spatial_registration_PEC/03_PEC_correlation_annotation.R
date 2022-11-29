@@ -305,7 +305,8 @@ cell_type_anno_all <- spatial_layer_anno |>
 
 ## Function for setting the domains in the right order
 layer_combo_factor <- function(x) {
-    spatial_levels <- c(paste0("Layer", seq_len(6)), "WM", bayes_anno$layer_combo)
+    spatial_levels <-
+        c(paste0("Layer", seq_len(6)), "WM", bayes_anno$layer_combo)
     factor(x, levels = spatial_levels)
 }
 
@@ -410,11 +411,24 @@ ggsave(
     height = 10
 )
 
-label_anno_plot <- layer_anno_long |>
+## Filter since not all spatial domains have high confident results.
+layer_high_conf <- layer_anno_long |>
     filter(anno_confidence == "high") |>
+    mutate(layer_combo = droplevels(layer_combo))
+
+## For the annotation, I have to make sure that the levels are exactly the same
+## otherwise geom_tile() later on changes the order
+cells_high_conf <- cell_type_anno_all |>
+    filter(layer_combo %in% levels(layer_high_conf$layer_combo)) |>
+    mutate(layer_combo = factor(
+        as.character(layer_combo),
+        levels = levels(layer_high_conf$layer_combo)
+    ))
+
+label_anno_plot <- layer_high_conf |>
     ggplot(aes(x = cluster, y = layer_combo)) +
     geom_point(aes(color = Dataset), position = position_dodge(width = .8)) +
-    geom_tile(data = cell_type_anno_all, fill = "blue", alpha = 0.2) +
+    geom_tile(data = cells_high_conf, fill = "blue", alpha = 0.2) +
     # facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
     facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
     theme_bw() +
