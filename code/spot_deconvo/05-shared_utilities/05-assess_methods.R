@@ -1104,7 +1104,7 @@ counts_df <- observed_df_long |>
     summarize(count = mean(observed)) |>
     #   Average these averages across sample
     group_by(label, deconvo_tool, cell_type) |>
-    summarize(count = mean(count)) |>
+    summarize(count = sum(count) / length(sample_ids)) |>
     ungroup()
 
 #   Meaning of an example section of one bar in one facet of this plot:
@@ -1137,6 +1137,7 @@ layer_dist_barplot(
 #   (barplots- proportions by layer)
 #-------------------------------------------------------------------------------
 
+#   Add all spots, regardless of sample
 counts_df <- observed_df_long |>
     filter(!is.na(label)) |>
     #   For each manually annotated label and deconvo tool, normalize by the
@@ -1150,7 +1151,7 @@ counts_df <- observed_df_long |>
 
 layer_dist_barplot(
     counts_df,
-    filename = "layer_distribution_barplot_prop.pdf",
+    filename = "layer_distribution_barplot_prop_uneven.pdf",
     xlab = "Annotated Layer", ylab = "Proportion of Counts", x_var = "label",
     fill_lab = "Cell Type", fill_var = "cell_type",
     fill_scale = estimated_cell_labels
@@ -1159,12 +1160,44 @@ layer_dist_barplot(
 #   Also write a copy where will switch the x-axis and fill
 layer_dist_barplot(
     counts_df,
-    filename = "layer_distribution_barplot_prop_inverted.pdf",
+    filename = "layer_distribution_barplot_prop_uneven_inverted.pdf",
     xlab = "Cell Type", ylab = "Proportion of Counts", x_var = "cell_type",
     fill_lab = "Annotated Layer", fill_var = "label",
     fill_scale = libd_layer_colors
 )
 
+#   Weight each sample equally
+counts_df <- observed_df_long |>
+    filter(!is.na(label)) |>
+    #   For each manually annotated label, deconvo tool and sample_id, normalize
+    #   by the total counts of all cell types
+    group_by(deconvo_tool, label, sample_id) |>
+    mutate(observed = observed / sum(observed)) |>
+    #   Now for each label, deconvo tool, sample_id and cell type, add up counts
+    #   for all relevant spots
+    group_by(deconvo_tool, label, cell_type, sample_id) |>
+    summarize(count = sum(observed)) |>
+    #   Now average across samples
+    group_by(deconvo_tool, label, cell_type) |>
+    summarize(count = mean(count)) |>
+    ungroup()
+
+layer_dist_barplot(
+    counts_df,
+    filename = "layer_distribution_barplot_prop_even.pdf",
+    xlab = "Annotated Layer", ylab = "Proportion of Counts", x_var = "label",
+    fill_lab = "Cell Type", fill_var = "cell_type",
+    fill_scale = estimated_cell_labels
+)
+
+#   Also write a copy where will switch the x-axis and fill
+layer_dist_barplot(
+    counts_df,
+    filename = "layer_distribution_barplot_prop_even_inverted.pdf",
+    xlab = "Cell Type", ylab = "Proportion of Counts", x_var = "cell_type",
+    fill_lab = "Annotated Layer", fill_var = "label",
+    fill_scale = libd_layer_colors
+)
 #-------------------------------------------------------------------------------
 #   Spatial distribution of cell-types compared against manual layer annotation
 #   (barplots- proportions by layer). Inverted so that x-axis is cell type
