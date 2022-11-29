@@ -13,11 +13,13 @@ knitr::opts_chunk$set(
 )
 library('BiocStyle')
 library('spatialLIBD')
+
 ## Bib setup
 library('knitcitations')
 ## Load knitcitations with a clean bibliography
 cleanbib()
 cite_options(hyperlink = 'to.doc', citation_format = 'text', style = 'html')
+
 # Note links won't show for now due to the following issue
 # https://github.com/cboettig/knitcitations/issues/63
 ## Write bibliography information
