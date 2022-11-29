@@ -332,7 +332,7 @@ ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_
 
 #### Spatial Registration Heatmap ####
 ## Build cor all
-cor_top100$k9 <- cor_top100$k9[rownames(cor_top100$layer), ]
+cor_top100$k09 <- cor_top100$k09[rownames(cor_top100$layer), ]
 cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer), ]
 cor_top100$layer <- cor_top100$layer[, c(paste0("Layer", seq_len(6)), "WM")]
 
@@ -384,7 +384,7 @@ libd_intermediate_layer_colors
 #      L2/3          L3/4          L4/5          L5/6         L6/WM
 # "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00"
 
-## Add split for manual/k9/k16
+## Add split for manual/k09/k16
 # annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"D"))
 annotation_split <- c(rep("layer", 7), rep("k09", 9), rep("k16", 16))
 
