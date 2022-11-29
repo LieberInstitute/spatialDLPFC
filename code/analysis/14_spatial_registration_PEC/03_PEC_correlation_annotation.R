@@ -31,7 +31,7 @@ cell_types <- c(
 names(cell_types) <- make.names(cell_types)
 
 
-correlate_and_annotate <- function(dataset) {
+correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
     #### Load Registration Stats ####
     message(Sys.time(), " - ", dataset)
     registration_stats <- readRDS(here(
@@ -54,10 +54,12 @@ correlate_and_annotate <- function(dataset) {
     ))
 
     # ## Plot
-    # pdf(here(plot_dir, paste0("spatial_registration_plot_",dataset,".pdf")))
-    # map(cor_top100, layer_stat_cor_plot, max = 1)
-    # dev.off()
-    #
+    if (make_cor_plot) {
+        pdf(here(plot_dir, paste0("spatial_registration_plot_", dataset, ".pdf")))
+        map(cor_top100, layer_stat_cor_plot, max = 1)
+        dev.off()
+    }
+
     #### Annotate Layers ####
     layer_anno <- map2(cor_top100, names(cor_top100), function(cor, name) {
         anno <- annotate_registered_clusters(
@@ -79,6 +81,7 @@ names(datasets) <- datasets
 
 ## Calculate correlations and annotations for each dataset
 pe_correlation_annotation <- map(datasets, correlate_and_annotate)
+# pe_correlation_annotation <- map(datasets, correlate_and_annotate, make_cor_plot = TRUE)
 save(pe_correlation_annotation, file = here(data_dir, "PEC_correlation_annotation.Rdata"))
 
 #### Save Output to XLSX sheet ####
