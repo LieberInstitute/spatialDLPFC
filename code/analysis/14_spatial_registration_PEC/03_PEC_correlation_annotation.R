@@ -117,7 +117,7 @@ correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
             anno <- annotate_registered_clusters(
                 cor_stats_layer = cor,
                 confidence_threshold = 0.25,
-                cutoff_merge_ratio = 0.25
+                cutoff_merge_ratio = 0.10
             )
             colnames(anno) <- gsub("layer", name, colnames(anno))
             return(anno)
@@ -151,7 +151,7 @@ key <- data.frame(
     description = c(
         "Annotations of spatial registration",
         "Correlation values with manual layer annotations",
-        "Correlation values with k9 domains",
+        "Correlation values with k09 domains",
         "Correlation values with k16 domains"
     )
 )
@@ -303,13 +303,18 @@ spatial_layer_anno
 cell_type_anno_all <- spatial_layer_anno |>
     right_join(cell_type_anno |> select(layers, val, cluster))
 
+## Function for setting the domains in the right order
 layer_combo_factor <- function(x) {
-    uniq <- unique(x)
-    factor(x, levels = uniq[order(gsub(".* ~ ", "", gsub("ayer", "", uniq)))])
+    spatial_levels <- c(paste0("Layer", seq_len(6)), "WM", bayes_anno$layer_combo)
+    factor(x, levels = spatial_levels)
 }
 
 cell_type_anno_all$layer_combo <-
     layer_combo_factor(cell_type_anno_all$layer_combo)
+
+## To have layer at the bottom, then k09, then k16 at the top
+cell_type_anno_all$Annotation <-
+    factor(cell_type_anno_all$Annotation, levels = c("k16", "k09", "layer"))
 
 anno_all_test <- cell_type_anno_all |>
     ggplot(aes(x = cluster, y = layer_combo)) +
@@ -324,6 +329,10 @@ layer_anno_long <-
     layer_anno_long |> left_join(spatial_layer_anno |> select(Annotation, layer_long, layer_combo))
 layer_anno_long$layer_combo <-
     layer_combo_factor(layer_anno_long$layer_combo)
+
+## To have layer at the bottom, then k09, then k16 at the top
+layer_anno_long$Annotation <-
+    factor(layer_anno_long$Annotation, levels = c("k16", "k09", "layer"))
 
 #### Dot plots ####
 layer_anno_plot <- layer_anno_long |>
@@ -392,7 +401,7 @@ label_anno_plot <- layer_anno_long |>
         vjust = 0.5,
         hjust = 1
     )) +
-    labs(y = "bayesSpace Domain & Annotation", x = "PsychEncode DLPFC Cell Types") +
+    labs(y = "BayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types") +
     scale_y_discrete(limits = rev)
 
 ggsave(
@@ -417,7 +426,7 @@ label_anno_plot <- layer_anno_long |>
         ),
         legend.position = "top"
     ) +
-    labs(y = "bayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types") +
+    labs(y = "BayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types") +
     scale_y_discrete(limits = rev)
 
 ggsave(
