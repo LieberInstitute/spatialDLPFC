@@ -23,7 +23,7 @@ data_dir <- here("processed-data", "rdata", "spe", "08_spatial_registration")
 
 ## Load Registration Results
 k_list <- c(7, 9, 16, 28)
-names(k_list) <- paste0("k", k_list) ## Use paper naming convention
+names(k_list) <- paste0("k", sprintf("%02d", k_list)) ## Use paper naming convention
 
 bayesSpace_registration_fn <- map(k_list, ~ here(dir_input, paste0("modeling_results_BayesSpace_k", sprintf("%02d", .x), ".Rdata")))
 bayesSpace_registration <- lapply(bayesSpace_registration_fn, function(x) get(load(x)))
@@ -86,12 +86,12 @@ layer_anno_strict <- map2(cor_top100, names(cor_top100), function(cor, name) {
     return(anno)
 })
 
-layer_anno <- c(layer_anno_easy[c("k7", "k9")], layer_anno_strict[c("k16", "k28")])
+layer_anno <- c(layer_anno_easy[c("k07", "k09")], layer_anno_strict[c("k16", "k28")])
 
 #### Annotate Cell Types by Layer ####
 anno_abby <- data.frame(cluster = paste0("Sp09D0", 1:9), layer_abby = c("Vas", "L1", "L2/3", "L5", "L3", "WM", "L6A", "L4", "WM"))
 
-layer_anno_strict$k9 |>
+layer_anno_strict$k09 |>
     arrange(cluster) |>
     left_join(anno_abby)
 #   cluster layer_confidence layer_label layer_abby
@@ -105,7 +105,7 @@ layer_anno_strict$k9 |>
 # 8 Sp09D08             good          L4         L4
 # 9 Sp09D09             good          WM         WM
 
-layer_anno$k9 |>
+layer_anno$k09 |>
     arrange(cluster) |>
     left_join(anno_abby)
 #   cluster layer_confidence layer_label layer_abby
@@ -232,7 +232,7 @@ cor_top100 <- lapply(cor_top100, function(x) {
 #### bayesSpace Spatial Registration heatmaps ####
 ## color set up
 ## match spatialLIBD color scale
-cor_kplus <- do.call("rbind", cor_top100[c("k9", "k16", "k28")])
+cor_kplus <- do.call("rbind", cor_top100[c("k09", "k16", "k28")])
 max(cor_kplus)
 # [1] 0.9452202
 theSeq <- seq(min(cor_kplus), max(cor_kplus), by = 0.01)
@@ -264,7 +264,7 @@ layer_anno_colors <- layer_anno_all |>
     select(bayesSpace, cluster, layer_combo, domain_color, layer_annotation)
 
 layer_color_bar <- columnAnnotation(
-    " " = colnames(cor_top100$k7),
+    " " = colnames(cor_top100$k07),
     col = list(" " = spatialLIBD::libd_layer_colors),
     show_legend = FALSE
 )
@@ -272,7 +272,7 @@ layer_color_bar <- columnAnnotation(
 ## Just k7 plot
 layer_anno_k7 <- layer_anno_colors |> filter(bayesSpace == "k07")
 
-cor_k7 <- cor_top100$k7[layer_anno_k7$cluster, ]
+cor_k7 <- cor_top100$k07[layer_anno_k7$cluster, ]
 rownames(cor_k7) <- layer_anno_k7$layer_combo
 
 anno_matrix_k7 <- anno_matrix[grepl("Sp07", rownames(anno_matrix)), colnames(cor_k7)]
@@ -305,7 +305,7 @@ Heatmap(cor_k7,
 )
 dev.off()
 
-## 'kplus' = k9, 16, 28 in main plot
+## 'kplus' = k09, 16, 28 in main plot
 layer_anno_colors <- layer_anno_colors |> filter(bayesSpace != "k07")
 
 ## order by bayesSpace annos
