@@ -1,5 +1,3 @@
-
-library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
 library("xlsx")
@@ -16,7 +14,7 @@ data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
 load("/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/03_build_sce/cell_type_colors.Rdata", verbose = TRUE)
 
 ## Load Registration Results
-load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.RDS"), verbose = TRUE)
+load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_hc_registration.Rdata"), verbose = TRUE)
 
 ## Select t-stats from the registration enrichment data
 registration_t_stats <- sn_hc_registration$enrichment[, grep("^t_stat", colnames(sn_hc_registration$enrichment))]
@@ -27,7 +25,7 @@ colnames(registration_t_stats) <- gsub("^t_stat_", "", colnames(registration_t_s
 #### Load Layer and k Data  ####
 layer_modeling_results <- fetch_data(type = "modeling_results")
 
-paths <- list(k9 = "parsed_modeling_results_k9.Rdata", k16 = "parsed_modeling_results_k16.Rdata")
+paths <- list(k09 = "modeling_results_BayesSpace_k09.Rdata", k16 = "modeling_results_BayesSpace_k16.Rdata")
 
 modeling_results <- lapply(paths, function(x) {
     get(load(here("processed-data", "rdata", "spe", "07_layer_differential_expression", x)))
@@ -44,77 +42,77 @@ cor_top100 <- map(modeling_results, ~ layer_stat_cor(registration_t_stats,
     top_n = 100
 ))
 
-save(cor_top100, file = here(data_dir, "sn_hc_cor_top100.RDS"))
+save(cor_top100, file = here(data_dir, "sn_hc_cor_top100.Rdata"))
 # load(here(data_dir, "sn_hc_cor_top100.RDS"))
 
 ## Plot all for portability
 pdf(here(plot_dir, "spatial_registration_plot_sn.pdf"))
-map(cor_top100, layer_stat_cor_plot)
+map(cor_top100, layer_stat_cor_plot, max = 1)
 dev.off()
 
 ## Plot separately for illustrator
 map2(cor_top100, names(cor_top100), function(data, name) {
-    pdf(here(plot_dir, paste0("spatial_registration_sn_plot_sn-", name, ".pdf")))
-    layer_stat_cor_plot(data)
+    pdf(here(plot_dir, paste0("spatial_registration_plot_sn-", name, ".pdf")))
+    layer_stat_cor_plot(data, max = 1)
     dev.off()
 })
 
 #### Annotate Layers ####
 ## Explore correlation distribution
-cor_long <- map(cor_top100, ~ .x |>
-    melt() |>
-    rename(cellType = Var1, domain = Var2, cor = value) |>
-    mutate(domain = as.character(domain)))
-
-cor_long <- do.call("rbind", cor_long) |>
-    rownames_to_column("Annotation") |>
-    mutate(Annotation = gsub("\\.[0-9]+", "", Annotation))
-
-cor_histo <- cor_long |>
-    filter(cor > 0) |>
-    ggplot(aes(cor, fill = cellType)) +
-    geom_histogram(binwidth = 0.05) +
-    geom_vline(xintercept = 0.25) +
-    scale_fill_manual(values = cell_type_colors) +
-    facet_grid(Annotation ~ cellType) +
-    # facet_grid(Annotation~cellType) +
-    facet_wrap(~Annotation, ncol = 1) +
-    theme_bw() +
-    theme(legend.position = "None")
-
-# ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
-ggsave(cor_histo, filename = here(plot_dir, "cor_histogram2.png"))
-
-cor_density <- cor_long |>
-    filter(cor > 0) |>
-    ggplot(aes(cor, color = cellType)) +
-    geom_density() +
-    geom_vline(xintercept = 0.25) +
-    scale_color_manual(values = cell_type_colors) +
-    facet_wrap(~Annotation, ncol = 1) +
-    theme_bw() +
-    theme(legend.position = "None")
-
-ggsave(cor_density, filename = here(plot_dir, "cor_density.png"))
-
-
-## whats the max cor for each cell type?
-max_cor <- cor_long |>
-    group_by(Annotation, cellType) |>
-    arrange(-cor) |>
-    slice(1)
-
-cor_max_histo <- max_cor |>
-    ggplot(aes(cor, fill = cellType)) +
-    geom_histogram(binwidth = 0.05) +
-    geom_vline(xintercept = 0.25) +
-    scale_fill_manual(values = cell_type_colors) +
-    facet_wrap(~Annotation, ncol = 1) +
-    theme_bw() +
-    theme(legend.position = "None")
-
-# ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
-ggsave(cor_max_histo, filename = here(plot_dir, "cor_max_histo.png"))
+# cor_long <- map(cor_top100, ~ .x |>
+#     melt() |>
+#     rename(cellType = Var1, domain = Var2, cor = value) |>
+#     mutate(domain = as.character(domain)))
+#
+# cor_long <- do.call("rbind", cor_long) |>
+#     rownames_to_column("Annotation") |>
+#     mutate(Annotation = gsub("\\.[0-9]+", "", Annotation))
+#
+# cor_histo <- cor_long |>
+#     filter(cor > 0) |>
+#     ggplot(aes(cor, fill = cellType)) +
+#     geom_histogram(binwidth = 0.05) +
+#     geom_vline(xintercept = 0.25) +
+#     scale_fill_manual(values = cell_type_colors) +
+#     facet_grid(Annotation ~ cellType) +
+#     # facet_grid(Annotation~cellType) +
+#     facet_wrap(~Annotation, ncol = 1) +
+#     theme_bw() +
+#     theme(legend.position = "None")
+#
+# # ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
+# ggsave(cor_histo, filename = here(plot_dir, "cor_histogram2.png"))
+#
+# cor_density <- cor_long |>
+#     filter(cor > 0) |>
+#     ggplot(aes(cor, color = cellType)) +
+#     geom_density() +
+#     geom_vline(xintercept = 0.25) +
+#     scale_color_manual(values = cell_type_colors) +
+#     facet_wrap(~Annotation, ncol = 1) +
+#     theme_bw() +
+#     theme(legend.position = "None")
+#
+# ggsave(cor_density, filename = here(plot_dir, "cor_density.png"))
+#
+#
+# ## whats the max cor for each cell type?
+# max_cor <- cor_long |>
+#     group_by(Annotation, cellType) |>
+#     arrange(-cor) |>
+#     slice(1)
+#
+# cor_max_histo <- max_cor |>
+#     ggplot(aes(cor, fill = cellType)) +
+#     geom_histogram(binwidth = 0.05) +
+#     geom_vline(xintercept = 0.25) +
+#     scale_fill_manual(values = cell_type_colors) +
+#     facet_wrap(~Annotation, ncol = 1) +
+#     theme_bw() +
+#     theme(legend.position = "None")
+#
+# # ggsave(cor_histo, filename = here(plot_dir, "cor_histogram.png"), width = 16)
+# ggsave(cor_max_histo, filename = here(plot_dir, "cor_max_histo.png"))
 
 
 ## Annotate
@@ -139,7 +137,7 @@ layer_anno_strict <- map2(cor_top100, names(cor_top100), function(cor, name) {
 })
 
 ## use easy params for layer, and strict for specific domains
-layer_anno <- c(layer_anno_easy["layer"], layer_anno_strict[c("k9", "k16")])
+layer_anno <- c(layer_anno_easy["layer"], layer_anno_strict[c("k09", "k16")])
 
 #### Annotate Cell Types by Layer ####
 layer_anno$layer |> arrange(cluster)
@@ -187,7 +185,7 @@ layer_anno$layer |>
 # 7        L5/6 1
 # 8          L6 2
 
-## Add additonal annotaitons
+## Add additional annotations
 source(here("code", "analysis", "12_spatial_registration_sn", "utils.R"))
 
 ## layer_annotation is the reordered layer label - removes detail from the ordering process but helps group
@@ -222,14 +220,18 @@ sce$cellType_layer <- factor(cellType_layer_annotations$cellType_layer[match(sce
 sce$layer_annotation <- factor(cellType_layer_annotations$layer_annotation[match(sce$cellType_hc, cellType_layer_annotations$cluster)])
 
 table(sce$cellType_layer)
-# Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4
-# 3979         2157         1601        10894         1940           82        10459         3043         2388
-# Excit_L5   Excit_L5/6     Excit_L6        Inhib
-# 2505         2487         1792        11067
+#    Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3
+#     3979         2157         1601        10894         1940           82
+# Excit_L3 Excit_L3/4/5     Excit_L4     Excit_L5   Excit_L5/6     Excit_L6
+#    10459         3043         2388         2505         2487         1792
+#    Inhib
+#    11067
 
 table(sce$layer_annotation)
-# L1    L1*     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4  L4/5*     L5   L5/6     L6     WM  WM/L1
-# 6136     66   1192   1932   5448  10459   1310   1567   3043   3655    420   2505   2487   1792  10894   3541
+ #    L1    L1*  L1/WM     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4
+ #  6136     66   3541   1192   1932   5448  10459   1310   1567   3043   3655
+ # L4/5*     L5   L5/6     L6     WM
+ #   420   2505   2487   1792  10894
 
 ## Drop nuc are NA
 sum(is.na(sce$cellType_layer))
@@ -238,8 +240,6 @@ sum(is.na(sce$cellType_layer))
 # save(sce, file = here(data_dir, "sce_DLPFC.Rdata"))
 
 #### Save Output to XLSX sheet ####
-data_dir <- here("processed-data", "rdata", "spe", "12_spatial_registration_sn")
-
 key <- data.frame(
     data = c("annotation", paste0("cor_", names(modeling_results))),
     description = c(
@@ -267,7 +267,7 @@ walk2(
 ## Load bayesSpace annotations
 bayes_layers <- get(load(here("processed-data", "rdata", "spe", "08_spatial_registration", "bayesSpace_layer_annotations.Rdata"))) |>
     select(Annotation = bayesSpace, layer_long = cluster, layer_combo) |>
-    filter(Annotation %in% c("k9", "k16"))
+    filter(Annotation %in% c("k09", "k16"))
 
 layer_anno_long <- cellType_layer_annotations |>
     select(cluster, ends_with("label")) |>
@@ -282,11 +282,11 @@ layer_anno_long <- cellType_layer_annotations |>
     mutate(
         layer_short = ifelse(Annotation == "layer",
             ifelse(grepl("^[0-9]", layers), paste0("L", layers), layers),
-            paste0("D", str_pad(layers, 2, pad = "0"))
+            gsub("Sp[0-9]+", "", layers)
         ),
         layer_long = ifelse(Annotation == "layer",
             gsub("L", "Layer", layer_short),
-            paste0(gsub("k", "Sp", Annotation), "D", str_pad(layers, nchar(Annotation) - 1, pad = "0"))
+            layers
         )
     ) |>
     full_join(bayes_layers) |> ## Add bayesSpace annotations
@@ -332,11 +332,9 @@ ggsave(label_anno_plot_specific, filename = here(plot_dir, "spatial_annotations_
 
 #### Spatial Registration Heatmap ####
 ## Build cor all
-colnames(cor_top100$k9) <- paste0("Sp9D", colnames(cor_top100$k9))
-colnames(cor_top100$k16) <- paste0("Sp16D", str_pad(colnames(cor_top100$k16), 2, pad = "0"))
-
 cor_top100$k9 <- cor_top100$k9[rownames(cor_top100$layer), ]
 cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer), ]
+cor_top100$layer <- cor_top100$layer[, c(paste0("Layer", seq_len(6)), "WM")]
 
 cor_all <- t(do.call("cbind", cor_top100))
 corner(cor_all)
@@ -379,14 +377,16 @@ source(here("code", "analysis", "08_spatial_registration", "libd_intermediate_la
 libd_intermediate_layer_colors <- c(spatialLIBD::libd_layer_colors, libd_intermediate_layer_colors)
 names(libd_intermediate_layer_colors) <- gsub("ayer", "", names(libd_intermediate_layer_colors))
 libd_intermediate_layer_colors
-# L1            L2            L3            L4            L5            L6            WM            NA
-# "#F0027F"     "#377EB8"     "#4DAF4A"     "#984EA3"     "#FFD700"     "#FF7F00"     "#1A1A1A" "transparent"
-# WM2          L1/2          L2/3          L3/4          L4/5          L5/6         L6/WM
-# "#666666"     "#BF3889"     "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00"
+#        L1            L2            L3            L4            L5
+# "#F0027F"     "#377EB8"     "#4DAF4A"     "#984EA3"     "#FFD700"
+#        L6            WM            NA           WM2          L1/2
+# "#FF7F00"     "#1A1A1A" "transparent"     "#666666"     "#BF3889"
+#      L2/3          L3/4          L4/5          L5/6         L6/WM
+# "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00"
 
 ## Add split for manual/k9/k16
 # annotation_split <- gsub("WM|L","Manual",ss(gsub("ayer","-",colnames(cor_all)),"D"))
-annotation_split <- c(rep("layer", 7), rep("k9", 9), rep("k16", 16))
+annotation_split <- c(rep("layer", 7), rep("k09", 9), rep("k16", 16))
 
 ## heatmap with annotations
 pdf(here(plot_dir, "spatial_registration_sn_heatmap.pdf"))
@@ -437,7 +437,7 @@ layer_colors <- tibble(
 )
 
 layer_anno_colors <- bayes_layers |>
-    filter(Annotation %in% c("k9", "k16")) |>
+    filter(Annotation %in% c("k09", "k16")) |>
     mutate(domain_color = as.integer(gsub("Sp[0-9]+D", "", layer_long))) |>
     separate(layer_combo, into = c(NA, "layer_color"), " ~ ", remove = FALSE) |>
     select(Annotation, layer_combo, layer_long, domain_color, layer_color) |>
