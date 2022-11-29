@@ -7,10 +7,12 @@ library("here")
 library("sessioninfo")
 
 ## Input dir
-dir_input <- here::here("processed-data",
+dir_input <- here::here(
+    "processed-data",
     "rdata",
     "spe",
-    "07_layer_differential_expression")
+    "07_layer_differential_expression"
+)
 
 ## Set up plotting
 plot_dir <- here("plots", "08_spatial_registration")
@@ -35,8 +37,9 @@ bayesSpace_registration_fn <-
         )
     ))
 bayesSpace_registration <-
-    lapply(bayesSpace_registration_fn, function(x)
-        get(load(x)))
+    lapply(bayesSpace_registration_fn, function(x) {
+        get(load(x))
+    })
 
 ## Select t-stats from the registration enrichment data
 
@@ -67,7 +70,8 @@ cor_top100 <- map(
 )
 
 save(cor_top100,
-    file = here(data_dir, "bayesSpacce_layer_cor_top100.Rdata"))
+    file = here(data_dir, "bayesSpacce_layer_cor_top100.Rdata")
+)
 
 ## Plot all for portability
 pdf(here(plot_dir, "cor_top100_spatial_registration.pdf"))
@@ -186,7 +190,8 @@ write.csv(
     row.names = FALSE
 )
 save(layer_anno_all,
-    file = here(data_dir, "bayesSpace_layer_annotations.Rdata")) ## save to preserve factors
+    file = here(data_dir, "bayesSpace_layer_annotations.Rdata")
+) ## save to preserve factors
 # layer_anno_all <- read_csv(here(data_dir, "cellType_layer_annotations.csv"))
 
 
@@ -242,7 +247,8 @@ layer_anno_long <- layer_anno_all |>
     select(bayesSpace, layer_combo, cluster, layer_label) |>
     pivot_longer(!c(bayesSpace, layer_combo, cluster),
         names_to = "Annotation",
-        values_to = "label") |>
+        values_to = "label"
+    ) |>
     mutate(
         confidence = !grepl("\\*", label),
         layers = str_split(gsub("\\*", "", label), "/"),
@@ -282,7 +288,8 @@ bayes_layer_anno_plot <- layer_anno_long |>
     scale_y_discrete(limits = rev) ## WM on bottom
 
 ggsave(bayes_layer_anno_plot,
-    filename = here(plot_dir, "bayesSpace_layer_anno.png"))
+    filename = here(plot_dir, "bayesSpace_layer_anno.png")
+)
 
 ## To switch the order in order to have L1 to L6, then WM on the x-axis
 layer_order <- c(paste0("Layer", 1:6), "WM")
@@ -316,8 +323,10 @@ source(
     max.deparse.length = 500
 )
 libd_intermediate_layer_colors <-
-    c(spatialLIBD::libd_layer_colors,
-        libd_intermediate_layer_colors)
+    c(
+        spatialLIBD::libd_layer_colors,
+        libd_intermediate_layer_colors
+    )
 names(libd_intermediate_layer_colors) <-
     gsub("ayer", "", names(libd_intermediate_layer_colors))
 libd_intermediate_layer_colors
@@ -330,18 +339,22 @@ libd_intermediate_layer_colors
 anno_matrix <- layer_anno_long |>
     mutate(fill = ifelse(confidence, "X", "*")) |>
     select(cluster, layer_long, fill) |>
-    pivot_wider(names_from = "layer_long",
+    pivot_wider(
+        names_from = "layer_long",
         values_from = "fill",
-        values_fill = "") |>
+        values_fill = ""
+    ) |>
     column_to_rownames("cluster")
 
 layer_anno_colors <- layer_anno_all |>
     mutate(domain_color = as.integer(gsub("Sp[0-9]+D", "", cluster))) |>
-    select(bayesSpace,
+    select(
+        bayesSpace,
         cluster,
         layer_combo,
         domain_color,
-        layer_annotation)
+        layer_annotation
+    )
 
 layer_color_bar <- columnAnnotation(
     " " = colnames(cor_top100$k07),
@@ -355,33 +368,37 @@ registration_one_k <- function(k) {
     layer_anno_subset <-
         layer_anno_colors |> filter(bayesSpace == k_long)
 
-    cor_subset <- cor_top100[[k_long]][layer_anno_subset$cluster,]
+    cor_subset <- cor_top100[[k_long]][layer_anno_subset$cluster, ]
     rownames(cor_subset) <- layer_anno_subset$layer_combo
 
     anno_matrix_subset <-
         anno_matrix[grepl(paste0("Sp", sprintf("%02d", k)), rownames(anno_matrix)), colnames(cor_subset)]
     anno_matrix_subset <-
-        anno_matrix_subset[layer_anno_subset$cluster,]
+        anno_matrix_subset[layer_anno_subset$cluster, ]
     rownames(anno_matrix_subset) <- layer_anno_subset$layer_combo
 
     subset_color_bar <- rowAnnotation(
         df = layer_anno_subset |>
             select(domain_color, layer_anno = layer_annotation),
-        col = list(domain_color = k_colors,
-            layer_anno = libd_intermediate_layer_colors),
+        col = list(
+            domain_color = k_colors,
+            layer_anno = libd_intermediate_layer_colors
+        ),
         show_legend = FALSE
     )
 
-    pdf(here(
-        plot_dir,
-        paste0(
-            "bayesSpace_",
-            k_long,
-            "_spatial_registration_heatmap_color.pdf"
-        )
-    ),
+    pdf(
+        here(
+            plot_dir,
+            paste0(
+                "bayesSpace_",
+                k_long,
+                "_spatial_registration_heatmap_color.pdf"
+            )
+        ),
         height = 4,
-        width = 5.5)
+        width = 5.5
+    )
     p <- Heatmap(
         cor_subset,
         name = "Cor",
@@ -407,21 +424,23 @@ layer_anno_colors <-
     layer_anno_colors |> filter(bayesSpace %in% c("k09", "k16", "k28"))
 
 ## order by bayesSpace annos
-cor_kplus <- cor_kplus[layer_anno_colors$cluster,]
+cor_kplus <- cor_kplus[layer_anno_colors$cluster, ]
 rownames(cor_kplus) <- layer_anno_colors$layer_combo
 
 anno_matrix_kplus <-
     anno_matrix[!grepl("Sp02|Sp07", rownames(anno_matrix)), colnames(cor_kplus)]
 
-anno_matrix_kplus <- anno_matrix_kplus[layer_anno_colors$cluster,]
+anno_matrix_kplus <- anno_matrix_kplus[layer_anno_colors$cluster, ]
 rownames(anno_matrix_kplus) <- layer_anno_colors$layer_combo
 
 
 kplus_color_bar <- rowAnnotation(
     df = layer_anno_colors |>
         select(domain_color, layer_anno = layer_annotation),
-    col = list(domain_color = k_colors,
-        layer_anno = libd_intermediate_layer_colors),
+    col = list(
+        domain_color = k_colors,
+        layer_anno = libd_intermediate_layer_colors
+    ),
     show_legend = FALSE
 )
 
