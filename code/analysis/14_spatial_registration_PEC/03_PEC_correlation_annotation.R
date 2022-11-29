@@ -305,7 +305,8 @@ cell_type_anno_all <- spatial_layer_anno |>
 
 ## Function for setting the domains in the right order
 layer_combo_factor <- function(x) {
-    spatial_levels <- c(paste0("Layer", seq_len(6)), "WM", bayes_anno$layer_combo)
+    spatial_levels <-
+        c(paste0("Layer", seq_len(6)), "WM", bayes_anno$layer_combo)
     factor(x, levels = spatial_levels)
 }
 
@@ -410,11 +411,24 @@ ggsave(
     height = 10
 )
 
-label_anno_plot <- layer_anno_long |>
+## Filter since not all spatial domains have high confident results.
+layer_high_conf <- layer_anno_long |>
     filter(anno_confidence == "high") |>
+    mutate(layer_combo = droplevels(layer_combo))
+
+## For the annotation, I have to make sure that the levels are exactly the same
+## otherwise geom_tile() later on changes the order
+cells_high_conf <- cell_type_anno_all |>
+    filter(layer_combo %in% levels(layer_high_conf$layer_combo)) |>
+    mutate(layer_combo = factor(
+        as.character(layer_combo),
+        levels = levels(layer_high_conf$layer_combo)
+    ))
+
+label_anno_plot <- layer_high_conf |>
     ggplot(aes(x = cluster, y = layer_combo)) +
     geom_point(aes(color = Dataset), position = position_dodge(width = .8)) +
-    geom_tile(data = cell_type_anno_all, fill = "blue", alpha = 0.2) +
+    geom_tile(data = cells_high_conf, fill = "blue", alpha = 0.2) +
     # facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
     facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
     theme_bw() +
@@ -436,30 +450,30 @@ ggsave(
     width = 8
 )
 
-#### Heatmap ####
-cor_top100 <- transpose(pe_correlation_annotation)$cor_top100
-corner(cor_top100_2$CMC)
-
-## DEvBrain, IsoHub, and UrbanDLPFC missing
-# [1] "Sst Chodl"
-cor_top100_2 <-
-    map2(cor_top100, names(cor_top100), function(cor_data, dataset) {
-        cor_data <- map(cor_data, function(cd) {
-            if (!setequal(rownames(cd), cell_types)) {
-                return(setdiff(cell_types, rownames(cd)))
-            }
-            cd <- cd[cell_types, ]
-            rownames(cd) <- paste0(dataset, "_", rownames(cd))
-            return(cd)
-        })
-        return(do.call("cbind", cor_data))
-    })
-
-map(cor_top100$DevBrain$k09, ~ .x[cell_types, ])
-
-map(cor_top100$DevBrain, ~ setdiff(rownames(.x), cell_types))
-map(cor_top100$DevBrain, ~ setdiff(cell_types, rownames(.x)))
-map(cor_top100$DevBrain, ~ union(cell_types, rownames(.x)))
+# #### Heatmap ####
+# cor_top100 <- transpose(pe_correlation_annotation)$cor_top100
+# corner(cor_top100_2$CMC)
+#
+# ## DEvBrain, IsoHub, and UrbanDLPFC missing
+# # [1] "Sst Chodl"
+# cor_top100_2 <-
+#     map2(cor_top100, names(cor_top100), function(cor_data, dataset) {
+#         cor_data <- map(cor_data, function(cd) {
+#             if (!setequal(rownames(cd), cell_types)) {
+#                 return(setdiff(cell_types, rownames(cd)))
+#             }
+#             cd <- cd[cell_types, ]
+#             rownames(cd) <- paste0(dataset, "_", rownames(cd))
+#             return(cd)
+#         })
+#         return(do.call("cbind", cor_data))
+#     })
+#
+# map(cor_top100$DevBrain$k09, ~ .x[cell_types, ])
+#
+# map(cor_top100$DevBrain, ~ setdiff(rownames(.x), cell_types))
+# map(cor_top100$DevBrain, ~ setdiff(cell_types, rownames(.x)))
+# map(cor_top100$DevBrain, ~ union(cell_types, rownames(.x)))
 
 # sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
 
