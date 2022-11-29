@@ -55,7 +55,7 @@ correlate_and_annotate <- function(dataset) {
 
     # ## Plot
     # pdf(here(plot_dir, paste0("spatial_registration_plot_",dataset,".pdf")))
-    # map(cor_top100, layer_stat_cor_plot)
+    # map(cor_top100, layer_stat_cor_plot, max = 1)
     # dev.off()
     #
     #### Annotate Layers ####
@@ -79,7 +79,7 @@ names(datasets) <- datasets
 
 ## Calculate correlations and annotations for each dataset
 pe_correlation_annotation <- map(datasets, correlate_and_annotate)
-save(pe_correlation_annotation, file = here(data_dir, "pe_correlation_annotation.Rdata"))
+save(pe_correlation_annotation, file = here(data_dir, "PEC_correlation_annotation.Rdata"))
 
 #### Save Output to XLSX sheet ####
 key <- data.frame(
@@ -93,7 +93,7 @@ key <- data.frame(
 )
 
 ## Clear file and write key
-annotation_xlsx <- here(data_dir, "PE_spatial_annotations.xlsx")
+annotation_xlsx <- here(data_dir, "PEC_spatial_annotations.xlsx")
 write.xlsx(key, file = annotation_xlsx, sheetName = "Key", append = FALSE, row.names = FALSE)
 
 ## write annotations
