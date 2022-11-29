@@ -20,6 +20,10 @@ plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
 )
 
+processed_dir <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF"
+)
+
 raw_results_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
     paste0("results_raw_", cell_group, ".csv")
@@ -778,6 +782,24 @@ dev.off()
 #-------------------------------------------------------------------------------
 #   Counts: "all" and "across"
 #-------------------------------------------------------------------------------
+
+#   For the "all_spots" plot, also write a CSV (to be used as a suppl. table)
+#   of metrics
+metrics_df <- full_df %>%
+    group_by(deconvo_tool, sample_id, cell_type) %>%
+    summarize(
+        corr = cor(observed, actual),
+        rmse = mean((observed - actual)**2)**0.5
+    ) %>%
+    ungroup()
+
+write.csv(
+    metrics_df,
+    file.path(
+        processed_dir, paste0('spatial_cell_type_metrics_', cell_group, '.csv')
+    ),
+    row.names = FALSE, quote = FALSE
+)
 
 #   Plot cell-type counts for all spots
 all_spots(full_df, "counts_all_spots_scatter.pdf")
