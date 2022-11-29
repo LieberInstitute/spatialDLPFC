@@ -7,7 +7,7 @@ library("spatialLIBD")
 library("cowplot")
 library("ggrepel")
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -563,7 +563,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
             position = position_stack(vjust = 0.5)
         ) +
         theme_bw(base_size = 16) +
-        theme(axis.text.x = element_text(angle = 90))
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
     pdf(file.path(plot_dir, filename), width = 10, height = 5)
     print(p)
@@ -1075,7 +1075,7 @@ for (cell_type in cell_types) {
         #   Facet purely for aesthetic purposes: there is only one cell type
         facet_wrap(~cell_type) +
         theme_bw(base_size = 20) +
-        theme(axis.text.x = element_text(angle = 90)) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
         coord_cartesian(ylim = c(0, y_max)) +
         scale_y_continuous(expand = c(0, 0, 0, 0.05))
 }
