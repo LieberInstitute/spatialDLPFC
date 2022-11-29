@@ -10,7 +10,7 @@ deconvo_res_path <- paste0(
 )
 
 
-tangram_res <- read.table(deconvo_res_path,sep = ",", header  = TRUE) |>
+tangram_res <- read.table(deconvo_res_path, sep = ",", header = TRUE) |>
     filter(deconvo_tool == "tangram") |>
     mutate(new_key = paste(barcode, sample_id, sep = "_"))
 
@@ -53,35 +53,48 @@ load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-dat
 
 n_sample <- nrow(spe)
 
-spe_col <- colData(spe) |> data.frame(
-    check.names = FALSE
-) |>
-    mutate(sp9 = factor(paste("Sp9D", bayesSpace_harmony_9, sep="")),
-           sp16 = factor(paste("Sp16D", bayesSpace_harmony_16, sep=""))
+spe_col <- colData(spe) |>
+    data.frame(
+        check.names = FALSE
     ) |>
-    dplyr::select(key:array_col,
-                  sum_umi:col,
-                  sp9, sp16) |>
+    mutate(
+        sp9 = factor(paste("Sp9D", bayesSpace_harmony_9, sep = "")),
+        sp16 = factor(paste("Sp16D", bayesSpace_harmony_16, sep = ""))
+    ) |>
+    dplyr::select(
+        key:array_col,
+        sum_umi:col,
+        sp9, sp16
+    ) |>
     rownames_to_column("bc_tmp") |>
-    unglue_unnest(col = key,
-                  pattern = "{key_bc}_{key_sampleID}_{key_sec=ant|mid|post}{key_tail}",
-                  remove = FALSE) |>
-    unglue_unnest(col=bc_tmp,
-                  pattern = "{bc_trim}{bc_tail=\\.\\d*|$}",
-                  remove = FALSE)
+    unglue_unnest(
+        col = key,
+        pattern = "{key_bc}_{key_sampleID}_{key_sec=ant|mid|post}{key_tail}",
+        remove = FALSE
+    ) |>
+    unglue_unnest(
+        col = bc_tmp,
+        pattern = "{bc_trim}{bc_tail=\\.\\d*|$}",
+        remove = FALSE
+    )
 
 tmp <- unglue::unglue_data(rownames(colData(spe)),
-                           pattern = "{bc_trim}{bc_tail=\\.\\d*|$}") |>
-    filter(bc_tail!="")
+    pattern = "{bc_trim}{bc_tail=\\.\\d*|$}"
+) |>
+    filter(bc_tail != "")
 
 fnl_col <- spe_col |>
     # Confirming the information are matched for each spots
-    filter(bc_trim == key_bc,
-           paste(key_sampleID, key_sec, sep = "_") == sample_id) |>
+    filter(
+        bc_trim == key_bc,
+        paste(key_sampleID, key_sec, sep = "_") == sample_id
+    ) |>
     dplyr::rename(barcode = bc_trim) |>
-    dplyr::select(-starts_with("key_"),
-                  -starts_with("bc_")) |>
-    mutate(new_key = paste(barcode, sample_id, sep="_"))
+    dplyr::select(
+        -starts_with("key_"),
+        -starts_with("bc_")
+    ) |>
+    mutate(new_key = paste(barcode, sample_id, sep = "_"))
 
 # Dimensionality staill matches after data wrangling
 nrow(fnl_col) == ncol(spe)
@@ -98,8 +111,5 @@ fnl_dat <- tangram_res |>
 nrow(fnl_dat) == ncol(spe)
 
 saveRDS(fnl_dat,
-        file = "~/cell_comp_full_dat.rds")
-
-
-
-
+    file = "~/cell_comp_full_dat.rds"
+)
