@@ -1,5 +1,3 @@
-
-library("SpatialExperiment")
 library("spatialLIBD")
 library("tidyverse")
 library("xlsx")
@@ -15,7 +13,7 @@ data_dir <- here("processed-data", "rdata", "spe", "14_spatial_registration_PEC"
 #### Load Layer and k Data  ####
 layer_modeling_results <- fetch_data(type = "modeling_results")
 
-paths <- list(k9 = "parsed_modeling_results_k9.Rdata", k16 = "parsed_modeling_results_k16.Rdata")
+paths <- list(k09 = "modeling_results_BayesSpace_k09.Rdata", k16 = "modeling_results_BayesSpace_k16.Rdata")
 
 modeling_results <- lapply(paths, function(x) {
     get(load(here("processed-data", "rdata", "spe", "07_layer_differential_expression", x)))
@@ -75,10 +73,11 @@ correlate_and_annotate <- function(dataset) {
     return(list(cor_top100 = cor_top100, layer_anno = layer_anno))
 }
 
-datasets <- c("CMC", "DevBrain-snRNAseq", "IsoHuB", "SZBDMulti-Seq", "UCLA-ASD", "Urban-DLPFC")
+# datasets <- c("CMC", "DevBrain-snRNAseq", "IsoHuB", "SZBDMulti", "UCLA-ASD", "Urban-DLPFC")
+datasets <- c("CMC", "DevBrain-snRNAseq", "IsoHuB", "UCLA-ASD", "Urban-DLPFC")
 names(datasets) <- datasets
 
-## Caluclate correlatiosn and annotaions for each dataset
+## Calculate correlations and annotations for each dataset
 pe_correlation_annotation <- map(datasets, correlate_and_annotate)
 save(pe_correlation_annotation, file = here(data_dir, "pe_correlation_annotation.Rdata"))
 
@@ -115,7 +114,7 @@ walk2(pe_correlation_annotation, names(pe_correlation_annotation), function(data
 
 #### Compare annotations for each cell type ####
 ## prep data
-source(here("code", "analysis", "12_spatial_registration_sn", "utils.R"))
+source(here("code", "analysis", "12_spatial_registration_sn", "utils.R"), echo = TRUE, max.deparse.length = 500)
 
 layer_anno <- transpose(pe_correlation_annotation)$layer_anno
 
@@ -139,7 +138,7 @@ layer_anno_long <- layer_anno_all |>
     mutate(
         layer_long = ifelse(Annotation == "layer",
             ifelse(grepl("^[0-9]", layers), paste0("Layer", layers), gsub("L", "Layer", layers)),
-            paste0(gsub("k", "Sp", Annotation), "D", layers)
+            layers
         ),
         anno_confidence = ifelse(confidence, "high", "low")
     )
@@ -173,9 +172,9 @@ cell_type_anno <- tibble(cluster = cell_types) |>
 
 cell_type_anno |> count(layers)
 
-## Match with bayesSpace spatial annotations for k9 k16 exploration
+## Match with bayesSpace spatial annotations for k09 k16 exploration
 bayes_anno <- read.csv(file = here("processed-data", "rdata", "spe", "08_spatial_registration", "bayesSpace_layer_annotations.csv")) |>
-    filter(bayesSpace != "k28") |>
+    filter(bayesSpace %in% c("k09", "k16")) |>
     select(Annotation = bayesSpace, layer_long = cluster, layer_annotation, layer_combo)
 
 spatial_layer_anno <- data.frame(
@@ -193,15 +192,24 @@ spatial_layer_anno
 cell_type_anno_all <- spatial_layer_anno |>
     right_join(cell_type_anno |> select(layers, val, cluster))
 
+layer_combo_factor <- function(x) {
+    uniq <- unique(x)
+    factor(x, levels = uniq[order(gsub(".* ~ ", "", gsub("ayer", "", uniq)))])
+}
+
+cell_type_anno_all$layer_combo <- layer_combo_factor(cell_type_anno_all$layer_combo)
+
 anno_all_test <- cell_type_anno_all |>
     ggplot(aes(x = cluster, y = layer_combo)) +
     geom_tile(fill = "blue", alpha = 0.2) +
-    facet_grid(Annotation ~ ., scales = "free_y", space = "free")
+    facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
+    scale_y_discrete(limits=rev)
 
 ggsave(anno_all_test, filename = here(plot_dir, "anno_all_test.png"))
 
 ## Add layer_combo to layer_anno_long to add bayes space details
 layer_anno_long <- layer_anno_long |> left_join(spatial_layer_anno |> select(Annotation, layer_long, layer_combo))
+layer_anno_long$layer_combo <- layer_combo_factor(layer_anno_long$layer_combo)
 
 #### Dot plots ####
 layer_anno_plot <- layer_anno_long |>
@@ -210,18 +218,20 @@ layer_anno_plot <- layer_anno_long |>
     geom_point(aes(color = Dataset, shape = anno_confidence), position = position_dodge(width = .8)) +
     geom_tile(data = cell_type_anno_all |> filter(Annotation == "layer"), fill = "blue", alpha = 0.2) +
     theme_bw() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    scale_y_discrete(limits=rev)
 
 ggsave(layer_anno_plot, filename = here(plot_dir, "PE_datasets_layer_annotation.png"), width = 10, height = 5)
 
 ## Filter to high confidence
 layer_anno_plot_filter <- layer_anno_long |>
-    filter(Annotation == "layer", confidence == "high") |>
+    filter(Annotation == "layer", confidence) |>
     ggplot(aes(x = cluster, y = layer_combo)) +
     geom_point(aes(color = Dataset), position = position_dodge(width = .8)) +
     geom_tile(data = cell_type_anno_all |> filter(Annotation == "layer"), fill = "blue", alpha = 0.2) +
     theme_bw() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+    scale_y_discrete(limits=rev)
 
 ggsave(layer_anno_plot_filter, filename = here(plot_dir, "PE_datasets_layer_annotation_confident.png"), width = 10, height = 5)
 
@@ -234,7 +244,8 @@ label_anno_plot <- layer_anno_long |>
     facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    labs(y = "bayesSpace Domain & Annotation", x = "PsychEncode DLPFC Cell Types")
+    labs(y = "bayesSpace Domain & Annotation", x = "PsychEncode DLPFC Cell Types") +
+    scale_y_discrete(limits=rev)
 
 ggsave(label_anno_plot, filename = here(plot_dir, "PE_datasets_all_annotations.png"), height = 10)
 
@@ -250,7 +261,8 @@ label_anno_plot <- layer_anno_long |>
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
         legend.position = "top"
     ) +
-    labs(y = "bayesSpace Domain & Annotation", x = "PsychEncode DLPFC Cell Types")
+    labs(y = "bayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types") +
+    scale_y_discrete(limits=rev)
 
 ggsave(label_anno_plot, filename = here(plot_dir, "PE_datasets_all_annotations_confident.png"), height = 7.25, width = 8)
 
@@ -261,8 +273,6 @@ corner(cor_top100_2$CMC)
 ## DEvBrain, IsoHub, and UrbanDLPFC missing
 # [1] "Sst Chodl"
 cor_top100_2 <- map2(cor_top100, names(cor_top100), function(cor_data, dataset) {
-    colnames(cor_data$k9) <- paste0("Sp9D", colnames(cor_data$k9))
-    colnames(cor_data$k16) <- paste0("Sp16D", colnames(cor_data$k16))
     cor_data <- map(cor_data, function(cd) {
         if (!setequal(rownames(cd), cell_types)) {
             return(setdiff(cell_types, rownames(cd)))
@@ -274,7 +284,7 @@ cor_top100_2 <- map2(cor_top100, names(cor_top100), function(cor_data, dataset) 
     return(do.call("cbind", cor_data))
 })
 
-map(cor_top100$DevBrain$k9, ~ .x[cell_types, ])
+map(cor_top100$DevBrain$k09, ~ .x[cell_types, ])
 
 map(cor_top100$DevBrain, ~ setdiff(rownames(.x), cell_types))
 map(cor_top100$DevBrain, ~ setdiff(cell_types, rownames(.x)))
