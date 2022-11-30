@@ -10,6 +10,9 @@
 library("here")
 library("purrr")
 library("dplyr")
+## Due to this recent change
+## https://github.com/LieberInstitute/spatialLIBD/commit/cefc7db61a16e80b16c14f0df30b40701cfc788c
+stopifnot(packageVersion("spatialLIBD") >= "1.10.1")
 library("spatialLIBD")
 library("sessioninfo")
 
@@ -115,9 +118,9 @@ names(groups_sczd) <-
         "PE-down"
     )
 
-groups_short <- c(groups_asd, groups_sczd)
 groups_birnbaum <-
     names(geneList)[grep("Birnbaum", names(geneList))]
+names(groups_birnbaum) <- gsub("Gene_Birnbaum_", "", groups_birnbaum)
 
 ## Check the remaining ones
 groups_extra <-
@@ -131,10 +134,10 @@ groups_tab <- data.frame(
     ID_short = c(
         names(groups_asd),
         names(groups_sczd),
-        groups_birnbaum,
+        names(groups_birnbaum),
         groups_extra
     ),
-    superset = rep(c("ASD", "SCZD", "Birnbaum", "Extra"), lengths(groups_all))
+    Category = rep(c("ASD", "SCZD", "Birnbaum", "Extra"), lengths(groups_all))
 )
 
 ## Takes 2-3 min to run
@@ -148,16 +151,21 @@ enriched <-
         )
     )
 
-## Merge with spatial registration tables and separate into supersets
+## Merge with spatial registration tables and separate into Categorys
 enriched <- map(enriched, function(x) {
     left_join(x, groups_tab) |>
         left_join(bayes_anno) |>
         mutate(
-            original_test = test,
             test = factor(layer_combo, levels = rev(bayes_anno$layer_combo[bayes_anno$layer_combo %in% layer_combo]))
-        )
+        ) |>
+        select(-c(layer_combo, Annotation, fdr_cut, model_type))
 })
+
+## Save for later
 save(enriched, file = here(dir_rdata, "enriched_HumanPilot.Rdata"))
+
+## Some sets are much larger than others
+map(enriched, ~ filter(.x, test == unique(test)[1])[, c("SetSize", "ID", "ID_short", "Category")])
 
 ## Find the position for the text title on the plots
 y_text <-
@@ -166,7 +174,7 @@ y_text <-
 ## Plot ASD
 pdf(here(dir_plots, "HumanPilot_sets_ASD.pdf"), height = 8)
 walk2(enriched, y_text, function(x, ypos) {
-    xx <- filter(x, superset == "ASD")
+    xx <- filter(x, Category == "ASD")
     m <- match(unique(xx$ID), xx$ID)
     gene_set_enrichment_plot(xx, xlabs = xx$ID_short[m])
     abline(v = 4, lwd = 3)
@@ -184,7 +192,7 @@ dev.off()
 ## Plot SCZD
 pdf(here(dir_plots, "HumanPilot_sets_SCZD.pdf"), height = 8)
 walk2(enriched, y_text, function(x, ypos) {
-    xx <- filter(x, superset == "SCZD")
+    xx <- filter(x, Category == "SCZD")
     m <- match(unique(xx$ID), xx$ID)
     gene_set_enrichment_plot(xx, xlabs = xx$ID_short[m])
     abline(v = 4, lwd = 3)
@@ -202,7 +210,7 @@ dev.off()
 ## Plot Birnbaum
 pdf(here(dir_plots, "HumanPilot_sets_Birnbaum.pdf"), height = 8)
 walk(enriched, function(x) {
-    xx <- filter(x, superset == "Birnbaum")
+    xx <- filter(x, Category == "Birnbaum")
     m <- match(unique(xx$ID), xx$ID)
     gene_set_enrichment_plot(xx, xlabs = xx$ID_short[m])
 })
@@ -210,7 +218,7 @@ dev.off()
 
 pdf(here(dir_plots, "HumanPilot_sets_Extra.pdf"), height = 8)
 walk(enriched, function(x) {
-    xx <- filter(x, superset == "Extra")
+    xx <- filter(x, Category == "Extra")
     m <- match(unique(xx$ID), xx$ID)
     gene_set_enrichment_plot(xx, xlabs = xx$ID_short[m])
 })
@@ -362,7 +370,7 @@ session_info()
 #  spam                     2.9-1     2022-08-07 [2] CRAN (R 4.2.1)
 #  sparseMatrixStats        1.10.0    2022-11-01 [2] Bioconductor
 #  SpatialExperiment      * 1.8.0     2022-11-01 [2] Bioconductor
-#  spatialLIBD            * 1.10.0    2022-11-03 [2] Bioconductor
+#  spatialLIBD            * 1.11.1    2022-11-30 [1] Github (LieberInstitute/spatialLIBD@e16f4e0)
 #  statmod                  1.4.37    2022-08-12 [2] CRAN (R 4.2.1)
 #  stringi                  1.7.8     2022-07-11 [2] CRAN (R 4.2.1)
 #  stringr                  1.4.1     2022-08-20 [2] CRAN (R 4.2.1)
