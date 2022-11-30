@@ -19,6 +19,7 @@ if (!dir.exists(plot_dir)) {
 source(
     here(
         "code",
+        "analysis",
         "07_layer_differential_expression",
         "custom_plotExpression.R"
     ),
@@ -27,15 +28,14 @@ source(
 )
 
 #### K9 violin plots ####
-# load(file = here("processed-data", "rdata", "spe", "pseudo_bulked_spe","sce_pseudobulk_bayesSpace_k9.Rdata"), verbose = TRUE) ## file doesn't exist?
 spe_k9 <-
     readRDS(
         file = here(
             "processed-data",
             "rdata",
             "spe",
-            "pseudo_bulked_spe",
-            "spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k9.RDS"
+            "07_layer_differential_expression",
+            "sce_pseudo_BayesSpace_k09.rds"
         )
     )
 rownames(spe_k9) <- rowData(spe_k9)$gene_name
@@ -81,15 +81,14 @@ ggsave(
 
 
 #### K16 violin plots ####
-# load(file = here("processed-data", "rdata", "spe", "pseudo_bulked_spe","sce_pseudobulk_bayesSpace_k9.Rdata"), verbose = TRUE) ## file doesn't exist?
 spe_k16 <-
     readRDS(
         file = here(
             "processed-data",
             "rdata",
             "spe",
-            "pseudo_bulked_spe",
-            "spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k16.RDS"
+            "07_layer_differential_expression",
+            "sce_pseudo_BayesSpace_k16.rds"
         )
     )
 rownames(spe_k16) <- rowData(spe_k16)$gene_name
