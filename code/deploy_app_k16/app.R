@@ -13,10 +13,10 @@ options(repos = BiocManager::repositories())
 
 ## Load the spe object
 load("spe_subset.Rdata", verbose = TRUE)
-# load the pseudobulked object spe_pseudo
-spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k16.RDS")
+# load the pseudobulked object sce_pseudo
+sce_pseudo <- readRDS("sce_pseudo_BayesSpace_k16.rds")
 # load modeling results for k9 clustering/pseudobulking
-load("parsed_modeling_results_k16.Rdata", verbose = TRUE)
+load("modeling_results_BayesSpace_k16.Rdata", verbose = TRUE)
 load("sig_genes_subset_k16.Rdata", verbose = TRUE)
 
 spe$BayesSpace <- spe$bayesSpace_harmony_16
@@ -25,23 +25,18 @@ vars <- colnames(colData(spe))
 
 colors_bayesSpace <- Polychrome::palette36.colors(28)
 names(colors_bayesSpace) <- c(1:28)
-# spe$bayesSpace_harmony_9_colors <-"NA"
 m <- match(as.character(spe$bayesSpace_harmony_16), names(colors_bayesSpace))
 stopifnot(all(!is.na(m)))
 spe$BayesSpace_colors <- spe$bayesSpace_harmony_16_colors <- colors_bayesSpace[m]
 
-## Drop BayesSpace from the pairwise names. This gets reflected on
-## the "Gene Set Enrichment" and "Spatial registration" tabs.
-colnames(modeling_results$pairwise) <- gsub("BayesSpace", "", colnames(modeling_results$pairwise))
-
 ## Deploy the website
 spatialLIBD::run_app(
     spe,
-    sce_layer = spe_pseudo,
+    sce_layer = sce_pseudo,
     modeling_results = modeling_results,
     sig_genes = sig_genes,
     title = "spatialDLPFC_k16, Spangler et al, 2022",
-    spe_discrete_vars = c( # this is the variables for the spe object not the spe_pseudo object
+    spe_discrete_vars = c( # this is the variables for the spe object not the sce_pseudo object
         vars[grep("10x_|scran_", vars)],
         "ManualAnnotation",
         vars[grep("bayesSpace_harmony", vars)],
@@ -57,7 +52,10 @@ spatialLIBD::run_app(
         "sum_gene",
         "expr_chrM",
         "expr_chrM_ratio",
-        "count"
+        "count",
+        vars[grep("^tangram_", vars)],
+        vars[grep("^cell2location_", vars)],
+        vars[grep("^spotlight_", vars)]
     ),
     default_cluster = "BayesSpace"
 )
