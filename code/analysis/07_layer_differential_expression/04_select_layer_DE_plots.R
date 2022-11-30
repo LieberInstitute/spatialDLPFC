@@ -1,4 +1,3 @@
-
 library("SpatialExperiment")
 library("scater")
 library("spatialLIBD")
@@ -9,10 +8,16 @@ library("sessioninfo")
 plot_dir <- here("plots", "07_layer_differential_expression", "09_select_layer_DE_plots")
 if (!dir.exists(plot_dir)) dir.create(plot_dir)
 
-# data_dir <- here("processed-data", "rdata", "spe", "07_layer_differential_expression")
-# if(!dir.exists(data_dir)) dir.create(data_dir)
-
-source("custom_plotExpression.R")
+## Read in the custom plotting function
+source(
+    here(
+        "code",
+        "07_layer_differential_expression",
+        "custom_plotExpression.R"
+    ) ,
+    echo = TRUE,
+    max.deparse.length = 500
+)
 
 #### K9 violin plots ####
 # load(file = here("processed-data", "rdata", "spe", "pseudo_bulked_spe","sce_pseudobulk_bayesSpace_k9.Rdata"), verbose = TRUE) ## file doesn't exist?
