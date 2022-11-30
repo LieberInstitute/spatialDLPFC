@@ -17,7 +17,7 @@ load("spe_subset.Rdata", verbose = TRUE)
 sce_pseudo <- readRDS("sce_pseudo_BayesSpace_k09.rds")
 # load modeling results for k9 clustering/pseudobulking
 load("modeling_results_BayesSpace_k09.Rdata", verbose = TRUE)
-load("sig_genes_subset.Rdata", verbose = TRUE)
+load("sig_genes_subset_k09.Rdata", verbose = TRUE)
 
 spe$BayesSpace <- spe$bayesSpace_harmony_9
 vars <- colnames(colData(spe))

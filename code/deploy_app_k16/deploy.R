@@ -21,7 +21,7 @@ rsconnect::deployApp(
         "spe_subset.Rdata",
         "sce_pseudo_BayesSpace_k16.rds",
         "modeling_results_BayesSpace_k16.Rdata",
-        "sig_genes_subset.Rdata"
+        "sig_genes_subset_k16.Rdata"
     ),
     appName = "k16_spatialDLPFC_Spangler2022",
     account = "libd",
