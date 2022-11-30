@@ -9,7 +9,7 @@ suppressPackageStartupMessages(library("HDF5Array"))
 suppressPackageStartupMessages(library("spatialLIBD"))
 suppressPackageStartupMessages(library("cowplot"))
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
 n_markers_per_type <- 25
@@ -299,6 +299,7 @@ stopifnot(all(classical_markers_ens %in% rownames(spe)))
 #-------------------------------------------------------------------------------
 
 plot_list <- list()
+plot_list_paper <- list()
 i <- 1
 
 for (j in 1:length(classical_markers)) {
@@ -319,18 +320,36 @@ for (j in 1:length(classical_markers)) {
             )
         }
 
-        #   Produce the ggplot object
+        #   Produce the ggplot object (grid version)
         plot_list[[i]] <- vis_grid_gene(
             spe[, spe$sample_id == sample_id],
             geneid = classical_markers_ens[j], assay = "counts",
             return_plots = TRUE, spatial = FALSE
         )[[1]] +
             labs(title = title)
+        
+        #   Produce the ggplot object (manuscript version)
+        plot_list_paper[[i]] <- vis_grid_gene(
+            spe[, spe$sample_id == sample_id],
+            geneid = classical_markers_ens[j], assay = "counts",
+            return_plots = TRUE, spatial = FALSE
+        )[[1]] +
+            theme(legend.position = "none") +
+            labs(title = sub('\n', ': ', title), caption = NULL) +
+            #   Match 'vis_clus' code
+            geom_point(
+                shape = 21,
+                size = 2,
+                stroke = 0,
+                colour = "transparent",
+                alpha = 1
+            )
 
         i <- i + 1
     }
 }
 
+#   Create a grid version as a single-page PDF
 n_sample <- length(unique(spe$sample_id))
 pdf(
     file.path(
@@ -340,6 +359,18 @@ pdf(
     height = 7 * length(classical_markers)
 )
 print(plot_grid(plotlist = plot_list, ncol = n_sample))
+dev.off()
+
+#   Create a manuscript-compatible version with one plot per PDF page
+#   For figures in the paper, create a PDF version with one plot per
+#   page. Exactly match the shape (aspect ratio) and visual details
+#   of other spatial plots in this script
+pdf(
+    file.path(
+        plot_dir, paste0("marker_spatial_sparsity_reference_paper.pdf")
+    )
+)
+print(plot_list_paper)
 dev.off()
 
 #-------------------------------------------------------------------------------
