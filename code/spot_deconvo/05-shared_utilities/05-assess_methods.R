@@ -621,7 +621,7 @@ full_df <- read.csv(collapsed_results_path) %>%
 
 #   As a figure for the paper, plot the "all_spots" plot of counts for just one
 #   sample and facet by cell type instead of sample
-count_df = full_df |>
+count_df <- full_df |>
     filter(sample_id == "Br6522_Ant_IF")
 
 metrics_df <- count_df %>%
@@ -665,9 +665,9 @@ p <- ggplot(count_df) +
     scale_color_manual(values = cell_type_labels) +
     theme_bw(base_size = 15) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-    
 
-pdf(file.path(plot_dir, 'counts_all_spots_figure.pdf'))
+
+pdf(file.path(plot_dir, "counts_all_spots_figure.pdf"))
 print(p)
 dev.off()
 
@@ -852,7 +852,7 @@ metrics_df <- full_df %>%
 write.csv(
     metrics_df,
     file.path(
-        processed_dir, paste0('spatial_cell_type_metrics_', cell_group, '.csv')
+        processed_dir, paste0("spatial_cell_type_metrics_", cell_group, ".csv")
     ),
     row.names = FALSE, quote = FALSE
 )

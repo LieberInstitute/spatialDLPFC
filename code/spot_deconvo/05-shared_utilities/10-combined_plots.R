@@ -113,12 +113,12 @@ observed_df_broad <- read.csv(raw_results_broad_path) |>
 observed_df_layer <- read.csv(raw_results_layer_path)
 
 #   Collapse excitatory cells to match broad resolution
-observed_df_layer$Excit = observed_df_layer |>
-    select(starts_with('Excit_L')) |>
+observed_df_layer$Excit <- observed_df_layer |>
+    select(starts_with("Excit_L")) |>
     rowSums()
 
 #   Convert to long resolution
-observed_df_layer = observed_df_layer |>
+observed_df_layer <- observed_df_layer |>
     select(all_of(c(added_colnames, cell_types_broad))) |>
     melt(
         id.vars = added_colnames, variable.name = "cell_type",
@@ -151,19 +151,19 @@ layer_ann <- data.frame()
 for (sample_id in sample_ids) {
     this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
     layer_ann_small <- read.csv(this_layer_path)
-    
+
     layer_ann_small$barcode <- colnames(spe[, spe$sample_id == sample_id])[
         layer_ann_small$id + 1
     ]
     layer_ann_small$sample_id <- sample_id
-    
+
     layer_ann <- rbind(layer_ann, layer_ann_small)
 }
 layer_ann$id <- NULL
 
 #   Add layer label to observed_df_long
 observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
-    left_join(layer_ann,by = c("barcode", "sample_id")) |>
+    left_join(layer_ann, by = c("barcode", "sample_id")) |>
     filter(!is.na(label)) |>
     as_tibble()
 
@@ -208,7 +208,7 @@ p <- ggplot(counts_df, aes(x = resolution, y = count, fill = cell_type)) +
     theme_bw(base_size = 14) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
-pdf(file.path(plot_dir, 'barplot.pdf'), width = 10, height = 5)
+pdf(file.path(plot_dir, "barplot.pdf"), width = 10, height = 5)
 print(p)
 dev.off()
 
@@ -228,8 +228,8 @@ counts_df <- observed_df_long |>
 metrics_df <- counts_df |>
     group_by(deconvo_tool) |>
     summarize(
-        corr = paste0('Cor = ', round(cor(broad, layer), 2)),
-        rmse = paste0('RMSE = ', signif(mean((broad - layer)**2)**0.5, 3))
+        corr = paste0("Cor = ", round(cor(broad, layer), 2)),
+        rmse = paste0("RMSE = ", signif(mean((broad - layer)**2)**0.5, 3))
     ) |>
     ungroup()
 
@@ -241,7 +241,7 @@ p <- ggplot(
     geom_abline(
         intercept = 0, slope = 1, linetype = "dashed", color = "red"
     ) +
-    facet_wrap(~ deconvo_tool) +
+    facet_wrap(~deconvo_tool) +
     scale_color_manual(values = estimated_cell_labels) +
     #   Correlation label
     geom_text(
@@ -274,7 +274,7 @@ p <- ggplot(
     theme_bw(base_size = 15)
 
 pdf(
-    file.path(plot_dir, 'sample_proportions_scatter.pdf'),
+    file.path(plot_dir, "sample_proportions_scatter.pdf"),
     width = 10, height = 4
 )
 print(p)
