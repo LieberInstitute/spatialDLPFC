@@ -86,15 +86,15 @@ corresponding_layers <- list(
     "Excit_L5_6" = c("Layer 5", "Layer 6"),
     "Excit_L6" = "Layer 6",
     "Inhib" = paste("Layer", 2:6),
-    "Micro" = c("Layer 1", "White Matter"),
-    "Oligo" = "White Matter",
-    "OPC" = c("Layer 1", "White Matter")
+    "Micro" = c("Layer 1", "WM"),
+    "Oligo" = "WM",
+    "OPC" = c("Layer 1", "WM")
 )
 
 #   Name spatialLIBD colors with the layer names used in this script
 names(libd_layer_colors)[
     match(c(paste0("Layer", 1:6), "WM"), names(libd_layer_colors))
-] <- c(paste("Layer", 1:6), "White Matter")
+] <- c(paste("Layer", 1:6), "WM")
 
 cell_type_labels <- c(
     "#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1", "#000000"
@@ -289,10 +289,10 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
 
     #   Plot spatial distribution
     p <- vis_grid_gene(
-        spe_small,
-        geneid = "temp_ct_counts", return_plots = TRUE,
+        spe_small, geneid = "temp_ct_counts", return_plots = TRUE,
         spatial = FALSE
     )[[1]] +
+        coord_fixed() +
         labs(title = title)
 
     return(list(p, max(spe_small$temp_ct_counts)))
@@ -381,6 +381,39 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
         )
         print(plot_grid(plotlist = plot_list, ncol = length(cell_type_vec)))
         dev.off()
+        
+        #   For figures in the paper, create a PDF version with one plot per
+        #   page. Exactly match the shape (aspect ratio) and visual details
+        #   of other spatial plots in this script
+        for (i in 1:length(plot_list)) {
+            cell_type = cell_type_vec[1 + (i - 1) %% length(cell_type_vec)]
+            if (include_actual) {
+                d_tool = c(deconvo_tools, 'CART')[
+                    1 + (i - 1) %/% length(cell_type_vec)
+                ]
+            } else {
+                d_tool = deconvo_tools[1 + (i - 1) %/% length(cell_type_vec)]
+            }
+            
+            plot_list[[i]] = plot_list[[i]] +
+                theme(legend.position = "none") +
+                labs(title = paste0(d_tool, ': ', cell_type), caption = NULL) +
+                #   Match 'vis_clus' code
+                geom_point(
+                    shape = 21,
+                    size = 2,
+                    stroke = 0,
+                    colour = "transparent",
+                    alpha = 1
+                )
+        }
+        pdf(
+            file.path(
+                plot_dir, paste0(pdf_prefix, sample_id, "_individual.pdf")
+            )
+        )
+        print(plot_list)
+        dev.off()
     }
 }
 
@@ -465,7 +498,7 @@ corr_rmse_plot <- function(metrics_df, filename) {
             data = text_df,
             aes(
                 x = max(metrics_df$Correlation),
-                y = 0.1 * max(metrics_df$RMSE),
+                y = 0.15 * max(metrics_df$RMSE),
                 label = RMSE, color = NULL, shape = NULL
             ),
             vjust = 0, hjust = 1, show.legend = FALSE
@@ -485,7 +518,7 @@ corr_rmse_plot <- function(metrics_df, filename) {
         labs(color = "Cell Type", shape = "Sample ID") +
         theme_bw(base_size = 15)
 
-    pdf(file.path(plot_dir, filename), height = 4, width = 9)
+    pdf(file.path(plot_dir, filename), height = 3, width = 9)
     print(p)
     dev.off()
 }
@@ -1118,7 +1151,7 @@ observed_df_long <- left_join(
 #   Clean up labels
 observed_df_long$label <- tolower(observed_df_long$label)
 observed_df_long$label <- sub("layer", "Layer ", observed_df_long$label)
-observed_df_long$label[observed_df_long$label == "wm"] <- "White Matter"
+observed_df_long$label[observed_df_long$label == "wm"] <- "WM"
 stopifnot(
     all(unlist(corresponding_layers) %in% unique(observed_df_long$label))
 )
@@ -1339,7 +1372,10 @@ for (sample_id in sample_ids) {
         spe_small,
         clustervar = "manual_layer", return_plots = TRUE,
         spatial = FALSE, sampleid = sample_id, colors = libd_layer_colors
-    )
+    ) + 
+        coord_fixed() +
+        theme(legend.position = "none") +
+        labs(title = sample_id)
 }
 
 pdf(file.path(plot_dir, "spot_layer_labels.pdf"))
