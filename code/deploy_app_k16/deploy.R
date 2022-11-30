@@ -23,7 +23,7 @@ rsconnect::deployApp(
         "modeling_results_BayesSpace_k16.Rdata",
         "sig_genes_subset_k16.Rdata"
     ),
-    appName = "k16_spatialDLPFC_Spangler2022",
+    appName = "spatialDLPFC_Visium_Sp16",
     account = "libd",
     server = "shinyapps.io"
 )
