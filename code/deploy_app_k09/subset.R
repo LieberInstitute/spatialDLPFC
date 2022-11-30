@@ -5,11 +5,11 @@ library("sessioninfo")
 
 ## Set up soft links if needed
 withr::with_dir(
-    here("code", "deploy_app"),
+    here("code", "deploy_app_k09"),
     system("ln -s ../../processed-data/rdata/spe/07_layer_differential_expression/modeling_results_BayesSpace_k09.Rdata modeling_results_BayesSpace_k09.Rdata")
 )
 withr::with_dir(
-    here("code", "deploy_app"),
+    here("code", "deploy_app_k09"),
     system("ln -s ../../processed-data/rdata/spe/07_layer_differential_expression/sce_pseudo_BayesSpace_k09.rds sce_pseudo_BayesSpace_k09.rds")
 )
 
@@ -72,7 +72,7 @@ sce_pseudo <-
     readRDS(
         here(
             "code",
-            "deploy_app",
+            "deploy_app_k09",
             "sce_pseudo_BayesSpace_k09.rds"
         )
     )
@@ -81,10 +81,10 @@ sce_pseudo <-
 lobstr::obj_size(sce_pseudo)
 # 56.41 MB
 
-# load modeling results for k9 clustering/pseudobulking
+# load modeling results for k09 clustering/pseudobulking
 load(here(
     "code",
-    "deploy_app",
+    "deploy_app_k09",
     "modeling_results_BayesSpace_k09.Rdata"
 ),
     verbose = TRUE)
@@ -160,7 +160,7 @@ write.csv(
     )
 )
 
-save(sig_genes, file = here::here("code", "deploy_app", "sig_genes_subset.Rdata"))
+save(sig_genes, file = here::here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"))
 
 ## Reproducibility information
 print("Reproducibility information:")
