@@ -3,7 +3,7 @@ library("here")
 
 ## Or you can go to your shinyapps.io account and copy this
 ## Here we do this to keep our information hidden.
-# load(here("code", "deploy_app", ".deploy_info.Rdata"), verbose = TRUE)
+# load(here("code", "deploy_app_k09", ".deploy_info.Rdata"), verbose = TRUE)
 # rsconnect::setAccountInfo(
 #     name = deploy_info$name,
 #     token = deploy_info$token,
@@ -19,9 +19,9 @@ rsconnect::deployApp(
     appFiles = c(
         "app.R",
         "spe_subset.Rdata",
-        "spe_pseudobulk_bayesSpace_normalized_filtered_cluster_k16.RDS",
-        "parsed_modeling_results_k16.Rdata",
-        "sig_genes_subset_k16.Rdata"
+        "sce_pseudo_BayesSpace_k16.rds",
+        "modeling_results_BayesSpace_k16.Rdata",
+        "sig_genes_subset.Rdata"
     ),
     appName = "k16_spatialDLPFC_Spangler2022",
     account = "libd",
