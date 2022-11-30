@@ -61,6 +61,8 @@ for(deconvo in c("01-tangram", "03-cell2location", "04-spotlight")) {
     )
 }
 
+## Potentially import latest VistoSeg counts also!
+
 ## Save for later use
 save(spe, file = here::here("code", "deploy_app", "spe_subset.Rdata"))
 
@@ -134,16 +136,29 @@ lobstr::obj_size(sig_genes)
 ## From
 ## https://github.com/LieberInstitute/brainseq_phase2/blob/be2b7f972bb2a0ede320633bf06abe1d4ef2c067/supp_tabs/create_supp_tables.R#L173-L181
 fix_csv <- function(df) {
-  for (i in seq_len(ncol(df))) {
-    if (any(grepl(",", df[, i]))) {
-      message(paste(Sys.time(), "fixing column", colnames(df)[i]))
-      df[, i] <- gsub(",", ";", df[, i])
+    for (i in seq_len(ncol(df))) {
+        if (any(grepl(",", df[, i]))) {
+            message(paste(Sys.time(), "fixing column", colnames(df)[i]))
+            df[, i] <- gsub(",", ";", df[, i])
+        }
     }
-  }
-  return(df)
+    return(df)
 }
 z <- fix_csv(as.data.frame(subset(sig_genes, fdr < 0.05)))
-write.csv(z, file = file.path(dir_rdata, "Visium_IF_AD_wholegenome_model_results_FDR5perc.csv"))
+dim(z)
+# [1] 344722     10
+dim(subset(z, top <= 25))
+# [1] 2043   10
+write.csv(
+    subset(z, top <= 25),
+    file = here(
+        "processed-data",
+        "rdata",
+        "spe",
+        "07_layer_differential_expression",
+        "spatialDLPFC_model_results_FDR5perc_top25_k09.csv"
+    )
+)
 
 save(sig_genes, file = here::here("code", "deploy_app", "sig_genes_subset.Rdata"))
 
