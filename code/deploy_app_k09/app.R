@@ -12,22 +12,22 @@ options("golem.app.prod" = TRUE)
 options(repos = BiocManager::repositories())
 
 ## Load the spe object
-load("spe_subset.Rdata", verbose = TRUE)
+spe <- readRDS("spe_subset_for_spatialLIBD.rds")
 # load the pseudobulked object sce_pseudo
 sce_pseudo <- readRDS("sce_pseudo_BayesSpace_k09.rds")
 # load modeling results for k9 clustering/pseudobulking
 load("modeling_results_BayesSpace_k09.Rdata", verbose = TRUE)
 load("sig_genes_subset_k09.Rdata", verbose = TRUE)
 
-spe$BayesSpace <- spe$bayesSpace_harmony_9
+spe$BayesSpace <- spe$BayesSpace_harmony_9
 vars <- colnames(colData(spe))
 # https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
 
-colors_bayesSpace <- Polychrome::palette36.colors(28)
-names(colors_bayesSpace) <- c(1:28)
-m <- match(as.character(spe$bayesSpace_harmony_9), names(colors_bayesSpace))
+colors_BayesSpace <- Polychrome::palette36.colors(28)
+names(colors_BayesSpace) <- c(1:28)
+m <- match(as.character(spe$BayesSpace_harmony_9), names(colors_BayesSpace))
 stopifnot(all(!is.na(m)))
-spe$BayesSpace_colors <- spe$bayesSpace_harmony_9_colors <- colors_bayesSpace[m]
+spe$BayesSpace_colors <- spe$BayesSpace_harmony_9_colors <- colors_BayesSpace[m]
 
 ## Deploy the website
 spatialLIBD::run_app(
@@ -35,16 +35,16 @@ spatialLIBD::run_app(
     sce_layer = sce_pseudo,
     modeling_results = modeling_results,
     sig_genes = sig_genes,
-    title = "spatialDLPFC, Spangler et al, 2022",
+    title = "spatialDLPFC, Visium, Sp07",
     spe_discrete_vars = c( # this is the variables for the spe object not the sce_pseudo object
-        vars[grep("10x_|scran_", vars)],
+        "BayesSpace",
         "ManualAnnotation",
-        vars[grep("bayesSpace_harmony", vars)],
-        vars[grep("bayesSpace_pca", vars)],
+        vars[grep("^SpaceRanger_|^scran_", vars)],
+        vars[grep("BayesSpace_harmony", vars)],
+        vars[grep("BayesSpace_pca", vars)],
         "graph_based_PCA_within",
         "PCA_SNN_k10_k7",
         "Harmony_SNN_k10_k7",
-        "BayesSpace",
         "BayesSpace_colors"
     ),
     spe_continuous_vars = c(
@@ -52,10 +52,9 @@ spatialLIBD::run_app(
         "sum_gene",
         "expr_chrM",
         "expr_chrM_ratio",
-        "count",
-        vars[grep("^tangram_", vars)],
-        vars[grep("^cell2location_", vars)],
-        vars[grep("^spotlight_", vars)]
+        vars[grep("^VistoSeg_", vars)],
+        vars[grep("^layer_", vars)],
+        vars[grep("^broad_", vars)]
     ),
     default_cluster = "BayesSpace"
 )

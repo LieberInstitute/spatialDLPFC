@@ -12,60 +12,10 @@ withr::with_dir(
     here("code", "deploy_app_k09"),
     system("ln -s ../../processed-data/rdata/spe/07_layer_differential_expression/sce_pseudo_BayesSpace_k09.rds sce_pseudo_BayesSpace_k09.rds")
 )
-
-## Load the spe object
-load(
-    here(
-        "processed-data",
-        "rdata",
-        "spe",
-        "01_build_spe",
-        "spe_filtered_final_with_clusters.Rdata"
-    ),
-    verbose = TRUE
+withr::with_dir(
+    here("code", "deploy_app_k09"),
+    system("ln -s ../../processed-data/rdata/spe/01_build_spe/spe_subset_for_spatialLIBD.rds spe_subset_for_spatialLIBD.rds")
 )
-
-## Check the size in GB
-lobstr::obj_size(spe)
-# 6.92 GB
-
-table(imgData(spe)$image_id)
-# aligned detected    hires   lowres
-#      30       30       30       30
-
-imgData(spe) <- imgData(spe)[imgData(spe)$image_id == "lowres", ]
-## Check the size in GB
-lobstr::obj_size(spe)
-# 4.54 GB
-
-## Drop the counts for now
-counts(spe) <- NULL
-## Check the size in GB
-lobstr::obj_size(spe)
-# 2.40 GB
-
-
-## Import spot deconvolution results
-for(deconvo in c("01-tangram", "03-cell2location", "04-spotlight")) {
-    spe <- cluster_import(
-        spe,
-        here(
-            "processed-data",
-            "spot_deconvo",
-            deconvo,
-            "nonIF",
-            "layer",
-            "raw_results"
-        ),
-        prefix = paste0(gsub(".+-", "", deconvo), "_")
-    )
-}
-
-## Potentially import latest VistoSeg counts also!
-
-## Save for later use
-save(spe, file = here::here("code", "deploy_app", "spe_subset.Rdata"))
-
 
 # load the pseudobulked object sce_pseudo
 sce_pseudo <-
@@ -76,7 +26,6 @@ sce_pseudo <-
             "sce_pseudo_BayesSpace_k09.rds"
         )
     )
-
 
 lobstr::obj_size(sce_pseudo)
 # 56.41 MB

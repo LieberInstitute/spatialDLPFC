@@ -13,8 +13,8 @@ withr::with_dir(
     system("ln -s ../../processed-data/rdata/spe/07_layer_differential_expression/sce_pseudo_BayesSpace_k16.rds sce_pseudo_BayesSpace_k16.rds")
 )
 withr::with_dir(
-    here("code", "deploy_app_k16"),
-    system("ln -s ../deploy_app_k09/spe_subset.Rdata spe_subset.Rdata")
+    here("code", "deploy_app_k09"),
+    system("ln -s ../../processed-data/rdata/spe/01_build_spe/spe_subset_for_spatialLIBD.rds spe_subset_for_spatialLIBD.rds")
 )
 
 # load the pseudobulked object sce_pseudo
@@ -26,7 +26,6 @@ sce_pseudo <-
             "sce_pseudo_BayesSpace_k16.rds"
         )
     )
-
 
 lobstr::obj_size(sce_pseudo)
 # 75.05 MB
