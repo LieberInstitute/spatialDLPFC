@@ -21,7 +21,8 @@ rsconnect::deployApp(
         "spe_subset_for_spatialLIBD.rds",
         "sce_pseudo_BayesSpace_k09.rds",
         "modeling_results_BayesSpace_k09.Rdata",
-        "sig_genes_subset_k09.Rdata"
+        "sig_genes_subset_k09.Rdata",
+        gsub(file.path(app_dir, "www"), "www", dir(file.path(app_dir, "www"), full.names = TRUE))
     ),
     appName = "spatialDLPFC_Visium_Sp09",
     account = "libd",

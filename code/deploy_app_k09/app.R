@@ -56,5 +56,6 @@ spatialLIBD::run_app(
         vars[grep("^layer_", vars)],
         vars[grep("^broad_", vars)]
     ),
-    default_cluster = "BayesSpace"
+    default_cluster = "BayesSpace",
+    docs_path = "www"
 )
