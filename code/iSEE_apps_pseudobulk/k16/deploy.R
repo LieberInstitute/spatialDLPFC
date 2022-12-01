@@ -12,10 +12,8 @@ library("rsconnect")
 options(repos = BiocManager::repositories())
 
 rsconnect::deployApp(
-    appFiles = purrr::map_chr(
-        c("app.R", "sce_pseudo_BayesSpace_k16.rds", "initial.R"),
-        ~ here::here("code", "iSEE_apps_pseudobulk", "k16", .x)
-    ),
+    appDir = here::here("code", "iSEE_apps_pseudobulk", "k16"),
+    appFiles = c("app.R", "sce_pseudo_BayesSpace_k16.rds", "initial.R"),
     appName = "spatialDLPFC_Visium_Sp16_pseudobulk",
     account = "libd",
     server = "shinyapps.io"
