@@ -25,7 +25,7 @@ Sys.time()
 
 ## Import spot deconvolution results
 for (resolution in c("broad", "layer")) {
-    for(deconvo in c("01-tangram", "03-cell2location", "04-spotlight")) {
+    for (deconvo in c("01-tangram", "03-cell2location", "04-spotlight")) {
         message(Sys.time(), " importing: ", resolution, " for ", deconvo)
         spe <- cluster_import(
             spe,
@@ -44,9 +44,12 @@ for (resolution in c("broad", "layer")) {
 
 ## Fix some variables
 vars <- colnames(colData(spe))
-colnames(colData(spe))[grep("^X10x", vars)] <- gsub("X10x", "SpaceRanger_10x", vars[grep("^X10x", vars)])
-colnames(colData(spe))[grep("^bayes", vars)] <- gsub("bayes", "Bayes", vars[grep("^bayes", vars)])
-colnames(colData(spe))[grep("^region$", vars)] <- gsub("region", "position", vars[grep("^region$", vars)])
+colnames(colData(spe))[grep("^X10x", vars)] <-
+    gsub("X10x", "SpaceRanger_10x", vars[grep("^X10x", vars)])
+colnames(colData(spe))[grep("^bayes", vars)] <-
+    gsub("bayes", "Bayes", vars[grep("^bayes", vars)])
+colnames(colData(spe))[grep("^region$", vars)] <-
+    gsub("region", "position", vars[grep("^region$", vars)])
 
 ## Check the size in GB
 lobstr::obj_size(spe)
@@ -57,9 +60,14 @@ spe$VistoSeg_count_deprecated <- spe$count
 spe$count <- NULL
 
 ## Import updated VistoSeg cell counts
-nonIF_id_path <- here("processed-data", "spot_deconvo", "nonIF_ID_table.csv")
+nonIF_id_path <-
+    here("processed-data", "spot_deconvo", "nonIF_ID_table.csv")
 nonIF_counts_path <- here(
-    "processed-data", "rerun_spaceranger", "{sample_id}", "outs", "spatial",
+    "processed-data",
+    "rerun_spaceranger",
+    "{sample_id}",
+    "outs",
+    "spatial",
     "tissue_spot_counts.csv"
 )
 
@@ -75,32 +83,30 @@ for (sample_id in unique(spe$sample_id)) {
     message(Sys.time(), " processing sample id ", sample_id)
     #   Correctly determine the path for the cell counts for this sample, then
     #   read in
-    long_id <- id_table[match(sample_id, id_table$short_id), "long_id"]
-    this_path <- sub("{sample_id}", long_id, nonIF_counts_path, fixed = TRUE)
+    long_id <-
+        id_table[match(sample_id, id_table$short_id), "long_id"]
+    this_path <-
+        sub("{sample_id}", long_id, nonIF_counts_path, fixed = TRUE)
     cell_counts <- read.csv(this_path)
 
     #   All spots in the object should have counts
-    stopifnot(
-        all(
-            colnames(spe[, spe$sample_id == sample_id]) %in%
-                cell_counts$barcode
-        )
-    )
+    stopifnot(all(colnames(spe[, spe$sample_id == sample_id]) %in%
+        cell_counts$barcode))
 
     #   Line up the rows of 'cell_counts' with the sample-subsetted SPE object
-    cell_counts <- cell_counts[
-        match(
-            colnames(spe[, spe$sample_id == sample_id]),
-            cell_counts$barcode
-        ),
-    ]
+    cell_counts <- cell_counts[match(
+        colnames(spe[, spe$sample_id == sample_id]),
+        cell_counts$barcode
+    ), ]
 
     #   Add this sample's counts to the SPE object
-    spe$VistoSeg_count[spe$sample_id == sample_id] <- cell_counts$Nmask_dark_blue
+    spe$VistoSeg_count[spe$sample_id == sample_id] <-
+        cell_counts$Nmask_dark_blue
 
     ## Also add the percent of the spot covered, which can be useful
     ## for detecting neuropil spots
-    spe$VistoSeg_percent[spe$sample_id == sample_id] <- cell_counts$Pmask_dark_blue
+    spe$VistoSeg_percent[spe$sample_id == sample_id] <-
+        cell_counts$Pmask_dark_blue
 }
 
 #   Ensure counts were read in for all spots in the object
