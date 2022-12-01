@@ -35,7 +35,7 @@ spatialLIBD::run_app(
     sce_layer = sce_pseudo,
     modeling_results = modeling_results,
     sig_genes = sig_genes,
-    title = "spatialDLPFC, Visium, Sp07",
+    title = "spatialDLPFC, Visium, Sp09",
     spe_discrete_vars = c( # this is the variables for the spe object not the sce_pseudo object
         "BayesSpace",
         "ManualAnnotation",
