@@ -39,7 +39,7 @@ Throughout the rest of this document, we'll refer to this object by the name `sp
 
 * `Samples to plot`: which sample to plot on the tabs that do not have _grid_ on their name.
 * `Discrete variable to plot`: which discrete variable (typically with the cluster labels) to visualize. We include the clusters:
-  - `BayesSpace`: the main spatial domain resolution for this app.
+  - `BayesSpace`: the main spatial domain resolution used in this website.
   - `ManualAnnotation`: your own manual annotation of the spots.
   - `SpaceRanger_*`: graph based and k-means clustering results produced by `spaceranger` one Visium slide at a time. They are not guaranteed to be the same across samples, like cluster 1 in sample 1 might mean something completely different to cluster 1 in sample 2.
   - `scran_*`: quality control checks. For example, `scran_low_lib_size` shows spots that failed the default library size due to having low values.

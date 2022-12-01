@@ -23,7 +23,7 @@ You might also be interested in this video demonstration of `spatialLIBD` for th
 
 ## Raw summary
 
-Before the documentation, this tab displays the [SingleCellExperiment](https://bioconductor.org/packages/SingleCellExperiment) object that contains the spatial domain level data (layer-level in other `spatialLIBD` apps). It's basically useful to know that the data has been loaded and that you can start navigating the app. If you wish to download this data, use the following command.
+Before the documentation, this tab displays the [SingleCellExperiment](https://bioconductor.org/packages/SingleCellExperiment) object that contains the spatial domain-level data (layer-level in other `spatialLIBD` apps). It's basically useful to know that the data has been loaded and that you can start navigating the app. If you wish to download this data, use the following command.
 
 ```{r}
 ## Download sce data
