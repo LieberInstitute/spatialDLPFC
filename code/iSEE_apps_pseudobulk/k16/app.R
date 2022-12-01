@@ -34,7 +34,7 @@ spe_pseudo <- registerAppOptions(spe_pseudo, color.maxlevels = length(colData(sp
 
 iSEE(
     spe_pseudo,
-    appTitle = "Spangler2022_pseudobulk_cluster_k16",
+    appTitle = "spatialDLPFC, Visium, Sp16, pseudo-bulked",
     initial = initial,
     colormap = ExperimentColorMap(colData = list(
         # subject = function(n) {
