@@ -16,6 +16,11 @@ withr::with_dir(
     here("code", "deploy_app_k09"),
     system("ln -s ../../processed-data/rdata/spe/01_build_spe/spe_subset_for_spatialLIBD.rds spe_subset_for_spatialLIBD.rds")
 )
+withr::with_dir(
+    here("code", "deploy_app_k09", "www"),
+    system("ln -s ../../../README.md README.md")
+)
+
 
 # load the pseudobulked object sce_pseudo
 sce_pseudo <-
