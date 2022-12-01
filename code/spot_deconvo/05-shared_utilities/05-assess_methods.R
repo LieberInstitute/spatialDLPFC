@@ -166,7 +166,6 @@ all_spots <- function(count_df, plot_name) {
     pdf(file.path(plot_dir, plot_name))
     print(plot_list)
     dev.off()
-    # return(plot_list)
 }
 
 #   Scatterplot of observed vs. actual total counts summed across spots,
@@ -265,7 +264,6 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
     pdf(file.path(plot_dir, plot_name), height = 4, width = 10)
     print(p)
     dev.off()
-    # return(p)
 }
 
 #   Return a length-2 list containing a 'vis_grid_gene' plot and maximum value
@@ -682,7 +680,7 @@ p <- ggplot(count_df) +
         rows = vars(cell_type), cols = vars(deconvo_tool)
     ) +
     guides(col = guide_legend(override.aes = list(alpha = 1))) +
-    labs(x = "Software-estimated", y = "CART-calculated") +
+    labs(x = "Software-Estimated", y = "CART-Calculated") +
     geom_text(
         data = metrics_df,
         mapping = aes(
@@ -697,8 +695,7 @@ p <- ggplot(count_df) +
         hjust = 1, vjust = 0
     ) +
     scale_color_manual(values = cell_type_labels) +
-    theme_bw(base_size = 15) +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+    theme_bw(base_size = 15)
 
 
 pdf(file.path(plot_dir, "counts_all_spots_figure.pdf"))
@@ -862,9 +859,9 @@ ggplot(count_df) +
         hjust = 1, vjust = 0, size = 5
     ) +
     labs(
-        x = "Calculated cell count",
-        y = "Provided cell count (cellpose)",
-        title = "Provided vs. calculated total cells per spot"
+        x = "Calculated Cell Count",
+        y = "Provided Cell Count (Cellpose)",
+        title = "Provided vs. Calculated Total Cells Per Spot"
     ) +
     theme_bw(base_size = 15)
 dev.off()
@@ -1102,17 +1099,20 @@ plot_list <- lapply(
             geom_text(
                 data = metrics_df %>% filter(cell_type == ct),
                 mapping = aes(
-                    x = Inf, y = max(full_df_small$marker_express) / 7,
+                    x = max(full_df_small$observed),
+                    y = max(full_df_small$marker_express) / 7,
                     label = corr
                 ),
                 hjust = 1
             ) +
             labs(
                 title = ct,
-                x = paste0("Software-estimated ", ct, " counts"),
-                y = "Mean marker-gene counts",
+                x = paste0(
+                    "Software-Estimated ", tools::toTitleCase(ct), " Counts"
+                ),
+                y = "Mean Marker-Gene Counts",
+                color = "Sample ID"
             ) +
-            scale_fill_continuous(type = "viridis") +
             theme_bw(base_size = 10)
 
         return(p)
@@ -1120,6 +1120,48 @@ plot_list <- lapply(
 )
 
 pdf(file.path(plot_dir, "marker_vs_ct_counts.pdf"))
+print(plot_list)
+dev.off()
+
+#   Now plot a version suitable as a supplementary figure: this time, one page
+#   per sample and facet by cell type
+plot_list <- lapply(
+    sample_ids,
+    function(this_sample_id) {
+        full_df_small <- full_df %>%
+            filter(sample_id == this_sample_id)
+        
+        p <- ggplot(full_df_small) +
+            geom_point(
+                aes(x = observed, y = marker_express, color = cell_type),
+                alpha = 0.01
+            ) +
+            facet_grid( rows = vars(cell_type), cols = vars(deconvo_tool)) +
+            guides(col = guide_legend(override.aes = list(alpha = 1))) +
+            geom_text(
+                data = metrics_df %>% filter(sample_id == this_sample_id),
+                mapping = aes(
+                    x = max(full_df_small$observed),
+                    y = max(full_df_small$marker_express) / 7,
+                    label = corr
+                ),
+                hjust = 1
+            ) +
+            labs(
+                title = this_sample_id,
+                x = paste0(
+                    "Software-Estimated Counts"
+                ),
+                y = "Mean Marker-Gene Counts",
+                color = "Cell Type"
+            ) +
+            theme_bw(base_size = 15)
+        
+        return(p)
+    }
+)
+
+pdf(file.path(plot_dir, "marker_vs_ct_counts_paper.pdf"))
 print(plot_list)
 dev.off()
 
