@@ -24,6 +24,24 @@ lobstr::obj_size(spe) ## takes about 2 min
 Sys.time()
 # 6.92 GB
 
+## Fix some variables
+vars <- colnames(colData(spe))
+colnames(colData(spe))[grep("^X10x", vars)] <-
+    gsub("X10x", "SpaceRanger_10x", vars[grep("^X10x", vars)])
+colnames(colData(spe))[grep("^bayes", vars)] <-
+    gsub("bayes", "Bayes", vars[grep("^bayes", vars)])
+colnames(colData(spe))[grep("^region$", vars)] <-
+    gsub("region", "position", vars[grep("^region$", vars)])
+
+## Fix numerical columns
+vars <- colnames(colData(spe))
+colnames(colData(spe))[grep("SpaceRanger_10x_kmeans_", vars)] <-
+    paste0("SpaceRanger_10x_kmeans_", sprintf("%02d", as.integer(ss(
+        ss(vars[grep("SpaceRanger_10x_kmeans_", vars)], "_kmeans_", 2), "_"
+    ))))
+colnames(colData(spe))[grep("_[0-9]$", vars)] <-
+    paste0(ss(vars[grep("_[0-9]$", vars)], "_[0-9]", 1), "_", sprintf("%02d", as.integer(ss(vars[grep("_[0-9]$", vars)], "[y|a]_", 2))))
+
 ## Import spot deconvolution results
 for (resolution in c("broad", "layer")) {
     for (deconvo in c("01-tangram", "03-cell2location", "04-spotlight")) {
@@ -42,24 +60,6 @@ for (resolution in c("broad", "layer")) {
         )
     }
 }
-
-## Fix some variables
-vars <- colnames(colData(spe))
-colnames(colData(spe))[grep("^X10x", vars)] <-
-    gsub("X10x", "SpaceRanger_10x", vars[grep("^X10x", vars)])
-colnames(colData(spe))[grep("^bayes", vars)] <-
-    gsub("bayes", "Bayes", vars[grep("^bayes", vars)])
-colnames(colData(spe))[grep("^region$", vars)] <-
-    gsub("region", "position", vars[grep("^region$", vars)])
-
-## Fix numerical columns
-vars <- colnames(colData(spe))
-colnames(colData(spe))[grep("SpaceRanger_10x_kmeans_", vars)] <-
-    paste0("SpaceRanger_10x_kmeans_", sprintf("%02d", as.integer(ss(
-        ss(vars[grep("SpaceRanger_10x_kmeans_", vars)], "_kmeans_", 2), "_"
-    ))))
-colnames(colData(spe))[grep("_[0-9]$", vars)] <-
-    paste0(ss(vars[grep("_[0-9]$", vars)], "_[0-9]", 1), "_", sprintf("%02d", as.integer(ss(vars[grep("_[0-9]$", vars)], "[y|a]_", 2))))
 
 ## re-sort columns after fixing the numerical ones
 colData(spe) <- colData(spe)[, sort(colnames(colData(spe)))]
