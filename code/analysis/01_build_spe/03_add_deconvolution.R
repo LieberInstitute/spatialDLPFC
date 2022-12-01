@@ -122,7 +122,7 @@ lobstr::obj_size(spe) ## takes about 2 min
 Sys.time()
 # 6.96 GB
 
-## Save for later use
+## Save for later use, takes about 11 min
 Sys.time()
 saveRDS(
     spe,
@@ -141,16 +141,16 @@ Sys.time()
 imgData(spe) <- imgData(spe)[imgData(spe)$image_id == "lowres", ]
 ## Check the size in GB
 lobstr::obj_size(spe)
-# 4.54 GB
+# 4.59 GB
 
 ## Drop the counts which take quite a bit of space
 counts(spe) <- NULL
 ## Check the size in GB
 lobstr::obj_size(spe)
-# 2.40 GB
+# 2.45 GB
 
 
-## Save for use in the spatialLIBD shiny apps
+## Save for use in the spatialLIBD shiny apps, takes about 3 min
 Sys.time()
 saveRDS(
     spe,
