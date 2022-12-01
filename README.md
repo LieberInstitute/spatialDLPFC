@@ -142,7 +142,7 @@ We provide the following interactive websites:
     similar but with the Sp16 domains.
   - [spatialDLPFC_Visium_Sp09_position](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position):
     similar to *spatialDLPFC_Visium_Sp09* but with statistical results
-    across the \_position_s (anterior, middle, posterior) adjusting for
+    across the *position* (anterior, middle, posterior) adjusting for
     the Sp09 domains.
   - [spatialDLPFC_Visium_Sp09_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_pseudobulk):
     [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website
@@ -151,7 +151,7 @@ We provide the following interactive websites:
     similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp16
     domains data.
   - [spatialDLPFC_Visium_Sp28_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp28_pseudobulk):
-    similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp16
+    similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp28
     domains data.
 - snRNA-seq
   - [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq):
