@@ -381,6 +381,7 @@ dev.off()
 
 for (n_markers in c(15, 25, 50)) {
     plot_list <- list()
+    plot_list_paper <- list()
     i <- 1
 
     #   Plot proportion of markers having nonzero expression for each cell type
@@ -413,6 +414,17 @@ for (n_markers in c(15, 25, 50)) {
                     "Prop. markers w/ nonzero exp:\n", ct, " (", sample_id, ")"
                 )
             )
+            plot_list_paper[[i]] <- p[[1]] +
+                theme(legend.position = "none") +
+                labs(title = paste0(ct, " (", sample_id, ")"), caption = NULL) +
+                #   Match 'vis_clus' code
+                geom_point(
+                    shape = 21,
+                    size = 2,
+                    stroke = 0,
+                    colour = "transparent",
+                    alpha = 1
+                )
             i <- i + 1
         }
     }
@@ -426,6 +438,19 @@ for (n_markers in c(15, 25, 50)) {
         width = 7 * n_sample, height = 7 * n_rows
     )
     print(plot_grid(plotlist = plot_list, ncol = n_sample))
+    dev.off()
+    
+    #   Create a manuscript-compatible version with one plot per PDF page
+    #   For figures in the paper, create a PDF version with one plot per
+    #   page. Exactly match the shape (aspect ratio) and visual details
+    #   of other spatial plots in this script
+    pdf(
+        file.path(
+            plot_dir,
+            paste0("marker_spatial_sparsity_n", n_markers, "_paper.pdf")
+        )
+    )
+    print(plot_list_paper)
     dev.off()
 }
 
