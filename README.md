@@ -3,7 +3,7 @@ spatialDLPFC
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Overview
+## Overview
 
 <img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" align="left" width="300px" />
 
