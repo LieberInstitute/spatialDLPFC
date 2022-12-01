@@ -1,4 +1,4 @@
-library("SingleCellExperiment")
+library("SpatialExperiment")
 library("iSEE")
 library("shiny")
 library("scuttle")
