@@ -1,53 +1,40 @@
-
 library("SingleCellExperiment")
 library("iSEE")
 library("shiny")
-library("paletteer")
 library("scuttle")
-library("SpatialExperiment")
 
-# load("sce_for_iSEE_LS.rda", verbose = TRUE)# load the pseudobulked object spe_pseudo
-spe_pseudo <- readRDS("spe_pseudobulk_bayesSpace_normalized_filtered_region_k28.RDS")
+## Load the pseudobulked object sce_pseudo
+sce_pseudo <- readRDS("sce_pseudo_BayesSpace_k28.rds")
 
 ## Make unique gene names
-rownames(spe_pseudo) <-
-    uniquifyFeatureNames(rowData(spe_pseudo)$gene_id, rowData(spe_pseudo)$gene_name)
-
-# stopifnot(all(unique(spe_pseudo$BayesSpace) %in% names(cell_cols.clean)))
+rownames(sce_pseudo) <-
+    scuttle::uniquifyFeatureNames(rowData(sce_pseudo)$gene_id, rowData(sce_pseudo)$gene_name)
 
 ## Don't run this on app.R since we don't want to run this every single time
-# lobstr::obj_size(spe_pseudo)
-# 876.33 MB
+# lobstr::obj_size(sce_pseudo)
+# 56.41 MB
 
-source("initial.R", print.eval = TRUE)
+source("initial.R", echo = TRUE, max.deparse.length = 500)
 
 ## From https://github.com/LieberInstitute/10xPilot_snRNAseq-human/blob/810b47364af4c8afe426bd2a6b559bd6a9f1cc98/shiny_apps/tran2021_AMY/app.R#L10-L14
 ## Related to https://github.com/iSEE/iSEE/issues/568
-colData(spe_pseudo) <- cbind(
-    colData(spe_pseudo)[, !colnames(colData(spe_pseudo)) %in% c("subject", "BayesSpace")],
-    colData(spe_pseudo)[, c("BayesSpace", "subject")]
+colData(sce_pseudo) <- cbind(
+    colData(sce_pseudo)[, !colnames(colData(sce_pseudo)) %in% c("subject", "BayesSpace")],
+    colData(sce_pseudo)[, c("BayesSpace", "subject")]
 )
 
-spe_pseudo$subject <- as.factor(spe_pseudo$subject)
+sce_pseudo$subject <- as.factor(sce_pseudo$subject)
 
-spe_pseudo <- registerAppOptions(spe_pseudo, color.maxlevels = length(colData(spe_pseudo)$BayesSpace_colors))
+sce_pseudo <-
+    registerAppOptions(sce_pseudo, color.maxlevels = length(colData(sce_pseudo)$BayesSpace_colors))
 
 iSEE(
-    spe_pseudo,
+    sce_pseudo,
     appTitle = "spatialDLPFC, Visium, Sp28, pseudo-bulked",
     initial = initial,
     colormap = ExperimentColorMap(colData = list(
-        # subject = function(n) {
-        #     cols <- paletteer::paletteer_d(
-        #         palette = "RColorBrewer::Dark2",
-        #         n = length(unique(spe_pseudo$subject))
-        #     )
-        #     cols <- as.vector(cols)
-        #     names(cols) <- levels(spe_pseudo$subject)
-        #     return(cols)
-        # },
         BayesSpace = function(n) {
-            return(colData(spe_pseudo)$BayesSpace_colors)
+            return(colData(sce_pseudo)$BayesSpace_colors)
         }
     ))
 )
