@@ -261,8 +261,10 @@ this is the code you can use to access the spatially-resolved data. For
 more details, check the help file for `fetch_data()`.
 
 ``` r
+## Check that you have a recent version of spatialLIBD installed
+stopifnot(packageVersion("spatialLIBD") >= "1.11.2")
+
 ## Download the spot-level data
-stopifnot(packageVersion("spatialLIBD") >= "1.11.2") ## Only available on bioc-devel for now
 spe <- spatialLIBD::fetch_data(type = "spatialDLPFC_Visium")
 
 ## This is a SpatialExperiment object
