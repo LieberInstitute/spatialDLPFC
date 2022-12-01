@@ -1,5 +1,6 @@
 library("spatialLIBD")
 library("here")
+library("jaffelab")
 library("sessioninfo")
 
 
@@ -50,6 +51,18 @@ colnames(colData(spe))[grep("^bayes", vars)] <-
     gsub("bayes", "Bayes", vars[grep("^bayes", vars)])
 colnames(colData(spe))[grep("^region$", vars)] <-
     gsub("region", "position", vars[grep("^region$", vars)])
+
+## Fix numerical columns
+vars <- colnames(colData(spe))
+colnames(colData(spe))[grep("SpaceRanger_10x_kmeans_", vars)] <-
+    paste0("SpaceRanger_10x_kmeans_", sprintf("%02d", as.integer(ss(
+        ss(vars[grep("SpaceRanger_10x_kmeans_", vars)], "_kmeans_", 2), "_"
+    ))))
+colnames(colData(spe))[grep("_[0-9]$", vars)] <-
+    paste0(ss(vars[grep("_[0-9]$", vars)], "_[0-9]", 1), "_", sprintf("%02d", as.integer(ss(vars[grep("_[0-9]$", vars)], "[y|a]_", 2))))
+
+## re-sort columns after fixing the numerical ones
+colData(spe) <- colData(spe)[, sort(colnames(colData(spe)))]
 
 ## Check the size in GB
 lobstr::obj_size(spe)
@@ -171,7 +184,7 @@ proc.time()
 options(width = 120)
 session_info()
 
-# ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────
+# ─ Session info ──────────────────────────────────────────────────────────────────────────────────
 #  setting  value
 #  version  R version 4.2.2 Patched (2022-11-23 r83388)
 #  os       CentOS Linux 7 (Core)
@@ -184,7 +197,7 @@ session_info()
 #  date     2022-11-30
 #  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/bin/pandoc
 #
-# ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────
+# ─ Packages ──────────────────────────────────────────────────────────────────────────────────────
 #  package                * version   date (UTC) lib source
 #  AnnotationDbi            1.60.0    2022-11-01 [2] Bioconductor
 #  AnnotationHub            3.6.0     2022-11-01 [2] Bioconductor
@@ -240,6 +253,7 @@ session_info()
 #  filelock                 1.0.2     2018-10-05 [2] CRAN (R 4.2.1)
 #  foreach                  1.5.2     2022-02-02 [2] CRAN (R 4.2.1)
 #  fs                       1.5.2     2021-12-08 [2] CRAN (R 4.2.1)
+#  gargle                   1.2.1     2022-09-08 [2] CRAN (R 4.2.1)
 #  generics                 0.1.3     2022-07-05 [2] CRAN (R 4.2.1)
 #  GenomeInfoDb           * 1.34.3    2022-11-10 [1] Bioconductor
 #  GenomeInfoDbData         1.2.9     2022-09-29 [2] Bioconductor
@@ -250,6 +264,7 @@ session_info()
 #  ggrepel                  0.9.2     2022-11-06 [2] CRAN (R 4.2.2)
 #  glue                     1.6.2     2022-02-24 [2] CRAN (R 4.2.1)
 #  golem                    0.3.5     2022-10-18 [2] CRAN (R 4.2.1)
+#  googledrive              2.0.0     2021-07-08 [2] CRAN (R 4.2.1)
 #  gridExtra                2.3       2017-09-09 [2] CRAN (R 4.2.1)
 #  gtable                   0.3.1     2022-09-01 [2] CRAN (R 4.2.1)
 #  HDF5Array                1.26.0    2022-11-01 [2] Bioconductor
@@ -262,6 +277,7 @@ session_info()
 #  IRanges                * 2.32.0    2022-11-01 [2] Bioconductor
 #  irlba                    2.3.5.1   2022-10-03 [2] CRAN (R 4.2.1)
 #  iterators                1.0.14    2022-02-05 [2] CRAN (R 4.2.1)
+#  jaffelab               * 0.99.32   2022-11-02 [1] Github (LieberInstitute/jaffelab@7b7afe3)
 #  jquerylib                0.1.4     2021-04-26 [2] CRAN (R 4.2.1)
 #  jsonlite                 1.8.3     2022-10-21 [2] CRAN (R 4.2.2)
 #  KEGGREST                 1.38.0    2022-11-01 [2] Bioconductor
@@ -276,12 +292,14 @@ session_info()
 #  magick                   2.7.3     2021-08-18 [2] CRAN (R 4.2.1)
 #  magrittr                 2.0.3     2022-03-30 [2] CRAN (R 4.2.1)
 #  maps                     3.4.1     2022-10-30 [2] CRAN (R 4.2.2)
+#  MASS                     7.3-58.1  2022-08-03 [3] CRAN (R 4.2.2)
 #  Matrix                   1.5-3     2022-11-11 [2] CRAN (R 4.2.2)
 #  MatrixGenerics         * 1.10.0    2022-11-01 [1] Bioconductor
 #  matrixStats            * 0.63.0    2022-11-18 [2] CRAN (R 4.2.2)
 #  memoise                  2.0.1     2021-11-26 [2] CRAN (R 4.2.1)
 #  mime                     0.12      2021-09-28 [2] CRAN (R 4.2.1)
 #  munsell                  0.5.0     2018-06-12 [2] CRAN (R 4.2.1)
+#  nlme                     3.1-160   2022-10-10 [2] CRAN (R 4.2.1)
 #  paletteer                1.5.0     2022-10-19 [2] CRAN (R 4.2.1)
 #  pillar                   1.8.1     2022-08-19 [2] CRAN (R 4.2.1)
 #  pkgconfig                2.0.3     2019-09-22 [2] CRAN (R 4.2.1)
@@ -295,6 +313,7 @@ session_info()
 #  R.oo                     1.25.0    2022-06-12 [2] CRAN (R 4.2.1)
 #  R.utils                  2.12.2    2022-11-11 [2] CRAN (R 4.2.2)
 #  R6                       2.5.1     2021-08-19 [2] CRAN (R 4.2.1)
+#  rafalib                * 1.0.0     2015-08-09 [1] CRAN (R 4.2.2)
 #  rappdirs                 0.3.3     2021-01-31 [2] CRAN (R 4.2.1)
 #  RColorBrewer             1.1-3     2022-04-03 [2] CRAN (R 4.2.1)
 #  Rcpp                     1.0.9     2022-07-08 [2] CRAN (R 4.2.1)
@@ -320,6 +339,7 @@ session_info()
 #  scales                   1.2.1     2022-08-20 [2] CRAN (R 4.2.1)
 #  scater                   1.26.1    2022-11-13 [2] Bioconductor
 #  scuttle                  1.8.1     2022-11-20 [2] Bioconductor
+#  segmented                1.6-1     2022-11-08 [1] CRAN (R 4.2.2)
 #  servr                    0.25      2022-11-04 [1] CRAN (R 4.2.2)
 #  sessioninfo            * 1.2.2     2021-12-06 [2] CRAN (R 4.2.1)
 #  shiny                    1.7.3     2022-10-25 [2] CRAN (R 4.2.2)
@@ -354,5 +374,4 @@ session_info()
 #  [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/R/4.2.x/lib64/R/site-library
 #  [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/R/4.2.x/lib64/R/library
 #
-# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
+# ─────────────────────────────────────────────────────────────────────────────────────────────────

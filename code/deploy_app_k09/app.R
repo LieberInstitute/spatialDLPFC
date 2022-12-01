@@ -19,15 +19,15 @@ sce_pseudo <- readRDS("sce_pseudo_BayesSpace_k09.rds")
 load("modeling_results_BayesSpace_k09.Rdata", verbose = TRUE)
 load("sig_genes_subset_k09.Rdata", verbose = TRUE)
 
-spe$BayesSpace <- spe$BayesSpace_harmony_9
+spe$BayesSpace <- spe$BayesSpace_harmony_09
 vars <- colnames(colData(spe))
 # https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L61-L72
 
 colors_BayesSpace <- Polychrome::palette36.colors(28)
 names(colors_BayesSpace) <- c(1:28)
-m <- match(as.character(spe$BayesSpace_harmony_9), names(colors_BayesSpace))
+m <- match(as.character(spe$BayesSpace_harmony_09), names(colors_BayesSpace))
 stopifnot(all(!is.na(m)))
-spe$BayesSpace_colors <- spe$BayesSpace_harmony_9_colors <- colors_BayesSpace[m]
+spe$BayesSpace_colors <- spe$BayesSpace_harmony_09_colors <- colors_BayesSpace[m]
 
 ## Deploy the website
 spatialLIBD::run_app(
