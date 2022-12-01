@@ -16,6 +16,7 @@ initial[["ReducedDimensionPlot1"]] <- new(
     ColorBySampleNameColor = "#FF0000",
     ShapeByColumnData = "BayesSpace",
     SizeByColumnData = "age",
+    TooltipColumnData = character(0),
     FacetRowBy = "None",
     FacetColumnBy = "None",
     ColorBy = "Column data",
@@ -23,7 +24,7 @@ initial[["ReducedDimensionPlot1"]] <- new(
     ColorByFeatureName = "LINC01128",
     ColorByFeatureSource = "---",
     ColorByFeatureDynamicSource = FALSE,
-    ColorBySampleName = "Br2720_ant_1",
+    ColorBySampleName = "Br2720_ant_Sp09D01",
     ColorBySampleSource = "---",
     ColorBySampleDynamicSource = FALSE,
     ShapeBy = "None",
@@ -40,7 +41,7 @@ initial[["ReducedDimensionPlot1"]] <- new(
     Downsample = FALSE,
     DownsampleResolution = 200,
     CustomLabels = FALSE,
-    CustomLabelsText = "Br2720_ant_1",
+    CustomLabelsText = "Br2720_ant_Sp09D01",
     FontSize = 1,
     LegendPointSize = 1,
     LegendPosition = "Bottom",
@@ -49,8 +50,9 @@ initial[["ReducedDimensionPlot1"]] <- new(
     LabelCentersBy = "BayesSpace",
     LabelCentersColor = "#000000",
     VersionInfo = list(iSEE = structure(
-        list(c(2L, 6L, 0L)),
-        class = c("package_version", "numeric_version")
+        list(c(2L, 10L, 0L)),
+        class = c("package_version",
+            "numeric_version")
     )),
     PanelId = c(ReducedDimensionPlot = 1L),
     PanelHeight = 600L,
@@ -80,17 +82,15 @@ initial[["ComplexHeatmapPlot1"]] <- new(
     ClusterRowsMethod = "ward.D2",
     DataBoxOpen = FALSE,
     VisualChoices = "Annotations",
-    ColumnData = c(
-        "BayesSpace",
-        "subject"
-    ),
+    ColumnData = c("BayesSpace",
+        "subject"),
     RowData = character(0),
     CustomBounds = FALSE,
     LowerBound = NA_real_,
     UpperBound = NA_real_,
-    AssayCenterRows = FALSE,
-    AssayScaleRows = FALSE,
-    DivergentColormap = "purple < black < yellow",
+    AssayCenterRows = TRUE,
+    AssayScaleRows = TRUE,
+    DivergentColormap = "blue < white < orange",
     ShowDimNames = "Rows",
     LegendPosition = "Right",
     LegendDirection = "Vertical",
@@ -100,11 +100,9 @@ initial[["ComplexHeatmapPlot1"]] <- new(
     ShowColumnSelection = TRUE,
     OrderColumnSelection = TRUE,
     VersionInfo = list(iSEE = structure(
-        list(c(2L, 6L, 0L)),
-        class = c(
-            "package_version",
-            "numeric_version"
-        )
+        list(c(2L, 10L, 0L)),
+        class = c("package_version",
+            "numeric_version")
     )),
     PanelId = c(ComplexHeatmapPlot = 1L),
     PanelHeight = 600L,
@@ -127,17 +125,13 @@ initial[["RowDataTable1"]] <- new(
     "RowDataTable",
     Selected = "SNAP25",
     Search = "",
-    SearchColumns = c(
-        "",
-        "", "", "", "", "", "", ""
-    ),
+    SearchColumns = c("",
+        "", "", "", "", "", ""),
     HiddenColumns = character(0),
     VersionInfo = list(iSEE = structure(
-        list(c(2L, 6L, 0L)),
-        class = c(
-            "package_version",
-            "numeric_version"
-        )
+        list(c(2L, 10L, 0L)),
+        class = c("package_version",
+            "numeric_version")
     )),
     PanelId = c(RowDataTable = 1L),
     PanelHeight = 600L,
@@ -175,6 +169,7 @@ initial[["FeatureAssayPlot1"]] <- new(
     ColorBySampleNameColor = "#FF0000",
     ShapeByColumnData = "BayesSpace",
     SizeByColumnData = "age",
+    TooltipColumnData = character(0),
     FacetRowBy = "None",
     FacetColumnBy = "None",
     ColorBy = "Column data",
@@ -182,7 +177,7 @@ initial[["FeatureAssayPlot1"]] <- new(
     ColorByFeatureName = "LINC01128",
     ColorByFeatureSource = "---",
     ColorByFeatureDynamicSource = FALSE,
-    ColorBySampleName = "Br2720_ant_1",
+    ColorBySampleName = "Br2720_ant_Sp09D01",
     ColorBySampleSource = "---",
     ColorBySampleDynamicSource = FALSE,
     ShapeBy = "None",
@@ -199,7 +194,7 @@ initial[["FeatureAssayPlot1"]] <- new(
     Downsample = FALSE,
     DownsampleResolution = 200,
     CustomLabels = FALSE,
-    CustomLabelsText = "Br2720_ant_1",
+    CustomLabelsText = "Br2720_ant_Sp09D01",
     FontSize = 1,
     LegendPointSize = 1,
     LegendPosition = "Bottom",
@@ -208,11 +203,8 @@ initial[["FeatureAssayPlot1"]] <- new(
     LabelCentersBy = "BayesSpace",
     LabelCentersColor = "#000000",
     VersionInfo = list(iSEE = structure(
-        list(c(2L, 6L, 0L)),
-        class = c(
-            "package_version",
-            "numeric_version"
-        )
+        list(c(2L, 10L, 0L)),
+        class = c("package_version", "numeric_version")
     )),
     PanelId = c(FeatureAssayPlot = 1L),
     PanelHeight = 600L,
