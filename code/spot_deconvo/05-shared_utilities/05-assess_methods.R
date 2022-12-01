@@ -489,19 +489,20 @@ corr_rmse_plot <- function(metrics_df, filename) {
         geom_text(
             data = text_df,
             aes(
-                x = max(metrics_df$Correlation), y = 0.05 * max(metrics_df$RMSE), label = Correlation,
-                color = NULL, shape = NULL
+                x = min(metrics_df$Correlation),
+                y = 0.95 * max(metrics_df$RMSE),
+                label = Correlation, color = NULL, shape = NULL
             ),
-            vjust = 0, hjust = 1, show.legend = FALSE
+            vjust = 1, hjust = 0, show.legend = FALSE
         ) +
         geom_text(
             data = text_df,
             aes(
-                x = max(metrics_df$Correlation),
-                y = 0.15 * max(metrics_df$RMSE),
+                x = min(metrics_df$Correlation),
+                y = 0.85 * max(metrics_df$RMSE),
                 label = RMSE, color = NULL, shape = NULL
             ),
-            vjust = 0, hjust = 1, show.legend = FALSE
+            vjust = 1, hjust = 0, show.legend = FALSE
         ) +
         scale_y_continuous(
             limits = c(0, max(metrics_df$RMSE) * 1.05),

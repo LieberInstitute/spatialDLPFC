@@ -248,24 +248,24 @@ p <- ggplot(
         data = metrics_df,
         mapping = aes(
             x = max(counts_df$broad),
-            y = 0.05 * max(counts_df$layer),
+            y = max(counts_df$layer),
             label = corr,
             color = NULL,
             shape = NULL
         ),
-        hjust = 1, vjust = 0, show.legend = FALSE
+        hjust = 1, vjust = 1, show.legend = FALSE
     ) +
     #   RMSE label
     geom_text(
         data = metrics_df,
         mapping = aes(
             x = max(counts_df$broad),
-            y = 0.15 * max(counts_df$layer),
+            y = 0.9 * max(counts_df$layer) + 0.1 * min(counts_df$layer),
             label = rmse,
             color = NULL,
             shape = NULL
         ),
-        hjust = 1, vjust = 0, show.legend = FALSE
+        hjust = 1, vjust = 1, show.legend = FALSE
     ) +
     labs(
         x = "Total Broad Counts", y = "Total Layer-Level Counts",
@@ -275,7 +275,7 @@ p <- ggplot(
 
 pdf(
     file.path(plot_dir, "sample_proportions_scatter.pdf"),
-    width = 10, height = 4
+    width = 9, height = 3
 )
 print(p)
 dev.off()
