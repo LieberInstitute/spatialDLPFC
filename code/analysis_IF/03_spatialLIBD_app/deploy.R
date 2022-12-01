@@ -23,7 +23,7 @@ rsconnect::deployApp(
         "app.R",
         "spe.rds"
     ),
-    appName = "Visium_IF_DLPFC_2022",
+    appName = "spatialDLPFC_Visium_SPG",
     account = "libd",
     server = "shinyapps.io"
 )

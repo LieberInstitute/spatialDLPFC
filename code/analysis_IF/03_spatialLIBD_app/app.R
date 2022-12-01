@@ -23,7 +23,7 @@ spatialLIBD::run_app(
     sce_layer = NULL,
     modeling_results = NULL,
     sig_genes = NULL,
-    title = "Visium_IF DLPFC 2022",
+    title = "spatialDLPFC, Visium SPG",
     spe_discrete_vars = c(
         vars[grep("^10x_", vars)],
         "ManualAnnotation"
