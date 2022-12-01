@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# spatialDLPFC <img src="img/Br6255_ant_Sp09.png" align="right" width="300px" />
+# spatialDLPFC <img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" align="right" width="300px" />
 
 Welcome to the `spatialDLPFC` project! This project involves 3 data
 types as well as several interactive websites, all of which you are
@@ -45,7 +45,7 @@ Thank you for your interest in our work!
 
 ## Study Design
 
-<img src="img/study_overview.png" width="600px" align="right" />
+<img src="http://research.libd.org/spatialDLPFC/img/study_overview.png" width="600px" align="right" />
 
 **Study design to generate paired single-nucleus RNA sequencing
 (snRNA-seq) and spatially-resolved transcriptomic data across DLPFC**.
@@ -301,7 +301,7 @@ p09 <- spatialLIBD::vis_clus(
 p09
 ```
 
-<img src="img/Br6255_ant_Sp09.png" width="800px" align="center" />
+<img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" width="800px" align="center" />
 
 ``` r
 ## Repeat but for Sp16
@@ -315,7 +315,7 @@ p16 <- spatialLIBD::vis_clus(
 p16
 ```
 
-<img src="img/Br6255_ant_Sp16.png" width="800px" align="center" />
+<img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp16.png" width="800px" align="center" />
 
 ### Raw data
 

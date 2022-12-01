@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# spatialDLPFC <img src="img/Br6255_ant_Sp09.png" align="right" width="300px" />
+# spatialDLPFC <img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" align="right" width="300px" />
 
 Welcome to the `spatialDLPFC` project! This project involves 3 data types as well as several interactive websites, all of which you are publicly accessible for you to browse and download.
 
@@ -31,7 +31,7 @@ Thank you for your interest in our work!
 
 ## Study Design
 
-<img src="img/study_overview.png" width="600px" align="right" />
+<img src="http://research.libd.org/spatialDLPFC/img/study_overview.png" width="600px" align="right" />
 
 **Study design to generate paired single-nucleus RNA sequencing (snRNA-seq) and spatially-resolved transcriptomic data across DLPFC**. **A**. Tissue blocks were dissected across the rostral-caudal axis from 10 adult neurotypical control postmortem human brains of the DLPFC, including anterior (Ant), middle (Mid, and posterior (Post) positions (n=3 blocks per donor, n=30 blocks total). **B**. The same tissue blocks were used for snRNA-seq (10x Genomics 3’ gene expression assay, n=1-2 blocks per donor, n=19 samples) and spatial transcriptomics (10x Genomics Visium spatial gene expression assay, n=3 blocks per donor, n=30 samples). **C**. Tissue block orientation and morphology was confirmed by single molecule fluorescent in situ hybridization (smFISH) for laminar marker genes with RNAscope (_SLC17A7_ marking excitatory neurons in pink, _MBP_ marking white matter in green, _RELN_ marking layer 1 in yellow, and _NR4A2_ marking layer 6 in orange) and hematoxylin and eosin (H&E) staining. Spotplots depicting log transformed normalized expression (logcounts) of _SNAP25_, _MBP_, and _PCP4_ in the Visium data confirm the presence of gray matter, white matter, and cortical layers, respectively. 
 
@@ -182,7 +182,7 @@ p09 <- spatialLIBD::vis_clus(
 p09
 ```
 
-<img src="img/Br6255_ant_Sp09.png" width="800px" align="center" />
+<img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" width="800px" align="center" />
 
 ```{r "p16", fig.height = 8, fig.width = 9, eval = FALSE}
 ## Repeat but for Sp16
@@ -201,7 +201,7 @@ ggplot2::ggsave(here::here("img", "Br6255_ant_Sp09.png"), p09)
 ggplot2::ggsave(here::here("img", "Br6255_ant_Sp16.png"), p16)
 ```
 
-<img src="img/Br6255_ant_Sp16.png" width="800px" align="center" />
+<img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp16.png" width="800px" align="center" />
 
 
 ### Raw data
