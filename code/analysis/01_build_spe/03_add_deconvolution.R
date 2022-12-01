@@ -118,7 +118,7 @@ for (sample_id in unique(spe$sample_id)) {
 
     ## Also add the percent of the spot covered, which can be useful
     ## for detecting neuropil spots
-    spe$VistoSeg_percent[spe$sample_id == sample_id] <-
+    spe$VistoSeg_proportion[spe$sample_id == sample_id] <-
         cell_counts$Pmask_dark_blue
 }
 
@@ -126,7 +126,7 @@ for (sample_id in unique(spe$sample_id)) {
 if (any(is.na(spe$VistoSeg_count))) {
     stop("Did not find cell counts for all non-IF spots.")
 }
-stopifnot(all(!is.na(spe$VistoSeg_percent)))
+stopifnot(all(!is.na(spe$VistoSeg_proportion)))
 
 
 ## Check the size in GB
