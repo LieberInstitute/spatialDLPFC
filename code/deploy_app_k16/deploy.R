@@ -18,7 +18,7 @@ rsconnect::deployApp(
     appDir = here("code", "deploy_app_k16"),
     appFiles = c(
         "app.R",
-        "spe_subset.Rdata",
+        "spe_subset_for_spatialLIBD.rds",
         "sce_pseudo_BayesSpace_k16.rds",
         "modeling_results_BayesSpace_k16.Rdata",
         "sig_genes_subset_k16.Rdata"
