@@ -26,8 +26,11 @@ You might also be interested in this video demonstration of `spatialLIBD` for th
 Before the documetation, this tab displays the [SpatialExperiment](https://bioconductor.org/packages/SpatialExperiment) object that contains the spot-level data. It's basically useful to know that the data has been loaded and that you can start navigating the app. If you wish to download this data, use the following command.
 
 ```{r}
+## Check that you have a recent version of spatialLIBD installed
+stopifnot(packageVersion("spatialLIBD") >= "1.11.2")
+
 ## Download spe data
-spe <- spatialLIBD::fetch_data(type = 'spe')
+spe <- spatialLIBD::fetch_data(type = "spatialDLPFC_Visium")
 ```
 
 Throughout the rest of this document, we'll refer to this object by the name `spe`.
@@ -36,15 +39,24 @@ Throughout the rest of this document, we'll refer to this object by the name `sp
 
 * `Samples to plot`: which sample to plot on the tabs that do not have _grid_ on their name.
 * `Discrete variable to plot`: which discrete variable (typically with the cluster labels) to visualize. We include the clusters:
-  - the official manual annotation used extensively in our pilot study (DOI: [10.1038/s41593-020-00787-0](https://doi.org/10.1038/s41593-020-00787-0))
-  - from the graph based clustering results produced by `spaceranger` one Visium slide at a time. These clusters are saved as `GraphBased`.
-  - from your own manual annotation of the spots under `ManualAnnotation`.
-  - resulting the manual annotation by Kristen R Maynard and Keri Martinowich using known markers and histology features. This was an initial exploration and was not analyzed in more detail.
-  - resulting from using a shared nearest neighbors approach with 50 neighbors cut at 4 up to 28 clusters. These are `SNN_k50_k4` up to `SNN_k50_k28`.
-  - described in Figure 7 from our paper (DOI: [10.1038/s41593-020-00787-0](https://doi.org/10.1038/s41593-020-00787-0)) such as `SpatialDE_PCA`, `SpatialDE_pool_PCA` and others.
+  - `BayesSpace`: the main spatial domain resolution for this app.
+  - `ManualAnnotation`: your own manual annotation of the spots.
+  - `SpaceRanger_*`: graph based and k-means clustering results produced by `spaceranger` one Visium slide at a time. They are not guaranteed to be the same across samples, like cluster 1 in sample 1 might mean something completely different to cluster 1 in sample 2.
+  - `scran_*`: quality control checks. For example, `scran_low_lib_size` shows spots that failed the default library size due to having low values.
+  - `BayesSpace_harmony_*`: BayesSpace spatial domain results after performing batch correction by sample ID using [harmony](https://github.com/immunogenomics/harmony).
+  - `BayesSpace_pca_*`: BayesSpace spatial domain results after computing PCs across all samples, but without the `harmony` batch correction.
+  - `graph_based_PCA_within`: shared nearest neighbors cluster results with 10 neighbors cut at 7 after computing PCs within each sample. It is similar to `SpaceRanger_10x_graphclust` but was computed with R/Bioconductor packages.
+  - `PCA_SNN_k10_k7`: shared nearest neighbors cluster results with 10 neighbors cut at 7, using the PCs computed across all samples, but without the `harmony` batch correction.
+  - `Harmony_SNN_k10_k7`: shared nearest neighbors cluster results with 10 neighbors cut at 7, using `harmony` batch corrected data.
 * `Reduced dimensions`: which reduced dimension to visualize on the `clusters (interactive)` tab. Only the first two dimensions will be shown.
-* `Continuous variable to plot`: which gene or continuous variable (such as the cell count, the ratio of the mitochondrial chromosome expression) to visualize in the gene tabs as well as on the `clusters (interactive)` tab.
-* `Gene scale`: whether to use the raw expression values (`counts`) or the scaled and log transformed values (`logcounts`).
+* `Continuous variable to plot`: which gene or continuous variable (such as the cell count, the ratio of the mitochondrial chromosome expression) to visualize in the gene tabs as well as on the `clusters (interactive)` tab. Details:
+  - `sum_umi`: sum of UMI counts across a spot.
+  - `sum_gene`: number of genes with non-zero counts in a spot.
+  - `expr_chrM`: sum of chrM counts in a spot.
+  - `expr_chrM_ratio`: ratio of `expr_chrM / sum_umi`
+  - `VistoSeg_*`: the cell counts (`count`) and the proportion of the spot (`proportion`) covered by cells. `count_deprecated` is from an earlier version of VistoSeg that was counting each set of segmented pixels instead of checking for a minimum size and for the centroid to be included in the spot.
+  - Spot deconvolution results using snRNA-seq data as input at the `layer_*` or `broad_*` cell type level. We provide results for [`tangram`](https://doi.org/10.1038/s41592-021-01264-7), [`cell2location`](https://doi.org/10.1038/s41587-021-01139-4) and [`SPOTlight`](https://doi.org/10.1093/nar/gkab043).
+* `Gene scale`: whether to use the raw expression values (`counts`) or the scaled and log transformed values (`logcounts`). _Due to memory limits at shinyapps.io we have disabled the raw `counts`_.
 * `Image name`: the name of the background image to use. You can edit this image on the `Edit image` tab.
 * `Spot transparency level`: the transparency of the spots in the visualizations. It can be useful if the spot colors are blocking the background image.
 * `Minimum count value`: Values from the selected `continuous variable to plot` at or below this threshold will not be displayed.
@@ -131,6 +143,12 @@ We also recommend saving your work often in case you lose connection to `spatial
 ```{r}
 ## Reproduce locally with
 spatialLIBD::run_app()
+
+## Note that the original spe object shown here uses 6.96 GB
+## You can follow the steps at 
+## https://github.com/LieberInstitute/spatialDLPFC/blob/main/code/analysis/01_build_spe/03_add_deconvolution.R
+## to further subset this object. Basically, this involves dropping the
+## counts and keeping only the "lowres" images.
 ```
 
 This will require about 3GB of RAM to run on the server side, though potentially more, specially when using the `clusters (interactive)` tab.

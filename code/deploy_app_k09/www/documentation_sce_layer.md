@@ -1,5 +1,5 @@
-Layer-level `spatialLIBD` documentation
-=======================================
+Spatial domain-level documentation
+==================================
 
 This document describes the layer-level portion of the shiny web application made by the  [`spatialLIBD`](https://bioconductor.org/packages/spatialLIBD) Bioconductor package. You can either find the documentation about this package through [Bioconductor](https://bioconductor.org/packages/spatialLIBD) or at the [`spatialLIBD` documentation website](http://lieberinstitute.github.io/spatialLIBD). Below we explain the options common across tabs and each of the tabs at the layer-level data. As explained in the documentation, the layer-level data is the result of pseudo-bulking the spot-level data to compress it, reduce sparsity and power more analyses.
 
@@ -23,52 +23,56 @@ You might also be interested in this video demonstration of `spatialLIBD` for th
 
 ## Raw summary
 
-Before the documetation, his tab displays the [SingleCellExperiment](https://bioconductor.org/packages/SingleCellExperiment) object that contains the layer-level data. It's basically useful to know that the data has been loaded and that you can start navigating the app. If you wish to download this data, use the following command.
+Before the documentation, this tab displays the [SingleCellExperiment](https://bioconductor.org/packages/SingleCellExperiment) object that contains the spatial domain level data (layer-level in other `spatialLIBD` apps). It's basically useful to know that the data has been loaded and that you can start navigating the app. If you wish to download this data, use the following command.
 
 ```{r}
 ## Download sce data
-sce_layer <- spatialLIBD::fetch_data(type = 'sce_layer')
+sce_pseudo <- spatialLIBD::fetch_data(type = "spatialDLPFC_Visium_Sp09_pseudo")
 ```
 
-Throughout the rest of this document, we'll refer to this object by the name `sce_layer`.
+Throughout the rest of this document, we'll refer to this object by the name `sce_pseudo`.
 
 This tab also shows the statistical modeling results, described below, that you can access locally and re-shape using the following code.
 
 ```{r}
 ## Reproduce locally with
-modeling_results <- fetch_data('modeling_results')
+modeling_results <- fetch_data("spatialDLPFC_Visium_Sp09_model_results")
 sig_genes <-
         spatialLIBD::sig_genes_extract_all(
-            n = nrow(sce_layer),
+            n = nrow(sce_pseudo),
             modeling_results = modeling_results,
-            sce_layer = sce_layer
+            sce_layer = sce_pseudo
         )
 ```
 
 ## Common options
 
 * `Model results`: the statistical modeling results to use. We computed three different types of models:
-  1. `enrichment`: one layer against all the the other layers. Results in t-statistics.
-  2. `pairwise`: one layer against another one. Results in t-statistics with two-sided p-values.
-  3. `anova`: changes among the layers (adjusting more the mean expression) using the data from either all layers (`full`) or after dropping the white matter layer (`noWM`) since the rest of the layers have a richer concentration of neurons.
+  1. `enrichment`: one spatial domain against all the the other spatial domains. Results in t-statistics.
+  2. `pairwise`: one spatial domain against another one. Results in t-statistics with two-sided p-values.
+  3. `anova`: changes among the spatial domains (adjusting for the mean expression) using the data from all spatial domains (`all`). Note that great changes between the white matter and grey matter will greatly influence these results.
 
 ## Reduced dim
 
-In this panel you can visualize the layer-level data (`sce_layer`) across reduced dimensionality representations derived from the gene expression data from the layer-level pseudo-bulked data. Select which dimensionality reduction method to use with `Reduced Dimension` (PCA, TSNE, UMAP, etc) then `Color by` to choose which variable to color data by. The options are:
+In this panel you can visualize the spatial domain-level data (`sce_pseudo`) across reduced dimensionality representations derived from the gene expression data from the spatial domain-level pseudo-bulked data. Select which dimensionality reduction method to use with `Reduced Dimension` (PCA, MDS or with the `scater::runPCA` function which provides more stable results and shows the percent of variable explained). Then use `Color by` to choose which variable to color data by, which can be useful to identify groups of pseudo-bulked samples. The options are:
 
-* `c_k20_k7`, `c_k7_k7` and `c_k5_k7` which are shared nearest neighbors with either 20, 7 or 5 neighbors cut at 7 clusters.
-* `kmeans_k7`: k-means clustering results using k = 7 clusters
-* `layer_guess`, `layer_guess_reordered`, `layer_guess_reordered_short` and `spatialLIBD` are all based on our manual annotations which were used for pseudo-bulking the data.
-* sample information such as the `subject` (donor brain), `replicate` (whether it's the first or second slide in a pair of spatial replicates), `position` (spatial replicate distance), `subject_position` (the six unique spatial replicate pairs), or `sample_name` which is the sample ID.
+* `BayesSpace`: the main spatial domain resolution used in this website
+* `age`: age of the n = 10 donors
+* `diagnosis`: all donors are neurotypical controls in this dataset
+* `ncells`: number of spots that were combined when pseudo-bulking
+* `position`: whether the sample is from anterior, middle or posterior
+* `sample_id`: sample identifier
+* `sex`: sex of the n = 10 donors
+* `subject`: donor identified
 
 ```{r}
 ## Reproduce locally with
-scater::plotReducedDim(sce_layer)
+scater::plotReducedDim(sce_pseudo)
 ```
 
 ## Model boxplots
 
-This tab allows you to make a boxplot of the `logcounts` gene expression from the layer-level data (`sce_layer`) for a given `gene`; you can search your gene by typing either the symbol or the Ensembl gene ID. The model result information displayed in the title of the plot is based on which `model results` you selected and whether you are using the short title version or not (controlled by a checkbox). We provide two different color scales you can use: the color blind friendly `viridis` as well as a custom one we used for the `paper`. Through the `Model test` selector, you can choose which particular comparison to display. For example, `Layer1` for the `enrichment` model means that you would display the results of comparing Layer1 against the rest of the layers. `Layer1-Layer2` for the `pairwise` model means that you would display the results of Layer1 being greater than Layer2, while `Layer2-Layer1` is the reverse scenario. Under `pairwise`, the layers not used are display in gray.
+This tab allows you to make a boxplot of the `logcounts` gene expression from the spatial domain-level data (`sce_pseudo`) for a given `gene`; you can search your gene by typing either the symbol or the Ensembl gene ID. The model result information displayed in the title of the plot is based on which `model results` you selected and whether you are using the short title version or not (controlled by a checkbox). We provide two different color scales you can use: the color blind friendly `viridis` as well as a custom one we used for the `paper`. Through the `Model test` selector, you can choose which particular comparison to display. For example, `Sp09D01` for the `enrichment` model means that you would display the results of comparing Sp09D01 against the rest of the spatial domains. `Sp09D01-Sp09D02` for the `pairwise` model means that you would display the results of Sp09D01 being greater than Sp09D02, while `Sp09D02-Sp09D01` is the reverse scenario. Under `pairwise`, the spatial domains not used are display in gray.
 
 Below the plot you can find the subset of the table of results  (`sig_genes` from earlier), sort the table by the different columns, and download it as a CSV if you want. For more details about what each of these columns mean, check the [`spatialLIBD` vignette documentation](http://LieberInstitute.github.io/spatialLIBD/articles/spatialLIBD.html#extract-significant-genes).
 
@@ -97,13 +101,13 @@ spatialLIBD::gene_set_enrichment_plot()
 
 ## Spatial registration
 
-If you have a single nucleus or single cell RNA-sequencing (snRNA-seq)  (scRNA-seq) dataset, you might group your cells into clusters. Once you do, you could compress the data by pseudo-bulking (like we did to go from `spe` to `sce_layer`). You could then compute `enrichment` (`pairwise`, `anova`) statistics for your cell clusters. If you do so, you can then upload a specially formatted CSV file just like the one in [this example file](https://github.com/LieberInstitute/spatialLIBD/blob/master/data-raw/tstats_Human_DLPFC_snRNAseq_Nguyen_topLayer.csv). This file has:
+If you have a single nucleus or single cell RNA-sequencing (snRNA-seq)  (scRNA-seq) dataset, you might group your cells into clusters. Once you do, you could compress the data by pseudo-bulking (like we did to go from `spe` to `sce_pseudo`). You could then compute `enrichment` (`pairwise`, `anova`) statistics for your cell clusters. If you do so, you can then upload a specially formatted CSV file just like the one in [this example file](https://github.com/LieberInstitute/spatialLIBD/blob/master/data-raw/tstats_Human_DLPFC_snRNAseq_Nguyen_topLayer.csv). This file has:
 
 * column names,
 * human Ensembl gene IDs as the row names (first column, no name for the column),
 * statistics (numeric values) for the cells.
 
-Once you have uploaded a CSV file following this specific format, you can then assess whether the correlation between your statistics and the ones from our layers for the subset of genes (Ensembl ids) present in both. The resulting heatmap and interactive correlation matrix (which again you can interact with and download) can be useful if you are in the process of labeling your sn/scRNA-seq clusters or simply want to compare them against the layer-specific data we have provided.
+Once you have uploaded a CSV file following this specific format, you can then assess whether the correlation between your statistics and the ones from our spatial domains for the subset of genes (Ensembl ids) present in both. The resulting heatmap and interactive correlation matrix (which again you can interact with and download) can be useful if you are in the process of labeling your sn/scRNA-seq clusters or simply want to compare them against the spatial domain-specific data we have provided. This can also be used for new spatially-resolved transcriptomics datasets.
 
 Finally, you can change the `Maximum correlation` for visualization purposes on the heatmap as it will change the dynamic range for the colors.
 
