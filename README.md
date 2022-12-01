@@ -1,7 +1,11 @@
+spatialDLPFC
+================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# spatialDLPFC <img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" align="right" width="300px" />
+# Overview
+
+<img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" align="left" width="300px" />
 
 Welcome to the `spatialDLPFC` project! This project involves 3 data
 types as well as several interactive websites, all of which you are
@@ -45,7 +49,7 @@ Thank you for your interest in our work!
 
 ## Study Design
 
-<img src="http://research.libd.org/spatialDLPFC/img/study_overview.png" width="600px" align="right" />
+<img src="http://research.libd.org/spatialDLPFC/img/study_overview.png" width="600px" align="left" />
 
 **Study design to generate paired single-nucleus RNA sequencing
 (snRNA-seq) and spatially-resolved transcriptomic data across DLPFC**.
@@ -384,5 +388,5 @@ TODO
 </noscript>
 <!-- End Google Tag Manager (noscript) -->
 <center>
-<script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=tE-y1eDw-d-ZFWbu6cdHXSRgAwMRA-y9OobY9j8Krqk&cl=ffffff&w=a"></script>
+<script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?cl=080808&w=300&t=n&d=tE-y1eDw-d-ZFWbu6cdHXSRgAwMRA-y9OobY9j8Krqk&co=ffffff&cmo=3acc3a&cmn=ff5353&ct=808080"></script>
 </center>
