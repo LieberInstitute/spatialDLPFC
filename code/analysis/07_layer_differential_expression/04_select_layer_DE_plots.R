@@ -327,12 +327,34 @@ spe$bayesSpace_harmony_9 <- as.factor(spe$bayesSpace_harmony_9)
 spe$bayesSpace_harmony_16 <- as.factor(spe$bayesSpace_harmony_16)
 
 ## K9 CLDN5
-pdf(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.pdf"))
+
+imgData(spe)[imgData(spe)$sample_id == "Br6432_ant",]
+
+fig_samples <- c("Br8667_mid", "Br6522_ant", "Br6432_ant")
+
+plot_transform <- function(sample_id){
+  img_dims <- imgData(spe)[c(imgData(spe)$sample_id == sample_id& imgData(spe)$image_id == "lowres"),"data"][[1]]
+  return(nrow(img_dims)/ncol(img_dims))
+}
+
+walk(fig_samples,function(s){
+  base_dim <- 9
+  pdf(here(plot_dir, paste0("vis_gene_CLDN5-",s,".pdf")), height = base_dim*plot_transform(s), width = base_dim)
+  print(vis_gene(
+    spe = spe,
+    sampleid = s,
+    geneid = "CLDN5"
+  )) +
+    theme(title.postion = "None")
+  dev.off()
+  })
+
+pdf(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.pdf"), height = 10, width = 10)
 vis_gene(
     spe = spe,
     sampleid = "Br6522_ant",
     geneid = "CLDN5"
-)
+) 
 dev.off()
 
 png(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.png"))
