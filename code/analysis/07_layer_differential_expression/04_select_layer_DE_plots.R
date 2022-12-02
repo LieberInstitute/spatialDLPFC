@@ -349,6 +349,19 @@ walk(fig_samples,function(s){
   dev.off()
   })
 
+
+vis_gene_test <- vis_gene(
+  spe = spe,
+  point_size = 1.2,
+  sampleid = "Br6522_ant",
+  geneid = "CLDN5"
+) + coord_fixed()
+
+ggsave(vis_gene_test, filename = here(plot_dir, "vis_gene_ggsave.png"))
+ggsave(vis_gene_test, filename = here(plot_dir, "vis_gene_ggsave.pdf"))
+
+
+
 pdf(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.pdf"), height = 10, width = 10)
 vis_gene(
     spe = spe,
