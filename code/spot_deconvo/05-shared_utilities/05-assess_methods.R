@@ -7,7 +7,7 @@ library("spatialLIBD")
 library("cowplot")
 library("ggrepel")
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -680,23 +680,27 @@ p <- ggplot(count_df) +
         rows = vars(cell_type), cols = vars(deconvo_tool)
     ) +
     guides(col = guide_legend(override.aes = list(alpha = 1))) +
-    labs(x = "Software-Estimated", y = "CART-Calculated") +
-    geom_text(
-        data = metrics_df,
-        mapping = aes(
-            x = Inf, y = max(count_df$actual) / 5,
-            label = corr
-        ),
-        hjust = 1
+    labs(
+        x = "Software-Estimated Counts", y = "CART-Calculated Counts",
+        color = "Cell Type"
     ) +
     geom_text(
         data = metrics_df,
-        mapping = aes(x = Inf, y = 0, label = rmse),
-        hjust = 1, vjust = 0
+        mapping = aes(x =  0, y = max(count_df$actual), label = corr),
+        hjust = 0, vjust = 1
+    ) +
+    geom_text(
+        data = metrics_df,
+        mapping = aes(x = 0, y = 0.85 * max(count_df$actual), label = rmse),
+        hjust = 0, vjust = 1
     ) +
     scale_color_manual(values = cell_type_labels) +
     theme_bw(base_size = 15)
 
+#   Data-specific adjustment for the sake of a quick figure
+if (cell_group == "broad") {
+    p <- p + theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+}
 
 pdf(file.path(plot_dir, "counts_all_spots_figure.pdf"))
 print(p)
