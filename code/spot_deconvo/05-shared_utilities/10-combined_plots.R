@@ -66,15 +66,15 @@ corresponding_layers <- list(
     "Excit_L5_6" = c("Layer 5", "Layer 6"),
     "Excit_L6" = "Layer 6",
     "Inhib" = paste("Layer", 2:6),
-    "Micro" = c("Layer 1", "White Matter"),
-    "Oligo" = "White Matter",
-    "OPC" = c("Layer 1", "White Matter")
+    "Micro" = c("Layer 1", "WM"),
+    "Oligo" = "WM",
+    "OPC" = c("Layer 1", "WM")
 )
 
 #   Name spatialLIBD colors with the layer names used in this script
 names(libd_layer_colors)[
     match(c(paste0("Layer", 1:6), "WM"), names(libd_layer_colors))
-] <- c(paste("Layer", 1:6), "White Matter")
+] <- c(paste("Layer", 1:6), "WM")
 
 cell_type_labels <- c(
     "#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1"
@@ -170,7 +170,7 @@ observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
 #   Clean up labels
 observed_df_long$label <- tolower(observed_df_long$label)
 observed_df_long$label <- sub("layer", "Layer ", observed_df_long$label)
-observed_df_long$label[observed_df_long$label == "wm"] <- "White Matter"
+observed_df_long$label[observed_df_long$label == "wm"] <- "WM"
 stopifnot(
     all(unlist(corresponding_layers) %in% unique(observed_df_long$label))
 )
@@ -190,7 +190,7 @@ counts_df <- observed_df_long |>
     summarize(count = sum(count)) |>
     #   Now average across samples
     group_by(deconvo_tool, label, cell_type, resolution) |>
-    summarize(count = sum(count) / length(sample_ids)) |>
+    summarize(count = mean(count)) |>
     ungroup()
 
 #-------------------------------------------------------------------------------
@@ -205,7 +205,7 @@ p <- ggplot(counts_df, aes(x = resolution, y = count, fill = cell_type)) +
         fill = "Cell Type"
     ) +
     scale_fill_manual(values = estimated_cell_labels) +
-    theme_bw(base_size = 14) +
+    theme_bw(base_size = 15) +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 pdf(file.path(plot_dir, "barplot.pdf"), width = 10, height = 5)
