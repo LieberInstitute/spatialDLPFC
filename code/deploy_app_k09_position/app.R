@@ -16,8 +16,8 @@ spe <- readRDS("spe_subset_for_spatialLIBD.rds")
 # load the pseudobulked object sce_pseudo
 sce_pseudo <- readRDS("sce_pseudo_BayesSpace_k09.rds")
 # load modeling results for k9 clustering/pseudobulking
-load("modeling_results_BayesSpace_k09.Rdata", verbose = TRUE)
-load("sig_genes_subset_k09.Rdata", verbose = TRUE)
+load("modeling_results_position_k09.Rdata", verbose = TRUE)
+load("sig_genes_subset_k09_position.Rdata", verbose = TRUE)
 
 spe$BayesSpace <- spe$BayesSpace_harmony_09
 vars <- colnames(colData(spe))
@@ -35,7 +35,7 @@ spatialLIBD::run_app(
     sce_layer = sce_pseudo,
     modeling_results = modeling_results,
     sig_genes = sig_genes,
-    title = "spatialDLPFC, Visium, Sp09",
+    title = "spatialDLPFC, Visium, Sp09, position",
     spe_discrete_vars = c( # this is the variables for the spe object not the sce_pseudo object
         "BayesSpace",
         "ManualAnnotation",
@@ -45,7 +45,8 @@ spatialLIBD::run_app(
         "graph_based_PCA_within",
         "PCA_SNN_k10_k7",
         "Harmony_SNN_k10_k7",
-        "BayesSpace_colors"
+        "BayesSpace_colors",
+        "position"
     ),
     spe_continuous_vars = c(
         "sum_umi",
@@ -56,6 +57,6 @@ spatialLIBD::run_app(
         vars[grep("^layer_", vars)],
         vars[grep("^broad_", vars)]
     ),
-    default_cluster = "BayesSpace",
+    default_cluster = "position",
     docs_path = "www"
 )
