@@ -16,6 +16,15 @@ raw_results_layer_path <- here(
     "results_raw_layer.csv"
 )
 
+collapsed_results_broad_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    "results_collapsed_broad.csv"
+)
+collapsed_results_layer_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    "results_collapsed_layer.csv"
+)
+
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
     "sample_ids.txt"
@@ -176,7 +185,7 @@ stopifnot(
 )
 
 ################################################################################
-#   Plots
+#   Broad-Resolution Plots
 ################################################################################
 
 counts_df <- observed_df_long |>
@@ -281,3 +290,70 @@ print(p)
 dev.off()
 
 session_info()
+
+################################################################################
+#   Read in manual layer annotation and load the SPE object
+################################################################################
+
+collapsed_broad = read.csv(collapsed_results_broad_path) |>
+    mutate(resolution = "broad")
+
+collapsed_results = read.csv(collapsed_results_layer_path) |>
+    mutate(resolution = "layer") |>
+    rbind(collapsed_broad) |>
+    #   Make one cell type per row
+    pivot_longer(
+        cols = all_of(cell_types_actual), names_to = "cell_type",
+        values_to = "count"
+    ) |>
+    #   Have an observed and actual column
+    pivot_wider(
+        names_from = obs_type, values_from = count,
+    )
+
+#   Calculate total cells per spot and prepare for plotting
+count_df = collapsed_results |>
+    filter(deconvo_tool %in% c("tangram", "cell2location")) |>
+    #   Add counts of any cell type for each spot
+    group_by(deconvo_tool, resolution, barcode, sample_id) |>
+    summarize(observed = sum(observed), actual = sum(actual))
+
+#   Compute metrics for each deconvolution tool and resolution: correlation
+#   between observed and actual values as well as RMSE
+metrics_df <- count_df |>
+    group_by(deconvo_tool, resolution) |>
+    summarize(
+        corr = paste("Cor =", round(cor(observed, actual), 2)),
+        rmse = paste("RMSE =", signif(mean((observed - actual)**2)**0.5, 3))
+    ) |>
+    ungroup()
+
+p = ggplot(count_df, aes(x = observed, y = actual)) +
+    geom_point(alpha = 0.01) +
+    facet_grid(rows = vars(resolution), cols = vars(deconvo_tool)) +
+    geom_abline(
+        intercept = 0, slope = 1, linetype = "dashed", color = "red"
+    ) +
+    geom_text(
+        data = metrics_df,
+        mapping = aes(
+            x = max(count_df$observed), y = max(count_df$actual) / 7,
+            label = corr
+        ),
+        hjust = 1, size = 5
+    ) +
+    geom_text(
+        data = metrics_df,
+        mapping = aes(x = max(count_df$observed), y = 0, label = rmse),
+        hjust = 1, vjust = 0, size = 5
+    ) +
+    labs(
+        x = "Calculated Cell Count",
+        y = "Provided Cell Count (Cellpose)",
+        title = "Provided vs. Calculated Total Cells Per Spot"
+    ) +
+    theme_bw(base_size = 15)
+
+pdf(file.path(plot_dir, "total_cells_spot_paper.pdf"))
+print(p)
+dev.off()
