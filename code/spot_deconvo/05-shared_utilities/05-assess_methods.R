@@ -443,6 +443,29 @@ prop_barplot <- function(prop_df, filename) {
     dev.off()
 }
 
+#   Write a PDF to 'filename' of a barplot of section-wide cell-type
+#   proportions against the ground-truth. Intended as a supplementary figure
+#   in the maniscript
+#
+#   prop_df: tibble with columns 'sample_id', 'deconvo_tool' (which should
+#       include the ground-truth), and 'prop'. One row per sample per deconvo
+#       tool per cell type.
+#   filename: character relative to 'plot_dir', with extension ".pdf"
+prop_barplot_paper <- function(prop_df, filename) {
+    p = ggplot(prop_df, aes(x = deconvo_tool, y = prop, fill = cell_type)) +
+        geom_bar(stat = "identity") +
+        facet_wrap(~ sample_id, nrow = 1) +
+        labs(x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type") +
+        scale_x_discrete(labels = c("actual" = "CART")) +
+        scale_fill_manual(values = cell_type_labels) +
+        theme_bw(base_size = 15) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+    
+    pdf(file.path(plot_dir, filename), width = 10, height = 5)
+    print(p)
+    dev.off()
+}
+
 #   Print a table of KL divergences between measured cell-type proportions in
 #   each section (averaged across sections) against the ground truth
 kl_table <- function(full_df) {
@@ -771,6 +794,9 @@ prop_df <- rbind(temp_actual, temp_observed)
 prop_barplot(prop_df, "prop_barplots.pdf")
 prop_barplot(
     prop_df |> filter(cell_type != "other"), "prop_barplots_no_other.pdf"
+)
+prop_barplot_paper(
+    prop_df |> filter(cell_type != "other"), "prop_barplots_no_other_paper.pdf"
 )
 
 print("Accuracy of overall cell-type proportions per section (Mean KL divergence from ground-truth):")
