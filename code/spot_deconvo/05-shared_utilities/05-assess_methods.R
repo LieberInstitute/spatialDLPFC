@@ -641,7 +641,7 @@ names(shape_scale) <- c(sample_ids, "average")
 
 observed_df <- as_tibble(read.csv(raw_results_path))
 observed_df$obs_type <- "observed"
-observed_df$deconvo_tool <- tools::toTitleCase(observed_df$deconvo_tool)
+observed_df$deconvo_tool <- str_to_title(observed_df$deconvo_tool)
 
 #   Plot counts for each cell type without collapsing cell categories
 observed_df_long <- observed_df %>%

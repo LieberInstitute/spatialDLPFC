@@ -105,7 +105,7 @@ names(libd_layer_colors)[
 cell_type_labels <- c(
     "#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1"
 )
-names(cell_type_labels) <- c(cell_types_actual)
+names(cell_type_labels) <- str_to_title(c(cell_types_actual))
 
 set.seed(11282022)
 dir.create(plot_dir, showWarnings = FALSE)
@@ -298,6 +298,70 @@ if (dataset == "IF") {
 #   resolutions
 #-------------------------------------------------------------------------------
 
+sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
+    metrics_df <- counts_df |>
+        group_by(deconvo_tool) |>
+        summarize(
+            corr = paste0("Cor = ", round(cor(broad, layer), 2)),
+            rmse = paste0("RMSE = ", signif(mean((broad - layer)**2)**0.5, 3))
+        ) |>
+        ungroup()
+    
+    #   We'll shape by sample for IF data. For nonIF, there are too many samples
+    if (dataset == "IF") {
+        p <- ggplot(
+            counts_df,
+            aes(x = broad, y = layer, color = cell_type, shape = sample_id)
+        )
+    } else {
+        p <- ggplot(counts_df, aes(x = broad, y = layer, color = cell_type))
+    }
+    
+    p <- p + geom_point() +
+        geom_abline(
+            intercept = 0, slope = 1, linetype = "dashed", color = "red"
+        ) +
+        facet_wrap(~deconvo_tool) +
+        scale_color_manual(values = color_scale) +
+        #   Correlation label
+        geom_text(
+            data = metrics_df,
+            mapping = aes(
+                x = max(counts_df$broad),
+                y = max(counts_df$layer),
+                label = corr,
+                color = NULL,
+                shape = NULL
+            ),
+            hjust = 1, vjust = 1, show.legend = FALSE
+        ) +
+        #   RMSE label
+        geom_text(
+            data = metrics_df,
+            mapping = aes(
+                x = max(counts_df$broad),
+                y = 0.9 * max(counts_df$layer) + 0.1 * min(counts_df$layer),
+                label = rmse,
+                color = NULL,
+                shape = NULL
+            ),
+            hjust = 1, vjust = 1, show.legend = FALSE
+        ) +
+        labs(
+            x = "Total Broad Counts", y = "Total Layer-Level Counts",
+            color = "Cell Type", shape = "Sample ID"
+        ) +
+        theme_bw(base_size = 15)
+    
+    pdf(
+        file.path(plot_dir, filename),
+        width = 9, height = 3
+    )
+    print(p)
+    dev.off()
+}
+
+#   Plot at broad resolution
 counts_df <- observed_df_long |>
     #   Sum counts across each section
     group_by(deconvo_tool, sample_id, cell_type, resolution) |>
@@ -306,66 +370,44 @@ counts_df <- observed_df_long |>
     pivot_wider(names_from = resolution, values_from = count) |>
     ungroup()
 
-metrics_df <- counts_df |>
-    group_by(deconvo_tool) |>
-    summarize(
-        corr = paste0("Cor = ", round(cor(broad, layer), 2)),
-        rmse = paste0("RMSE = ", signif(mean((broad - layer)**2)**0.5, 3))
+sample_prop_scatter(
+    counts_df, dataset, estimated_cell_labels,
+    "sample_proportions_scatter_broad.pdf"
+)
+
+#   Plot at collapsed resolution
+counts_df = observed_df_long |>
+    pivot_wider(names_from = cell_type, values_from = count) |>
+    #   Collapse cell types
+    mutate(Oligo = Oligo + OPC, Neuron = Excit + Inhib) |>
+    select(
+        all_of(
+            c(
+                added_colnames, "resolution", "label",
+                str_to_title(
+                    cell_types_actual[-match('other', cell_types_actual)]
+                )
+            )
+        )
     ) |>
+    #   Change back to one cell type per row
+    pivot_longer(
+        cols = str_to_title(
+            cell_types_actual[-match('other', cell_types_actual)]
+        ),
+        names_to = "cell_type", values_to = "count"
+    ) |>
+    #   Sum counts across each section
+    group_by(deconvo_tool, sample_id, cell_type, resolution) |>
+    summarize(count = sum(count)) |>
+    #   Now pivot wider by resolution
+    pivot_wider(names_from = resolution, values_from = count) |>
     ungroup()
 
-#   We'll shape by sample for IF data. For nonIF, there are too many samples
-if (dataset == "IF") {
-    p <- ggplot(
-        counts_df,
-        aes(x = broad, y = layer, color = cell_type, shape = sample_id)
-    )
-} else {
-    p <- ggplot(counts_df, aes(x = broad, y = layer, color = cell_type))
-}
-
-p <- p + geom_point() +
-    geom_abline(
-        intercept = 0, slope = 1, linetype = "dashed", color = "red"
-    ) +
-    facet_wrap(~deconvo_tool) +
-    scale_color_manual(values = estimated_cell_labels) +
-    #   Correlation label
-    geom_text(
-        data = metrics_df,
-        mapping = aes(
-            x = max(counts_df$broad),
-            y = max(counts_df$layer),
-            label = corr,
-            color = NULL,
-            shape = NULL
-        ),
-        hjust = 1, vjust = 1, show.legend = FALSE
-    ) +
-    #   RMSE label
-    geom_text(
-        data = metrics_df,
-        mapping = aes(
-            x = max(counts_df$broad),
-            y = 0.9 * max(counts_df$layer) + 0.1 * min(counts_df$layer),
-            label = rmse,
-            color = NULL,
-            shape = NULL
-        ),
-        hjust = 1, vjust = 1, show.legend = FALSE
-    ) +
-    labs(
-        x = "Total Broad Counts", y = "Total Layer-Level Counts",
-        color = "Cell Type", shape = "Sample ID"
-    ) +
-    theme_bw(base_size = 15)
-
-pdf(
-    file.path(plot_dir, "sample_proportions_scatter.pdf"),
-    width = 9, height = 3
+sample_prop_scatter(
+    counts_df, dataset, cell_type_labels, 
+    "sample_proportions_scatter_collapsed.pdf"
 )
-print(p)
-dev.off()
 
 ################################################################################
 #   Total-Cells Plots
