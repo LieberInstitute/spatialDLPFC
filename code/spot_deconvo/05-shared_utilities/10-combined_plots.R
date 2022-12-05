@@ -6,6 +6,7 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 library("sessioninfo")
+library("tools")
 
 #   "IF" or "nonIF"
 dataset = "IF"
@@ -67,7 +68,7 @@ sce_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "sce_layer.rds"
 )
 
-cell_types_actual <- c("astro", "micro", "neuron", "oligo", "other")
+cell_types_actual <- c("Astro", "Micro", "Neuron", "Oligo", "Other")
 cell_types_broad <- c(
     "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
 )
@@ -105,7 +106,7 @@ names(libd_layer_colors)[
 cell_type_labels <- c(
     "#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1"
 )
-names(cell_type_labels) <- str_to_title(c(cell_types_actual))
+names(cell_type_labels) <- c(cell_types_actual)
 
 set.seed(11282022)
 dir.create(plot_dir, showWarnings = FALSE)
@@ -192,7 +193,7 @@ if (dataset == "IF") {
     
     #   Add layer label to observed_df_long
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
-        mutate(deconvo_tool = str_to_title(deconvo_tool)) |>
+        mutate(deconvo_tool = toTitleCase(deconvo_tool)) |>
         left_join(layer_ann, by = c("barcode", "sample_id")) |>
         filter(!is.na(label)) |>
         as_tibble()
@@ -289,7 +290,7 @@ if (dataset == "IF") {
     
     #   Merge results for both resolutions
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
-        mutate(deconvo_tool = str_to_title(deconvo_tool)) |>
+        mutate(deconvo_tool = toTitleCase(deconvo_tool)) |>
         as_tibble()
 }
 
@@ -384,17 +385,13 @@ counts_df = observed_df_long |>
         all_of(
             c(
                 added_colnames, "resolution", "label",
-                str_to_title(
-                    cell_types_actual[-match('other', cell_types_actual)]
-                )
+                cell_types_actual[- match('Other', cell_types_actual)]
             )
         )
     ) |>
     #   Change back to one cell type per row
     pivot_longer(
-        cols = str_to_title(
-            cell_types_actual[-match('other', cell_types_actual)]
-        ),
+        cols = cell_types_actual[- match('Other', cell_types_actual)],
         names_to = "cell_type", values_to = "count"
     ) |>
     #   Sum counts across each section
@@ -422,7 +419,7 @@ if (dataset == "IF") {
         rbind(collapsed_broad) |>
         #   Make one cell type per row
         pivot_longer(
-            cols = all_of(cell_types_actual), names_to = "cell_type",
+            cols = all_of(tolower(cell_types_actual)), names_to = "cell_type",
             values_to = "count"
         ) |>
         mutate(cell_type = str_to_title(cell_type)) |>
@@ -433,6 +430,7 @@ if (dataset == "IF") {
     
     #   Calculate total cells per spot and prepare for plotting
     count_df = collapsed_results |>
+        mutate(deconvo_tool = toTitleCase(deconvo_tool)) |>
         filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
         #   Add counts of any cell type for each spot
         group_by(deconvo_tool, resolution, barcode, sample_id) |>

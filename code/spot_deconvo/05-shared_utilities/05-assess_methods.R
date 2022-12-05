@@ -5,7 +5,7 @@ library("tidyverse")
 library("reshape2")
 library("spatialLIBD")
 library("cowplot")
-library("ggrepel")
+library("tools")
 
 cell_group <- "layer" # "broad" or "layer"
 
@@ -59,7 +59,7 @@ layer_ann_path <- here(
     "annotations_{sample_id}_spots.csv"
 )
 
-cell_types_actual <- c("astro", "micro", "neuron", "oligo", "other")
+cell_types_actual <- c("Astro", "Micro", "Neuron", "Oligo", "Other")
 if (cell_group == "broad") {
     cell_types <- c(
         "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
@@ -434,7 +434,7 @@ prop_barplot <- function(prop_df, filename) {
                 x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
                 title = sample_id
             ) +
-            scale_x_discrete(labels = c("actual" = "CART-calculated")) +
+            scale_x_discrete(labels = c("actual" = "CART-Calculated")) +
             scale_fill_manual(values = cell_type_labels) +
             theme_bw(base_size = 16)
     }
@@ -445,7 +445,7 @@ prop_barplot <- function(prop_df, filename) {
 
 #   Write a PDF to 'filename' of a barplot of section-wide cell-type
 #   proportions against the ground-truth. Intended as a supplementary figure
-#   in the maniscript
+#   in the manuscript
 #
 #   prop_df: tibble with columns 'sample_id', 'deconvo_tool' (which should
 #       include the ground-truth), and 'prop'. One row per sample per deconvo
@@ -641,7 +641,11 @@ names(shape_scale) <- c(sample_ids, "average")
 
 observed_df <- as_tibble(read.csv(raw_results_path))
 observed_df$obs_type <- "observed"
-observed_df$deconvo_tool <- str_to_title(observed_df$deconvo_tool)
+
+#   Use titlecase (note this is MUCH faster than 'toTitleCase')
+observed_df$deconvo_tool[observed_df$deconvo_tool == "tangram"] <- "Tangram"
+observed_df$deconvo_tool[observed_df$deconvo_tool == "cell2location"] <-
+    "Cell2location"
 
 #   Plot counts for each cell type without collapsing cell categories
 observed_df_long <- observed_df %>%
@@ -655,9 +659,9 @@ observed_df_long <- observed_df %>%
 
 spe <- readRDS(spe_IF_in)
 
-spatial_counts_plot_full(
-    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
-)
+# spatial_counts_plot_full(
+#     spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
+# )
 
 #   Gather collapsed cell counts so that each row is a unique
 #   cell type, spot, sample, and deconvolution method with two values: measured
@@ -671,6 +675,11 @@ full_df <- read.csv(collapsed_results_path) |>
     pivot_wider(
         names_from = obs_type, values_from = count,
     )
+
+#   Use titlecase (note this is MUCH faster than 'toTitleCase')
+full_df$deconvo_tool[full_df$deconvo_tool == "tangram"] <- "Tangram"
+full_df$deconvo_tool[full_df$deconvo_tool == "cell2location"] <-
+    "Cell2location"
 
 ################################################################################
 #   Exploratory plots
@@ -1050,10 +1059,7 @@ marker_stats$cellType.target[
 marker_stats$cellType.target <- as.factor(marker_stats$cellType.target)
 
 stopifnot(
-    all(
-        sort(unique(marker_stats$cellType.target)) == 
-            sort(str_to_title(cell_types_actual))
-    )
+    all(sort(unique(marker_stats$cellType.target)) == sort(cell_types_actual))
 )
 
 #   Add mean marker-gene expression for each associated cell type to the main
@@ -1141,7 +1147,7 @@ plot_list <- lapply(
             labs(
                 title = ct,
                 x = paste0(
-                    "Software-Estimated ", tools::toTitleCase(ct), " Counts"
+                    "Software-Estimated ", ct, " Counts"
                 ),
                 y = "Mean Marker-Gene Counts",
                 color = "Sample ID"

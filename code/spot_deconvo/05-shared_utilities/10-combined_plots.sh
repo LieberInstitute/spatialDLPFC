@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "combined_plots"
-#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots.log
-#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots.log
-#$ -l mf=10G,h_vmem=10G
+#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots_IF.log
+#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots_IF.log
+#$ -l mf=20G,h_vmem=20G
 
 echo "**** Job starts ****"
 date
