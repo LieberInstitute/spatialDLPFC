@@ -192,7 +192,7 @@ if (dataset == "IF") {
     
     #   Add layer label to observed_df_long
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
-        mutate(deconvo_tool = tools::toTitleCase(deconvo_tool)) |>
+        mutate(deconvo_tool = str_to_title(deconvo_tool)) |>
         left_join(layer_ann, by = c("barcode", "sample_id")) |>
         filter(!is.na(label)) |>
         as_tibble()
@@ -289,7 +289,7 @@ if (dataset == "IF") {
     
     #   Merge results for both resolutions
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
-        mutate(deconvo_tool = tools::toTitleCase(deconvo_tool)) |>
+        mutate(deconvo_tool = str_to_title(deconvo_tool)) |>
         as_tibble()
 }
 
@@ -383,6 +383,7 @@ if (dataset == "IF") {
             cols = all_of(cell_types_actual), names_to = "cell_type",
             values_to = "count"
         ) |>
+        mutate(cell_type = str_to_title(cell_type)) |>
         #   Have an observed and actual column
         pivot_wider(
             names_from = obs_type, values_from = count,

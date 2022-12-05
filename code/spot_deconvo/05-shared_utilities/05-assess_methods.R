@@ -662,11 +662,12 @@ spatial_counts_plot_full(
 #   Gather collapsed cell counts so that each row is a unique
 #   cell type, spot, sample, and deconvolution method with two values: measured
 #   and ground-truth
-full_df <- read.csv(collapsed_results_path) %>%
+full_df <- read.csv(collapsed_results_path) |>
     melt(
         id.vars = added_colnames, variable.name = "cell_type",
         value.name = "count"
-    ) %>%
+    ) |>
+    mutate(cell_type = str_to_title(cell_type)) |>
     pivot_wider(
         names_from = obs_type, values_from = count,
     )
@@ -754,7 +755,7 @@ full_df |>
 
 print("Overall performance of deconvolution methods w/o 'other' (accuracy of spatial variation):")
 full_df |>
-    filter(cell_type != "other") |>
+    filter(cell_type != "Other") |>
     #   For each sample ID and deconvo tool, compute correlation of all counts
     #   for all cell types
     group_by(deconvo_tool, sample_id) |>
@@ -794,16 +795,16 @@ prop_df <- rbind(temp_actual, temp_observed)
 
 prop_barplot(prop_df, "prop_barplots.pdf")
 prop_barplot(
-    prop_df |> filter(cell_type != "other"), "prop_barplots_no_other.pdf"
+    prop_df |> filter(cell_type != "Other"), "prop_barplots_no_other.pdf"
 )
 prop_barplot_paper(
-    prop_df |> filter(cell_type != "other"), "prop_barplots_no_other_paper.pdf"
+    prop_df |> filter(cell_type != "Other"), "prop_barplots_no_other_paper.pdf"
 )
 
 print("Accuracy of overall cell-type proportions per section (Mean KL divergence from ground-truth):")
 print(kl_table(full_df))
 print("Accuracy of overall cell-type proportions per section w/o 'other' (Mean KL divergence from ground-truth):")
-print(kl_table(full_df |> filter(cell_type != "other")))
+print(kl_table(full_df |> filter(cell_type != "Other")))
 
 #-------------------------------------------------------------------------------
 #   Plot distribution of correlation & RMSE by sample and deconvo tool
@@ -819,7 +820,7 @@ metrics_df <- full_df |>
 
 corr_rmse_plot(metrics_df, "corr_RMSE_scatter.pdf")
 corr_rmse_plot(
-    metrics_df |> filter(cell_type != "other"),
+    metrics_df |> filter(cell_type != "Other"),
     "corr_RMSE_scatter_no_other.pdf"
 )
 
@@ -930,7 +931,7 @@ count_df <- full_df %>%
 
 across_spots(count_df, "counts_across_spots_scatter.pdf", x_angle = 90)
 across_spots(
-    count_df |> filter(cell_type != "other"),
+    count_df |> filter(cell_type != "Other"),
     "counts_across_spots_scatter_no_other.pdf",
     x_angle = 90
 )
@@ -969,10 +970,10 @@ prop_df <- full_df %>%
     ) %>%
     ungroup()
 
-#   Plot versions with and without the "other" cell type
+#   Plot versions with and without the "Other" cell type
 across_spots(prop_df, "props_across_spots_scatter.pdf")
 across_spots(
-    prop_df |> filter(cell_type != "other"),
+    prop_df |> filter(cell_type != "Other"),
     "props_across_spots_scatter_no_other.pdf"
 )
 
@@ -998,10 +999,10 @@ count_df <- full_df %>%
     mutate(observed = sum(actual) * observed / sum(observed)) %>%
     ungroup()
 
-#   Plot versions with and without the "other" cell type
+#   Plot versions with and without the "Other" cell type
 across_spots(count_df, "adjusted_counts_across_spots_scatter.pdf", x_angle = 90)
 across_spots(
-    count_df |> filter(cell_type != "other"),
+    count_df |> filter(cell_type != "Other"),
     "adjusted_counts_across_spots_scatter_no_other.pdf",
     x_angle = 90
 )
@@ -1038,20 +1039,21 @@ marker_stats <- marker_stats %>%
 #   visualization: a marker might start with a good mean ratio between 'Excit'
 #   and 'Inhib', but we collapse these categories, changing the real mean ratio
 #   and thus rank of the marker (not accounted for here).
-marker_stats$cellType.target <- tolower(
-    as.character(marker_stats$cellType.target)
-)
+marker_stats$cellType.target <-as.character(marker_stats$cellType.target)
 marker_stats$cellType.target[
-    grep("^(excit|inhib)", marker_stats$cellType.target)
-] <- "neuron"
-marker_stats$cellType.target[marker_stats$cellType.target == "opc"] <- "oligo"
+    grep("^(Excit|Inhib)", marker_stats$cellType.target)
+] <- "Neuron"
+marker_stats$cellType.target[marker_stats$cellType.target == "OPC"] <- "Oligo"
 marker_stats$cellType.target[
-    marker_stats$cellType.target == "endomural"
-] <- "other"
+    marker_stats$cellType.target == "EndoMural"
+] <- "Other"
 marker_stats$cellType.target <- as.factor(marker_stats$cellType.target)
 
 stopifnot(
-    all(sort(unique(marker_stats$cellType.target)) == sort(cell_types_actual))
+    all(
+        sort(unique(marker_stats$cellType.target)) == 
+            sort(str_to_title(cell_types_actual))
+    )
 )
 
 #   Add mean marker-gene expression for each associated cell type to the main
