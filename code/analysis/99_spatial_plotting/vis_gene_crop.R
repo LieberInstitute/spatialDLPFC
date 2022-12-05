@@ -27,12 +27,23 @@ vis_gene_crop <-
       stop("Could not find the 'geneid' ", geneid, call. = FALSE)
     }
     d$COUNT[d$COUNT <= minCount] <- NA
+    
+    legend_title = paste(
+        if (!geneid %in% colnames(colData(spe_sub))) {
+          assayname
+        } else {
+          NULL
+        },
+        "min >", minCount
+      )
+    
     p <- vis_gene_p_crop(
       spe = spe_sub,
       d = d,
       sampleid = sampleid,
       spatial = spatial,
       frame_lim_df = frame_lim_df,
+      legend_title = legend_title,
       title = paste(
         sampleid,
         geneid,
@@ -44,14 +55,8 @@ vis_gene_crop <-
       cont_colors = cont_colors,
       point_size = point_size
     )
-    p + labs(caption = paste(
-      if (!geneid %in% colnames(colData(spe_sub))) {
-        assayname
-      } else {
-        NULL
-      },
-      "min >", minCount
-    ))
+    
+    return(p)
   }
 
 vis_gene_p_crop <-
@@ -63,6 +68,7 @@ vis_gene_p_crop <-
            viridis = TRUE,
            image_id = "lowres",
            frame_lim_df,
+           legend_title = "Test", 
            alpha = 1,
            cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
            point_size = 2) {
@@ -114,10 +120,12 @@ vis_gene_p_crop <-
       coord_cartesian(expand = FALSE)
     
     p <- p + scale_fill_gradientn(
+      name = legend_title,
       colors = cont_colors,
       na.value = c("black" = "#0000002D")
     ) +
       scale_color_gradientn(
+        name = legend_title,
         colors = cont_colors,
         na.value = c("black" = "#0000002D")
       )
@@ -126,13 +134,11 @@ vis_gene_p_crop <-
     
     p <- p +
       coord_fixed() +
-      # xlim(frame_lims$x_min, frame_lims$x_max) +
-      # ylim(frame_lims$y_min, frame_lims$y_max) +
       xlim(0, ncol(img)) +
       ylim(nrow(img), 0) +
       xlab("") + ylab("") +
       labs(fill = NULL, color = NULL) +
-      ggtitle(title) +
+      # ggtitle(title) +
       theme_set(theme_bw(base_size = 20)) +
       theme(
         panel.grid.major = element_blank(),
@@ -141,7 +147,9 @@ vis_gene_p_crop <-
         axis.line = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
-        legend.position = c(0.95, 0.10)
-      )
+        # legend.position = c(0.95, 0.10)
+        legend.position="bottom",
+        legend.box.spacing = unit(0, "pt"))
+    
     return(p)
   }
