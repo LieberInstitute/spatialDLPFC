@@ -33,6 +33,12 @@ spe_nonIF_in <- here(
     "spe_filtered_final_with_clusters.Rdata"
 )
 
+#   Only needed to get colors for software-estimated cell types
+sce_in <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
+    paste0("sce_", cell_group, ".rds")
+)
+
 marker_object_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
     paste0("marker_stats_", cell_group, ".rds")
@@ -43,9 +49,9 @@ marker_in <- here(
     paste0("markers_", cell_group, ".txt")
 )
 
-deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
+deconvo_tools <- c("Tangram", "Cell2location", "SPOTlight")
 
-cell_types_actual <- c("astro", "micro", "neuron", "oligo", "other")
+cell_types_actual <- c("Astro", "Micro", "Neuron", "Oligo", "Other")
 if (cell_group == "broad") {
     cell_types <- c(
         "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
@@ -71,7 +77,8 @@ dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 #   in the plot given the SpatialExperiment, long-format
 #   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
 #   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
-spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, title) {
+spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
+                                title) {
     #   Grab counts for just this sample, deconvo tool, and cell type
     counts_df <- full_df %>%
         filter(
@@ -79,20 +86,20 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
             deconvo_tool == deconvo_tool1,
             cell_type == cell_type1
         )
-
+    
     #   Add counts as a column in colData(spe_small)
-    spe_small$temp_ct_counts <- counts_df[["observed"]][
+    spe_small$temp_ct_counts <- counts_df[[c_name]][
         match(colnames(spe_small), counts_df$barcode)
     ]
-
+    
     #   Plot spatial distribution
     p <- vis_grid_gene(
-        spe_small,
-        geneid = "temp_ct_counts", return_plots = TRUE,
+        spe_small, geneid = "temp_ct_counts", return_plots = TRUE,
         spatial = FALSE
     )[[1]] +
+        coord_fixed() +
         labs(title = title)
-
+    
     return(list(p, max(spe_small$temp_ct_counts)))
 }
 
@@ -105,21 +112,24 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
 #       "actual"
 #   cell_type_vec: character vector of unique cell types expected in the full_df
 #       column "cell_type"
+#   include_actual: length-1 logical: add a row of plots for the ground-truth
+#       counts?
 #   pdf_prefix: length-1 character to prepend to PDF filenames
-spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, pdf_prefix) {
+spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual, pdf_prefix) {
     for (sample_id in sample_ids) {
         spe_small <- spe[, spe$sample_id == sample_id]
-
+        
         i <- 1
         plot_list <- list()
         max_list <- list()
-
+        
         #   For each deconvo tool, make a row of plots (each including all cell
         #   types) showed the observed distribution
         for (deconvo_tool in deconvo_tools) {
             for (cell_type in cell_type_vec) {
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type,
+                    "observed",
                     paste0(cell_type, " counts\n(", deconvo_tool, ")")
                 )
                 plot_list[[i]] <- temp[[1]]
@@ -127,21 +137,34 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, pdf_prefix) {
                 i <- i + 1
             }
         }
-
+        
+        #   Add a row showing the ground-truth counts for each cell type
+        if (include_actual) {
+            for (cell_type in cell_types_actual) {
+                temp <- spatial_counts_plot(
+                    spe_small, full_df, sample_id, deconvo_tool, cell_type, "actual",
+                    paste0(cell_type, " counts\n(CART-calculated)")
+                )
+                plot_list[[i]] <- temp[[1]]
+                max_list[[i]] <- temp[[2]]
+                i <- i + 1
+            }
+        }
+        
         max_mat <- matrix(
             unlist(max_list),
             ncol = length(cell_type_vec), byrow = TRUE
         )
-
+        
         #   Now loop back through the plot list (which will be displayed in 2D)
         #   and overwrite the scale to go as high as the largest value in the
         #   column. This allows for easy comparison between deconvo tools
         #   (and optionally the ground truth)
         for (i_col in 1:length(cell_type_vec)) {
-            for (i_row in 1:length(deconvo_tools)) {
+            for (i_row in 1:(length(deconvo_tools) + include_actual)) {
                 index <- (i_row - 1) * length(cell_type_vec) + i_col
                 upper_limit <- max(max_mat[, i_col])
-
+                
                 plot_list[[index]] <- plot_list[[index]] +
                     scale_color_continuous(
                         type = "viridis", limits = c(0, upper_limit),
@@ -153,28 +176,121 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, pdf_prefix) {
                     )
             }
         }
-
+        
         #   Plot in a grid where cell types are columns and rows are
         #   deconvolution tools. One PDF per sample
         pdf(
             file.path(plot_dir, paste0(pdf_prefix, sample_id, ".pdf")),
             width = 7 * length(cell_type_vec),
-            height = 7 * length(deconvo_tools)
+            height = 7 * (length(deconvo_tools) + include_actual)
+        )
+        print(plot_grid(plotlist = plot_list, ncol = length(cell_type_vec)))
+        dev.off()
+        
+        #   For figures in the paper, create a PDF version with one plot per
+        #   page. Exactly match the shape (aspect ratio) and visual details
+        #   of other spatial plots in this script
+        for (i in 1:length(plot_list)) {
+            cell_type = cell_type_vec[1 + (i - 1) %% length(cell_type_vec)]
+            if (include_actual) {
+                d_tool = c(deconvo_tools, 'CART')[
+                    1 + (i - 1) %/% length(cell_type_vec)
+                ]
+            } else {
+                d_tool = deconvo_tools[1 + (i - 1) %/% length(cell_type_vec)]
+            }
+            
+            plot_list[[i]] = plot_list[[i]] +
+                theme(legend.position = "none") +
+                labs(title = paste0(d_tool, ': ', cell_type), caption = NULL) +
+                #   Match 'vis_clus' code
+                geom_point(
+                    shape = 21,
+                    size = 2,
+                    stroke = 0,
+                    colour = "transparent",
+                    alpha = 1
+                )
+        }
+        pdf(
+            file.path(
+                plot_dir, paste0(pdf_prefix, sample_id, "_individual.pdf")
+            ),
+            width = 7 * length(cell_type_vec),
+            height = 7 * (length(deconvo_tools) + include_actual)
         )
         print(plot_grid(plotlist = plot_list, ncol = length(cell_type_vec)))
         dev.off()
     }
 }
 
+#   Write a PDF to 'filename' of a barplot of section-wide cell-type
+#   proportions
+#
+#   prop_df: tibble with columns 'sample_id', 'deconvo_tool', and 'prop'. One
+#       row per sample per deconvo tool per cell type.
+#   filename: character relative to 'plot_dir', with extension ".pdf"
+prop_barplot <- function(prop_df, filename) {
+    plot_list <- list()
+    for (sample_id in sample_ids) {
+        plot_list[[sample_id]] <- ggplot(
+            prop_df |> filter(sample_id == {{ sample_id }}),
+            aes(x = deconvo_tool, y = prop, fill = cell_type)
+        ) +
+            geom_bar(stat = "identity") +
+            labs(
+                x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type",
+                title = sample_id
+            ) +
+            scale_x_discrete(labels = c("actual" = "CART-Calculated")) +
+            scale_fill_manual(values = estimated_cell_labels) +
+            theme_bw(base_size = 16)
+    }
+    pdf(file.path(plot_dir, filename))
+    print(plot_list)
+    dev.off()
+}
+
+#   Write a PDF to 'filename' of a barplot of section-wide cell-type
+#   proportions. Intended as a supplementary figure in the manuscript
+#
+#   prop_df: tibble with columns 'sample_id', 'deconvo_tool', and 'prop'.
+#       One row per sample per deconvo tool per cell type.
+#   filename: character relative to 'plot_dir', with extension ".pdf"
+prop_barplot_paper <- function(prop_df, filename) {
+    p = ggplot(prop_df, aes(x = deconvo_tool, y = prop, fill = cell_type)) +
+        geom_bar(stat = "identity") +
+        facet_wrap(~ sample_id, nrow = 5, ncol = 6) +
+        labs(x = "Method", y = "Sample-Wide Proportion", fill = "Cell Type") +
+        scale_x_discrete(labels = c("actual" = "CART")) +
+        scale_fill_manual(values = estimated_cell_labels) +
+        theme_bw(base_size = 10) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+    
+    pdf(file.path(plot_dir, filename))
+    print(p)
+    dev.off()
+}
+
 ################################################################################
 #   Read in and format cell counts into a table apt for plotting with ggplot
 ################################################################################
+
+#   Read in SCE just to get colors for software-estimated cell types
+sce <- readRDS(sce_in)
+estimated_cell_labels <- metadata(sce)[[paste0("cell_type_colors_", cell_group)]]
+names(estimated_cell_labels) <- gsub("/", "_", names(estimated_cell_labels))
 
 sample_ids <- readLines(sample_ids_path)
 added_colnames <- c("barcode", "sample_id", "deconvo_tool", "obs_type")
 
 observed_df <- as_tibble(read.csv(raw_results_path))
 observed_df$obs_type <- "observed"
+
+#   Use titlecase (note this is MUCH faster than 'toTitleCase')
+observed_df$deconvo_tool[observed_df$deconvo_tool == "tangram"] <- "Tangram"
+observed_df$deconvo_tool[observed_df$deconvo_tool == "cell2location"] <-
+    "Cell2location"
 
 #   Plot counts for each cell type without collapsing cell categories
 observed_df_long <- observed_df %>%
@@ -193,7 +309,7 @@ load(spe_nonIF_in, verbose = TRUE)
 ################################################################################
 
 spatial_counts_plot_full(
-    spe, observed_df_long, cell_types, "spatial_counts_fullres_"
+    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
 )
 
 #-------------------------------------------------------------------------------
@@ -210,26 +326,14 @@ prop_df <- observed_df_long %>%
         cols = c("observed"), values_to = "prop", names_to = "source"
     )
 
-plot_list <- list()
-for (sample_id in sample_ids) {
-    plot_list[[sample_id]] <- ggplot(
-        prop_df |> filter(sample_id == {{ sample_id }}),
-        aes(x = source, y = prop, fill = cell_type)
-    ) +
-        geom_bar(stat = "identity") +
-        facet_wrap(~deconvo_tool) +
-        scale_x_discrete(
-            labels = NULL # c("observed" = "Estimated")
-        ) +
-        labs(
-            x = NULL, y = "Sample-Wide Proportion", fill = "Cell Type",
-            title = sample_id
-        ) +
-        theme_bw(base_size = 16)
-}
-pdf(file.path(plot_dir, "prop_barplots.pdf"))
-print(plot_list)
-dev.off()
+prop_barplot(prop_df, "prop_barplots.pdf")
+prop_barplot(
+    prop_df |> filter(cell_type != "EndoMural"), "prop_barplots_no_endo.pdf"
+)
+prop_barplot_paper(
+    prop_df |> filter(cell_type != "EndoMural"),
+    "prop_barplots_no_endo_paper.pdf"
+)
 
 #-------------------------------------------------------------------------------
 #   Plot total counts per sample for tangram and cell2location
@@ -246,13 +350,13 @@ for (sample_id in sample_ids) {
 provided_df <- as_tibble(
     data.frame(
         sample_id = rep(sample_ids, each = 2), actual = provided_total,
-        deconvo_tool = rep(c("tangram", "cell2location"), length(sample_ids))
+        deconvo_tool = rep(c("Tangram", "Cell2location"), length(sample_ids))
     )
 )
 
 #   Merge with the estimated section-wide cell counts for tangram and C2L
 count_df <- observed_df_long |>
-    filter(deconvo_tool %in% c("tangram", "cell2location")) |>
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
     group_by(sample_id, deconvo_tool) |>
     summarize(observed = sum(observed)) |>
     ungroup() |>
@@ -263,8 +367,10 @@ pdf(file.path(plot_dir, "total_cells_sample.pdf"))
 ggplot(count_df, aes(x = deconvo_tool, y = diff, color = sample_id)) +
     geom_point() +
     theme_bw(base_size = 10) +
-    scale_y_continuous(limits = c(0, max(count_df$diff) * 1.1), expand = c(0, 0)) +
-    labs(x = "Deconvolution tool", y = "Absolute proportion difference")
+    scale_y_continuous(
+        limits = c(0, max(count_df$diff) * 1.1), expand = c(0, 0)
+    ) +
+    labs(x = "Deconvolution Tool", y = "Absolute Proportion Difference")
 dev.off()
 
 #-------------------------------------------------------------------------------
@@ -275,11 +381,11 @@ provided_df <- tibble(
     barcode = rep(colnames(spe), each = 2),
     actual = rep(spe$count, each = 2),
     sample_id = factor(rep(spe$sample_id, each = 2)),
-    deconvo_tool = factor(rep(c("tangram", "cell2location"), ncol(spe)))
+    deconvo_tool = factor(rep(c("Tangram", "Cell2location"), ncol(spe)))
 )
 
 count_df <- observed_df_long %>%
-    filter(deconvo_tool %in% c("tangram", "cell2location")) %>%
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
     summarize(observed = sum(observed)) %>%
     ungroup() |>
@@ -399,45 +505,45 @@ metrics_df <- observed_df_long %>%
 #   Improve label for plotting
 metrics_df$corr <- paste("Cor =", metrics_df$corr)
 
-#   For each cell type, plot counts of this cell type, measured by each
-#   deconvolution tool, against the mean marker-gene expression for that cell
-#   type (scatterplot)
+#   Now plot a version suitable as a supplementary figure: this time, one page
+#   per sample and facet by cell type
 plot_list <- lapply(
-    cell_types,
-    function(ct) {
-        full_df_small <- observed_df_long %>%
-            filter(cell_type == ct)
-
+    sample_ids,
+    function(this_sample_id) {
+        full_df_small <- full_df %>%
+            filter(sample_id == this_sample_id)
+        
         p <- ggplot(full_df_small) +
             geom_point(
-                aes(x = observed, y = marker_express, color = sample_id),
+                aes(x = observed, y = marker_express, color = cell_type),
                 alpha = 0.01
             ) +
-            facet_grid(
-                rows = vars(sample_id), cols = vars(deconvo_tool)
-            ) +
+            facet_grid( rows = vars(cell_type), cols = vars(deconvo_tool)) +
             guides(col = guide_legend(override.aes = list(alpha = 1))) +
             geom_text(
-                data = metrics_df %>% filter(cell_type == ct),
+                data = metrics_df %>% filter(sample_id == this_sample_id),
                 mapping = aes(
-                    x = Inf, y = max(full_df_small$marker_express) / 7,
+                    x = max(full_df_small$observed),
+                    y = max(full_df_small$marker_express) / 7,
                     label = corr
                 ),
                 hjust = 1
             ) +
             labs(
-                title = ct,
-                x = paste0("Software-estimated ", ct, " counts"),
-                y = "Mean marker-gene counts",
+                title = this_sample_id,
+                x = paste0(
+                    "Software-Estimated Counts"
+                ),
+                y = "Mean Marker-Gene Counts",
+                color = "Cell Type"
             ) +
-            scale_fill_continuous(type = "viridis") +
-            theme_bw(base_size = 10)
-
+            theme_bw(base_size = 15)
+        
         return(p)
     }
 )
 
-pdf(file.path(plot_dir, "marker_vs_ct_counts.pdf"))
+pdf(file.path(plot_dir, "marker_vs_ct_counts_paper.pdf"))
 print(plot_list)
 dev.off()
 
