@@ -14,7 +14,7 @@ sample_ids_path <- here(
     "sample_ids.txt"
 )
 
-deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
+deconvo_tools <- c("Tangram", "Cell2location", "SPOTlight")
 
 plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", cell_group
@@ -641,6 +641,7 @@ names(shape_scale) <- c(sample_ids, "average")
 
 observed_df <- as_tibble(read.csv(raw_results_path))
 observed_df$obs_type <- "observed"
+observed_df$deconvo_tool <- tools::toTitleCase(observed_df$deconvo_tool)
 
 #   Plot counts for each cell type without collapsing cell categories
 observed_df_long <- observed_df %>%
@@ -785,7 +786,7 @@ prop_df <- full_df %>%
     )
 
 temp_actual <- prop_df |>
-    filter(source == "actual", deconvo_tool == "tangram") |>
+    filter(source == "actual", deconvo_tool == "Tangram") |>
     mutate(deconvo_tool = "actual")
 temp_observed <- prop_df |>
     filter(source == "observed")
@@ -827,7 +828,7 @@ corr_rmse_plot(
 #-------------------------------------------------------------------------------
 
 count_df <- full_df |>
-    filter(deconvo_tool %in% c("tangram", "cell2location")) |>
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
     group_by(sample_id, deconvo_tool) |>
     summarize(observed = sum(observed), actual = sum(actual)) |>
     mutate(diff = abs((observed - actual) / (observed + actual)))
@@ -848,7 +849,7 @@ dev.off()
 #   deconvolution methods that aren't constrained to use the same totals as
 #   provided (tangram and cell2location)
 count_df <- full_df %>%
-    filter(deconvo_tool %in% c("tangram", "cell2location")) %>%
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) %>%
     group_by(barcode, sample_id, deconvo_tool) %>%
     summarize(observed = sum(observed), actual = sum(actual)) %>%
     ungroup()

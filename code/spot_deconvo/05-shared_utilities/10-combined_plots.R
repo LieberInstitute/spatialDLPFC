@@ -48,7 +48,7 @@ sample_ids_path <- here(
     "sample_ids.txt"
 )
 
-deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
+deconvo_tools <- c("Tangram", "Cell2location", "SPOTlight")
 
 plot_dir <- here(
     "plots", "spot_deconvo", "05-shared_utilities", "combined", dataset
@@ -192,6 +192,7 @@ if (dataset == "IF") {
     
     #   Add layer label to observed_df_long
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
+        mutate(deconvo_tool = tools::toTitleCase(deconvo_tool)) |>
         left_join(layer_ann, by = c("barcode", "sample_id")) |>
         filter(!is.na(label)) |>
         as_tibble()
@@ -288,6 +289,7 @@ if (dataset == "IF") {
     
     #   Merge results for both resolutions
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
+        mutate(deconvo_tool = tools::toTitleCase(deconvo_tool)) |>
         as_tibble()
 }
 
@@ -388,7 +390,7 @@ if (dataset == "IF") {
     
     #   Calculate total cells per spot and prepare for plotting
     count_df = collapsed_results |>
-        filter(deconvo_tool %in% c("tangram", "cell2location")) |>
+        filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
         #   Add counts of any cell type for each spot
         group_by(deconvo_tool, resolution, barcode, sample_id) |>
         summarize(observed = sum(observed), actual = sum(actual))
@@ -402,7 +404,7 @@ if (dataset == "IF") {
     
     #   Add up counts of all cell types per spot
     counts_df <- observed_df_long |>
-        filter(deconvo_tool %in% c("tangram", "cell2location")) |>
+        filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
         group_by(deconvo_tool, sample_id, barcode, resolution) |>
         summarize(observed = sum(count)) |>
         left_join(visto_df)
