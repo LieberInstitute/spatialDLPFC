@@ -659,9 +659,9 @@ observed_df_long <- observed_df %>%
 
 spe <- readRDS(spe_IF_in)
 
-# spatial_counts_plot_full(
-#     spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
-# )
+spatial_counts_plot_full(
+    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
+)
 
 #   Gather collapsed cell counts so that each row is a unique
 #   cell type, spot, sample, and deconvolution method with two values: measured
