@@ -6,10 +6,9 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 library("sessioninfo")
-library("tools")
 
 #   "IF" or "nonIF"
-dataset = "IF"
+dataset = "nonIF"
 
 raw_results_broad_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", dataset,
@@ -297,8 +296,15 @@ if (dataset == "IF") {
     
     #   Merge results for both resolutions
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
-        mutate(deconvo_tool = toTitleCase(deconvo_tool)) |>
         as_tibble()
+    
+    #   Use titlecase (note this is MUCH faster than mutate with 'toTitleCase')
+    observed_df_long$deconvo_tool[
+        observed_df_long$deconvo_tool == "tangram"
+    ] <- "Tangram"
+    observed_df_long$deconvo_tool[
+        observed_df_long$deconvo_tool == "cell2location"
+    ] <- "Cell2location"
 }
 
 #-------------------------------------------------------------------------------
@@ -393,22 +399,28 @@ counts_df <- observed_df_long |>
 
 sample_prop_scatter(
     counts_df, dataset, estimated_cell_labels,
-    "sample_proportions_scatter_broad.pdf"
+    "sample_proportions_scatter_broad.pdf", x_angle = 90
 )
 
 #   Plot at collapsed resolution
+
+if (dataset == "IF") {
+    cols_to_select = c(
+        added_colnames, "resolution", "label",
+        cell_types_actual[- match('Other', cell_types_actual)]
+    )
+} else {
+    cols_to_select = c(
+        added_colnames, "resolution",
+        cell_types_actual[- match('Other', cell_types_actual)]
+    )
+}
+
 counts_df = observed_df_long |>
     pivot_wider(names_from = cell_type, values_from = count) |>
     #   Collapse cell types
     mutate(Oligo = Oligo + OPC, Neuron = Excit + Inhib) |>
-    select(
-        all_of(
-            c(
-                added_colnames, "resolution", "label",
-                cell_types_actual[- match('Other', cell_types_actual)]
-            )
-        )
-    ) |>
+    select(all_of(cols_to_select)) |>
     #   Change back to one cell type per row
     pivot_longer(
         cols = cell_types_actual[- match('Other', cell_types_actual)],
@@ -448,9 +460,16 @@ if (dataset == "IF") {
             names_from = obs_type, values_from = count,
         )
     
+    #   Use titlecase (note this is MUCH faster than mutate with 'toTitleCase')
+    collapsed_results$deconvo_tool[
+        collapsed_results$deconvo_tool == "tangram"
+    ] <- "Tangram"
+    collapsed_results$deconvo_tool[
+        collapsed_results$deconvo_tool == "cell2location"
+    ] <- "Cell2location"
+    
     #   Calculate total cells per spot and prepare for plotting
     count_df = collapsed_results |>
-        mutate(deconvo_tool = toTitleCase(deconvo_tool)) |>
         filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
         #   Add counts of any cell type for each spot
         group_by(deconvo_tool, resolution, barcode, sample_id) |>
@@ -464,7 +483,7 @@ if (dataset == "IF") {
     colnames(visto_df) = c("barcode", "sample_id", "actual")
     
     #   Add up counts of all cell types per spot
-    counts_df <- observed_df_long |>
+    count_df <- observed_df_long |>
         filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
         group_by(deconvo_tool, sample_id, barcode, resolution) |>
         summarize(observed = sum(count)) |>
