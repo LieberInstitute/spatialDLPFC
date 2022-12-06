@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "result_plots_nonIF"
-#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/09-result_plots_nonIF_broad.log
-#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/09-result_plots_nonIF_broad.log
-#$ -l mf=20G,h_vmem=20G
+#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/09-result_plots_nonIF_layer.log
+#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/09-result_plots_nonIF_layer.log
+#$ -l bluejay,mf=20G,h_vmem=20G
 
 echo "**** Job starts ****"
 date

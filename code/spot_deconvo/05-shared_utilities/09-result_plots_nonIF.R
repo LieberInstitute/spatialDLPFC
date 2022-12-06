@@ -7,7 +7,7 @@ library("spatialLIBD")
 library("cowplot")
 library("sessioninfo")
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF",
@@ -510,7 +510,7 @@ metrics_df$corr <- paste("Cor =", metrics_df$corr)
 plot_list <- lapply(
     sample_ids,
     function(this_sample_id) {
-        full_df_small <- full_df %>%
+        full_df_small <- observed_df_long %>%
             filter(sample_id == this_sample_id)
         
         p <- ggplot(full_df_small) +
