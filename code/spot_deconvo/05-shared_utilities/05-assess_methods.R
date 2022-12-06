@@ -1267,7 +1267,7 @@ for (cell_type in cell_types) {
         ) +
         #   Facet purely for aesthetic purposes: there is only one cell type
         facet_wrap(~cell_type) +
-        theme_bw(base_size = 20) +
+        theme_bw(base_size = 23) +
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
         coord_cartesian(ylim = c(0, y_max)) +
         scale_y_continuous(expand = c(0, 0, 0, 0.05))

@@ -193,10 +193,17 @@ if (dataset == "IF") {
     
     #   Add layer label to observed_df_long
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
-        mutate(deconvo_tool = toTitleCase(deconvo_tool)) |>
         left_join(layer_ann, by = c("barcode", "sample_id")) |>
         filter(!is.na(label)) |>
         as_tibble()
+    
+    #   Use titlecase (note this is MUCH faster than mutate with 'toTitleCase')
+    observed_df_long$deconvo_tool[
+        observed_df_long$deconvo_tool == "tangram"
+    ] <- "Tangram"
+    observed_df_long$deconvo_tool[
+        observed_df_long$deconvo_tool == "cell2location"
+    ] <- "Cell2location"
     
     #   Clean up labels
     observed_df_long$label <- tolower(observed_df_long$label)
@@ -299,7 +306,9 @@ if (dataset == "IF") {
 #   resolutions
 #-------------------------------------------------------------------------------
 
-sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
+sample_prop_scatter = function(
+        counts_df, dataset, color_scale, filename, x_angle = 0
+    ) {
     metrics_df <- counts_df |>
         group_by(deconvo_tool) |>
         summarize(
@@ -354,6 +363,17 @@ sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
         ) +
         theme_bw(base_size = 15)
     
+        #   Account for misalignment of labels that occurs for certain
+        #   rotations
+        if (x_angle == 90 || x_angle == 270) {
+            p <- p +
+                theme(axis.text.x = element_text(angle = x_angle, vjust = 0.5))
+        } else {
+            p <- p +
+                theme(axis.text.x = element_text(angle = x_angle))
+        }
+        
+    
     pdf(
         file.path(plot_dir, filename),
         width = 9, height = 3
@@ -403,7 +423,7 @@ counts_df = observed_df_long |>
 
 sample_prop_scatter(
     counts_df, dataset, cell_type_labels, 
-    "sample_proportions_scatter_collapsed.pdf"
+    "sample_proportions_scatter_collapsed.pdf", x_angle = 90
 )
 
 ################################################################################
