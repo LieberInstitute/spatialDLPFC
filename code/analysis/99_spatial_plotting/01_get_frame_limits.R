@@ -23,7 +23,7 @@ sr_positions <- map(sr_csv, ~read.csv(.x, header = FALSE))
 
 head(sr_positions[[1]])
 
-sample_lims <- map_dfr(sr_positions, function(p){
+frame_lims <- map_dfr(sr_positions, function(p){
   list(x_min = min(p$V5),
        x_max = max(p$V5),
        y_min = min(p$V6),
@@ -31,9 +31,9 @@ sample_lims <- map_dfr(sr_positions, function(p){
   )
 })
 
-sample_lims <- sample_lims %>% add_column(sample_id = names(sr_positions), .before = "x_min")
+frame_lims <- frame_lims %>% add_column(sample_id = names(sr_positions), .before = "x_min")
 
-sample_lims
+frame_lims
 # A tibble: 30 × 5
 # sample_id   x_min x_max y_min y_max
 # <chr>       <int> <int> <int> <int>
@@ -57,9 +57,18 @@ sample_lims
 # min(spatialCoords(spe_temp)[,"pxl_row_in_fullres"]) #15783
 # max(spatialCoords(spe_temp)[,"pxl_row_in_fullres"]) #31063
 
-write.csv(sample_lims, file = here(data_dir, "sample_xy_limits.csv"))
+write.csv(frame_lims, file = here(data_dir, "frame_limits.csv"), row.names = FALSE)
 
-sample_lims |>
+## dimensions are all about the same
+frame_lims |>
   transmute(x_diff = x_max - x_min,
          y_diff = y_max - y_min) |>
   summary()
+
+# x_diff          y_diff     
+# Min.   :17584   Min.   :18550  
+# 1st Qu.:17624   1st Qu.:18590  
+# Median :17690   Median :18658  
+# Mean   :17886   Mean   :18858  
+# 3rd Qu.:18232   3rd Qu.:19211  
+# Max.   :18347   Max.   :19324  
