@@ -1,8 +1,8 @@
 #!/bin/bash
 #$ -cwd
 #$ -N "combined_plots"
-#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots_nonIF.log
-#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots_nonIF.log
+#$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots_IF.log
+#$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/10-combined_plots_IF.log
 #$ -l bluejay,mf=20G,h_vmem=20G
 
 echo "**** Job starts ****"

@@ -8,7 +8,7 @@ library("cowplot")
 library("sessioninfo")
 
 #   "IF" or "nonIF"
-dataset = "nonIF"
+dataset = "IF"
 
 raw_results_broad_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", dataset,
@@ -243,6 +243,7 @@ if (dataset == "IF") {
             fill = "Cell Type"
         ) +
         scale_fill_manual(values = estimated_cell_labels) +
+        scale_x_discrete(labels = c("broad" = "Broad", "layer" = "Layer")) +
         theme_bw(base_size = 15) +
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
     
@@ -502,7 +503,12 @@ metrics_df <- count_df |>
 
 p = ggplot(count_df, aes(x = observed, y = actual)) +
     geom_point(alpha = 0.01) +
-    facet_grid(rows = vars(resolution), cols = vars(deconvo_tool)) +
+    facet_grid(
+        rows = vars(resolution), cols = vars(deconvo_tool),
+        labeller = labeller(
+            resolution = c("broad" = "Broad", "layer" = "Layer")
+        )
+    ) +
     geom_abline(
         intercept = 0, slope = 1, linetype = "dashed", color = "red"
     ) +
