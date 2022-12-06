@@ -1,5 +1,6 @@
 library("scater")
 library("purrr")
+library("SpatialExperiment")
 library("spatialLIBD")
 library("here")
 library("sessioninfo")
@@ -73,10 +74,16 @@ model_stats <- map(k_list, function(k) {
 
 spe_k9$spatialLIBD <- spe_k9$BayesSpace
 spe_k16$spatialLIBD <- spe_k16$BayesSpace
+
+# ## for gene matching
+# rownames(sce_k9) <- rowData(sce_k9)$gene_id
+# rownames(sce_k16) <-  rowData(sce_k16)$gene_id
+
 sig_genes <-
     map2(
         model_stats,
         list(spe_k9, spe_k16),
+        # list(spe_k9),
         ~ sig_genes_extract_all(
             n = nrow(.y),
             modeling_results = .x,
@@ -201,7 +208,7 @@ k16_1ab_plot <-
         assay = "logcounts",
         cat = "BayesSpace",
         fill_colors = k16_colors
-    )
+    ) 
 ggsave(
     k16_1ab_plot + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(x = NULL),
     filename = here(plot_dir, "k16_expression_1a-1b.png")
@@ -225,12 +232,16 @@ k16_plot_SPARC <-
         fill_colors = k16_colors,
         highlight_sample = "Br6522_ant"
     ) +
-    labs(x = "Pseudobulk k16 Domains", title = paste0("Sp16D14 > Sp16D02 p=", signif(k16_plot_SPARC_pval, 3)))
+    labs(x = "Pseudobulk k16 Domains"
+         # , 
+         # title = paste0("Sp16D14 > Sp16D02 p=", signif(k16_plot_SPARC_pval, 3))
+         )
 ggsave(
-    k16_plot_SPARC + theme(axis.text.x = element_text(angle = 90, hjust = 1)),
-    filename = here(plot_dir, "k16_expression_1a-1b_SPARC.png"),
-    width = 6,
-    height = 3
+    k16_plot_SPARC + 
+    # theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    theme(axis.title.x = element_blank()),
+    filename = here(plot_dir, "k16_expression_1a-1b_SPARC.pdf"),
+    width = 2.5, height = 4
 )
 
 k16_plot_HTRA1_pval <- subset(
@@ -247,14 +258,21 @@ k16_plot_HTRA1 <-
         cat = "BayesSpace",
         fill_colors = k16_colors,
         highlight_sample = "Br6522_ant"
-    ) +
-    labs(x = "Pseudobulk k16 Domains", title = paste0("Sp16D02 > Sp16D14 p=", signif(k16_plot_HTRA1_pval, 3)))
+    )  +
+    labs(x = "Pseudobulk k16 Domains"
+         # ,
+         # title = paste0("Sp16D02 > Sp16D14 p=", signif(k16_plot_HTRA1_pval, 3))
+         )
 ggsave(
-    k16_plot_HTRA1 + theme(axis.text.x = element_text(angle = 90, hjust = 1)),
-    filename = here(plot_dir, "k16_expression_1a-1b_HTRA1.png"),
-    width = 6,
-    height = 3
+    k16_plot_HTRA1+
+    # + theme(axis.text.x = element_text(angle = 90, hjust = 1)),
+    theme(axis.title.x = element_blank()),
+    filename = here(plot_dir, "k16_expression_1a-1b_HTRA1.pdf"),
+    width = 2.5,
+    height = 4
 )
+
+## Sample close to median change?
 
 ## plot both
 set.seed(20221130) ## to make the jitter reproducible
@@ -321,116 +339,72 @@ load(
     )
 )
 
-## prep objet for plotting
+## prep object for plotting + Frame limit data
 rowData(spe)$gene_search <- rowData(spe)$gene_name
 spe$bayesSpace_harmony_9 <- as.factor(spe$bayesSpace_harmony_9)
 spe$bayesSpace_harmony_16 <- as.factor(spe$bayesSpace_harmony_16)
 
+## Read in the custom plotting function
+source(
+  here(
+    "code",
+    "analysis",
+    "99_spatial_plotting",
+    "vis_gene_crop.R"
+  ),
+  echo = TRUE,
+  max.deparse.length = 500
+)
+
+frame_limits <- read.csv(here("processed-data", "rdata", "spe","99_spatial_plotting","frame_limits.csv"))
 ## K9 CLDN5
 
-imgData(spe)[imgData(spe)$sample_id == "Br6432_ant",]
-
 fig_samples <- c("Br8667_mid", "Br6522_ant", "Br6432_ant")
-
-plot_transform <- function(sample_id){
-  img_dims <- imgData(spe)[c(imgData(spe)$sample_id == sample_id& imgData(spe)$image_id == "lowres"),"data"][[1]]
-  return(nrow(img_dims)/ncol(img_dims))
-}
-
 walk(fig_samples,function(s){
-  base_dim <- 9
-  pdf(here(plot_dir, paste0("vis_gene_CLDN5-",s,".pdf")), height = base_dim*plot_transform(s), width = base_dim)
-  print(vis_gene(
+  
+  vis_cldn5 <- vis_gene_crop(
     spe = spe,
+    point_size = 2,
+    frame_lim_df = frame_limits,
     sampleid = s,
     geneid = "CLDN5"
-  )) +
-    theme(title.postion = "None")
-  dev.off()
+  ) 
+  
+  ggsave(vis_cldn5, filename = here(plot_dir, paste0("vis_gene_crop_CLDN5-",s,".pdf")))
+  
   })
 
+## k16 Layer 1 2v14, SPARC HTRA1
+walk(c("SPARC", "HTRA1"), function(gene){
+  walk(fig_samples,function(s){
+    message(gene, " - ", s)
+    vis_cldn5 <- vis_gene_crop(
+      spe = spe[, spe$bayesSpace_harmony_16 %in% c(2, 14)],
+      point_size = 2,
+      frame_lim_df = frame_limits,
+      sampleid = s,
+      geneid = gene
+    ) 
+    
+    ggsave(vis_cldn5, filename = here(plot_dir, paste0("vis_gene_crop_2-14_",gene,"-",s,".pdf")))
+  })
+})
 
-vis_gene_test <- vis_gene(
-  spe = spe,
-  point_size = 1.2,
-  sampleid = "Br6522_ant",
-  geneid = "CLDN5"
-) + coord_fixed()
+## spe is missing SpkDx notation
+k16_colors_simple <- k16_colors
+names(k16_colors_simple) <- as.numeric(gsub("Sp16D","", names(k16_colors)))
 
-ggsave(vis_gene_test, filename = here(plot_dir, "vis_gene_ggsave.png"))
-ggsave(vis_gene_test, filename = here(plot_dir, "vis_gene_ggsave.pdf"))
-
-
-
-pdf(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.pdf"), height = 10, width = 10)
-vis_gene(
-    spe = spe,
-    sampleid = "Br6522_ant",
-    geneid = "CLDN5"
-) 
-dev.off()
-
-png(here(plot_dir, "vis_gene_CLDN5-Br6522_ant.png"))
-vis_gene(
-    spe = spe,
-    sampleid = "Br6522_ant",
-    geneid = "CLDN5"
-)
-dev.off()
-
-
-## K16 SPARC
-pdf(here(plot_dir, "vis_gene_SPARC-Br6522_ant.pdf"))
-vis_gene(
-    spe = spe,
-    sampleid = "Br6522_ant",
-    geneid = "SPARC"
-)
-dev.off()
-
-## K16 SPARC
-pdf(here(plot_dir, "vis_gene_HTRA1-Br6522_ant.pdf"))
-vis_gene(
-    spe = spe,
-    sampleid = "Br6522_ant",
-    geneid = "HTRA1"
-)
-dev.off()
-
-## filter to just 2 & 14
-pdf(here(plot_dir, "vis_gene_SPARC-Br6522_ant_filter.pdf"))
-vis_gene(
-    spe = spe[, spe$bayesSpace_harmony_16 %in% c(2, 14)],
-    sampleid = "Br6522_ant",
-    geneid = "SPARC"
-)
-dev.off()
-
-## K16 SPARC
-pdf(here(plot_dir, "vis_gene_HTRA1-Br6522_ant_filter.pdf"))
-vis_gene(
-    spe = spe[, spe$bayesSpace_harmony_16 %in% c(2, 14)],
-    sampleid = "Br6522_ant",
-    geneid = "HTRA1"
-)
-dev.off()
-
-## Visulize clusters 2 & 14
-pdf(here(plot_dir, "vis_clus_d16.pdf"))
-vis_clus(
-    spe = spe,
-    clustervar = "bayesSpace_harmony_16",
-    colors = k16_colors,
-    sampleid = "Br6522_ant"
-)
-dev.off()
-
-pdf(here(plot_dir, "vis_clust_d16_2-14.pdf"))
-vis_clus(
+## Visualize clusters 2 & 14
+vis_clust_2_14 <- vis_clus(
     # spe = spe,
     spe = spe[, spe$bayesSpace_harmony_16 %in% c(2, 14)],
     clustervar = "bayesSpace_harmony_16",
-    colors = k16_colors,
+    colors = k16_colors_simple[c(2, 14)],
+    # colors = k16_colors_simple,
+    point_size = 1.5,
     sampleid = "Br6522_ant"
-)
-dev.off()
+) + 
+  coord_fixed() +
+  theme(legend_position = "bottom")
+
+ggsave(vis_clust_2_14, filename = here(plot_dir, "vis_clust_d16_2-14.pdf"))
