@@ -5,9 +5,8 @@ library("tidyverse")
 library("reshape2")
 library("spatialLIBD")
 library("cowplot")
-library("tools")
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -141,8 +140,8 @@ all_spots <- function(count_df, plot_name) {
                 guides(col = guide_legend(override.aes = list(alpha = 1))) +
                 labs(
                     title = ct,
-                    x = "Software-estimated",
-                    y = "CART-calculated",
+                    x = "Software-Estimated",
+                    y = "CART-Calculated",
                 ) +
                 geom_text(
                     data = metrics_df %>% filter(cell_type == ct),
@@ -255,7 +254,7 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
             expand = c(0, 0)
         ) +
         labs(
-            x = "Software-estimated", y = "CART-calculated",
+            x = "Software-Estimated", y = "CART-Calculated",
             color = "Cell Type", shape = "Sample ID"
         ) +
         theme_bw(base_size = 15) +
@@ -323,7 +322,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type,
                     "observed",
-                    paste0(cell_type, " counts\n(", deconvo_tool, ")")
+                    paste0(cell_type, " Counts\n(", deconvo_tool, ")")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
@@ -335,8 +334,9 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
         if (include_actual) {
             for (cell_type in cell_types_actual) {
                 temp <- spatial_counts_plot(
-                    spe_small, full_df, sample_id, deconvo_tool, cell_type, "actual",
-                    paste0(cell_type, " counts\n(CART-calculated)")
+                    spe_small, full_df, sample_id, deconvo_tool,
+                    str_to_title(cell_type), "actual",
+                    paste0(cell_type, " Counts\n(CART-Calculated)")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
