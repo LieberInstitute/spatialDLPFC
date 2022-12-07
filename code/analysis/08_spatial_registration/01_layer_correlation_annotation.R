@@ -492,7 +492,7 @@ Heatmap(
 )
 dev.off()
 
-# sgejobs::job_single('02_cellType_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 02_cellType_correlation_annotation.R")
+# sgejobs::job_single('01_layer_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 01_layer_correlation_annotation.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
