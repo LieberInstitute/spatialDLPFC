@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=5G,h_vmem=5G,h_fsize=100G
-#$ -N 01_layer_correlation_annotation
+#$ -N layer_correlation_annotation
 #$ -o logs/01_layer_correlation_annotation.txt
 #$ -e logs/01_layer_correlation_annotation.txt
 #$ -m e
@@ -17,7 +17,7 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
-module load conda_R
+module load conda_R/4.2.x
 
 ## List current modules for reproducibility
 module list
