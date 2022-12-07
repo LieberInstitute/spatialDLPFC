@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=5G,h_vmem=5G,h_fsize=100G
+#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -N layer_correlation_annotation
 #$ -o logs/01_layer_correlation_annotation.txt
 #$ -e logs/01_layer_correlation_annotation.txt
