@@ -93,20 +93,19 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
     ]
     
     #   Plot spatial distribution
-    p <- vis_grid_gene(
+    p <- vis_gene(
         spe_small, geneid = "temp_ct_counts", return_plots = TRUE,
-        spatial = FALSE
-    )[[1]] +
+        spatial = FALSE, sampleid = sample_id1, alpha = 0
+    ) +
         coord_fixed() +
-        #   Match 'vis_clus' code
+        labs(title = title, caption = NULL) +
         geom_point(
             shape = 21,
-            size = 2,
+            size = 1.85,
             stroke = 0,
-            colour = "transparent",
-            alpha = 1
-        ) +
-        labs(title = title, caption = NULL)
+            alpha = 1,
+            color = "transparent"
+        )
     
     return(list(p, max(spe_small$temp_ct_counts)))
 }

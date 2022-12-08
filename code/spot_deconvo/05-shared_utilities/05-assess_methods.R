@@ -284,21 +284,22 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
         match(colnames(spe_small), counts_df$barcode)
     ]
 
-    #   Plot spatial distribution
-    p <- vis_grid_gene(
+    #   Plot spatial distribution. Use alpha = 0 here and manually add a
+    #   geom_point() for compatibility with vis_clus, which has a transparent
+    #   color
+    p <- vis_gene(
         spe_small, geneid = "temp_ct_counts", return_plots = TRUE,
-        spatial = FALSE
-    )[[1]] +
+        spatial = FALSE, alpha = 0, sampleid = sample_id1
+    ) +
         coord_fixed() +
-        #   Match 'vis_clus' code
+        labs(title = title, caption = NULL) +
         geom_point(
             shape = 21,
-            size = 2,
+            size = 1.85,
             stroke = 0,
-            colour = "transparent",
-            alpha = 1
-        ) +
-        labs(title = title, caption = NULL)
+            alpha = 1,
+            color = "transparent"
+        )
 
     return(list(p, max(spe_small$temp_ct_counts)))
 }
@@ -316,7 +317,7 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
 #       counts?
 #   pdf_prefix: length-1 character to prepend to PDF filenames
 spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual, pdf_prefix) {
-    for (sample_id in sample_ids[1]) {
+    for (sample_id in sample_ids) {
         spe_small <- spe[, spe$sample_id == sample_id]
 
         i <- 1
@@ -651,7 +652,7 @@ observed_df_long <- observed_df %>%
 spe <- readRDS(spe_IF_in)
 
 spatial_counts_plot_full(
-    spe, observed_df_long, cell_types, FALSE, "aa_spatial_counts_fullres_"
+    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
 )
 
 #   Gather collapsed cell counts so that each row is a unique
@@ -1442,9 +1443,9 @@ for (sample_id in sample_ids) {
     }
 
     plot_list[[sample_id]] <- vis_clus(
-        spe_small,
-        clustervar = "manual_layer", return_plots = TRUE,
-        spatial = FALSE, sampleid = sample_id, colors = libd_layer_colors
+        spe_small, clustervar = "manual_layer", return_plots = TRUE,
+        spatial = FALSE, sampleid = sample_id, colors = libd_layer_colors,
+        point_size = 1.85
     ) + 
         coord_fixed() +
         theme(legend.position = "none") +
