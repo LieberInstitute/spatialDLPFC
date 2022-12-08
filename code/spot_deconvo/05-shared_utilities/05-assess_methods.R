@@ -290,7 +290,15 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
         spatial = FALSE
     )[[1]] +
         coord_fixed() +
-        labs(title = title)
+        #   Match 'vis_clus' code
+        geom_point(
+            shape = 21,
+            size = 2,
+            stroke = 0,
+            colour = "transparent",
+            alpha = 1
+        ) +
+        labs(title = title, caption = NULL)
 
     return(list(p, max(spe_small$temp_ct_counts)))
 }
@@ -308,7 +316,7 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
 #       counts?
 #   pdf_prefix: length-1 character to prepend to PDF filenames
 spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual, pdf_prefix) {
-    for (sample_id in sample_ids) {
+    for (sample_id in sample_ids[1]) {
         spe_small <- spe[, spe$sample_id == sample_id]
 
         i <- 1
@@ -322,7 +330,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type,
                     "observed",
-                    paste0(cell_type, " Counts\n(", deconvo_tool, ")")
+                    paste0(cell_type, " Counts (", deconvo_tool, ")")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
@@ -336,7 +344,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool,
                     str_to_title(cell_type), "actual",
-                    paste0(cell_type, " Counts\n(CART-Calculated)")
+                    paste0(cell_type, " Counts (CART-Calculated)")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
@@ -381,29 +389,12 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
         dev.off()
         
         #   For figures in the paper, create a PDF version with one plot per
-        #   page. Exactly match the shape (aspect ratio) and visual details
-        #   of other spatial plots in this script
+        #   page. Remove the legend to match with other plots in the paper,
+        #   including those with a discrete scale (vis_clus) where the legend
+        #   is outside the plot
         for (i in 1:length(plot_list)) {
-            cell_type = cell_type_vec[1 + (i - 1) %% length(cell_type_vec)]
-            if (include_actual) {
-                d_tool = c(deconvo_tools, 'CART')[
-                    1 + (i - 1) %/% length(cell_type_vec)
-                ]
-            } else {
-                d_tool = deconvo_tools[1 + (i - 1) %/% length(cell_type_vec)]
-            }
-            
             plot_list[[i]] = plot_list[[i]] +
-                theme(legend.position = "none") +
-                labs(title = paste0(d_tool, ': ', cell_type), caption = NULL) +
-                #   Match 'vis_clus' code
-                geom_point(
-                    shape = 21,
-                    size = 2,
-                    stroke = 0,
-                    colour = "transparent",
-                    alpha = 1
-                )
+                theme(legend.position = "none")
         }
         pdf(
             file.path(
@@ -660,7 +651,7 @@ observed_df_long <- observed_df %>%
 spe <- readRDS(spe_IF_in)
 
 spatial_counts_plot_full(
-    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
+    spe, observed_df_long, cell_types, FALSE, "aa_spatial_counts_fullres_"
 )
 
 #   Gather collapsed cell counts so that each row is a unique

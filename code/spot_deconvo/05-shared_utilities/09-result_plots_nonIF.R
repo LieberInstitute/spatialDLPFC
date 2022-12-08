@@ -80,7 +80,7 @@ dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
                                 title) {
     #   Grab counts for just this sample, deconvo tool, and cell type
-    counts_df <- full_df %>%
+    counts_df <- full_df |>
         filter(
             sample_id == sample_id1,
             deconvo_tool == deconvo_tool1,
@@ -98,7 +98,15 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
         spatial = FALSE
     )[[1]] +
         coord_fixed() +
-        labs(title = title)
+        #   Match 'vis_clus' code
+        geom_point(
+            shape = 21,
+            size = 2,
+            stroke = 0,
+            colour = "transparent",
+            alpha = 1
+        ) +
+        labs(title = title, caption = NULL)
     
     return(list(p, max(spe_small$temp_ct_counts)))
 }
@@ -130,7 +138,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type,
                     "observed",
-                    paste0(cell_type, " counts\n(", deconvo_tool, ")")
+                    paste0(cell_type, " counts (", deconvo_tool, ")")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
@@ -143,7 +151,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
             for (cell_type in cell_types_actual) {
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type, "actual",
-                    paste0(cell_type, " counts\n(CART-calculated)")
+                    paste0(cell_type, " counts (CART-calculated)")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
@@ -188,29 +196,12 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
         dev.off()
         
         #   For figures in the paper, create a PDF version with one plot per
-        #   page. Exactly match the shape (aspect ratio) and visual details
-        #   of other spatial plots in this script
+        #   page. Remove the legend to match with other plots in the paper,
+        #   including those with a discrete scale (vis_clus) where the legend
+        #   is outside the plot
         for (i in 1:length(plot_list)) {
-            cell_type = cell_type_vec[1 + (i - 1) %% length(cell_type_vec)]
-            if (include_actual) {
-                d_tool = c(deconvo_tools, 'CART')[
-                    1 + (i - 1) %/% length(cell_type_vec)
-                ]
-            } else {
-                d_tool = deconvo_tools[1 + (i - 1) %/% length(cell_type_vec)]
-            }
-            
             plot_list[[i]] = plot_list[[i]] +
-                theme(legend.position = "none") +
-                labs(title = paste0(d_tool, ': ', cell_type), caption = NULL) +
-                #   Match 'vis_clus' code
-                geom_point(
-                    shape = 21,
-                    size = 2,
-                    stroke = 0,
-                    colour = "transparent",
-                    alpha = 1
-                )
+                theme(legend.position = "none")
         }
         pdf(
             file.path(
@@ -293,11 +284,11 @@ observed_df$deconvo_tool[observed_df$deconvo_tool == "cell2location"] <-
     "Cell2location"
 
 #   Plot counts for each cell type without collapsing cell categories
-observed_df_long <- observed_df %>%
+observed_df_long <- observed_df |>
     melt(
         id.vars = added_colnames, variable.name = "cell_type",
         value.name = "count"
-    ) %>%
+    ) |>
     pivot_wider(
         names_from = obs_type, values_from = count,
     )
@@ -316,11 +307,11 @@ spatial_counts_plot_full(
 #   Stacked barplot of cell-type proportions
 #-------------------------------------------------------------------------------
 
-prop_df <- observed_df_long %>%
-    group_by(sample_id, deconvo_tool, cell_type) %>%
-    summarize(observed = sum(observed)) %>%
-    group_by(sample_id, deconvo_tool) %>%
-    mutate(observed = observed / sum(observed)) %>%
+prop_df <- observed_df_long |>
+    group_by(sample_id, deconvo_tool, cell_type) |>
+    summarize(observed = sum(observed)) |>
+    group_by(sample_id, deconvo_tool) |>
+    mutate(observed = observed / sum(observed)) |>
     ungroup() |>
     pivot_longer(
         cols = c("observed"), values_to = "prop", names_to = "source"
@@ -384,21 +375,21 @@ provided_df <- tibble(
     deconvo_tool = factor(rep(c("Tangram", "Cell2location"), ncol(spe)))
 )
 
-count_df <- observed_df_long %>%
-    filter(deconvo_tool %in% c("Tangram", "Cell2location")) %>%
-    group_by(barcode, sample_id, deconvo_tool) %>%
-    summarize(observed = sum(observed)) %>%
+count_df <- observed_df_long |>
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
+    group_by(barcode, sample_id, deconvo_tool) |>
+    summarize(observed = sum(observed)) |>
     ungroup() |>
     left_join(provided_df, by = c("barcode", "sample_id", "deconvo_tool"))
 
 #   Compute metrics for each deconvolution tool: correlation between
 #   observed and actual values as well as RMSE
-metrics_df <- count_df %>%
-    group_by(deconvo_tool) %>%
+metrics_df <- count_df |>
+    group_by(deconvo_tool) |>
     summarize(
         corr = round(cor(observed, actual), 2),
         rmse = signif(mean((observed - actual)**2)**0.5, 3)
-    ) %>%
+    ) |>
     ungroup()
 
 #   Improve labels for plotting
@@ -445,21 +436,24 @@ marker_stats <- readRDS(marker_object_in)
 markers <- readLines(marker_in)
 
 #   Subset marker_stats to include just the rows where each gene is a marker for
-#   the given cell type
-marker_stats <- marker_stats %>%
-    group_by(gene) %>%
-    filter(ratio == max(ratio), gene %in% markers) %>%
-    ungroup()
+#   the given cell type. Replace '/' with '_' in cell types
+marker_stats <- marker_stats |>
+    group_by(gene) |>
+    filter(ratio == max(ratio), gene %in% markers) |>
+    ungroup() |>
+    mutate(cellType.target = gsub('/', '_', cellType.target))
+
+stopifnot(all(marker_stats$cellType.target %in% cell_types))
 
 #   Add mean marker-gene expression for each associated cell type to the main
 #   data frame with cell-type counts
 observed_df_long$marker_express <- NA
 for (cell_type in cell_types) {
     #   Grab markers for this cell type
-    these_markers <- marker_stats %>%
-        filter(cellType.target == cell_type) %>%
-        arrange(desc(ratio)) %>%
-        head(n = 25) %>%
+    these_markers <- marker_stats |>
+        filter(cellType.target == cell_type) |>
+        arrange(desc(ratio)) |>
+        head(n = 25) |>
         pull(gene)
 
     stopifnot(all(these_markers %in% rownames(spe)))
@@ -495,11 +489,11 @@ for (cell_type in cell_types) {
 stopifnot(all(!is.na(observed_df_long$marker_express)))
 
 #   Compute correlation for each deconvolution tool
-metrics_df <- observed_df_long %>%
-    group_by(deconvo_tool, sample_id, cell_type) %>%
+metrics_df <- observed_df_long |>
+    group_by(deconvo_tool, sample_id, cell_type) |>
     summarize(
         corr = round(cor(observed, marker_express), 2),
-    ) %>%
+    ) |>
     ungroup()
 
 #   Improve label for plotting
@@ -510,7 +504,7 @@ metrics_df$corr <- paste("Cor =", metrics_df$corr)
 plot_list <- lapply(
     sample_ids,
     function(this_sample_id) {
-        full_df_small <- observed_df_long %>%
+        full_df_small <- observed_df_long |>
             filter(sample_id == this_sample_id)
         
         p <- ggplot(full_df_small) +
@@ -521,7 +515,7 @@ plot_list <- lapply(
             facet_grid( rows = vars(cell_type), cols = vars(deconvo_tool)) +
             guides(col = guide_legend(override.aes = list(alpha = 1))) +
             geom_text(
-                data = metrics_df %>% filter(sample_id == this_sample_id),
+                data = metrics_df |> filter(sample_id == this_sample_id),
                 mapping = aes(
                     x = max(full_df_small$observed),
                     y = max(full_df_small$marker_express) / 7,

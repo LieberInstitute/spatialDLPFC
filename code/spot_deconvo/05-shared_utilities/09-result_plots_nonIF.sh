@@ -3,7 +3,7 @@
 #$ -N "result_plots_nonIF"
 #$ -o ../../../processed-data/spot_deconvo/05-shared_utilities/logs/09-result_plots_nonIF_layer.log
 #$ -e ../../../processed-data/spot_deconvo/05-shared_utilities/logs/09-result_plots_nonIF_layer.log
-#$ -l bluejay,mf=20G,h_vmem=20G
+#$ -l bluejay,mf=40G,h_vmem=40G
 
 echo "**** Job starts ****"
 date
