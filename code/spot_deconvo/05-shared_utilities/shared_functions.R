@@ -9,8 +9,8 @@
 #                   'vis_clus'
 #   include_legend: (logical) if FALSE, remove the legend
 #   is_discrete:    (logical) if TRUE, use 'vis_clus'; otherwise, use 'vis_gene'
-#   colors:         passed to 'colors' for 'vis_gene' if [is_discrete]
-#   assayname:      passed to 'assayname' for 'vis_gene' if [is_discrete]
+#   colors:         passed to 'colors' for 'vis_gene' if not [is_discrete]
+#   assayname:      passed to 'assayname' for 'vis_gene' if not [is_discrete]
 #
 #   Returns a ggplot object
 spot_plot = function(
