@@ -321,27 +321,18 @@ for (j in 1:length(classical_markers)) {
         }
 
         #   Produce the ggplot object (grid version)
-        plot_list[[i]] <- vis_gene(
-            spe, sampleid = sample_id, geneid = classical_markers_ens[j],
-            assay = "counts", return_plots = TRUE, spatial = FALSE
-        ) +
-            labs(title = title)
+        plot_list[[i]] <- spot_plot(
+            spe, sample_id = sample_id, var_name = classical_markers_ens[j],
+            include_legend = TRUE, is_discrete = FALSE,
+            title = title, assayname = "counts"
+        )
         
         #   Produce the ggplot object (manuscript version)
-        plot_list_paper[[i]] <- vis_gene(
-            spe, sampleid = sample_id, geneid = classical_markers_ens[j],
-            assay = "counts", return_plots = TRUE, spatial = FALSE, alpha = 0
-        ) +
-            theme(legend.position = "none") +
-            labs(title = sub('\n', ': ', title), caption = NULL) +
-            #   Match 'vis_clus' code
-            geom_point(
-                shape = 21,
-                size = 2,
-                stroke = 0,
-                colour = "transparent",
-                alpha = 1
-            )
+        plot_list_paper[[i]] <-  spot_plot(
+            spe, sample_id = sample_id, var_name = classical_markers_ens[j],
+            include_legend = FALSE, is_discrete = FALSE,
+            title = sub('\n', ': ', title), assayname = "counts"
+        )
 
         i <- i + 1
     }
