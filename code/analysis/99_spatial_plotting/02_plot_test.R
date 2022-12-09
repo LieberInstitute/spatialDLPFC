@@ -13,7 +13,9 @@ if (!dir.exists(plot_dir)) {
   dir.create(plot_dir)
 }
 
-sample_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","sample_xy_limits.csv"))
+frame_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","frame_limits.csv"))
+head(frame_lims)
+
 
 # Load full data
 load(
@@ -31,22 +33,41 @@ spe$bayesSpace_harmony_9 <- as.factor(spe$bayesSpace_harmony_9)
 spe$bayesSpace_harmony_16 <- as.factor(spe$bayesSpace_harmony_16)
 
 ###
-sl <- sample_lims[1,]
-
+samp <- "Br2720_ant"
+fl <- frame_lims[match(samp, frame_lims$sample_id),-1]
+scale_factor <- SpatialExperiment::scaleFactors(spe, sample_id = samp, image_id = "lowres")
+fls <- fl*scale_factor
 vis_gene_test <- vis_gene(
   spe = spe,
   point_size = 1.2,
-  sampleid = "Br2720_ant",
-  geneid = "CLDN5"
+  sampleid = samp,
+  geneid = "PCP4"
 ) + 
-  coord_fixed() +
-  geom_hline(yintercept = c(sl$x_min, sl$x_max)*0.0148894, color = "red", linetype = "dashed") +
-  geom_vline(xintercept = c(sl$y_min, sl$y_max)*0.0148894, color = "red", linetype = "dashed")
+  coord_fixed() 
 
+# x_min    x_max    y_min    y_max
+fls_plus <- fls + c(x_left = -40,
+                    x_right = 30, # good  
+                    y_up = -35, 
+                    y_down = 45)
 
-ggsave(vis_gene_test, filename = here(plot_dir, "vis_gene_ggsave.png"))
-ggsave(vis_gene_test, filename = here(plot_dir, "vis_gene_ggsave.pdf"))
+vis_gene_test_lims <- vis_gene_test+
+  geom_vline(xintercept = c(fls$x_min, fls$x_max), color = "red", linetype = "dashed") +
+  geom_hline(yintercept = c(fls$y_min, fls$y_max), color = "red", linetype = "dashed") +
+  ## outside frame
+  geom_vline(xintercept = fls_plus$x_min, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = fls_plus$x_max, color = "green", linetype = "dashed") +
+  geom_hline(yintercept = fls_plus$y_min, color = "purple", linetype = "dashed") +
+  # geom_hline(yintercept = fls_plus$y_max + seq(-15, by=5), color = "goldenrod", linetype = "dashed")
+  geom_hline(yintercept = fls_plus$y_max , color = "goldenrod", linetype = "dashed")
 
+ggsave(vis_gene_test_lims, filename = here(plot_dir, "vis_gene_ggsave.png"))
+# ggsave(vis_gene_test, filename = here(plot_dir, "vis_gene_ggsave.pdf"))
+
+# geom_rect(xmin = fls$x_min, xmax = fls$x_max,  ## Doesn't work??
+#           ymin = fls$y_min, ymax = fls$y_max,
+#           color = "red", linetype = "dashed"
+#           ) 
 
 vis_gene_test_lim <- vis_gene(
   spe = spe,
@@ -79,7 +100,7 @@ dim(img)
 # sample_id x_min x_max y_min y_max
 # 1   Br2720_ant 15782 33439  2876 21502
 sample <- "Br2720_ant"
-sample_lims[match(sample,sample_lims$sample_id),]
+frame_lims[match(sample,frame_lims$sample_id),]
 
 
 ## try custom functions
@@ -88,7 +109,7 @@ source("vis_gene_crop.R")
 vis_gene_custom_test <- vis_gene_crop(
   spe = spe,
   point_size = 2,
-  frame_lim_df = sample_lims,
+  frame_lim_df = frame_lims,
   sampleid = "Br6432_ant",
   geneid = "CLDN5"
 ) 
