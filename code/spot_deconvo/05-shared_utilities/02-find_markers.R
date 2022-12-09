@@ -9,6 +9,10 @@ suppressPackageStartupMessages(library("HDF5Array"))
 suppressPackageStartupMessages(library("spatialLIBD"))
 suppressPackageStartupMessages(library("cowplot"))
 
+#   Adds the 'spot_plot' function, a wrapper for 'vis_gene' or 'vis_clus' with
+#   consistent manuscript-appropriate settings
+source('shared_functions.R')
+
 cell_group <- "layer" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
@@ -183,8 +187,10 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", ct = "cellType", 
 
 if (cell_group == "broad") {
     colors_col <- "cell_type_colors_broad"
+    cell_column <- "cellType_broad_hc"
 } else {
     colors_col <- "cell_type_colors_layer"
+    cell_column <- "layer_level"
 }
 
 #   Plot mean-ratio distribution by cell type/ layer
@@ -212,17 +218,11 @@ boxplot_mean_ratio <- function(n_markers, plot_name) {
 ###############################################################################
 
 print("Writing markers...")
-write_markers(n_markers_per_type, marker_out)
+# write_markers(n_markers_per_type, marker_out)
 
 ###############################################################################
 #  Visually check quality of markers
 ###############################################################################
-
-if (cell_group == "broad") {
-    cell_column <- "cellType_broad_hc"
-} else {
-    cell_column <- "layer_level"
-}
 
 #   Visually show how markers look for each cell type
 plot_list <- lapply(
@@ -321,19 +321,17 @@ for (j in 1:length(classical_markers)) {
         }
 
         #   Produce the ggplot object (grid version)
-        plot_list[[i]] <- vis_grid_gene(
-            spe[, spe$sample_id == sample_id],
-            geneid = classical_markers_ens[j], assay = "counts",
-            return_plots = TRUE, spatial = FALSE
-        )[[1]] +
+        plot_list[[i]] <- vis_gene(
+            spe, sampleid = sample_id, geneid = classical_markers_ens[j],
+            assay = "counts", return_plots = TRUE, spatial = FALSE
+        ) +
             labs(title = title)
         
         #   Produce the ggplot object (manuscript version)
-        plot_list_paper[[i]] <- vis_grid_gene(
-            spe[, spe$sample_id == sample_id],
-            geneid = classical_markers_ens[j], assay = "counts",
-            return_plots = TRUE, spatial = FALSE
-        )[[1]] +
+        plot_list_paper[[i]] <- vis_gene(
+            spe, sampleid = sample_id, geneid = classical_markers_ens[j],
+            assay = "counts", return_plots = TRUE, spatial = FALSE, alpha = 0
+        ) +
             theme(legend.position = "none") +
             labs(title = sub('\n', ': ', title), caption = NULL) +
             #   Match 'vis_clus' code
@@ -403,28 +401,24 @@ for (n_markers in c(15, 25, 50)) {
             spe_small$prop_nonzero_marker <- colMeans(
                 assays(spe_small)$counts > 0
             )
-
-            p <- vis_grid_gene(
-                spe_small,
-                geneid = "prop_nonzero_marker", return_plots = TRUE,
-                spatial = FALSE
-            )
-            plot_list[[i]] <- p[[1]] + labs(
+            
+            plot_list[[i]] <- spot_plot(
+                spe_small, sample_id = sample_id,
+                var_name = "prop_nonzero_marker", include_legend = TRUE,
+                is_discrete = FALSE,
                 title = paste0(
                     "Prop. markers w/ nonzero exp:\n", ct, " (", sample_id, ")"
                 )
             )
-            plot_list_paper[[i]] <- p[[1]] +
-                theme(legend.position = "none") +
-                labs(title = paste0(ct, " (", sample_id, ")"), caption = NULL) +
-                #   Match 'vis_clus' code
-                geom_point(
-                    shape = 21,
-                    size = 2,
-                    stroke = 0,
-                    colour = "transparent",
-                    alpha = 1
-                )
+            
+            # Use a 1-line title and remove the legend for the paper version   
+            plot_list_paper[[i]] <- spot_plot(
+                spe_small, sample_id = sample_id,
+                var_name = "prop_nonzero_marker", include_legend = FALSE,
+                is_discrete = FALSE,
+                title = paste0(ct, " (", sample_id, ")")
+            )
+            
             i <- i + 1
         }
     }
@@ -467,14 +461,14 @@ if (cell_group == "layer") {
     #   Plot expression of PCP4 for every sample
     for (sample_id in unique(spe$sample_id)) {
         #   Produce the ggplot object
-        plot_list[[i]] <- vis_grid_gene(
-            spe[, spe$sample_id == sample_id],
-            geneid = classical_markers_ens[classical_markers == "PCP4"],
-            assay = "counts",
-            return_plots = TRUE,
-            spatial = FALSE
-        )[[1]] +
-            labs(title = paste0("PCP4: marker for layer 5\n(", sample_id, ")"))
+        plot_list[[i]] <- spot_plot(
+            spe, sample_id = sample_id,
+            var_name = classical_markers_ens[classical_markers == "PCP4"],
+            include_legend = TRUE,
+            is_discrete = FALSE,
+            title = paste0("PCP4: marker for layer 5\n(", sample_id, ")"),
+            assayname = "counts",
+        )
 
         i <- i + 1
     }
@@ -497,17 +491,17 @@ if (cell_group == "layer") {
             spe_small$prop_nonzero_marker <- colMeans(
                 assays(spe_small)$counts > 0
             )
-
-            plot_list[[i]] <- vis_grid_gene(
-                spe_small,
-                geneid = "prop_nonzero_marker", return_plots = TRUE,
-                spatial = FALSE
-            )[[1]] + labs(
+            
+            plot_list[[i]] <- spot_plot(
+                spe_small, sample_id = sample_id,
+                var_name = "prop_nonzero_marker", include_legend = TRUE,
+                is_discrete = FALSE,
                 title = paste0(
                     "Prop. markers w/ nonzero exp (", n_markers,
                     " markers):\nExcit_L5 (", sample_id, ")"
                 )
             )
+            
             i <- i + 1
         }
     }

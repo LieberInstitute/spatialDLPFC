@@ -6,7 +6,11 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 
-cell_group <- "broad" # "broad" or "layer"
+#   Adds the 'spot_plot' function, a wrapper for 'vis_gene' or 'vis_clus' with
+#   consistent manuscript-appropriate settings
+source('shared_functions.R')
+
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -284,22 +288,12 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
         match(colnames(spe_small), counts_df$barcode)
     ]
 
-    #   Plot spatial distribution. Use alpha = 0 here and manually add a
-    #   geom_point() for compatibility with vis_clus, which has a transparent
-    #   color
-    p <- vis_gene(
-        spe_small, geneid = "temp_ct_counts", return_plots = TRUE,
-        spatial = FALSE, alpha = 0, sampleid = sample_id1
-    ) +
-        coord_fixed() +
-        labs(title = title, caption = NULL) +
-        geom_point(
-            shape = 21,
-            size = 1.85,
-            stroke = 0,
-            alpha = 1,
-            color = "transparent"
-        )
+    #   Plot spatial distribution
+    p <- spot_plot(
+        spe_small, sample_id = sample_id1, title = title,
+        var_name = "temp_ct_counts", include_legend = TRUE,
+        is_discrete = FALSE
+    )
 
     return(list(p, max(spe_small$temp_ct_counts)))
 }
@@ -1441,15 +1435,12 @@ for (sample_id in sample_ids) {
         stopifnot(length(which(is.na(spe_small$manual_layer))) == 2)
         spe_small <- spe_small[, !is.na(spe_small$manual_layer)]
     }
-
-    plot_list[[sample_id]] <- vis_clus(
-        spe_small, clustervar = "manual_layer", return_plots = TRUE,
-        spatial = FALSE, sampleid = sample_id, colors = libd_layer_colors,
-        point_size = 1.85
-    ) + 
-        coord_fixed() +
-        theme(legend.position = "none") +
-        labs(title = sample_id)
+    
+    plot_list[[sample_id]] <- spot_plot(
+        spe_small, sample_id = sample_id, title = sample_id,
+        var_name = "manual_layer", colors = libd_layer_colors,
+        is_discrete = TRUE, include_legend = FALSE
+    )
 }
 
 pdf(file.path(plot_dir, "spot_layer_labels.pdf"))
