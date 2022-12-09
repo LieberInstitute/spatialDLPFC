@@ -24,14 +24,14 @@ sr_positions <- map(sr_csv, ~read.csv(.x, header = FALSE))
 head(sr_positions[[1]])
 
 frame_lims <- map_dfr(sr_positions, function(p){
-  list(x_min = min(p$V5),
-       x_max = max(p$V5),
-       y_min = min(p$V6),
-       y_max = max(p$V6)
+  list(x_min = min(p$V6),
+       x_max = max(p$V6),
+       y_min = min(p$V5),
+       y_max = max(p$V5)
   )
 })
 
-frame_lims <- frame_lims %>% add_column(sample_id = names(sr_positions), .before = "x_min")
+frame_lims <- frame_lims %>% add_column(sample_id = names(sr_positions), .before = 1)
 
 frame_lims
 # A tibble: 30 × 5
@@ -72,3 +72,6 @@ frame_lims |>
 # Mean   :17886   Mean   :18858  
 # 3rd Qu.:18232   3rd Qu.:19211  
 # Max.   :18347   Max.   :19324  
+
+sgejobs::job_single('01_get_frame_limits', create_shell = TRUE, memory = '5G', command = "Rscript 01_get_frame_limits.R")
+
