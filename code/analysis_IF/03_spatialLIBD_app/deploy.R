@@ -21,7 +21,8 @@ rsconnect::deployApp(
     appDir = here("code", "analysis_IF", "03_spatialLIBD_app"),
     appFiles = c(
         "app.R",
-        "spe.rds"
+        "spe.rds",
+        withr::with_dir(here("code", "analysis_IF", "03_spatialLIBD_app"), dir("www", full.names = TRUE))
     ),
     appName = "spatialDLPFC_Visium_SPG",
     account = "libd",

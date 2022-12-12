@@ -3,6 +3,7 @@ library("markdown") ## Hm... to avoid this error
 # 2021-11-11T05:30:49.941401+00:00 shinyapps[5096402]: Listening on http://127.0.0.1:32863
 # 2021-11-11T05:30:50.218127+00:00 shinyapps[5096402]: Warning: Error in loadNamespace: there is no package called ‘markdown’
 # 2021-11-11T05:30:50.222437+00:00 shinyapps[5096402]:   111: <Anonymous>
+library("Polychrome")
 
 ## spatialLIBD uses golem
 options("golem.app.prod" = TRUE)
@@ -10,7 +11,7 @@ options("golem.app.prod" = TRUE)
 ## You need this to enable shinyapps to install Bioconductor packages
 options(repos = BiocManager::repositories())
 
-## Load the data
+## Load the spe object
 spe_IF <- readRDS("spe.rds")
 
 # speB$BayesSpace <- speB$spatial.cluster
@@ -29,11 +30,12 @@ spatialLIBD::run_app(
         "ManualAnnotation"
     ),
     spe_continuous_vars = c(
-        vars[grep("^(10x|tangram|CART|cell2location|spotlight)_", vars)],
+        vars[grep("^(tangram|CART|cell2location|spotlight)_", vars)],
         "sum_umi",
         "sum_gene",
         "expr_chrM",
         "expr_chrM_ratio"
     ),
-    default_cluster = "10x_graphclust"
+    default_cluster = "10x_graphclust",
+    docs_path = "www"
 )
