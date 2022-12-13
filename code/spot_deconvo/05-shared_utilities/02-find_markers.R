@@ -452,6 +452,7 @@ for (n_markers in c(15, 25, 50)) {
 
 if (cell_group == "layer") {
     plot_list <- list()
+    max_list <- list()
     i <- 1
 
     #   Plot expression of PCP4 for every sample
@@ -462,9 +463,11 @@ if (cell_group == "layer") {
             var_name = classical_markers_ens[classical_markers == "PCP4"],
             include_legend = TRUE,
             is_discrete = FALSE,
-            title = "PCP4",
+            title = NULL,
             assayname = "counts",
         )
+        
+        max_list[[i]] = 0
 
         i <- i + 1
     }
@@ -488,14 +491,41 @@ if (cell_group == "layer") {
                 assays(spe_small)$counts > 0
             )
             
+            max_list[[i]] <- max(spe_small$prop_nonzero_marker)
+            
             plot_list[[i]] <- spot_plot(
                 spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE,
-                title = paste0("Excit_L5 (", n_markers, " Markers)")
+                title = NULL
             )
             
             i <- i + 1
+        }
+    }
+    
+    max_mat <- matrix(
+        unlist(max_list), ncol = length(unique(spe$sample_id)), byrow = TRUE
+    )
+    
+    #   Now loop back through the plot list (which will be displayed in 2D)
+    #   and overwrite the scale to go as high as the largest value in the
+    #   column. This allows for easy comparison between number of markers for
+    #   the same samples
+    for (i_col in 1:length(unique(spe$sample_id))) {
+        for (i_row in 2:4) {
+            index <- (i_row - 1) * length(unique(spe$sample_id)) + i_col
+            upper_limit <- max(max_mat[, i_col])
+            
+            plot_list[[index]] <- plot_list[[index]] +
+                scale_color_continuous(
+                    type = "viridis", limits = c(0, upper_limit),
+                    na.value = c("black" = "#0000002D")
+                ) +
+                scale_fill_continuous(
+                    type = "viridis", limits = c(0, upper_limit),
+                    na.value = c("black" = "#0000002D")
+                )
         }
     }
 
