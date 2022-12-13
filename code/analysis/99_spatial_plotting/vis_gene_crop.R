@@ -6,13 +6,20 @@ vis_gene_crop <-
            spatial = TRUE,
            assayname = "logcounts",
            minCount = 0,
-           viridis = TRUE,
+           color_scale = "plasma",
            frame_lim_df,
            image_id = "lowres",
            alpha = 1,
-           cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
+           cont_colors = c("aquamarine4", "springgreen", "goldenrod", "red"),
            point_size = 2,
            ...) {
+    
+    if (color_scale == "viridis"){
+      cont_colors <- viridisLite::viridis(21)
+    }else if(color_scale == "plasma"){
+      cont_colors <- viridisLite::plasma(21)
+    }
+    
     spe_sub <- spe[, spe$sample_id == sampleid]
     d <- as.data.frame(cbind(colData(spe_sub), SpatialExperiment::spatialCoords(spe_sub)), optional = TRUE)
     
@@ -79,7 +86,16 @@ vis_gene_p_crop <-
     
     scale_factor <- SpatialExperiment::scaleFactors(spe, sample_id = sampleid, image_id = image_id)
     frame_lims <- ceiling(frame_lim_df[match(sampleid,frame_lim_df$sample_id),-1]*scale_factor)
+    
+    ## call image
     img <- SpatialExperiment::imgRaster(spe, sample_id = sampleid, image_id = image_id)
+    
+    ## keep crop in frame
+    frame_lims$y_min <- ifelse(frame_lims$y_min < 1, 1, frame_lims$y_min)
+    frame_lims$y_max <- ifelse(frame_lims$y_max > nrow(img), nrow(img), frame_lims$y_max)
+    frame_lims$x_min <- ifelse(frame_lims$x_min < 1, 1, frame_lims$x_min)
+    frame_lims$x_max <- ifelse(frame_lims$x_max > ncol(img), ncol(img), frame_lims$x_max)
+    ## crop image
     img <- img[frame_lims$y_min:frame_lims$y_max,frame_lims$x_min:frame_lims$x_max]
     
     p <-
