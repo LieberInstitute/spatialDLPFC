@@ -1,0 +1,69 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.2.x
+**** Job starts ****
+Fri Dec  9 14:56:08 EST 2022
+**** JHPCE info ****
+User: lhuuki
+Job id: 1288029
+Job name: get_frame_limits
+Hostname: compute-059.cm.cluster
+Task id: undefined
+Unloading conda_R/4.2.x
+Loading conda_R/4.2.x
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.4.0      ✔ purrr   0.3.5 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.5.0 
+✔ readr   2.1.3      ✔ forcats 0.5.2 
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+[1] TRUE
+                  V1 V2 V3 V4    V5   V6
+1 ACGCCTGACACGCGCT-1  0  0  0 33439 2895
+2 TACCGATCCAACACTT-1  0  1  1 33300 3136
+3 ATTAAAGCGGACGAGC-1  0  0  2 33161 2894
+4 GATAAGGGACGATTAG-1  0  1  3 33022 3136
+5 GTGCAAATCACCAATA-1  0  0  4 32883 2894
+6 TGTTGGCTGGCGGAAG-1  0  1  5 32744 3136
+# A tibble: 30 × 5
+   sample_id   x_min x_max y_min y_max
+   <chr>       <int> <int> <int> <int>
+ 1 Br2720_ant   2876 21502 15782 33439
+ 2 Br2720_mid   3331 21929  8766 26397
+ 3 Br2720_post  3062 21639  8729 26340
+ 4 Br2743_ant   7171 26375  6302 24526
+ 5 Br2743_mid   4398 23722  8039 26386
+ 6 Br2743_post  5242 24520 11158 29455
+ 7 Br3942_ant   4812 23991  6108 24308
+ 8 Br3942_mid   4009 23246  7818 26073
+ 9 Br3942_post  2759 21870 11069 29197
+10 Br6423_ant   4871 24084  5747 23981
+# … with 20 more rows
+     x_diff          y_diff     
+ Min.   :18550   Min.   :17584  
+ 1st Qu.:18590   1st Qu.:17624  
+ Median :18658   Median :17690  
+ Mean   :18858   Mean   :17886  
+ 3rd Qu.:19211   3rd Qu.:18232  
+ Max.   :19324   Max.   :18347  
+Error: The file 01_get_frame_limits.sh already exists!
+Execution halted
+**** Job ends ****
+Fri Dec  9 14:56:20 EST 2022
