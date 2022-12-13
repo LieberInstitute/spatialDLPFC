@@ -190,11 +190,10 @@ walk(samples, function(samp){
 })
 
 #### Crop to fudcial frame ####
-frame_adj <- list(x_left = -2350,
+frame_adj <- list(x_left = -2250,
                x_right = 1950, # good  
-               y_down = -2500, # Add space for legend 
-               y_up = 2650)
-
+               y_down = -2200, # Add space for legend 
+               y_up = 2800)
 
 frame_edge_lims <- frame_lims |>
   mutate(x_min = x_min + frame_adj$x_left,
