@@ -188,9 +188,11 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", ct = "cellType", 
 if (cell_group == "broad") {
     colors_col <- "cell_type_colors_broad"
     cell_column <- "cellType_broad_hc"
+    cell_type_nrow <- 2
 } else {
     colors_col <- "cell_type_colors_layer"
     cell_column <- "layer_level"
+    cell_type_nrow <- 3
 }
 
 #   Plot mean-ratio distribution by cell type/ layer
@@ -264,24 +266,25 @@ dev.off()
 p <- marker_stats %>%
     mutate(
         Marker = case_when(
-            rank_ratio <= n_markers_per_type ~ paste0("Marker top", n_markers_per_type),
-            TRUE ~ "Not marker"
+            rank_ratio <= n_markers_per_type ~ paste0(
+                "Top-", n_markers_per_type, " Marker"
+            ),
+            TRUE ~ "Not Marker"
         )
     ) %>%
     ggplot(aes(ratio, std.logFC, color = Marker)) +
     geom_point(size = 0.5, alpha = 0.5) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
     geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
-    facet_wrap(~cellType.target, scales = "free_x") +
+    facet_wrap(~cellType.target, scales = "free_x", nrow = cell_type_nrow) +
     labs(x = "Mean Ratio") +
-    theme_bw(base_size = 18) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
     guides(col = guide_legend(override.aes = list(size = 2)))
 
-ggsave(
-    p,
-    filename = file.path(plot_dir, paste0("mean_ratio_vs_1vall.png")),
-    height = 10, width = 10
-)
+pdf(file.path(plot_dir, paste0("mean_ratio_vs_1vall.pdf")), width = 10)
+print(p)
+dev.off()
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
 boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot")
