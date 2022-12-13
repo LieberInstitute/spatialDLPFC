@@ -8,7 +8,9 @@ library("cowplot")
 
 #   Adds the 'spot_plot' function, a wrapper for 'vis_gene' or 'vis_clus' with
 #   consistent manuscript-appropriate settings
-source('shared_functions.R')
+source(
+    here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
+)
 
 cell_group <- "layer" # "broad" or "layer"
 

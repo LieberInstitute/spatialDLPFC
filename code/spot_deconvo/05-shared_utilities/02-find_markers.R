@@ -11,7 +11,9 @@ suppressPackageStartupMessages(library("cowplot"))
 
 #   Adds the 'spot_plot' function, a wrapper for 'vis_gene' or 'vis_clus' with
 #   consistent manuscript-appropriate settings
-source('shared_functions.R')
+source(
+    here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
+)
 
 cell_group <- "layer" # "broad" or "layer"
 
@@ -188,9 +190,11 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", ct = "cellType", 
 if (cell_group == "broad") {
     colors_col <- "cell_type_colors_broad"
     cell_column <- "cellType_broad_hc"
+    cell_type_nrow <- 2
 } else {
     colors_col <- "cell_type_colors_layer"
     cell_column <- "layer_level"
+    cell_type_nrow <- 3
 }
 
 #   Plot mean-ratio distribution by cell type/ layer
@@ -264,24 +268,25 @@ dev.off()
 p <- marker_stats %>%
     mutate(
         Marker = case_when(
-            rank_ratio <= n_markers_per_type ~ paste0("Marker top", n_markers_per_type),
-            TRUE ~ "Not marker"
+            rank_ratio <= n_markers_per_type ~ paste0(
+                "Top-", n_markers_per_type, " Marker"
+            ),
+            TRUE ~ "Not Marker"
         )
     ) %>%
     ggplot(aes(ratio, std.logFC, color = Marker)) +
     geom_point(size = 0.5, alpha = 0.5) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
     geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
-    facet_wrap(~cellType.target, scales = "free_x") +
+    facet_wrap(~cellType.target, scales = "free_x", nrow = cell_type_nrow) +
     labs(x = "Mean Ratio") +
-    theme_bw(base_size = 18) +
+    theme_bw(base_size = 16) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
     guides(col = guide_legend(override.aes = list(size = 2)))
 
-ggsave(
-    p,
-    filename = file.path(plot_dir, paste0("mean_ratio_vs_1vall.png")),
-    height = 10, width = 10
-)
+pdf(file.path(plot_dir, paste0("mean_ratio_vs_1vall.pdf")), width = 10)
+print(p)
+dev.off()
 
 #   Plot mean-ratio distibution by group (cell type or layer label)
 boxplot_mean_ratio(n_markers_per_type, "mean_ratio_boxplot")
@@ -447,6 +452,7 @@ for (n_markers in c(15, 25, 50)) {
 
 if (cell_group == "layer") {
     plot_list <- list()
+    max_list <- list()
     i <- 1
 
     #   Plot expression of PCP4 for every sample
@@ -457,9 +463,11 @@ if (cell_group == "layer") {
             var_name = classical_markers_ens[classical_markers == "PCP4"],
             include_legend = TRUE,
             is_discrete = FALSE,
-            title = paste0("PCP4: marker for layer 5\n(", sample_id, ")"),
+            title = NULL,
             assayname = "counts",
         )
+        
+        max_list[[i]] = 0
 
         i <- i + 1
     }
@@ -483,17 +491,41 @@ if (cell_group == "layer") {
                 assays(spe_small)$counts > 0
             )
             
+            max_list[[i]] <- max(spe_small$prop_nonzero_marker)
+            
             plot_list[[i]] <- spot_plot(
                 spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE,
-                title = paste0(
-                    "Prop. markers w/ nonzero exp (", n_markers,
-                    " markers):\nExcit_L5 (", sample_id, ")"
-                )
+                title = NULL
             )
             
             i <- i + 1
+        }
+    }
+    
+    max_mat <- matrix(
+        unlist(max_list), ncol = length(unique(spe$sample_id)), byrow = TRUE
+    )
+    
+    #   Now loop back through the plot list (which will be displayed in 2D)
+    #   and overwrite the scale to go as high as the largest value in the
+    #   column. This allows for easy comparison between number of markers for
+    #   the same samples
+    for (i_col in 1:length(unique(spe$sample_id))) {
+        for (i_row in 2:4) {
+            index <- (i_row - 1) * length(unique(spe$sample_id)) + i_col
+            upper_limit <- max(max_mat[, i_col])
+            
+            plot_list[[index]] <- plot_list[[index]] +
+                scale_color_continuous(
+                    type = "viridis", limits = c(0, upper_limit),
+                    na.value = c("black" = "#0000002D")
+                ) +
+                scale_fill_continuous(
+                    type = "viridis", limits = c(0, upper_limit),
+                    na.value = c("black" = "#0000002D")
+                )
         }
     }
 
