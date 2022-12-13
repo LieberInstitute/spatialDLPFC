@@ -39,12 +39,28 @@ frame_rect_raw <- frame_lims |>
 
 ggsave(frame_rect_raw, filename = here(plot_dir, "frame_rect_raw.png"))
 
+all_scale_factors <- map_dbl(frame_lims$sample_id, 
+                             ~SpatialExperiment::scaleFactors(spe, sample_id = .x, image_id = "lowres"))
+
 frame_lims2 <- frame_lims |>
+  add_column(scale_factor = all_scale_factors) |>
   mutate(x_diff = x_max - x_min,
          y_diff = y_max - y_min,
          ratio = x_diff/y_diff,
-         area = x_diff * y_diff
-  )
+         area = x_diff * y_diff,
+         area_scale = area*scale_factor,
+         x_diff_scale = x_diff*scale_factor,
+         y_diff_scale = y_diff*scale_factor)
+
+frame_lims2 |> select(sample_id, area, area_scale) |> arrange(area)
+
+frame_lims2 |> select(sample_id, area_scale) |> arrange(area_scale)
+#      sample_id area_scale
+# 1   Br8325_mid    4872040
+# 2   Br2720_ant    4896830
+# ...
+# 29  Br6432_mid    7668611
+# 30 Br6432_post    7681723
 
 frame_rect_diff <- frame_lims2 |>
   ggplot(aes(xmin = 0, xmax = x_diff, ymin= 0, ymax=y_diff, color = ratio)) +
@@ -62,25 +78,41 @@ frame_diff_density <- frame_lims2 |>
 
 ggsave(frame_diff_density, filename = here(plot_dir, "frame_diff_density.png"))
 
+frame_rect_diff_scale <- frame_lims2 |>
+  ggplot(aes(xmin = 0, xmax = x_diff_scale, ymin= 0, ymax=y_diff_scale, color = ratio)) +
+  geom_rect(fill = NA, alpha = .5) + 
+  coord_fixed() 
 
-frame_area <- 
-  
-  ## two groups of frames 
-  # small ~ 18500 x 17600
-  # large ~ 19200 x 18250
-  
-  # frame_adj <- c(x_left = -40,
-  #                x_right = 30, # good  
-  #                y_up = -35, 
-  #                y_down = 45)
-  
-  frame_adj <- c(x_left = -2670,
-                 x_right = 2070, # good  
-                 y_up = -2360, 
-                 y_down = 3022)
+ggsave(frame_rect_diff_scale, filename = here(plot_dir, "frame_rect_diff_scale.png"))
+
+
+## two groups of frames 
+# small ~ 18500 x 17600
+# large ~ 19200 x 18250
+
+# frame_adj <- c(x_left = -40,
+#                x_right = 30, # good  
+#                y_up = -35, 
+#                y_down = 45)
+
+frame_adj <- c(x_left = -2670,
+               x_right = 2070, # good  
+               y_up = -2360, 
+               y_down = 3022)
+
+frame_edge_lims <- 
+
+frame_area_scatter <- frame_lims2 |>
+  ggplot(aes(x = area, y = area_scale, color = x_diff < 19000)) +
+  ggrepel::geom_text_repel(aes(label = sample_id), size = 2) +
+  geom_point()
+
+ggsave(frame_area_scatter, filename = here(plot_dir, "frame_area_scatter.png"), width = 10)
+
 
 #### Test limits in plotting regular data ####
-samples <- c("Br8325_ant","Br2720_ant","Br8667_mid","Br6522_ant","Br2743_mid")
+samples <- c("Br8325_ant","Br2720_ant","Br8667_mid","Br6522_ant","Br2743_mid","Br6432_post","Br8667_post")
+# samples <- c("Br8325_mid","Br6432_post") # min and max scale areas
 
 map(samples,~SpatialExperiment::scaleFactors(spe, sample_id = .x, image_id = "lowres"))
 
@@ -120,29 +152,6 @@ walk(samples, function(samp){
 #           color = "red", linetype = "dashed"
 #           ) 
 
-vis_gene_test_lim <- vis_gene(
-  spe = spe,
-  point_size = 1.2,
-  sampleid = "Br2720_ant",
-  geneid = "CLDN5"
-) + 
-  coord_fixed() +
-  xlim(sl$x_min*0.0148894, sl$x_max*0.0148894) +
-  ylim(sl$y_min*0.0148894, sl$y_max*0.0148894)
-
-ggsave(vis_gene_test_lim, filename = here(plot_dir, "vis_gene_lim_ggsave.png"))
-
-vis_gene_test_lim_nohist <- vis_gene(
-  spe = spe,
-  point_size = 1.2,
-  sampleid = "Br2720_ant",
-  geneid = "CLDN5",
-  spatial = FALSE
-) + 
-  coord_fixed()
-
-ggsave(vis_gene_test_lim_nohist, filename = here(plot_dir, "vis_gene_test_lim_nohist_ggsave.png"))
-
 
 
 img <- SpatialExperiment::imgRaster(spe, sample_id = "Br2720_ant", image_id = "lowres")
@@ -165,5 +174,18 @@ vis_gene_custom_test <- vis_gene_crop(
   geneid = "CLDN5"
 ) 
 
-ggsave(vis_gene_custom_test, filename = here(plot_dir, "vis_gene_custom.png"))
+ggsave(vis_gene_custom_test, filename = here(plot_dir, "vis_gene_crop.png"))
+
+walk(samples, function(samp){
+  
+  vis_gene_crop_plot <- vis_gene_crop(
+    spe = spe,
+    point_size = 2.2,
+    frame_lim_df = frame_lims,
+    sampleid = samp,
+    geneid = "PCP4"
+  )  
+  ggsave(vis_gene_crop_plot, filename = here(plot_dir, "vis_gen_crop", paste0("vis_gene_crop_",samp,".png")))
+  
+})
 

@@ -80,14 +80,14 @@ vis_gene_p_crop <-
     scale_factor <- SpatialExperiment::scaleFactors(spe, sample_id = sampleid, image_id = image_id)
     frame_lims <- ceiling(frame_lim_df[match(sampleid,frame_lim_df$sample_id),-1]*scale_factor)
     img <- SpatialExperiment::imgRaster(spe, sample_id = sampleid, image_id = image_id)
-    img <- img[frame_lims$x_min:frame_lims$x_max, frame_lims$y_min:frame_lims$y_max]
+    img <- img[frame_lims$y_min:frame_lims$y_max,frame_lims$x_min:frame_lims$x_max]
     
     p <-
       ggplot(
         d,
         aes(
-          x = (pxl_col_in_fullres * scale_factor) - frame_lims$y_min,
-          y = (pxl_row_in_fullres * scale_factor) - frame_lims$x_min,
+          x = (pxl_col_in_fullres * scale_factor) - frame_lims$x_min,
+          y = (pxl_row_in_fullres * scale_factor) - frame_lims$y_min,
           fill = COUNT,
           color = COUNT,
           key = key
