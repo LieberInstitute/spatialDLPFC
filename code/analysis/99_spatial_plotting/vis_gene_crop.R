@@ -12,6 +12,7 @@ vis_gene_crop <-
            alpha = 1,
            cont_colors = c("aquamarine4", "springgreen", "goldenrod", "red"),
            point_size = 2,
+           legend_overlap = FALSE,
            ...) {
     
     if (color_scale == "viridis"){
@@ -60,7 +61,8 @@ vis_gene_crop <-
       image_id = image_id,
       alpha = alpha,
       cont_colors = cont_colors,
-      point_size = point_size
+      point_size = point_size,
+      legend_overlap = legend_overlap
     )
     
     return(p)
@@ -78,7 +80,8 @@ vis_gene_p_crop <-
            legend_title = "Test", 
            alpha = 1,
            cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
-           point_size = 2) {
+           point_size = 2,
+           legend_overlap = FALSE) {
     
     ## Some variables
     pxl_row_in_fullres <- pxl_col_in_fullres <- key <- COUNT <- NULL
@@ -163,9 +166,12 @@ vis_gene_p_crop <-
         axis.line = element_blank(),
         axis.text = element_blank(),
         axis.ticks = element_blank(),
-        # legend.position = c(0.95, 0.10)
         legend.position="bottom",
         legend.box.spacing = unit(0, "pt"))
+    
+    if(legend_overlap) p <- p + theme(legend.position = c(0.5, 0.08), 
+                                      legend.box = "horizontal",
+                                      legend.direction = "horizontal")
     
     return(p)
   }

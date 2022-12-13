@@ -97,8 +97,8 @@ ggsave(frame_rect_diff_scale, filename = here(plot_dir, "frame_rect_diff_scale.p
 
 frame_adj <- c(x_left = -2670,
                x_right = 2070, # good  
-               y_up = -2360, 
-               y_down = 3022)
+               y_down = -2360, 
+               y_up = 3022)
 
 frame_edge_lims <- 
 
@@ -163,15 +163,15 @@ sample <- "Br2720_ant"
 frame_lims[match(sample,frame_lims$sample_id),]
 
 
-## try custom functions
+#### Test vis crop functions ####
 source("vis_gene_crop.R")
 
 vis_gene_custom_test <- vis_gene_crop(
   spe = spe,
-  point_size = 2,
+  point_size = 2.2,
   frame_lim_df = frame_lims,
   sampleid = "Br6432_ant",
-  geneid = "CLDN5"
+  geneid = "PCP4"
 ) 
 
 ggsave(vis_gene_custom_test, filename = here(plot_dir, "vis_gene_crop.png"))
@@ -188,4 +188,44 @@ walk(samples, function(samp){
   ggsave(vis_gene_crop_plot, filename = here(plot_dir, "vis_gen_crop", paste0("vis_gene_crop_",samp,".png")))
   
 })
+
+#### Crop to fudcial frame ####
+frame_adj <- list(x_left = -2350,
+               x_right = 1950, # good  
+               y_down = -2500, # Add space for legend 
+               y_up = 2650)
+
+
+frame_edge_lims <- frame_lims |>
+  mutate(x_min = x_min + frame_adj$x_left,
+         x_max = x_max + frame_adj$x_right,
+         y_min = y_min + frame_adj$y_down,
+         y_max = y_max + frame_adj$y_up)
+
+vis_gene_crop_frame <- vis_gene_crop(
+  spe = spe,
+  point_size = 2,
+  frame_lim_df = frame_edge_lims,
+  sampleid = "Br6432_ant",
+  geneid = "PCP4",
+  legend_overlap = TRUE
+) 
+
+ggsave(vis_gene_crop_frame, filename = here(plot_dir, "vis_gene_crop_frame.png"))
+ggsave(vis_gene_crop_frame, filename = here(plot_dir, "vis_gene_crop_frame.pdf"))
+
+walk(frame_edge_lims$sample_id, function(samp){
+  # message(samp)
+  vis_gene_crop_plot <- vis_gene_crop(
+    spe = spe,
+    point_size = 2.2,
+    frame_lim_df = frame_edge_lims,
+    sampleid = samp,
+    geneid = "PCP4",
+    legend_overlap = TRUE
+  )  
+  ggsave(vis_gene_crop_plot, filename = here(plot_dir, "vis_gen_crop_frame", paste0("vis_gene_crop_frame_",samp,".png")))
+  
+})
+
 
