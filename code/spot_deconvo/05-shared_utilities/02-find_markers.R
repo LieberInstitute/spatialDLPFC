@@ -462,7 +462,7 @@ if (cell_group == "layer") {
             var_name = classical_markers_ens[classical_markers == "PCP4"],
             include_legend = TRUE,
             is_discrete = FALSE,
-            title = paste0("PCP4: marker for layer 5\n(", sample_id, ")"),
+            title = "PCP4",
             assayname = "counts",
         )
 
@@ -492,10 +492,7 @@ if (cell_group == "layer") {
                 spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE,
-                title = paste0(
-                    "Prop. markers w/ nonzero exp (", n_markers,
-                    " markers):\nExcit_L5 (", sample_id, ")"
-                )
+                title = paste0("Excit_L5 (", n_markers, " Markers)")
             )
             
             i <- i + 1
