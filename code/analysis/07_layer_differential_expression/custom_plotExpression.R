@@ -17,7 +17,14 @@
 #'     cat = "Mutation_Status",
 #'     fill_colors = c(negative = "green", positive = "pink")
 #' )
-custom_plotExpression <- function(sce, genes, assay = "logcounts", cat, highlight_sample = "None", fill_colors = NULL, title = NULL) {
+custom_plotExpression <- function(sce, 
+                                  genes, 
+                                  assay = "logcounts",
+                                  cat, 
+                                  highlight_sample = "None", 
+                                  line = FALSE,
+                                  fill_colors = NULL,
+                                  title = NULL) {
     cat_df <- as.data.frame(colData(sce))[, c("sample_id", cat), drop = FALSE]
 
     expression_long <- reshape2::melt(as.matrix(assays(sce)[[assay]][genes, , drop = FALSE]))
