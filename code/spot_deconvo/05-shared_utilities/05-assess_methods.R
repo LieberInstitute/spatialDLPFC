@@ -136,14 +136,17 @@ all_spots <- function(count_df, plot_name) {
                 filter(cell_type == ct)
 
             p <- ggplot(count_df_small) +
-                geom_point(aes(x = observed, y = actual), alpha = 0.01) +
+                geom_point(
+                    aes(x = observed, y = actual, color = cell_type),
+                    alpha = 0.01
+                ) +
                 geom_abline(
                     intercept = 0, slope = 1, linetype = "dashed", color = "red"
                 ) +
                 facet_grid(
                     rows = vars(sample_id), cols = vars(deconvo_tool)
                 ) +
-                guides(col = guide_legend(override.aes = list(alpha = 1))) +
+                scale_color_manual(values = cell_type_labels) +
                 labs(
                     title = ct,
                     x = "Software-Estimated",
@@ -152,17 +155,20 @@ all_spots <- function(count_df, plot_name) {
                 geom_text(
                     data = metrics_df %>% filter(cell_type == ct),
                     mapping = aes(
-                        x = Inf, y = max(count_df_small$actual) / 5,
-                        label = corr
+                        x =  0, y = max(count_df_small$actual), label = corr
                     ),
-                    hjust = 1
+                    hjust = 0, vjust = 1
                 ) +
                 geom_text(
                     data = metrics_df %>% filter(cell_type == ct),
-                    mapping = aes(x = Inf, y = 0, label = rmse),
-                    hjust = 1, vjust = 0
+                    mapping = aes(
+                        x =  0, y = 0.85 * max(count_df_small$actual),
+                        label = rmse
+                    ),
+                    hjust = 0, vjust = 1
                 ) +
-                theme_bw(base_size = 10)
+                theme_bw(base_size = 15) +
+                theme(legend.position = "none")
 
             return(p)
         }
@@ -676,7 +682,7 @@ full_df$deconvo_tool[full_df$deconvo_tool == "cell2location"] <-
 #   As a figure for the paper, plot the "all_spots" plot of counts for just one
 #   sample and facet by cell type instead of sample
 count_df <- full_df |>
-    filter(sample_id == "Br6522_Ant_IF")
+    filter(sample_id == "Br6522_Ant_IF", cell_type != "Other")
 
 metrics_df <- count_df %>%
     group_by(deconvo_tool, cell_type) %>%
@@ -724,7 +730,7 @@ if (cell_group == "broad") {
     p <- p + theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 }
 
-pdf(file.path(plot_dir, "counts_all_spots_figure.pdf"))
+pdf(file.path(plot_dir, "counts_all_spots_figure.pdf"), width = 9)
 print(p)
 dev.off()
 
