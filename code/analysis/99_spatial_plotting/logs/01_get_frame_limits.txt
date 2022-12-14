@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2.x
 **** Job starts ****
-Fri Dec  9 14:56:08 EST 2022
+Wed Dec 14 11:18:00 EST 2022
 **** JHPCE info ****
 User: lhuuki
-Job id: 1288029
+Job id: 1306861
 Job name: get_frame_limits
-Hostname: compute-059.cm.cluster
+Hostname: compute-142.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2.x
 Loading conda_R/4.2.x
@@ -56,14 +56,18 @@ here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
  9 Br3942_post  2759 21870 11069 29197
 10 Br6423_ant   4871 24084  5747 23981
 # … with 20 more rows
-     x_diff          y_diff     
- Min.   :18550   Min.   :17584  
- 1st Qu.:18590   1st Qu.:17624  
- Median :18658   Median :17690  
- Mean   :18858   Mean   :17886  
- 3rd Qu.:19211   3rd Qu.:18232  
- Max.   :19324   Max.   :18347  
-Error: The file 01_get_frame_limits.sh already exists!
+     x_diff          y_diff          ratio            area          
+ Min.   :18550   Min.   :17584   Min.   :1.053   Min.   :326183200  
+ 1st Qu.:18590   1st Qu.:17624   1st Qu.:1.054   1st Qu.:327629696  
+ Median :18658   Median :17690   Median :1.054   Median :330051178  
+ Mean   :18858   Mean   :17886   Mean   :1.054   Mean   :337386726  
+ 3rd Qu.:19211   3rd Qu.:18232   3rd Qu.:1.055   3rd Qu.:350240806  
+ Max.   :19324   Max.   :18347   Max.   :1.055   Max.   :354537428  
+[1] "Reproducibility information:"
+[1] "2022-12-14 11:18:05 EST"
+   user  system elapsed 
+  1.755   0.195   3.632 
+Error in session_info() : could not find function "session_info"
 Execution halted
 **** Job ends ****
-Fri Dec  9 14:56:20 EST 2022
+Wed Dec 14 11:18:05 EST 2022
