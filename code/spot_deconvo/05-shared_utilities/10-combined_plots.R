@@ -81,26 +81,26 @@ cell_types_layer <- c(
 #   Make a list of which layers we expect each cell type to be most highly
 #   expressed in
 corresponding_layers <- list(
-    "Astro" = "Layer 1",
-    "EndoMural" = "Layer 1",
-    "Excit" = paste("Layer", 2:6),
-    "Excit_L2_3" = c("Layer 2", "Layer 3"),
-    "Excit_L3" = "Layer 3",
-    "Excit_L3_4_5" = c("Layer 3", "Layer 4", "Layer 5"),
-    "Excit_L4" = "Layer 4",
-    "Excit_L5" = "Layer 5",
-    "Excit_L5_6" = c("Layer 5", "Layer 6"),
-    "Excit_L6" = "Layer 6",
-    "Inhib" = paste("Layer", 2:6),
-    "Micro" = c("Layer 1", "WM"),
+    "Astro" = "L1",
+    "EndoMural" = "L1",
+    "Excit" = paste0("L", 2:6),
+    "Excit_L2_3" = c("L2", "L3"),
+    "Excit_L3" = "L3",
+    "Excit_L3_4_5" = c("L3", "L4", "L5"),
+    "Excit_L4" = "L4",
+    "Excit_L5" = "L5",
+    "Excit_L5_6" = c("L5", "L6"),
+    "Excit_L6" = "L6",
+    "Inhib" = paste0("L", 2:6),
+    "Micro" = c("L1", "WM"),
     "Oligo" = "WM",
-    "OPC" = c("Layer 1", "WM")
+    "OPC" = c("L1", "WM")
 )
 
 #   Name spatialLIBD colors with the layer names used in this script
 names(libd_layer_colors)[
     match(c(paste0("Layer", 1:6), "WM"), names(libd_layer_colors))
-] <- c(paste("Layer", 1:6), "WM")
+] <- c(paste0("L", 1:6), "WM")
 
 cell_type_labels <- c(
     "#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1"
@@ -206,7 +206,7 @@ if (dataset == "IF") {
     
     #   Clean up labels
     observed_df_long$label <- tolower(observed_df_long$label)
-    observed_df_long$label <- sub("layer", "Layer ", observed_df_long$label)
+    observed_df_long$label <- sub("layer", "L", observed_df_long$label)
     observed_df_long$label[observed_df_long$label == "wm"] <- "WM"
     stopifnot(
         all(unlist(corresponding_layers) %in% unique(observed_df_long$label))
