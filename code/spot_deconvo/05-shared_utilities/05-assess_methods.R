@@ -12,7 +12,7 @@ source(
     here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
 )
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -1453,4 +1453,37 @@ for (sample_id in sample_ids) {
 
 pdf(file.path(plot_dir, "spot_layer_labels.pdf"))
 print(plot_list)
+dev.off()
+
+#-------------------------------------------------------------------------------
+#   Finally, simply plot a copy of the legend we'll use in the main figure and
+#   elsewhere (color labels for manually annotated layers)
+#-------------------------------------------------------------------------------
+
+#   Take the LIBD layer colors, but change the names
+layer_names = c(paste0("L", 1:6), "WM")
+temp_colors = libd_layer_colors[
+    match(layer_names, names(libd_layer_colors))
+]
+names(temp_colors) = c(paste0("Layer ", 1:6, " (L", 1:6, ")"), "WM")
+
+#   Create a dummy set of data containing points for every color
+layer_df = data.frame(
+    'x' = 1:length(temp_colors),
+    'y' = 1:length(temp_colors),
+    'layer' = names(temp_colors)
+)
+
+#   Create the dummy plot with the legend we'll crop
+p = ggplot(layer_df, aes(x = x, y = y, color = layer)) +
+    geom_point() +
+    scale_color_manual(values = temp_colors) +
+    labs(
+        title = "Legend for layer-annotation plots",
+        color = "Annotated Layer"
+    ) +
+    theme_bw(base_size = 15)
+
+pdf(file.path(plot_dir, 'spot_layer_labels_legend.pdf'))
+print(p)
 dev.off()
