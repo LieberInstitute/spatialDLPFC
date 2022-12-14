@@ -62,7 +62,9 @@ write.csv(frame_lims, file = here(data_dir, "frame_limits.csv"), row.names = FAL
 ## dimensions are all about the same
 frame_lims |>
   transmute(x_diff = x_max - x_min,
-         y_diff = y_max - y_min) |>
+            y_diff = y_max - y_min,
+            ratio = x_diff/y_diff,
+            area = x_diff * y_diff) |>
   summary()
 
 # x_diff          y_diff     
@@ -73,5 +75,27 @@ frame_lims |>
 # 3rd Qu.:18232   3rd Qu.:19211  
 # Max.   :18347   Max.   :19324  
 
-sgejobs::job_single('01_get_frame_limits', create_shell = TRUE, memory = '5G', command = "Rscript 01_get_frame_limits.R")
+#### Adjust to catch edge of fiducial frame ####
 
+frame_adj <- list(x_left = -2250,
+                  x_right = 1950, # good  
+                  y_down = -2200, # Add space for legend 
+                  y_up = 2800)
+
+frame_edge_lims <- frame_lims |>
+  mutate(x_min = x_min + frame_adj$x_left,
+         x_max = x_max + frame_adj$x_right,
+         y_min = y_min + frame_adj$y_down,
+         y_max = y_max + frame_adj$y_up)
+
+write.csv(frame_edge_lims, file = here(data_dir, "frame_edge_limits.csv"), row.names = FALSE)
+
+
+# sgejobs::job_single('01_get_frame_limits', create_shell = TRUE, memory = '5G', command = "Rscript 01_get_frame_limits.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+session_info()
