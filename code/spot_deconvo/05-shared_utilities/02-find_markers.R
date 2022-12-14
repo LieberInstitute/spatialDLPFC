@@ -15,7 +15,7 @@ source(
     here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
 )
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
 n_markers_per_type <- 25
