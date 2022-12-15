@@ -9,7 +9,7 @@ vis_gene_crop <-
            color_scale = "plasma",
            frame_lim_df,
            image_id = "lowres",
-           alpha = 1,
+           alpha = NA,
            cont_colors = c("aquamarine4", "springgreen", "goldenrod", "red"),
            point_size = 2,
            legend_overlap = FALSE,
@@ -78,7 +78,7 @@ vis_gene_p_crop <-
            image_id = "lowres",
            frame_lim_df,
            legend_title = "Test", 
-           alpha = 1,
+           alpha = NA,
            cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
            point_size = 2,
            legend_overlap = FALSE) {
