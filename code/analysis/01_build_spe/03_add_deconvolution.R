@@ -90,7 +90,7 @@ id_table <- read.csv(nonIF_id_path)
 
 ## Initialize the new variables
 spe$VistoSeg_count <- NA
-spe$VistoSeg_percent <- NA
+spe$VistoSeg_proportion <- NA
 
 for (sample_id in unique(spe$sample_id)) {
     message(Sys.time(), " processing sample id ", sample_id)
