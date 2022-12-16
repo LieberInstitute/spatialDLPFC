@@ -2,6 +2,7 @@ library("spatialLIBD")
 library("tidyverse")
 library("here")
 library("sessioninfo")
+library("patchwork")
 
 plot_dir <-
   here(
@@ -13,8 +14,6 @@ if (!dir.exists(plot_dir)) {
   dir.create(plot_dir)
 }
 
-frame_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","frame_limits.csv"))
-frame_edge_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","frame_edge_limits.csv"))
 
 # Load full data
 load(
@@ -31,37 +30,58 @@ rowData(spe)$gene_search <- rowData(spe)$gene_name
 spe$bayesSpace_harmony_9 <- as.factor(spe$bayesSpace_harmony_9)
 spe$bayesSpace_harmony_16 <- as.factor(spe$bayesSpace_harmony_16)
 
+## plot example genes 
+example_genes <- c("SNAP25","MBP","PCP4")
+names(example_genes) <- example_genes
 
-## try custom functions
-source("vis_gene_crop.R")
-
-walk(c("SNAP25","MBP","PCP4"), function(gene){
+gene_plots <- map(example_genes, function(gene){
   s <- "Br8667_mid"
-  vis_gene_crop_plot <- vis_gene_crop(
+  vis_gene_plot <- vis_gene(
     spe = spe,
+    viridis = FALSE,
     point_size = 2.2,
-    frame_lim_df = frame_edge_lims,
+    cont_colors = viridisLite::plasma(21),
+    # frame_lim_df = frame_lims,
     sampleid = s,
-    geneid = gene,
-    legend_overlap = TRUE
-  ) 
+    geneid = gene
+  ) +
+    labs(title = gene) + 
+    theme(plot.title = element_text(face = "italic"),
+          # legend.position = c(0.9, 0.02) # bottom right
+          legend.position = c(0.9, 0.8) # top right
+          )
   
-  ggsave(vis_gene_crop_plot, filename = here(plot_dir, paste0("vis_gene_crop_",s,"-",gene,".png")))
-  ggsave(vis_gene_crop_plot, filename = here(plot_dir, paste0("vis_gene_crop_",s,"-",gene,".pdf")))
-  
+  ggsave(vis_gene_plot, filename = here(plot_dir, paste0("vis_gene_",s,"-",gene,".png")))
+  ggsave(vis_gene_plot, filename = here(plot_dir, paste0("vis_gene_",s,"-",gene,".pdf")))
+  return(vis_gene_plot)
 })
 
+## patchwork together
+
+patchwork_genes <- gene_plots$SNAP25 + gene_plots$MBP + gene_plots$PCP4
+ggsave(patchwork_genes, filename = here(plot_dir, "vis_gene_Br8667_mid-ALL.png"),width = 18)
+ggsave(patchwork_genes, filename = here(plot_dir, "vis_gene_Br8667_mid-ALL.pdf"),width = 18)
+
+# ## try custom functions
+# source("vis_gene_crop.R")
+# 
+# frame_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","frame_limits.csv"))
+# frame_edge_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","frame_edge_limits.csv"))
+# 
 # walk(c("SNAP25","MBP","PCP4"), function(gene){
 #   s <- "Br8667_mid"
-#   vis_gene_plot <- vis_gene(
+#   vis_gene_crop_plot <- vis_gene_crop(
 #     spe = spe,
-#     point_size = 1.8,
-#     # frame_lim_df = frame_lims,
+#     point_size = 2.2,
+#     frame_lim_df = frame_edge_lims,
 #     sampleid = s,
-#     geneid = gene
-#   ) +coord_fixed()
+#     geneid = gene,
+#     legend_overlap = TRUE
+#   ) 
 #   
-#   ggsave(vis_gene_plot, filename = here(plot_dir, paste0("vis_gene_",s,"-",gene,".png")), height = 10, width = 10)
+#   ggsave(vis_gene_crop_plot, filename = here(plot_dir, paste0("vis_gene_crop_",s,"-",gene,".png")))
+#   ggsave(vis_gene_crop_plot, filename = here(plot_dir, paste0("vis_gene_crop_",s,"-",gene,".pdf")))
 #   
 # })
+
 
