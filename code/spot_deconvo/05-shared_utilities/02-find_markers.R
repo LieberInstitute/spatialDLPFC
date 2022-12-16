@@ -329,14 +329,14 @@ for (j in 1:length(classical_markers)) {
         plot_list[[i]] <- spot_plot(
             spe, sample_id = sample_id, var_name = classical_markers_ens[j],
             include_legend = TRUE, is_discrete = FALSE,
-            title = title, assayname = "counts"
+            title = title, assayname = "counts", minCount = 0
         )
         
         #   Produce the ggplot object (manuscript version)
         plot_list_paper[[i]] <-  spot_plot(
             spe, sample_id = sample_id, var_name = classical_markers_ens[j],
             include_legend = FALSE, is_discrete = FALSE,
-            title = sub('\n', ': ', title), assayname = "counts"
+            title = sub('\n', ': ', title), assayname = "counts", minCount = 0
         )
 
         i <- i + 1
@@ -401,7 +401,7 @@ for (n_markers in c(15, 25, 50)) {
             plot_list[[i]] <- spot_plot(
                 spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
-                is_discrete = FALSE,
+                is_discrete = FALSE, minCount = 0,
                 title = paste0(
                     "Prop. markers w/ nonzero exp:\n", ct, " (", sample_id, ")"
                 )
@@ -411,7 +411,7 @@ for (n_markers in c(15, 25, 50)) {
             plot_list_paper[[i]] <- spot_plot(
                 spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = FALSE,
-                is_discrete = FALSE,
+                is_discrete = FALSE,  minCount = 0,
                 title = paste0(ct, " (", sample_id, ")")
             )
             
@@ -461,10 +461,8 @@ if (cell_group == "layer") {
         plot_list[[i]] <- spot_plot(
             spe, sample_id = sample_id,
             var_name = classical_markers_ens[classical_markers == "PCP4"],
-            include_legend = TRUE,
-            is_discrete = FALSE,
-            title = NULL,
-            assayname = "counts",
+            include_legend = TRUE, is_discrete = FALSE, title = NULL,
+            assayname = "counts", minCount = 0
         )
         
         max_list[[i]] = 0
@@ -496,8 +494,7 @@ if (cell_group == "layer") {
             plot_list[[i]] <- spot_plot(
                 spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
-                is_discrete = FALSE,
-                title = NULL
+                is_discrete = FALSE, title = NULL, minCount = 0
             )
             
             i <- i + 1
