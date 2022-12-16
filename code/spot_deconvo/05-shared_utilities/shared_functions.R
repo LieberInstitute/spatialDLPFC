@@ -37,20 +37,10 @@ spot_plot = function(
             )
         }
     } else {
-        #   Use 'alpha = 0' here and add a new 'geom_point'. This is necessary
-        #   to be consistent with 'vis_clus', which uses 'color = "transparent"'
         p <- vis_gene(
             spe, sampleid = sample_id, geneid = var_name, return_plots = TRUE,
-            spatial = FALSE, alpha = 0, assayname = assayname
-        ) +
-            #   Match 'vis_clus' code
-            geom_point(
-                shape = 21,
-                size = POINT_SIZE,
-                stroke = 0,
-                colour = "transparent",
-                alpha = 1
-            )
+            spatial = FALSE, point_size = POINT_SIZE, assayname = assayname
+        )
     }
     
     #   Remove the legend if requested
@@ -59,7 +49,7 @@ spot_plot = function(
     }
     
     #   Use fixed coordinate scale and remove the caption
-    p = p + coord_fixed() + labs(title = title, caption = NULL)
+    p = p + labs(title = title, caption = NULL)
     
     return(p)
 }

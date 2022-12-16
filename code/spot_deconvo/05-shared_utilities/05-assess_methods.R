@@ -5,6 +5,7 @@ library("tidyverse")
 library("reshape2")
 library("spatialLIBD")
 library("cowplot")
+library("sessioninfo")
 
 #   Adds the 'spot_plot' function, a wrapper for 'vis_gene' or 'vis_clus' with
 #   consistent manuscript-appropriate settings
@@ -124,17 +125,17 @@ all_spots <- function(count_df, plot_name) {
             rmse = signif(mean((observed - actual)**2)**0.5, 3)
         ) %>%
         ungroup()
-
+    
     #   Improve labels for plotting
     metrics_df$corr <- paste("Cor =", metrics_df$corr)
     metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
-
+    
     plot_list <- lapply(
         cell_types_actual,
         function(ct) {
             count_df_small <- count_df %>%
                 filter(cell_type == ct)
-
+            
             p <- ggplot(count_df_small) +
                 geom_point(
                     aes(x = observed, y = actual, color = cell_type),
@@ -169,11 +170,11 @@ all_spots <- function(count_df, plot_name) {
                 ) +
                 theme_bw(base_size = 15) +
                 theme(legend.position = "none")
-
+            
             return(p)
         }
     )
-
+    
     pdf(file.path(plot_dir, plot_name))
     print(plot_list)
     dev.off()
@@ -191,7 +192,7 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
             rmse = signif(mean((observed - actual)**2)**0.5, 3)
         ) %>%
         ungroup()
-
+    
     #   Add KL divergence from observed section-wide cell-type proportions to
     #   ground-truth proportions, averaged across sections
     metrics_df <- count_df |>
@@ -212,12 +213,12 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
         group_by(deconvo_tool) |>
         summarize(kl = round(mean(kl), 2)) |>
         left_join(metrics_df)
-
+    
     #   Improve labels for plotting
     metrics_df$corr <- paste("Cor =", metrics_df$corr)
     metrics_df$rmse <- paste("RMSE =", metrics_df$rmse)
     metrics_df$kl <- paste("KL Div. =", metrics_df$kl)
-
+    
     p <- ggplot(count_df) +
         geom_point(
             aes(x = observed, y = actual, shape = sample_id, color = cell_type)
@@ -271,7 +272,7 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
         ) +
         theme_bw(base_size = 15) +
         theme(axis.text.x = element_text(angle = x_angle))
-
+    
     pdf(file.path(plot_dir, plot_name), height = 4, width = 10)
     print(p)
     dev.off()
@@ -282,7 +283,7 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
 #   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
 #   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
 spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
-    title) {
+                                title) {
     #   Grab counts for just this sample, deconvo tool, and cell type
     counts_df <- full_df %>%
         filter(
@@ -290,19 +291,19 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
             deconvo_tool == deconvo_tool1,
             cell_type == cell_type1
         )
-
+    
     #   Add counts as a column in colData(spe_small)
     spe_small$temp_ct_counts <- counts_df[[c_name]][
         match(colnames(spe_small), counts_df$barcode)
     ]
-
+    
     #   Plot spatial distribution
     p <- spot_plot(
         spe_small, sample_id = sample_id1, title = title,
         var_name = "temp_ct_counts", include_legend = TRUE,
         is_discrete = FALSE
     )
-
+    
     return(list(p, max(spe_small$temp_ct_counts)))
 }
 
@@ -321,11 +322,11 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
 spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual, pdf_prefix) {
     for (sample_id in sample_ids) {
         spe_small <- spe[, spe$sample_id == sample_id]
-
+        
         i <- 1
         plot_list <- list()
         max_list <- list()
-
+        
         #   For each deconvo tool, make a row of plots (each including all cell
         #   types) showed the observed distribution
         for (deconvo_tool in deconvo_tools) {
@@ -340,7 +341,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 i <- i + 1
             }
         }
-
+        
         #   Add a row showing the ground-truth counts for each cell type
         if (include_actual) {
             for (cell_type in cell_types_actual) {
@@ -354,12 +355,12 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 i <- i + 1
             }
         }
-
+        
         max_mat <- matrix(
             unlist(max_list),
             ncol = length(cell_type_vec), byrow = TRUE
         )
-
+        
         #   Now loop back through the plot list (which will be displayed in 2D)
         #   and overwrite the scale to go as high as the largest value in the
         #   column. This allows for easy comparison between deconvo tools
@@ -368,19 +369,19 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
             for (i_row in 1:(length(deconvo_tools) + include_actual)) {
                 index <- (i_row - 1) * length(cell_type_vec) + i_col
                 upper_limit <- max(max_mat[, i_col])
-
+                
                 plot_list[[index]] <- plot_list[[index]] +
-                    scale_color_continuous(
-                        type = "viridis", limits = c(0, upper_limit),
-                        na.value = c("black" = "#0000002D")
+                    scale_color_gradientn(
+                        colors = viridisLite::plasma(21),
+                        limits = c(0, upper_limit), na.value = c("#CCCCCC40")
                     ) +
-                    scale_fill_continuous(
-                        type = "viridis", limits = c(0, upper_limit),
-                        na.value = c("black" = "#0000002D")
+                    scale_fill_gradientn(
+                        colors = viridisLite::plasma(21),
+                        limits = c(0, upper_limit), na.value = c("#CCCCCC40")
                     )
             }
         }
-
+        
         #   Plot in a grid where cell types are columns and rows are
         #   deconvolution tools. One PDF per sample
         pdf(
@@ -494,7 +495,7 @@ corr_rmse_plot <- function(metrics_df, filename) {
             Correlation = paste0("Avg. Cor = ", round(Correlation, 2)),
             RMSE = paste0("Avg. RMSE = ", round(RMSE, 2))
         )
-
+    
     p <- ggplot(
         metrics_df,
         aes(x = Correlation, y = RMSE, color = cell_type, shape = sample_id)
@@ -533,7 +534,7 @@ corr_rmse_plot <- function(metrics_df, filename) {
         ) +
         labs(color = "Cell Type", shape = "Sample ID") +
         theme_bw(base_size = 15)
-
+    
     pdf(file.path(plot_dir, filename), height = 3, width = 9)
     print(p)
     dev.off()
@@ -562,7 +563,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         group_by(deconvo_tool, cell_type) |>
         mutate(layer_match = count == max(count)) |>
         ungroup()
-
+    
     #   Add a column 'correct_layer' indicating whether for a cell type
     #   and deconvo tool, the cell_type has maximal value in the correct/
     #   expected layer
@@ -571,13 +572,13 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         function(i) {
             counts_df$layer_match[i] &&
                 (counts_df$label[i] %in%
-                    corresponding_layers[[
-                        as.character(counts_df$cell_type)[i]
-                    ]]
+                     corresponding_layers[[
+                         as.character(counts_df$cell_type)[i]
+                     ]]
                 )
         }
     )
-
+    
     #   For each deconvo tool, add up how many times cell types have maximal
     #   value in the correct layers
     correct_df <- counts_df |>
@@ -586,7 +587,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         ungroup()
     print("Number of times cell types have maximal value in the correct layer:")
     print(correct_df)
-
+    
     print("Full list of which cell types matched the expected layer, by method:")
     counts_df |>
         group_by(deconvo_tool) |>
@@ -594,7 +595,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         select(cell_type) |>
         ungroup() |>
         print(n = nrow(counts_df))
-
+    
     #   Add the "layer accuracy" in the facet titles in the upcoming plot
     correct_labeller <- paste0(
         correct_df$deconvo_tool, ": ", correct_df$num_matches, "/",
@@ -602,7 +603,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
     )
     names(correct_labeller) <- correct_df |> pull(deconvo_tool)
     correct_labeller <- labeller(deconvo_tool = correct_labeller)
-
+    
     p <- ggplot(
         counts_df,
         aes_string(x = x_var, y = "count", fill = fill_var)
@@ -617,7 +618,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         ) +
         theme_bw(base_size = 16) +
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-
+    
     pdf(file.path(plot_dir, filename), width = 10, height = 5)
     print(p)
     dev.off()
@@ -1066,12 +1067,12 @@ for (cell_type in cell_types_actual) {
         arrange(desc(ratio)) %>%
         head(n = 25) %>%
         pull(gene)
-
+    
     stopifnot(all(these_markers %in% rownames(spe)))
-
+    
     for (sample_id in sample_ids) {
         spe_small <- spe[these_markers, spe$sample_id == sample_id]
-
+        
         for (deconvo_tool in deconvo_tools) {
             #   Form a temporary tibble with mean expression across markers for
             #   each spot
@@ -1084,7 +1085,7 @@ for (cell_type in cell_types_actual) {
                     "deconvo_tool" = deconvo_tool
                 )
             )
-
+            
             #   Add this quantity to the full tibble that has cell-type counts
             temp_df <- left_join(
                 full_df, temp_df,
@@ -1119,7 +1120,7 @@ plot_list <- lapply(
     function(ct) {
         full_df_small <- full_df %>%
             filter(cell_type == ct)
-
+        
         p <- ggplot(full_df_small) +
             geom_point(
                 aes(x = observed, y = marker_express, color = sample_id),
@@ -1147,7 +1148,7 @@ plot_list <- lapply(
                 color = "Sample ID"
             ) +
             theme_bw(base_size = 10)
-
+        
         return(p)
     }
 )
@@ -1208,12 +1209,12 @@ layer_ann <- data.frame()
 for (sample_id in sample_ids) {
     this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
     layer_ann_small <- read.csv(this_layer_path)
-
+    
     layer_ann_small$barcode <- colnames(spe[, spe$sample_id == sample_id])[
         layer_ann_small$id + 1
     ]
     layer_ann_small$sample_id <- sample_id
-
+    
     layer_ann <- rbind(layer_ann, layer_ann_small)
 }
 layer_ann$id <- NULL
@@ -1247,7 +1248,7 @@ for (cell_type in cell_types) {
         filter(cell_type == {{ cell_type }}) |>
         summarize(y_max = max(count)) |>
         pull(y_max)
-
+    
     plot_list[[cell_type]] <- ggplot(
         counts_df |> filter(cell_type == {{ cell_type }}),
         aes(x = label, y = count, color = deconvo_tool)
@@ -1429,11 +1430,11 @@ plot_list <- list()
 for (sample_id in sample_ids) {
     spe_small <- spe[, spe$sample_id == sample_id]
     counts_df <- observed_df_long |> filter(sample_id == {{ sample_id }})
-
+    
     spe_small$manual_layer <- counts_df[
         match(colnames(spe_small), counts_df$barcode), "label"
     ] |> pull(label)
-
+    
     #   Verify no NA labels are present, except for sample 'Br6432_Ant_IF',
     #   where 2 NA spots are expected: these should be dropped for these plots
     spe_small$manual_layer[spe_small$manual_layer == ""] <- NA
@@ -1487,3 +1488,5 @@ p = ggplot(layer_df, aes(x = x, y = y, color = layer)) +
 pdf(file.path(plot_dir, 'spot_layer_labels_legend.pdf'))
 print(p)
 dev.off()
+
+session_info()
