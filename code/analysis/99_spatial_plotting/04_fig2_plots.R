@@ -42,8 +42,8 @@ names(k_colors) <- c(1:28)
 k_levels <- list(k09 = "bayesSpace_harmony_9", k16 ="bayesSpace_harmony_16", k28 ="bayesSpace_harmony_28")
 
 cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
+  message(k_label)
   cluster_row_plots <- map(samples, function(s){
-
     vis_clus_plot <- vis_clus(
       spe = spe,
       viridis = FALSE,
@@ -52,15 +52,20 @@ cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
       sampleid = s,
       clustervar = k
     ) +
-      theme(legend.position = "None",
-            plot.title = element_text(hjust = 0.5)) ## using heat maps label colors
+      theme(legend.position = "None", ## using heat maps label colors
+            axis.title.x = element_blank()) 
     
     ## Add sample labels to top row
     if(k_label == "k09") {
-      vis_clus_plot <- vis_clus_plot + 
+      message("add title for k09")
+      vis_clus_plot <- vis_clus_plot +
         labs(title = s) +
         theme(plot.title = element_text(hjust = 0.5))
-    } 
+    } else {
+      vis_clus_plot <- vis_clus_plot +
+        labs(title = "")
+      # vis_clus_plot <- vis_clus_plot + theme(title=element_blank())
+    }
     ## Add k labels to left 
     if(s == "Br8667_mid") vis_clus_plot <- vis_clus_plot + ylab(k_label)
     
@@ -73,10 +78,10 @@ cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
 })
 
 ggsave(cluster_plots$k09, filename = ggsave(here(plot_dir, "test09.png")), width = 18)
-ggsave(cluster_plots$k16, filename = ggsave(here(plot_dir, "test.png")), width = 18)
+ggsave(cluster_plots$k16, filename = ggsave(here(plot_dir, "test16.png")), width = 18)
 
-cluster_row <- Reduce("+", cluster_plots)
-ggsave(cluster_row, filename = here(plot_dir, "vis_clust_k9_row.png"), width = 18)
+cluster_grid <- Reduce("/", cluster_plots)
+ggsave(cluster_grid, filename = here(plot_dir, "vis_grid.png"), width = 18, height = 18)
 
 ## plot example genes 
 example_genes <- c("SNAP25","MBP","PCP4")
