@@ -39,6 +39,8 @@ names(samples) <- samples
 k_colors <- Polychrome::palette36.colors(28)
 names(k_colors) <- c(1:28)
 
+text_size <- 25
+
 k_levels <- list(k09 = "bayesSpace_harmony_9", k16 ="bayesSpace_harmony_16", k28 ="bayesSpace_harmony_28")
 
 cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
@@ -53,7 +55,8 @@ cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
       clustervar = k
     ) +
       theme(legend.position = "None", ## using heat maps label colors
-            axis.title.x = element_blank()) 
+            axis.title.x = element_blank(),
+            text = element_text(size = text_size)) 
     
     ## Add sample labels to top row
     if(k_label == "k09") {
@@ -63,11 +66,16 @@ cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
         theme(plot.title = element_text(hjust = 0.5))
     } else {
       vis_clus_plot <- vis_clus_plot +
-        labs(title = "")
+        labs(title = NULL)
       # vis_clus_plot <- vis_clus_plot + theme(title=element_blank())
     }
     ## Add k labels to left 
-    if(s == "Br8667_mid") vis_clus_plot <- vis_clus_plot + ylab(k_label)
+    if(s == "Br8667_mid") {
+      vis_clus_plot <- vis_clus_plot + ylab(k_label)
+    } else {
+      vis_clus_plot <- vis_clus_plot +
+        theme(axis.title.y = element_blank()) 
+      }
     
     # ggsave(vis_clus_plot, filename = here(plot_dir, paste0("vis_clus_",s,"-",k,".png")))
     return(vis_clus_plot)
@@ -77,15 +85,63 @@ cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
   return(cluster_row)
 })
 
-ggsave(cluster_plots$k09, filename = ggsave(here(plot_dir, "test09.png")), width = 18)
-ggsave(cluster_plots$k16, filename = ggsave(here(plot_dir, "test16.png")), width = 18)
+# ggsave(cluster_plots$k09, filename = ggsave(here(plot_dir, "test09.png")), width = 18)
+# ggsave(cluster_plots$k16, filename = ggsave(here(plot_dir, "test16.png")), width = 18)
 
 cluster_grid <- Reduce("/", cluster_plots)
-ggsave(cluster_grid, filename = here(plot_dir, "vis_grid.png"), width = 18, height = 18)
+ggsave(cluster_grid, filename = here(plot_dir, "vis_grid.pdf"), width = 18, height = 18)
 
-## plot example genes 
-example_genes <- c("SNAP25","MBP","PCP4")
-names(example_genes) <- example_genes
+#### Vis gene row ####
+plot_gene <- "CLDN5"
+
+gene_CLDN5_row_plots <- map(samples, function(s){
+  vis_gene_plot <- vis_gene(
+    spe = spe,
+    viridis = FALSE,
+    point_size = 2.2,
+    cont_colors = viridisLite::plasma(21),
+    sampleid = s,
+    geneid = plot_gene
+  ) +
+    labs(title = NULL)+
+    theme(legend.position = "None", ## using heat maps label colors
+          axis.title.x = element_blank(),
+          text = element_text(size = text_size),
+          axis.title.y = element_text(face = "italic")) ## Italic Gene
+  
+  ## Add k labels to left 
+  if(s == "Br8667_mid") {
+    vis_gene_plot <- vis_gene_plot + ylab(plot_gene)
+  } else {
+    vis_gene_plot <- vis_gene_plot +
+      theme(axis.title.y = element_blank()) 
+  }
+  
+  # ggsave(vis_gene_plot, filename = here(plot_dir, paste0("vis_gene_",s,"-",k,".png")))
+  return(vis_gene_plot)
+})
+
+CLDN5_row <- Reduce("+", gene_CLDN5_row_plots)
+ggsave(CLDN5_row, filename = here(plot_dir, "vis_gene_CLDN5_row.pdf"), width = 18)
+
+
+#### k16_row ####
+
+spe_subset <- spe[spe]
+
+cluster_k16_subset <- map(samples, function(s){
+  vis_clus_plot <- vis_clus(
+    spe = spe,
+    viridis = FALSE,
+    point_size = 2.2,
+    colors = k_colors,
+    sampleid = "Br6522_ant",
+    clustervar = 
+  ) +
+    theme(legend.position = "None", ## using heat maps label colors
+          axis.title.x = element_blank(),
+          text = element_text(size = text_size)) 
+
 
 gene_plots <- map(example_genes, function(gene){
   s <- "Br8667_mid"
@@ -94,7 +150,6 @@ gene_plots <- map(example_genes, function(gene){
     viridis = FALSE,
     point_size = 2.2,
     cont_colors = viridisLite::plasma(21),
-    # frame_lim_df = frame_lims,
     sampleid = s,
     geneid = gene
   ) +
@@ -102,12 +157,21 @@ gene_plots <- map(example_genes, function(gene){
     theme(plot.title = element_text(face = "italic"),
           # legend.position = c(0.9, 0.02) # bottom right
           legend.position = c(0.9, 0.8) # top right
-          )
+    )
   
   ggsave(vis_gene_plot, filename = here(plot_dir, paste0("vis_gene_",s,"-",gene,".png")))
   ggsave(vis_gene_plot, filename = here(plot_dir, paste0("vis_gene_",s,"-",gene,".pdf")))
   return(vis_gene_plot)
 })
+
+
+#### Plot all together ####
+ggsave(cluster_grid/CLDN5_row, 
+       filename = here(plot_dir, "Fig2_grid.pdf"), width = 18, height = 21)
+
+
+
+
 
 ## patchwork together
 
