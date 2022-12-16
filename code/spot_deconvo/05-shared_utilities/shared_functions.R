@@ -18,7 +18,7 @@ spot_plot = function(
         colors = NULL, assayname = "logcounts"
         ) {
     
-    POINT_SIZE = 1.85
+    POINT_SIZE = 2
     
     #   If the quantity to plot is discrete, use 'vis_clus'. Otherwise use
     #   'vis_gene'.
@@ -39,7 +39,8 @@ spot_plot = function(
     } else {
         p <- vis_gene(
             spe, sampleid = sample_id, geneid = var_name, return_plots = TRUE,
-            spatial = FALSE, point_size = POINT_SIZE, assayname = assayname
+            spatial = FALSE, point_size = POINT_SIZE, assayname = assayname,
+            cont_colors = viridisLite::plasma(21)
         )
     }
     
