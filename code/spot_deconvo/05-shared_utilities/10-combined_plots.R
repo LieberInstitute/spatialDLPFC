@@ -8,7 +8,7 @@ library("cowplot")
 library("sessioninfo")
 
 #   "IF" or "nonIF"
-dataset = "nonIF"
+dataset = "IF"
 
 raw_results_broad_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", dataset,
@@ -324,6 +324,9 @@ sample_prop_scatter = function(
         ) |>
         ungroup()
     
+    counts_df <- counts_df |>
+        mutate(broad = log(broad), layer = log(layer))
+    
     #   We'll shape by sample for IF data. For nonIF, there are too many samples
     if (dataset == "IF") {
         p <- ggplot(
@@ -336,7 +339,7 @@ sample_prop_scatter = function(
     
     p <- p + geom_point() +
         geom_abline(
-            intercept = 0, slope = 1, linetype = "dashed", color = "red"
+            intercept = 0, slope = 1, linetype = 3, color = "black"
         ) +
         facet_wrap(~deconvo_tool) +
         scale_color_manual(values = color_scale) +
@@ -345,27 +348,27 @@ sample_prop_scatter = function(
             data = metrics_df,
             mapping = aes(
                 x = max(counts_df$broad),
-                y = max(counts_df$layer),
+                y = 0.1 * max(counts_df$layer) + 0.9 * min(counts_df$layer),
                 label = corr,
                 color = NULL,
                 shape = NULL
             ),
-            hjust = 1, vjust = 1, show.legend = FALSE
+            hjust = 1, vjust = 0, show.legend = FALSE
         ) +
         #   RMSE label
         geom_text(
             data = metrics_df,
             mapping = aes(
                 x = max(counts_df$broad),
-                y = 0.9 * max(counts_df$layer) + 0.1 * min(counts_df$layer),
+                y = min(counts_df$layer),
                 label = rmse,
                 color = NULL,
                 shape = NULL
             ),
-            hjust = 1, vjust = 1, show.legend = FALSE
+            hjust = 1, vjust = 0, show.legend = FALSE
         ) +
         labs(
-            x = "Total Broad Counts", y = "Total Layer-Level Counts",
+            x = "log(Total Broad Counts)", y = "log(Total Layer-Level Counts)",
             color = "Cell Type", shape = "Sample ID"
         ) +
         theme_bw(base_size = 15)
