@@ -28,6 +28,21 @@ rowData(spe)$gene_search <- rowData(spe)$gene_name
 spe$bayesSpace_harmony_9 <- as.factor(spe$bayesSpace_harmony_9)
 spe$bayesSpace_harmony_16 <- as.factor(spe$bayesSpace_harmony_16)
 
+#### Test updated spatialLIBD::vis_gene ####
+
+walk(unique(spe$sample_id)[1:5], function(samp){
+  # message(samp)
+  vis_gene_update <- vis_gene(
+    spe = spe,
+    point_size = 2.2,
+    sampleid = samp,
+    geneid = "PCP4"
+  )  
+  ggsave(vis_gene_update, filename = here(plot_dir, "vis_gene_update", paste0("vis_gene_update_",samp,".png")))
+  
+})
+
+
 #### Explore Frame Lims ####
 frame_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","frame_limits.csv"))
 head(frame_lims)
@@ -100,7 +115,7 @@ frame_adj <- c(x_left = -2670,
                y_down = -2360, 
                y_up = 3022)
 
-frame_edge_lims <- 
+
 
 frame_area_scatter <- frame_lims2 |>
   ggplot(aes(x = area, y = area_scale, color = x_diff < 19000)) +
@@ -126,7 +141,8 @@ walk(samples, function(samp){
     spe = spe,
     point_size = 1.2,
     sampleid = samp,
-    geneid = "PCP4"
+    geneid = "PCP4",
+    auto_crop = FALSE
   ) + 
     coord_fixed() 
   
@@ -190,16 +206,18 @@ walk(samples, function(samp){
 })
 
 #### Crop to fudcial frame ####
-frame_adj <- list(x_left = -2250,
-               x_right = 1950, # good  
-               y_down = -2200, # Add space for legend 
-               y_up = 2800)
+# frame_adj <- list(x_left = -2250,
+#                x_right = 1950, # good  
+#                y_down = -2200, # Add space for legend 
+#                y_up = 2800)
+# 
+# frame_edge_lims <- frame_lims |>
+#   mutate(x_min = x_min + frame_adj$x_left,
+#          x_max = x_max + frame_adj$x_right,
+#          y_min = y_min + frame_adj$y_down,
+#          y_max = y_max + frame_adj$y_up)
 
-frame_edge_lims <- frame_lims |>
-  mutate(x_min = x_min + frame_adj$x_left,
-         x_max = x_max + frame_adj$x_right,
-         y_min = y_min + frame_adj$y_down,
-         y_max = y_max + frame_adj$y_up)
+frame_edge_lims <- read.csv(here("processed-data","rdata", "spe","99_spatial_plotting","frame_edge_limits.csv"))
 
 vis_gene_crop_frame <- vis_gene_crop(
   spe = spe,
@@ -213,17 +231,33 @@ vis_gene_crop_frame <- vis_gene_crop(
 ggsave(vis_gene_crop_frame, filename = here(plot_dir, "vis_gene_crop_frame.png"))
 ggsave(vis_gene_crop_frame, filename = here(plot_dir, "vis_gene_crop_frame.pdf"))
 
-walk(frame_edge_lims$sample_id, function(samp){
+walk(unique(spe$sample_id), function(samp){
   # message(samp)
   vis_gene_crop_plot <- vis_gene_crop(
     spe = spe,
     point_size = 2.2,
     frame_lim_df = frame_edge_lims,
     sampleid = samp,
+    alpha = NA,
     geneid = "PCP4",
     legend_overlap = TRUE
   )  
   ggsave(vis_gene_crop_plot, filename = here(plot_dir, "vis_gen_crop_frame", paste0("vis_gene_crop_frame_",samp,".png")))
+  
+})
+
+walk(unique(spe$sample_id)[1:5], function(samp){
+  # message(samp)
+  vis_gene_crop_plot <- vis_gene_crop(
+    spe = spe,
+    point_size = 2.2,
+    frame_lim_df = frame_edge_lims,
+    sampleid = samp,
+    alpha = .5,
+    geneid = "PCP4",
+    legend_overlap = TRUE
+  )  
+  ggsave(vis_gene_crop_plot, filename = here(plot_dir, "vis_gen_crop_alpha", paste0("vis_gene_crop_frame_alpha_",samp,".png")))
   
 })
 
