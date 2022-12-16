@@ -313,9 +313,7 @@ if (dataset == "IF") {
 #   resolutions
 #-------------------------------------------------------------------------------
 
-sample_prop_scatter = function(
-        counts_df, dataset, color_scale, filename, x_angle = 0
-    ) {
+sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
     metrics_df <- counts_df |>
         group_by(deconvo_tool) |>
         summarize(
@@ -373,17 +371,6 @@ sample_prop_scatter = function(
         ) +
         theme_bw(base_size = 15)
     
-        #   Account for misalignment of labels that occurs for certain
-        #   rotations
-        if (x_angle == 90 || x_angle == 270) {
-            p <- p +
-                theme(axis.text.x = element_text(angle = x_angle, vjust = 0.5))
-        } else {
-            p <- p +
-                theme(axis.text.x = element_text(angle = x_angle))
-        }
-        
-    
     pdf(
         file.path(plot_dir, filename),
         width = 9, height = 3
@@ -403,7 +390,7 @@ counts_df <- observed_df_long |>
 
 sample_prop_scatter(
     counts_df, dataset, estimated_cell_labels,
-    "sample_proportions_scatter_broad.pdf", x_angle = 90
+    "sample_proportions_scatter_broad.pdf"
 )
 
 #   Plot at collapsed resolution
@@ -439,7 +426,7 @@ counts_df = observed_df_long |>
 
 sample_prop_scatter(
     counts_df, dataset, cell_type_labels, 
-    "sample_proportions_scatter_collapsed.pdf", x_angle = 90
+    "sample_proportions_scatter_collapsed.pdf"
 )
 
 ################################################################################
