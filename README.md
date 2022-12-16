@@ -298,12 +298,12 @@ p09 <- spatialLIBD::vis_clus(
     clustervar = "BayesSpace_harmony_09",
     sampleid = "Br6522_ant",
     colors = colors_BayesSpace,
-    ... = " spatialDLPFC Human Brain\nSp09 domains -- made with spatiaLIBD"
+    ... = " spatialDLPFC Human Brain\nSp09 domains -- made with spatialLIBD"
 )
 p09
 ```
 
-<img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" width="800px" align="center" />
+<a href="https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09"><img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" width="800px" align="center" /></a>
 
 ``` r
 ## Repeat but for Sp16
@@ -312,12 +312,12 @@ p16 <- spatialLIBD::vis_clus(
     clustervar = "BayesSpace_harmony_16",
     sampleid = "Br6522_ant",
     colors = colors_BayesSpace,
-    ... = " spatialDLPFC Human Brain\nSp16 domains -- made with spatiaLIBD"
+    ... = " spatialDLPFC Human Brain\nSp16 domains -- made with spatialLIBD"
 )
 p16
 ```
 
-<img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp16.png" width="800px" align="center" />
+<a href="https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16"><img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp16.png" width="800px" align="center" /></a>
 
 ### Raw data
 
