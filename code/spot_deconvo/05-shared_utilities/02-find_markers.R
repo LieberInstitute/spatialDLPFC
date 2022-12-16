@@ -15,7 +15,7 @@ source(
     here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
 )
 
-cell_group <- "broad" # "broad" or "layer"
+cell_group <- "layer" # "broad" or "layer"
 
 #   Number of marker genes to use per cell type
 n_markers_per_type <- 25
@@ -518,14 +518,14 @@ if (cell_group == "layer") {
             upper_limit <- max(max_mat[, i_col])
             
             plot_list[[index]] <- plot_list[[index]] +
-                scale_color_gradientn(
-                    colors = viridisLite::plasma(21),
-                    limits = c(0, upper_limit), na.value = c("#CCCCCC40")
-                ) +
                 scale_fill_gradientn(
                     colors = viridisLite::plasma(21),
                     limits = c(0, upper_limit), na.value = c("#CCCCCC40")
-                )
+                ) +
+                scale_color_gradientn(
+                    colors = viridisLite::plasma(21),
+                    limits = c(0, upper_limit), na.value = c("#CCCCCC40")
+                ) 
         }
     }
 

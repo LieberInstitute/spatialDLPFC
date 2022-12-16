@@ -7,7 +7,7 @@ library("spatialLIBD")
 library("cowplot")
 library("sessioninfo")
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF",
@@ -173,11 +173,11 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 upper_limit <- max(max_mat[, i_col])
                 
                 plot_list[[index]] <- plot_list[[index]] +
-                    scale_color_gradientn(
+                    scale_fill_gradientn(
                         colors = viridisLite::plasma(21),
                         limits = c(0, upper_limit), na.value = c("#CCCCCC40")
                     ) +
-                    scale_fill_gradientn(
+                    scale_color_gradientn(
                         colors = viridisLite::plasma(21),
                         limits = c(0, upper_limit), na.value = c("#CCCCCC40")
                     )
