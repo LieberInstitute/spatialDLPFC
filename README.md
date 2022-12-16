@@ -276,9 +276,8 @@ spe
 #> assays(2): counts logcounts
 #> rownames(28916): ENSG00000243485 ENSG00000238009 ... ENSG00000278817 ENSG00000277196
 #> rowData names(7): source type ... gene_type gene_search
-#> colnames(113927): AAACAACGAATAGTTC-1 AAACAAGTATCTCCCA-1 ... TTGTTTGTATTACACG-1
-#>   TTGTTTGTGTAAATTC-1
-#> colData names(93): age array_col ... VistoSeg_count VistoSeg_percent
+#> colnames(113927): AAACAACGAATAGTTC-1 AAACAAGTATCTCCCA-1 ... TTGTTTGTATTACACG-1 TTGTTTGTGTAAATTC-1
+#> colData names(153): age array_col ... VistoSeg_count VistoSeg_proportion
 #> reducedDimNames(8): 10x_pca 10x_tsne ... HARMONY UMAP.HARMONY
 #> mainExpName: NULL
 #> altExpNames(0):
@@ -286,7 +285,7 @@ spe
 #> imgData names(4): sample_id image_id data scaleFactor
 
 ## Note the memory size
-lobstr::object_size(spe)
+lobstr::obj_size(spe)
 #> 6.96 GB
 
 ## Set the cluster colors
@@ -299,7 +298,7 @@ p09 <- spatialLIBD::vis_clus(
     clustervar = "BayesSpace_harmony_09",
     sampleid = "Br6522_ant",
     colors = colors_BayesSpace,
-    ... = " spatialDLPFC Human Brain - Sp09 domains\nMade with github.com/LieberInstitute/spatialDLPFC + spatiaLIBD"
+    ... = " spatialDLPFC Human Brain\nSp09 domains -- made with spatiaLIBD"
 )
 p09
 ```
@@ -313,7 +312,7 @@ p16 <- spatialLIBD::vis_clus(
     clustervar = "BayesSpace_harmony_16",
     sampleid = "Br6522_ant",
     colors = colors_BayesSpace,
-    ... = " spatialDLPFC Human Brain - Sp16 domains\nMade with github.com/LieberInstitute/spatialDLPFC + spatiaLIBD"
+    ... = " spatialDLPFC Human Brain\nSp16 domains -- made with spatiaLIBD"
 )
 p16
 ```
