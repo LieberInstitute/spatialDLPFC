@@ -39,7 +39,8 @@ names(samples) <- samples
 k_colors <- Polychrome::palette36.colors(28)
 names(k_colors) <- c(1:28)
 
-text_size <- 25
+my_text_size <- 25
+my_point_size = 1.9
 
 k_levels <- list(k09 = "bayesSpace_harmony_9", k16 ="bayesSpace_harmony_16", k28 ="bayesSpace_harmony_28")
 
@@ -49,14 +50,14 @@ cluster_plots <- map2(k_levels, names(k_levels), function(k, k_label){
     vis_clus_plot <- vis_clus(
       spe = spe,
       viridis = FALSE,
-      point_size = 2.2,
+      point_size = my_point_size,
       colors = k_colors,
       sampleid = s,
       clustervar = k
     ) +
       theme(legend.position = "None", ## using heat maps label colors
             axis.title.x = element_blank(),
-            text = element_text(size = text_size)) 
+            text = element_text(size = my_text_size)) 
     
     ## Add sample labels to top row
     if(k_label == "k09") {
@@ -102,7 +103,7 @@ gene_CLDN5_row_plots <- map(samples, function(s){
   vis_gene_plot <- vis_gene(
     spe = spe,
     viridis = FALSE,
-    point_size = 2.2,
+    point_size = my_point_size,
     cont_colors = viridisLite::plasma(21),
     sampleid = s,
     geneid = plot_gene
@@ -110,7 +111,7 @@ gene_CLDN5_row_plots <- map(samples, function(s){
     labs(title = NULL)+
     theme(legend.position = legend_positions[[s]], 
           axis.title.x = element_blank(),
-          text = element_text(size = text_size),
+          text = element_text(size = my_text_size),
           axis.title.y = element_text(face = "italic")) ## Italic Gene
   
   ## Add k labels to left 
@@ -136,15 +137,16 @@ spe_subset$bayesSpace_harmony_16 <- droplevels(spe_subset$bayesSpace_harmony_16)
 cluster_k16_subset <- vis_clus(
   spe = spe_subset,
   viridis = FALSE,
-  point_size = 2.2,
+  point_size = my_point_size,
   colors = k_colors,
   sampleid = "Br6522_ant",
   clustervar = k_levels$k16
 ) +
   labs(y = "Br6522_ant", title = "k16 ~ L1") +
-  theme(legend.position = c(0.8, 0.8), ##top right
+  theme(plot.title = element_text(hjust = 0.5),
+        legend.position = c(0.8, 0.8), ##top right
         axis.title.x = element_blank(),
-        text = element_text(size = text_size)) 
+        text = element_text(size = my_text_size)) 
 
 k16_genes <- c("SPARC", "HTRA1")
 k16_gene_plots <- map(k16_genes, function(gene){
@@ -152,15 +154,17 @@ k16_gene_plots <- map(k16_genes, function(gene){
   vis_gene_plot <- vis_gene(
     spe = spe_subset,
     viridis = FALSE,
-    point_size = 2.2,
+    point_size = my_point_size,
     cont_colors = viridisLite::plasma(21),
     sampleid = s,
     geneid = gene
   ) +
     labs(title = gene) + 
-    theme(plot.title = element_text(face = "italic"),
-          # legend.position = c(0.9, 0.02) # bottom right
-          legend.position = c(0.8, 0.8) # top right
+    theme(plot.title = element_text(face = "italic", hjust = 0.5),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          legend.position = c(0.8, 0.8), # top right
+          text = element_text(size = my_text_size)
     )
   
   ggsave(vis_gene_plot, filename = here(plot_dir, paste0("vis_gene_",s,"-",gene,".png")))
@@ -169,12 +173,20 @@ k16_gene_plots <- map(k16_genes, function(gene){
 })
 
 k16_row <- Reduce("+",c(list(cluster_k16_subset), k16_gene_plots))
-ggsave(k16_row, filename = here(plot_dir, "vis_k16_row.png"), width = 18)
+# ggsave(k16_row, filename = here(plot_dir, "vis_k16_row.png"), width = 18)
+ggsave(k16_row, filename = here(plot_dir, "vis_k16_row.pdf"), width = 14)
 
 #### Plot all together ####
 #k16 is different  - add in AI
 ggsave(cluster_grid/CLDN5_row,  
-       filename = here(plot_dir, "Fig2_grid.pdf"), width = 18, height = 21)
+       filename = here(plot_dir, "Fig2_grid.pdf"), width = 16, height = 21)
 
+# sgejobs::job_single('04_fig2_plots', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 04_fig2_plots.R")
 
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
 
