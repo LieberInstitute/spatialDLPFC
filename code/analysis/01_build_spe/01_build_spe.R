@@ -369,7 +369,7 @@ print(cowplot::plot_grid(plotlist = p_scran[1]))
 dev.off()
 
 p_scran <- lapply(p_scran, function(p) {
-    p + ggplot2::theme(legend.position = "none")
+    p + ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_text(size = 40))
 })
 
 pdf(file = here::here("plots", "01_build_spe", paste0("vis_clus_sample_aware_low_lib_size_sfigur.pdf")), height = 6 * 8, width = 6 * 8)
