@@ -10,7 +10,16 @@ library("spatialLIBD")
 library("ggplot2")
 
 ## Load SPE data
-load(here::here("processed-data", "rdata", "spe", "01_build_spe", "spe_filtered_final.Rdata"), verbose = TRUE)
+load(
+    here::here(
+        "processed-data",
+        "rdata",
+        "spe",
+        "01_build_spe",
+        "spe_filtered_final.Rdata"
+    ),
+    verbose = TRUE
+)
 
 ## Find marker genes
 human_markers <-
@@ -29,7 +38,8 @@ human_markers <-
     )
 
 ## Locate the marker genes
-human_markers_search <- rowData(spe)$gene_search[match(human_markers, rowData(spe)$gene_name)]
+human_markers_search <-
+    rowData(spe)$gene_search[match(human_markers, rowData(spe)$gene_name)]
 
 ## Make a grid plot for each marker
 for (i in human_markers_search) {
@@ -52,7 +62,8 @@ new_markers <-
         "MSX1",
         "SPARC"
     )
-new_markers <- rowData(spe)$gene_search[match(new_markers, rowData(spe)$gene_name)]
+new_markers <-
+    rowData(spe)$gene_search[match(new_markers, rowData(spe)$gene_name)]
 for (i in new_markers) {
     message(Sys.time(), " processing gene ", i)
     vis_grid_gene(
@@ -64,7 +75,11 @@ for (i in new_markers) {
 }
 
 ## Individual plots for Br8667_mid on these new markers
-pdf(file = here::here("plots", "01a_marker_genes", "vis_genes_new_markers_CLDN5.pdf"))
+pdf(file = here::here(
+    "plots",
+    "01a_marker_genes",
+    "vis_genes_new_markers_CLDN5.pdf"
+))
 p <- vis_gene(
     spe,
     sampleid = "Br8667_mid",
@@ -74,7 +89,11 @@ p <- vis_gene(
 print(p)
 dev.off()
 
-pdf(file = here::here("plots", "01a_marker_genes", "vis_genes_new_markers_MSX1.pdf"))
+pdf(file = here::here(
+    "plots",
+    "01a_marker_genes",
+    "vis_genes_new_markers_MSX1.pdf"
+))
 p <- vis_gene(
     spe,
     sampleid = "Br8667_mid",
@@ -88,8 +107,7 @@ dev.off()
 
 
 ## Get histology images by taking advantage of setting alpha = 0
-plots_histology <- vis_grid_gene(
-    spe,
+plots_histology <- vis_grid_gene(spe,
     clustervar = "10x_graphclust",
     return_plots = TRUE,
     alpha = 0
@@ -118,17 +136,22 @@ plots_genes <- lapply(key_genes, function(g) {
     lapply(p_list, function(p) {
         p +
             labs(title = NULL) +
-            theme(legend.key.size = unit(1.5, "cm"),
-                legend.title = element_blank())
+            theme(
+                legend.key.size = unit(1.5, "cm"),
+                legend.title = element_blank()
+            )
     })
 })
 
 ## Obtain the sample information from the unique IDs
-sample_info <- data.frame(
-    sample_id = unique(spe$sample_id)
-)
+sample_info <- data.frame(sample_id = unique(spe$sample_id))
 sample_info$subjects <- gsub("_.*", "", sample_info$sample_id)
-sample_info$positions <- c("ant" = "anterior", "mid" = "middle", "post" = "posterior")[gsub(".*_", "", sample_info$sample_id)]
+sample_info$positions <-
+    c(
+        "ant" = "anterior",
+        "mid" = "middle",
+        "post" = "posterior"
+    )[gsub(".*_", "", sample_info$sample_id)]
 sample_info$row <- seq_len(nrow(sample_info))
 donor_order <- unique(sample_info$subjects)
 sample_info
@@ -174,8 +197,21 @@ lapply(unique(sample_info$positions), function(position) {
         plots_genes$MOBP[position_subset$row[i]],
         plots_genes$PCP4[position_subset$row[i]]
     )
-    pdf(file = here::here("plots", "01a_marker_genes", paste0("vis_genes_known_markers_sfig_", position, ".pdf")), height = 8 * 10, width = 8 * 4)
-    print(cowplot::plot_grid(plotlist = plots_list, ncol = 4, nrow = 10, byrow = FALSE))
+    pdf(
+        file = here::here(
+            "plots",
+            "01a_marker_genes",
+            paste0("vis_genes_known_markers_sfig_", position, ".pdf")
+        ),
+        height = 8 * 10,
+        width = 8 * 4
+    )
+    print(cowplot::plot_grid(
+        plotlist = plots_list,
+        ncol = 4,
+        nrow = 10,
+        byrow = FALSE
+    ))
     dev.off()
     return(NULL)
 })
