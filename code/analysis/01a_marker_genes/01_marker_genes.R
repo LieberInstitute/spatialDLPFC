@@ -138,7 +138,8 @@ plots_genes <- lapply(key_genes, function(g) {
             labs(title = NULL) +
             theme(
                 legend.key.size = unit(1.5, "cm"),
-                legend.title = element_blank()
+                legend.title = element_blank(),
+                legend.text = element_text(size = 30)
             )
     })
 })
