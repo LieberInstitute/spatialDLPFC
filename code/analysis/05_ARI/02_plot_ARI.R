@@ -37,6 +37,13 @@ sample_ids <-
     )
 ari.df.long$sample_id <- rep(sample_ids, 5)
 
+## Fix capitalization of Graph-based to Graph-Based
+levels(ari.df.long$method) <-
+    gsub(
+        "Graph-based\\(BC\\)",
+        "Graph-Based(BC)",
+        levels(ari.df.long$method)
+    )
 
 pdf(here(
     "plots",
