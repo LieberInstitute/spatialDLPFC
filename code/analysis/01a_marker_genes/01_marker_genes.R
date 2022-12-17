@@ -131,6 +131,38 @@ sample_info$subjects <- gsub("_.*", "", sample_info$sample_id)
 sample_info$positions <- c("ant" = "anterior", "mid" = "middle", "post" = "posterior")[gsub(".*_", "", sample_info$sample_id)]
 sample_info$row <- seq_len(nrow(sample_info))
 donor_order <- unique(sample_info$subjects)
+sample_info
+#      sample_id subjects positions row
+# 1   Br2743_ant   Br2743  anterior   1
+# 2   Br2743_mid   Br2743    middle   2
+# 3  Br2743_post   Br2743 posterior   3
+# 4   Br3942_ant   Br3942  anterior   4
+# 5   Br3942_mid   Br3942    middle   5
+# 6  Br3942_post   Br3942 posterior   6
+# 7   Br6423_ant   Br6423  anterior   7
+# 8   Br6423_mid   Br6423    middle   8
+# 9  Br6423_post   Br6423 posterior   9
+# 10  Br8492_ant   Br8492  anterior  10
+# 11  Br8492_mid   Br8492    middle  11
+# 12 Br8492_post   Br8492 posterior  12
+# 13  Br2720_ant   Br2720  anterior  13
+# 14  Br2720_mid   Br2720    middle  14
+# 15 Br2720_post   Br2720 posterior  15
+# 16  Br6432_ant   Br6432  anterior  16
+# 17  Br6432_mid   Br6432    middle  17
+# 18 Br6432_post   Br6432 posterior  18
+# 19  Br6471_ant   Br6471  anterior  19
+# 20  Br6471_mid   Br6471    middle  20
+# 21 Br6471_post   Br6471 posterior  21
+# 22  Br6522_ant   Br6522  anterior  22
+# 23  Br6522_mid   Br6522    middle  23
+# 24 Br6522_post   Br6522 posterior  24
+# 25  Br8325_ant   Br8325  anterior  25
+# 26  Br8325_mid   Br8325    middle  26
+# 27 Br8325_post   Br8325 posterior  27
+# 28  Br8667_ant   Br8667  anterior  28
+# 29  Br8667_mid   Br8667    middle  29
+# 30 Br8667_post   Br8667 posterior  30
 
 lapply(unique(sample_info$positions), function(position) {
     message(Sys.time(), " processing position ", position)
