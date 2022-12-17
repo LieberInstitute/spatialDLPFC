@@ -358,22 +358,21 @@ p_scran <- vis_grid_clus(
     spe = spe,
     clustervar = "scran_low_lib_size",
     sort_clust = FALSE,
-    colors = c("FALSE" = "grey90", "TRUE" = "orange"),
+    colors = c("FALSE" = "grey90", "TRUE" = "deeppink"),
     spatial = FALSE,
     point_size = 2,
-    # height = 24,
-    # width = 90,
-    return_plots = TRUE,
-    image_id = "lowres"
+    return_plots = TRUE
 )
 
-p_scran <- lapply(sample_order, function(sampleid) {
-    p <- p_scran[[sampleid]]
-    p + theme(legend.position = "none")
-})
-names(p_scran) <- sample_order
+pdf(file = here::here("plots", "01_build_spe", paste0("vis_clus_sample_aware_low_lib_size_sfigur_legend.pdf")), height = 8, width = 8)
+print(cowplot::plot_grid(plotlist = p_scran[1]))
+dev.off()
 
-pdf(file = here::here("plots", "01_build_spe", paste0("vis_clus_sample_aware_low_lib_size_sfigur.pdf")), height = 5 * 8, width = 6 * 8)
+p_scran <- lapply(p_scran, function(p) {
+    p + ggplot2::theme(legend.position = "none")
+})
+
+pdf(file = here::here("plots", "01_build_spe", paste0("vis_clus_sample_aware_low_lib_size_sfigur.pdf")), height = 6 * 8, width = 6 * 8)
 print(cowplot::plot_grid(plotlist = p_scran))
 dev.off()
 
