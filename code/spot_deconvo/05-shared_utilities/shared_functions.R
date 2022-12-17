@@ -11,14 +11,15 @@
 #   is_discrete:    (logical) if TRUE, use 'vis_clus'; otherwise, use 'vis_gene'
 #   colors:         passed to 'colors' for 'vis_gene' if not [is_discrete]
 #   assayname:      passed to 'assayname' for 'vis_gene' if not [is_discrete]
+#   minCount:       passed to 'minCount' for 'vis_gene' if not [is_discrete]
 #
 #   Returns a ggplot object
 spot_plot = function(
         spe, sample_id, title, var_name, include_legend, is_discrete,
-        colors = NULL, assayname = "logcounts"
+        colors = NULL, assayname = "logcounts", minCount = 0.5
         ) {
     
-    POINT_SIZE = 1.85
+    POINT_SIZE = 2
     
     #   If the quantity to plot is discrete, use 'vis_clus'. Otherwise use
     #   'vis_gene'.
@@ -39,7 +40,9 @@ spot_plot = function(
     } else {
         p <- vis_gene(
             spe, sampleid = sample_id, geneid = var_name, return_plots = TRUE,
-            spatial = FALSE, point_size = POINT_SIZE, assayname = assayname
+            spatial = FALSE, point_size = POINT_SIZE, assayname = assayname,
+            cont_colors = viridisLite::plasma(21), alpha = 1,
+            minCount = minCount
         )
     }
     
@@ -48,8 +51,8 @@ spot_plot = function(
         p = p + theme(legend.position = "none")
     }
     
-    #   Use fixed coordinate scale and remove the caption
-    p = p + labs(title = title, caption = NULL)
+    #   Overwrite the title
+    p = p + labs(title = title)
     
     return(p)
 }
