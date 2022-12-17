@@ -5,23 +5,60 @@ library("RColorBrewer")
 library("sessioninfo")
 
 ## Load the ARI results
-load(here("processed-data", "rdata", "pilot_dlpfc_data", "05_ARI", "pilot_ari_clustering_across.Rdata"), verbose = TRUE)
+load(
+    here(
+        "processed-data",
+        "rdata",
+        "pilot_dlpfc_data",
+        "05_ARI",
+        "pilot_ari_clustering_across.Rdata"
+    ),
+    verbose = TRUE
+)
 
 ## Fix the sample_id
 # load(here("processed-data", "rdata", "pilot_dlpfc_data", "spe_pilot_bayesSpace_batch_corr_sampleID.Rdata"), verbose = TRUE)
 # sample_ids <- unique(spe$sample_id)
 # paste0(sample_ids, collapse = '", "')
-sample_ids <- c("151507", "151508", "151509", "151510", "151669", "151670", "151671", "151672", "151673", "151674", "151675", "151676")
+sample_ids <-
+    c(
+        "151507",
+        "151508",
+        "151509",
+        "151510",
+        "151669",
+        "151670",
+        "151671",
+        "151672",
+        "151673",
+        "151674",
+        "151675",
+        "151676"
+    )
 ari.df.long$sample_id <- rep(sample_ids, 5)
 
 
-pdf(here("plots", "05_ARI", "ggboxplot_pilot_data_ARI_clustering_across.pdf"))
+pdf(here(
+    "plots",
+    "05_ARI",
+    "ggboxplot_pilot_data_ARI_clustering_across.pdf"
+))
 set.seed(20221216)
-ggboxplot(ari.df.long,
-    x = "method", y = "ari", fill = "method",
-    palette = brewer.pal("Paired", n = 10)[c(1:4, 10)], add = "jitter", repel = TRUE,
-    font.label = list(size = 10), legend = "none", ggtheme = theme_pubr(base_size = 30),
-    ylab = "Adjusted Rand Index", xlab = "Clustering Method", size = 1, label = "sample_id"
+ggboxplot(
+    ari.df.long,
+    x = "method",
+    y = "ari",
+    fill = "method",
+    palette = brewer.pal("Paired", n = 10)[c(1:4, 10)],
+    add = "jitter",
+    repel = TRUE,
+    font.label = list(size = 10),
+    legend = "none",
+    ggtheme = theme_pubr(base_size = 30),
+    ylab = "Adjusted Rand Index",
+    xlab = "Clustering Method",
+    size = 1,
+    label = "sample_id"
 ) +
     font("xy.text", size = 11) +
     font("xlab", size = 16) +
@@ -30,7 +67,15 @@ dev.off()
 
 
 ## Make a new version with paired lines
-pdf(here("plots", "05_ARI", "ggpaired_pilot_data_ARI_clustering_across.pdf"), width = 12, height = 9)
+pdf(
+    here(
+        "plots",
+        "05_ARI",
+        "ggpaired_pilot_data_ARI_clustering_across.pdf"
+    ),
+    width = 12,
+    height = 9
+)
 ggpaired(
     ari.df.long,
     x = "method",
