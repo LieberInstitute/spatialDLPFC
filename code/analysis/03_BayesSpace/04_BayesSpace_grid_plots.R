@@ -40,8 +40,10 @@ pk <- vis_grid_clus(
 
 pk <- lapply(sample_order, function(sampleid) {
     p <- pk[[sampleid]]
-    p + theme(legend.position = "none",
-        plot.title = ggplot2::element_text(size = 40))
+    p + theme(
+        legend.position = "none",
+        plot.title = ggplot2::element_text(size = 40)
+    )
 })
 names(pk) <- sample_order
 
