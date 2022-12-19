@@ -514,15 +514,9 @@ if (cell_group == "layer") {
             index <- (i_row - 1) * length(unique(spe$sample_id)) + i_col
             upper_limit <- max(max_mat[, i_col])
             
-            plot_list[[index]] <- plot_list[[index]] +
-                scale_fill_gradientn(
-                    colors = viridisLite::plasma(21),
-                    limits = c(0, upper_limit), na.value = c("#CCCCCC40")
-                ) +
-                scale_color_gradientn(
-                    colors = viridisLite::plasma(21),
-                    limits = c(0, upper_limit), na.value = c("#CCCCCC40")
-                ) 
+            plot_list[[index]] <- overwrite_scale(
+                plot_list[[index]], upper_limit = upper_limit, min_count = 0
+            )
         }
     }
 

@@ -19,7 +19,7 @@ spot_plot = function(
         colors = NULL, assayname = "logcounts", minCount = 0.5
         ) {
     
-    POINT_SIZE = 2
+    POINT_SIZE = 2.3
     
     #   If the quantity to plot is discrete, use 'vis_clus'. Otherwise use
     #   'vis_gene'.
@@ -55,4 +55,20 @@ spot_plot = function(
     p = p + labs(title = title)
     
     return(p)
+}
+
+#   Set the largest value for the color/fill scale to [upper_limit] and return
+#   a copy of the plot 'p' with that modification. 'min_count' should be the
+#   value of 'minCount' passed to 'spot_plot', used to create 'p'.
+overwrite_scale = function(p, upper_limit, min_count) {
+    p +
+        scale_fill_gradientn(
+            colors = viridisLite::plasma(21),
+            limits = c(0, upper_limit), na.value = c("#CCCCCC40")
+        ) +
+        scale_color_gradientn(
+            colors = viridisLite::plasma(21),
+            limits = c(0, upper_limit), na.value = c("#CCCCCC40")
+        ) +
+        labs(fill = paste(" min >", min_count))
 }
