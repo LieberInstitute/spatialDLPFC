@@ -7,7 +7,13 @@ library("spatialLIBD")
 library("cowplot")
 library("sessioninfo")
 
-cell_group <- "broad" # "broad" or "layer"
+#   Adds the 'spot_plot' function, a wrapper for 'vis_gene' or 'vis_clus' with
+#   consistent manuscript-appropriate settings
+source(
+    here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
+)
+
+cell_group <- "layer" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF",
@@ -93,19 +99,11 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
     ]
     
     #   Plot spatial distribution
-    p <- vis_gene(
-        spe_small, geneid = "temp_ct_counts", return_plots = TRUE,
-        spatial = FALSE, sampleid = sample_id1, alpha = 0
-    ) +
-        coord_fixed() +
-        labs(title = title, caption = NULL) +
-        geom_point(
-            shape = 21,
-            size = 1.85,
-            stroke = 0,
-            alpha = 1,
-            color = "transparent"
-        )
+    p <- spot_plot(
+        spe_small, sample_id = sample_id1, title = title,
+        var_name = "temp_ct_counts", include_legend = TRUE,
+        is_discrete = FALSE
+    )
     
     return(list(p, max(spe_small$temp_ct_counts)))
 }
@@ -258,6 +256,31 @@ prop_barplot_paper <- function(prop_df, filename) {
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
     
     pdf(file.path(plot_dir, filename))
+    print(p)
+    dev.off()
+}
+
+#   Given a tibble with columns 'label' (manual layer label), 'deconvo_tool',
+#   'cell_type', and 'count', write a set of barplots to PDF under [plot_dir]
+#   with name [filename]. 'ylab' give the y-axis label; 'x_var' is the x-axis
+#   variable (as a string); 'fill_var' is the fill variable as a string;
+#   'fill_scale' is passed to 'scale_fill_manual(values = [fill_scale])';
+#   'fill_lab' is the fill label; 'xlab' is the x-axis label
+layer_dist_barplot <- function(
+        counts_df, filename, ylab, x_var, fill_var, fill_scale, fill_lab, xlab
+        ) {
+    p <- ggplot(
+        counts_df,
+        aes_string(x = x_var, y = "count", fill = fill_var)
+    ) +
+        facet_wrap(~deconvo_tool) +
+        geom_bar(stat = "identity") +
+        labs(x = xlab, y = ylab, fill = fill_lab) +
+        scale_fill_manual(values = fill_scale) +
+        theme_bw(base_size = 16) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+    
+    pdf(file.path(plot_dir, filename), width = 10, height = 5)
     print(p)
     dev.off()
 }
@@ -541,3 +564,103 @@ print(plot_list)
 dev.off()
 
 session_info()
+
+#   Add k=9 spatial domains into the big tibble (observed_df_long)
+a = tibble(
+    "barcode" = colnames(spe), "bs_k9" = spe$bayesSpace_pca_9,
+    "sample_id" = spe$sample_id
+) |>
+    mutate(bs_k9 = paste0("SpaD", bs_k9))
+
+observed_df_long <- left_join(
+    observed_df_long, a,
+    by = c("barcode", "sample_id")
+)
+stopifnot(!any(is.na(observed_df_long$bs_k9)))
+
+counts_df <- observed_df_long |>
+    #   Average counts within sample for a given domain/ cell type/ deconvo tool
+    group_by(bs_k9, deconvo_tool, sample_id, cell_type) |>
+    summarize(count = mean(observed)) |>
+    #   Average these averages across sample
+    group_by(bs_k9, deconvo_tool, cell_type) |>
+    summarize(count = sum(count) / length(sample_ids)) |>
+    ungroup()
+
+#   Meaning of an example section of one bar in one facet of this plot:
+#   Orange bar at white matter for cell2location: of all spots manually
+#   annotated as white matter, the size of the bar section is the across-sample
+#   mean of average oligo counts in those spots for each sample. Total bar
+#   heights vary within deconvo tool because cell-count density varies between
+#   layers. Total bar heights may vary between deconvo tools when total counts
+#   per spot aren't preserved (e.g. C2L doesn't match the cell counts you
+#   provide it)
+layer_dist_barplot(
+    counts_df,
+    filename = "layer_distribution_barplot_raw.pdf",
+    xlab = "Annotated Layer", ylab = "Average Predicted Count", x_var = "bs_k9",
+    fill_lab = "Cell Type", fill_var = "cell_type",
+    fill_scale = estimated_cell_labels
+)
+
+#   Weight each sample equally
+counts_df <- observed_df_long |>
+    #   For each manually annotated domain, deconvo tool and sample_id,
+    #   normalize by the total counts of all cell types
+    group_by(deconvo_tool, bs_k9, sample_id) |>
+    mutate(observed = observed / sum(observed)) |>
+    #   Now for each domain, deconvo tool, sample_id and cell type, add up
+    #   counts for all relevant spots
+    group_by(deconvo_tool, bs_k9, cell_type, sample_id) |>
+    summarize(count = sum(observed)) |>
+    #   Now average across samples. Note that some samples have 0 counts for
+    #   SPOTlight and Tangram in some domains, so we use 'na.rm = TRUE' here to
+    #   just average over the samples that have nonzero counts
+    group_by(deconvo_tool, bs_k9, cell_type) |>
+    summarize(count = mean(count, na.rm = TRUE)) |>
+    ungroup()
+
+layer_dist_barplot(
+    counts_df,
+    filename = "layer_distribution_barplot_prop_even.pdf",
+    xlab = "Annotated Layer", ylab = "Proportion of Counts", x_var = "bs_k9",
+    fill_lab = "Cell Type", fill_var = "cell_type",
+    fill_scale = estimated_cell_labels
+)
+
+#-------------------------------------------------------------------------------
+#   Spatial distribution of cell-types compared against BayesSpace k = 9 domains
+#   (barplots- proportions by domain). Inverted so that x-axis is cell type
+#-------------------------------------------------------------------------------
+
+counts_df <- observed_df_long |>
+    #   Normalize counts by the sum within sample ID, cell type, and deconvo
+    #   tool (each sample contributes equally)
+    group_by(sample_id, deconvo_tool, cell_type) |>
+    mutate(observed = observed / sum(observed)) |>
+    #   Add up counts for all spots in each layer for each sample ID, cell
+    #   type, and deconvo tool
+    group_by(deconvo_tool, bs_k9, sample_id, cell_type) |>
+    summarize(count = sum(observed)) |>
+    #   Now average counts across samples (Note that
+    #   'sum(count) / length(sample_ids)' must be used and not 'mean(count)',
+    #   since not all samples have counts for all cell types in all domains
+    group_by(deconvo_tool, bs_k9, cell_type) |>
+    summarize(count = sum(count) / length(sample_ids)) |>
+    # summarize(count = mean(count)) |>
+    ungroup()
+
+#   Interpretation of this plot:
+#   For a given deconvo tool, examine one cell type. The size of each component
+#   of the bar can be interpreted as the probability a randomly selected cell of
+#   this cell type belongs in this particular layer. Note that this does not
+#   normalize for layer size (i.e. if more spots belong to layer 3 than white
+#   matter, the maximal layer for a given cell type is more likely to be layer
+#   3)!
+layer_dist_barplot(
+    counts_df,
+    filename = "layer_distribution_barplot_probability_inverted.pdf",
+    xlab = "Cell Type", ylab = "Proportion of Counts", x_var = "cell_type",
+    fill_lab = "Annotated Layer", fill_var = "bs_k9",
+    fill_scale = libd_layer_colors
+)
