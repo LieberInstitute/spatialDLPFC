@@ -18,10 +18,13 @@ load(
     verbose = TRUE
 )
 
-mycolors <- Polychrome::palette36.colors(k)
-## Reverse colors only for k2 to avoid WM vs GM confusion
 if (k == 2) {
-    mycolors <- rev(mycolors)
+    ## At least 3 is required
+    mycolors <- Polychrome::palette36.colors(k + 1)
+    ## Reverse colors only for k2 to avoid WM vs GM confusion
+    mycolors <- mycolors[c(2, 1, 3)]
+} else {
+    mycolors <- Polychrome::palette36.colors(k)
 }
 names(mycolors) <-
     sort(unique(colData(spe)[[paste0("bayesSpace_harmony_", k)]]))
