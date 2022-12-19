@@ -41,6 +41,20 @@ pk <- vis_grid_clus(
     return_plots = TRUE
 )
 
+if (k == 2) {
+    pdf(
+        file = here::here(
+            "plots",
+            "03_BayesSpace",
+            paste0("polychrome_vis_grid_clus_sfigu_BayesSpace_k", k, "_legend.pdf")
+        ),
+        height = 5,
+        width = 6
+    )
+    print(cowplot::plot_grid(plotlist = pk[1]))
+    dev.off()
+}
+
 pk <- lapply(sample_order, function(sampleid) {
     p <- pk[[sampleid]]
     p + theme(
