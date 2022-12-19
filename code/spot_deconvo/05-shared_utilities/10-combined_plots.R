@@ -8,7 +8,7 @@ library("cowplot")
 library("sessioninfo")
 
 #   "IF" or "nonIF"
-dataset = "IF"
+dataset = "nonIF"
 
 raw_results_broad_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", dataset,
