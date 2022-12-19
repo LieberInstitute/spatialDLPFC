@@ -13,7 +13,7 @@ source(
     here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
 )
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
@@ -68,13 +68,13 @@ layer_ann_path <- here(
 cell_types_actual <- c("Astro", "Micro", "Neuron", "Oligo", "Other")
 if (cell_group == "broad") {
     cell_types <- c(
-        "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
+        "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"
     )
 } else {
     cell_types <- c(
-        "Astro", "EndoMural", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
-        "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
-        "Oligo", "OPC"
+        "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit_L2_3", "Excit_L3",
+        "Excit_L3_4_5", "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6",
+        "Inhib"
     )
 }
 
@@ -650,7 +650,9 @@ observed_df_long <- observed_df %>%
     ) %>%
     pivot_wider(
         names_from = obs_type, values_from = count,
-    )
+    ) |>
+    #   Use an ordered factor for plotting cell types
+    mutate(cell_type = factor(cell_type, levels = cell_types, order = TRUE))
 
 spe <- readRDS(spe_IF_in)
 

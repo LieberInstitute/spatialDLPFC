@@ -60,13 +60,13 @@ deconvo_tools <- c("Tangram", "Cell2location", "SPOTlight")
 cell_types_actual <- c("Astro", "Micro", "Neuron", "Oligo", "Other")
 if (cell_group == "broad") {
     cell_types <- c(
-        "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
+        "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"
     )
 } else {
     cell_types <- c(
-        "Astro", "EndoMural", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
-        "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
-        "Oligo", "OPC"
+        "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit_L2_3", "Excit_L3",
+        "Excit_L3_4_5", "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6",
+        "Inhib"
     )
 }
 
@@ -313,7 +313,9 @@ observed_df_long <- observed_df |>
     ) |>
     pivot_wider(
         names_from = obs_type, values_from = count,
-    )
+    ) |>
+    #   Use an ordered factor for plotting cell types
+    mutate(cell_type = factor(cell_type, levels = cell_types, order = TRUE))
 
 load(spe_nonIF_in, verbose = TRUE)
 
@@ -563,22 +565,20 @@ pdf(file.path(plot_dir, "marker_vs_ct_counts_paper.pdf"))
 print(plot_list)
 dev.off()
 
-session_info()
-
 #   Add k=9 spatial domains into the big tibble (observed_df_long)
-a = tibble(
+temp_df = tibble(
     "barcode" = colnames(spe), "bs_k9" = spe$bayesSpace_pca_9,
     "sample_id" = spe$sample_id
 ) |>
-    mutate(bs_k9 = paste0("SpaD", bs_k9))
+    mutate(bs_k9 = paste0("Sp09D0", bs_k9))
 
 observed_df_long <- left_join(
-    observed_df_long, a,
-    by = c("barcode", "sample_id")
+    observed_df_long, temp_df, by = c("barcode", "sample_id")
 )
 stopifnot(!any(is.na(observed_df_long$bs_k9)))
 
 counts_df <- observed_df_long |>
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
     #   Average counts within sample for a given domain/ cell type/ deconvo tool
     group_by(bs_k9, deconvo_tool, sample_id, cell_type) |>
     summarize(count = mean(observed)) |>
@@ -605,6 +605,7 @@ layer_dist_barplot(
 
 #   Weight each sample equally
 counts_df <- observed_df_long |>
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
     #   For each manually annotated domain, deconvo tool and sample_id,
     #   normalize by the total counts of all cell types
     group_by(deconvo_tool, bs_k9, sample_id) |>
@@ -634,6 +635,7 @@ layer_dist_barplot(
 #-------------------------------------------------------------------------------
 
 counts_df <- observed_df_long |>
+    filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
     #   Normalize counts by the sum within sample ID, cell type, and deconvo
     #   tool (each sample contributes equally)
     group_by(sample_id, deconvo_tool, cell_type) |>
@@ -647,15 +649,14 @@ counts_df <- observed_df_long |>
     #   since not all samples have counts for all cell types in all domains
     group_by(deconvo_tool, bs_k9, cell_type) |>
     summarize(count = sum(count) / length(sample_ids)) |>
-    # summarize(count = mean(count)) |>
     ungroup()
 
 #   Interpretation of this plot:
 #   For a given deconvo tool, examine one cell type. The size of each component
 #   of the bar can be interpreted as the probability a randomly selected cell of
-#   this cell type belongs in this particular layer. Note that this does not
-#   normalize for layer size (i.e. if more spots belong to layer 3 than white
-#   matter, the maximal layer for a given cell type is more likely to be layer
+#   this cell type belongs in this particular domain. Note that this does not
+#   normalize for domain size (i.e. if more spots belong to domain 3 than white
+#   matter, the maximal domain for a given cell type is more likely to be domain
 #   3)!
 layer_dist_barplot(
     counts_df,
@@ -664,3 +665,5 @@ layer_dist_barplot(
     fill_lab = "Annotated Layer", fill_var = "bs_k9",
     fill_scale = libd_layer_colors
 )
+
+session_info()
