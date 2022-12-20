@@ -341,6 +341,24 @@ ggsave(
   height = 5
 )
 
+#### PCA plots ####
+spe_k16_sub <- spe_k16[, spe_k16$BayesSpace %in% c("Sp16D02", "Sp16D14")]
+
+spe_k16_PCA <- as.data.frame(reducedDims(spe_k16_sub)$runPCA[,c("PC2","PC3")])
+spe_k16_PCA$k16 <- spe_k16_sub$BayesSpace
+
+head(spe_k16_PCA)
+dim(spe_k16_PCA)
+
+pca_k16 <- ggplot(spe_k16_PCA, aes(x = PC3, y = PC2, color = k16))+
+  geom_point() +
+  theme_bw() +
+  scale_color_manual(values = k16_colors) +
+  theme(legend.position = "top")
+
+ggsave(pca_k16, filename = here(plot_dir, "pca_k16_2v3.png"), height = 3.4, width = 3)
+ggsave(pca_k16, filename = here(plot_dir, "pca_k16_2v3.pdf"), height = 3.4, width = 3)
+
 # sgejobs::job_single('04_select_layer_DE_plots', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 04_select_layer_DE_plots.R")
 
 ## Reproducibility information
