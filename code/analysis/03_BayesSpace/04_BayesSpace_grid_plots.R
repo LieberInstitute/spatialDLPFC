@@ -37,7 +37,7 @@ pk <- vis_grid_clus(
     sort_clust = FALSE,
     colors = mycolors,
     spatial = FALSE,
-    point_size = 2,
+    point_size = 1.5,
     return_plots = TRUE
 )
 
