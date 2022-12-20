@@ -377,11 +377,17 @@ registration_one_k <- function(k) {
         anno_matrix_subset[layer_anno_subset$cluster, ]
     rownames(anno_matrix_subset) <- layer_anno_subset$layer_combo
 
+
+    k_colors_current <- k_colors
+    if (k == 2) {
+        names(k_colors_current)[1:2] <- 2:1
+    }
+
     subset_color_bar <- rowAnnotation(
         df = layer_anno_subset |>
             select(domain_color, layer_anno = layer_annotation),
         col = list(
-            domain_color = k_colors,
+            domain_color = k_colors_current,
             layer_anno = libd_intermediate_layer_colors
         ),
         show_legend = FALSE
