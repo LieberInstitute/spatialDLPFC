@@ -53,26 +53,21 @@ jacc.mat <-
 ## Mark 0s as NAs
 jacc.mat[jacc.mat == 0] <- NA
 
-rownames(jacc.mat) <-
-    bayes_layers |>
-    filter(Annotation == "k09") |>
-    select(layer_combo) |>
-    (`[[`)("layer_combo") |>
-    as.character() |>
-    sort()
-colnames(jacc.mat) <-
-    bayes_layers |>
-    filter(Annotation == "k16") |>
-    select(layer_combo) |>
-    (`[[`)("layer_combo") |>
-    as.character() |>
-    sort()
-
 Sp09_order <- bayes_layers |>
     filter(Annotation == "k09") |>
     select(layer_combo) |>
     (`[[`)("layer_combo") |>
     as.character()
+
+Sp16_order <- bayes_layers |>
+    filter(Annotation == "k16") |>
+    select(layer_combo) |>
+    (`[[`)("layer_combo") |>
+    as.character()
+
+rownames(jacc.mat) <- sort(Sp09_order)
+colnames(jacc.mat) <- sort(Sp16_order)
+
 
 domain_colors_k09 <-
     setNames(
@@ -80,8 +75,8 @@ domain_colors_k09 <-
         rownames(jacc.mat)
     )
 row_ha <- rowAnnotation(
-    df = data.frame(Sp09 = rownames(jacc.mat)),
-    col = list(Sp09 = domain_colors_k09),
+    df = data.frame(Sp09 = Sp09_order),
+    col = list(Sp09 = domain_colors_k09[Sp09_order]),
     show_legend = c(FALSE)
 )
 domain_colors_k16 <-
@@ -91,8 +86,8 @@ domain_colors_k16 <-
     )
 col_ha <-
     HeatmapAnnotation(
-        df = data.frame(Sp16 = colnames(jacc.mat)),
-        col = list(Sp16 = domain_colors_k16),
+        df = data.frame(Sp16 = Sp16_order),
+        col = list(Sp16 = domain_colors_k16[Sp16_order]),
         annotation_name_side = "left",
         show_legend = c(FALSE)
     )
@@ -102,13 +97,14 @@ pdf(here(plot_dir, "Sp09_vs_Sp16_complex.pdf"),
     width = 12
 )
 Heatmap(
-    jacc.mat[Sp09_order, ],
+    jacc.mat[Sp09_order, ][, Sp16_order],
     name = "Correspondence",
     right_annotation = row_ha,
     bottom_annotation = col_ha,
     col = viridisLite::plasma(101),
     na_col = "black",
-    cluster_rows = FALSE
+    cluster_rows = FALSE,
+    cluster_columns = FALSE
 )
 dev.off()
 
@@ -129,20 +125,15 @@ jacc.mat[jacc.mat == 0] <- NA
 
 ## Note that not all k28 domains are present: 18 and 21 are missing
 present_col <- as.integer(colnames(jacc.mat))
-rownames(jacc.mat) <-
-    bayes_layers |>
-    filter(Annotation == "k09") |>
-    select(layer_combo) |>
-    (`[[`)("layer_combo") |>
-    as.character() |>
-    sort()
-colnames(jacc.mat) <-
-    bayes_layers |>
+Sp28_order <- bayes_layers |>
     filter(Annotation == "k28") |>
     select(layer_combo) |>
     (`[[`)("layer_combo") |>
-    as.character() |>
-    sort()
+    as.character()
+
+
+rownames(jacc.mat) <- sort(Sp09_order)
+colnames(jacc.mat) <- sort(Sp28_order)
 
 domain_colors_k28 <-
     setNames(
@@ -151,8 +142,8 @@ domain_colors_k28 <-
     )
 col_ha <-
     HeatmapAnnotation(
-        df = data.frame(Sp28 = colnames(jacc.mat)),
-        col = list(Sp28 = domain_colors_k28),
+        df = data.frame(Sp28 = Sp28_order),
+        col = list(Sp28 = domain_colors_k28[Sp28_order]),
         annotation_name_side = "left",
         show_legend = c(FALSE)
     )
@@ -162,17 +153,16 @@ pdf(here(plot_dir, "Sp09_vs_Sp28_complex.pdf"),
     width = 12
 )
 Heatmap(
-    jacc.mat[Sp09_order, ],
+    jacc.mat[Sp09_order, ][, Sp28_order],
     name = "Correspondence",
     right_annotation = row_ha,
     bottom_annotation = col_ha,
     col = viridisLite::plasma(101),
     na_col = "black",
-    cluster_rows = FALSE
+    cluster_rows = FALSE,
+    cluster_columns =
 )
 dev.off()
-
-
 
 ## Reproducibility information
 print("Reproducibility information:")
