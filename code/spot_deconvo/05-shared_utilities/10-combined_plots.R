@@ -69,12 +69,12 @@ sce_in <- here(
 
 cell_types_actual <- c("Astro", "Micro", "Neuron", "Oligo", "Other")
 cell_types_broad <- c(
-    "Astro", "EndoMural", "Excit", "Inhib", "Micro", "Oligo", "OPC"
+    "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"
 )
 cell_types_layer <- c(
-    "Astro", "EndoMural", "Excit_L2_3", "Excit_L3", "Excit_L3_4_5",
-    "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6", "Inhib", "Micro",
-    "Oligo", "OPC"
+    "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit_L2_3", "Excit_L3",
+    "Excit_L3_4_5", "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6",
+    "Inhib"
 )
 
 
@@ -161,7 +161,8 @@ observed_df_layer <- observed_df_layer |>
 stopifnot(identical(colnames(observed_df_layer), colnames(observed_df_broad)))
 stopifnot(
     identical(
-        unique(observed_df_layer$cell_type), unique(observed_df_broad$cell_type)
+        sort(levels(observed_df_layer$cell_type)),
+        sort(levels(observed_df_broad$cell_type))
     )
 )
 
@@ -192,6 +193,12 @@ if (dataset == "IF") {
     
     #   Add layer label to observed_df_long
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
+        #   Order cell types for plotting
+        mutate(
+            cell_type = factor(
+                cell_type, levels = cell_types_broad, order = TRUE
+            )
+        ) |>
         left_join(layer_ann, by = c("barcode", "sample_id")) |>
         filter(!is.na(label)) |>
         as_tibble()
