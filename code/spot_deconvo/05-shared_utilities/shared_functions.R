@@ -14,53 +14,53 @@
 #   minCount:       passed to 'minCount' for 'vis_gene' if not [is_discrete]
 #
 #   Returns a ggplot object
-spot_plot = function(
-        spe, sample_id, title, var_name, include_legend, is_discrete,
-        colors = NULL, assayname = "logcounts", minCount = 0.5
-        ) {
-    
-    POINT_SIZE = 2.3
-    
+spot_plot <- function(spe, sample_id, title, var_name, include_legend, is_discrete,
+    colors = NULL, assayname = "logcounts", minCount = 0.5) {
+    POINT_SIZE <- 2.3
+
     #   If the quantity to plot is discrete, use 'vis_clus'. Otherwise use
     #   'vis_gene'.
     if (is_discrete) {
         #   For 'vis_clus' only, supply a color scale if 'color' is not NULL
         if (is.null(colors)) {
             p <- vis_clus(
-                spe, sampleid = sample_id, clustervar = var_name,
+                spe,
+                sampleid = sample_id, clustervar = var_name,
                 return_plots = TRUE, spatial = FALSE, point_size = POINT_SIZE
             )
         } else {
             p <- vis_clus(
-                spe, sampleid = sample_id, clustervar = var_name,
+                spe,
+                sampleid = sample_id, clustervar = var_name,
                 return_plots = TRUE, spatial = FALSE, colors = colors,
                 point_size = POINT_SIZE
             )
         }
     } else {
         p <- vis_gene(
-            spe, sampleid = sample_id, geneid = var_name, return_plots = TRUE,
+            spe,
+            sampleid = sample_id, geneid = var_name, return_plots = TRUE,
             spatial = FALSE, point_size = POINT_SIZE, assayname = assayname,
             cont_colors = viridisLite::plasma(21), alpha = 1,
             minCount = minCount
         )
     }
-    
+
     #   Remove the legend if requested
-    if (! include_legend) {
-        p = p + theme(legend.position = "none")
+    if (!include_legend) {
+        p <- p + theme(legend.position = "none")
     }
-    
+
     #   Overwrite the title
-    p = p + labs(title = title)
-    
+    p <- p + labs(title = title)
+
     return(p)
 }
 
 #   Set the largest value for the color/fill scale to [upper_limit] and return
 #   a copy of the plot 'p' with that modification. 'min_count' should be the
 #   value of 'minCount' passed to 'spot_plot', used to create 'p'.
-overwrite_scale = function(p, upper_limit, min_count) {
+overwrite_scale <- function(p, upper_limit, min_count) {
     p +
         scale_fill_gradientn(
             colors = viridisLite::plasma(21),

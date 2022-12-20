@@ -79,9 +79,9 @@ marker_stats <- marker_stats[!grepl("^MT-", marker_stats$symbol), ]
 
 #   "Re-rank" rank_ratio, since there may be missing ranks now
 for (ct in unique(marker_stats$cellType.target)) {
-    old_ranks <- marker_stats %>%
-        filter(cellType.target == ct) %>%
-        pull(rank_ratio) %>%
+    old_ranks <- marker_stats |>
+        filter(cellType.target == ct) |>
+        pull(rank_ratio) |>
         sort()
 
     for (i in 1:length(which((marker_stats$cellType.target == ct)))) {
@@ -100,7 +100,7 @@ for (ct in unique(marker_stats$cellType.target)) {
 
 write_markers <- function(n_markers, out_path) {
     #   Take top N marker genes for each cell type
-    marker_stats_temp <- marker_stats %>%
+    marker_stats_temp <- marker_stats |>
         filter(
             rank_ratio <= n_markers,
             ratio > 1
@@ -108,8 +108,8 @@ write_markers <- function(n_markers, out_path) {
 
     #   Warn if less than the intended number of markers is used for any cell
     #   type
-    num_markers_table <- marker_stats_temp %>%
-        group_by(cellType.target) %>%
+    num_markers_table <- marker_stats_temp |>
+        group_by(cellType.target) |>
         summarize(num_markers = n())
 
     if (any(num_markers_table$num_markers < n_markers)) {
@@ -199,9 +199,9 @@ if (cell_group == "broad") {
 
 #   Plot mean-ratio distribution by cell type/ layer
 boxplot_mean_ratio <- function(n_markers, plot_name) {
-    p <- marker_stats %>%
-        filter(rank_ratio <= n_markers) %>%
-        mutate(ratio, ratio = log(ratio)) %>%
+    p <- marker_stats |>
+        filter(rank_ratio <= n_markers) |>
+        mutate(ratio, ratio = log(ratio)) |>
         ggplot(aes(cellType.target, ratio, color = cellType.target)) +
         geom_boxplot() +
         geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
@@ -232,19 +232,19 @@ print("Writing markers...")
 plot_list <- lapply(
     unique(marker_stats$cellType.target),
     function(ct) {
-        genes <- marker_stats %>%
+        genes <- marker_stats |>
             filter(
                 rank_ratio <= n_markers_per_type,
                 cellType.target == ct,
                 ratio > 1
-            ) %>%
+            ) |>
             pull(gene)
         my_plotExpression(
             sce, genes,
             ct = cell_column,
             fill_colors = metadata(sce)[[colors_col]],
             title = paste("Top", length(genes), "for", ct),
-            marker_stats = marker_stats %>%
+            marker_stats = marker_stats |>
                 filter(
                     rank_ratio <= n_markers_per_type,
                     cellType.target == ct,
@@ -265,7 +265,7 @@ dev.off()
 
 #   Plot mean ratio against log fold-change for all genes, split by target cell
 #   type and colored by whether each gene will be used as a marker
-p <- marker_stats %>%
+p <- marker_stats |>
     mutate(
         Marker = case_when(
             rank_ratio <= n_markers_per_type ~ paste0(
@@ -273,7 +273,7 @@ p <- marker_stats %>%
             ),
             TRUE ~ "Not Marker"
         )
-    ) %>%
+    ) |>
     ggplot(aes(ratio, std.logFC, color = Marker)) +
     geom_point(size = 0.5, alpha = 0.5) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
@@ -327,16 +327,18 @@ for (j in 1:length(classical_markers)) {
 
         #   Produce the ggplot object (grid version)
         plot_list[[i]] <- spot_plot(
-            spe, sample_id = sample_id, var_name = classical_markers_ens[j],
+            spe,
+            sample_id = sample_id, var_name = classical_markers_ens[j],
             include_legend = TRUE, is_discrete = FALSE,
             title = title, assayname = "counts", minCount = 0
         )
-        
+
         #   Produce the ggplot object (manuscript version)
-        plot_list_paper[[i]] <-  spot_plot(
-            spe, sample_id = sample_id, var_name = classical_markers_ens[j],
+        plot_list_paper[[i]] <- spot_plot(
+            spe,
+            sample_id = sample_id, var_name = classical_markers_ens[j],
             include_legend = FALSE, is_discrete = FALSE,
-            title = sub('\n', ': ', title), assayname = "counts", minCount = 0
+            title = sub("\n", ": ", title), assayname = "counts", minCount = 0
         )
 
         i <- i + 1
@@ -381,12 +383,12 @@ for (n_markers in c(15, 25, 50)) {
     #   Plot proportion of markers having nonzero expression for each cell type
     for (ct in unique(marker_stats$cellType.target)) {
         #   Get markers for this cell type
-        markers <- marker_stats %>%
+        markers <- marker_stats |>
             filter(
                 cellType.target == ct,
                 rank_ratio <= n_markers,
                 ratio > 1
-            ) %>%
+            ) |>
             pull(gene)
 
         for (sample_id in unique(spe$sample_id)) {
@@ -397,24 +399,26 @@ for (n_markers in c(15, 25, 50)) {
             spe_small$prop_nonzero_marker <- colMeans(
                 assays(spe_small)$counts > 0
             )
-            
+
             plot_list[[i]] <- spot_plot(
-                spe_small, sample_id = sample_id,
+                spe_small,
+                sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE, minCount = 0,
                 title = paste0(
                     "Prop. markers w/ nonzero exp:\n", ct, " (", sample_id, ")"
                 )
             )
-            
-            # Use a 1-line title and remove the legend for the paper version   
+
+            # Use a 1-line title and remove the legend for the paper version
             plot_list_paper[[i]] <- spot_plot(
-                spe_small, sample_id = sample_id,
+                spe_small,
+                sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = FALSE,
-                is_discrete = FALSE,  minCount = 0,
+                is_discrete = FALSE, minCount = 0,
                 title = paste0(ct, " (", sample_id, ")")
             )
-            
+
             i <- i + 1
         }
     }
@@ -429,7 +433,7 @@ for (n_markers in c(15, 25, 50)) {
     )
     print(plot_grid(plotlist = plot_list, ncol = n_sample))
     dev.off()
-    
+
     #   Create a manuscript-compatible version with one plot per PDF page
     #   For figures in the paper, create a PDF version with one plot per
     #   page. Exactly match the shape (aspect ratio) and visual details
@@ -459,25 +463,26 @@ if (cell_group == "layer") {
     for (sample_id in unique(spe$sample_id)) {
         #   Produce the ggplot object
         plot_list[[i]] <- spot_plot(
-            spe, sample_id = sample_id,
+            spe,
+            sample_id = sample_id,
             var_name = classical_markers_ens[classical_markers == "PCP4"],
             include_legend = TRUE, is_discrete = FALSE, title = NULL,
             assayname = "counts", minCount = 0
         )
-        
-        max_list[[i]] = 0
+
+        max_list[[i]] <- 0
 
         i <- i + 1
     }
 
     for (n_markers in c(15, 25, 50)) {
         #   Get markers for this cell type
-        markers <- marker_stats %>%
+        markers <- marker_stats |>
             filter(
                 cellType.target == "Excit_L5",
                 rank_ratio <= n_markers,
                 ratio > 1
-            ) %>%
+            ) |>
             pull(gene)
 
         for (sample_id in unique(spe$sample_id)) {
@@ -488,23 +493,25 @@ if (cell_group == "layer") {
             spe_small$prop_nonzero_marker <- colMeans(
                 assays(spe_small)$counts > 0
             )
-            
+
             max_list[[i]] <- max(spe_small$prop_nonzero_marker)
-            
+
             plot_list[[i]] <- spot_plot(
-                spe_small, sample_id = sample_id,
+                spe_small,
+                sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE, title = NULL, minCount = 0
             )
-            
+
             i <- i + 1
         }
     }
-    
+
     max_mat <- matrix(
-        unlist(max_list), ncol = length(unique(spe$sample_id)), byrow = TRUE
+        unlist(max_list),
+        ncol = length(unique(spe$sample_id)), byrow = TRUE
     )
-    
+
     #   Now loop back through the plot list (which will be displayed in 2D)
     #   and overwrite the scale to go as high as the largest value in the
     #   column. This allows for easy comparison between number of markers for
@@ -513,9 +520,10 @@ if (cell_group == "layer") {
         for (i_row in 2:4) {
             index <- (i_row - 1) * length(unique(spe$sample_id)) + i_col
             upper_limit <- max(max_mat[, i_col])
-            
+
             plot_list[[index]] <- overwrite_scale(
-                plot_list[[index]], upper_limit = upper_limit, min_count = 0
+                plot_list[[index]],
+                upper_limit = upper_limit, min_count = 0
             )
         }
     }

@@ -8,7 +8,7 @@ library("cowplot")
 library("sessioninfo")
 
 #   "IF" or "nonIF"
-dataset = "nonIF"
+dataset <- "nonIF"
 
 raw_results_broad_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", dataset,
@@ -28,7 +28,7 @@ if (dataset == "IF") {
         "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
         "results_collapsed_layer.csv"
     )
-    
+
     layer_ann_path <- here(
         "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
         "annotations_{sample_id}_spots.csv"
@@ -176,33 +176,34 @@ estimated_cell_labels <- metadata(sce)$cell_type_colors_broad
 
 if (dataset == "IF") {
     spe <- readRDS(spe_IF_in)
-    
+
     layer_ann <- data.frame()
     for (sample_id in sample_ids) {
         this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
         layer_ann_small <- read.csv(this_layer_path)
-        
+
         layer_ann_small$barcode <- colnames(spe[, spe$sample_id == sample_id])[
             layer_ann_small$id + 1
         ]
         layer_ann_small$sample_id <- sample_id
-        
+
         layer_ann <- rbind(layer_ann, layer_ann_small)
     }
     layer_ann$id <- NULL
-    
+
     #   Add layer label to observed_df_long
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
         #   Order cell types for plotting
         mutate(
             cell_type = factor(
-                cell_type, levels = cell_types_broad, order = TRUE
+                cell_type,
+                levels = cell_types_broad, order = TRUE
             )
         ) |>
         left_join(layer_ann, by = c("barcode", "sample_id")) |>
         filter(!is.na(label)) |>
         as_tibble()
-    
+
     #   Use titlecase (note this is MUCH faster than mutate with 'toTitleCase')
     observed_df_long$deconvo_tool[
         observed_df_long$deconvo_tool == "tangram"
@@ -210,7 +211,7 @@ if (dataset == "IF") {
     observed_df_long$deconvo_tool[
         observed_df_long$deconvo_tool == "cell2location"
     ] <- "Cell2location"
-    
+
     #   Clean up labels
     observed_df_long$label <- tolower(observed_df_long$label)
     observed_df_long$label <- sub("layer", "Layer ", observed_df_long$label)
@@ -218,11 +219,11 @@ if (dataset == "IF") {
     stopifnot(
         all(unlist(corresponding_layers) %in% unique(observed_df_long$label))
     )
-    
+
     ############################################################################
     #   Broad-Resolution Plots
     ############################################################################
-    
+
     counts_df <- observed_df_long |>
         #   For each manually annotated label, deconvo tool and sample_id,
         #   normalize by the total counts of all cell types
@@ -236,12 +237,12 @@ if (dataset == "IF") {
         group_by(deconvo_tool, label, cell_type, resolution) |>
         summarize(count = mean(count)) |>
         ungroup()
-    
+
     #---------------------------------------------------------------------------
     #   Barplots comparing distribution of cell types in layers between
     #   resolutions
     #---------------------------------------------------------------------------
-    
+
     p <- ggplot(counts_df, aes(x = resolution, y = count, fill = cell_type)) +
         facet_grid(rows = vars(deconvo_tool), cols = vars(label)) +
         geom_bar(stat = "identity") +
@@ -253,7 +254,7 @@ if (dataset == "IF") {
         scale_x_discrete(labels = c("broad" = "Broad", "layer" = "Layer")) +
         theme_bw(base_size = 15) +
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-    
+
     pdf(file.path(plot_dir, "barplot.pdf"), width = 10, height = 5)
     print(p)
     dev.off()
@@ -261,10 +262,10 @@ if (dataset == "IF") {
     #   This type of plot isn't possible for the nonIF data: just load the SPE
     #   object and continue
     load(spe_nonIF_in, verbose = TRUE)
-    
+
     #   A table mapping one version of sample IDs to another
     id_table <- read.csv(nonIF_id_path)
-    
+
     #   Add in the up-to-date VistoSeg counts
     spe$count <- NA
     for (sample_id in unique(spe$sample_id)) {
@@ -272,10 +273,11 @@ if (dataset == "IF") {
         #   then read in
         long_id <- id_table[match(sample_id, id_table$short_id), "long_id"]
         this_path <- sub(
-            "{sample_id}", long_id, nonIF_counts_path, fixed = TRUE
+            "{sample_id}", long_id, nonIF_counts_path,
+            fixed = TRUE
         )
         cell_counts <- read.csv(this_path)
-        
+
         #   All spots in the object should have counts
         stopifnot(
             all(
@@ -283,7 +285,7 @@ if (dataset == "IF") {
                     cell_counts$barcode
             )
         )
-        
+
         #   Line up the rows of 'cell_counts' with the sample-subsetted SPE
         #   object
         cell_counts <- cell_counts[
@@ -292,20 +294,20 @@ if (dataset == "IF") {
                 cell_counts$barcode
             ),
         ]
-        
+
         #   Add this sample's counts to the SPE object
         spe$count[spe$sample_id == sample_id] <- cell_counts$Nmask_dark_blue
     }
-    
+
     #   Ensure counts were read in for all spots in the object
     if (any(is.na(spe$count))) {
         stop("Did not find cell counts for all non-IF spots.")
     }
-    
+
     #   Merge results for both resolutions
     observed_df_long <- rbind(observed_df_broad, observed_df_layer) |>
         as_tibble()
-    
+
     #   Use titlecase (note this is MUCH faster than mutate with 'toTitleCase')
     observed_df_long$deconvo_tool[
         observed_df_long$deconvo_tool == "tangram"
@@ -320,7 +322,7 @@ if (dataset == "IF") {
 #   resolutions
 #-------------------------------------------------------------------------------
 
-sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
+sample_prop_scatter <- function(counts_df, dataset, color_scale, filename) {
     metrics_df <- counts_df |>
         group_by(deconvo_tool) |>
         summarize(
@@ -328,10 +330,10 @@ sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
             rmse = paste0("RMSE = ", signif(mean((broad - layer)**2)**0.5, 3))
         ) |>
         ungroup()
-    
+
     counts_df <- counts_df |>
         mutate(broad = log(broad), layer = log(layer))
-    
+
     #   We'll shape by sample for IF data. For nonIF, there are too many samples
     if (dataset == "IF") {
         p <- ggplot(
@@ -341,7 +343,7 @@ sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
     } else {
         p <- ggplot(counts_df, aes(x = broad, y = layer, color = cell_type))
     }
-    
+
     p <- p + geom_point() +
         geom_abline(
             intercept = 0, slope = 1, linetype = 3, color = "black"
@@ -377,7 +379,7 @@ sample_prop_scatter = function(counts_df, dataset, color_scale, filename) {
             color = "Cell Type", shape = "Sample ID"
         ) +
         theme_bw(base_size = 15)
-    
+
     pdf(
         file.path(plot_dir, filename),
         width = 9, height = 3
@@ -403,25 +405,25 @@ sample_prop_scatter(
 #   Plot at collapsed resolution
 
 if (dataset == "IF") {
-    cols_to_select = c(
+    cols_to_select <- c(
         added_colnames, "resolution", "label",
-        cell_types_actual[- match('Other', cell_types_actual)]
+        cell_types_actual[-match("Other", cell_types_actual)]
     )
 } else {
-    cols_to_select = c(
+    cols_to_select <- c(
         added_colnames, "resolution",
-        cell_types_actual[- match('Other', cell_types_actual)]
+        cell_types_actual[-match("Other", cell_types_actual)]
     )
 }
 
-counts_df = observed_df_long |>
+counts_df <- observed_df_long |>
     pivot_wider(names_from = cell_type, values_from = count) |>
     #   Collapse cell types
     mutate(Oligo = Oligo + OPC, Neuron = Excit + Inhib) |>
     select(all_of(cols_to_select)) |>
     #   Change back to one cell type per row
     pivot_longer(
-        cols = cell_types_actual[- match('Other', cell_types_actual)],
+        cols = cell_types_actual[-match("Other", cell_types_actual)],
         names_to = "cell_type", values_to = "count"
     ) |>
     #   Sum counts across each section
@@ -432,7 +434,7 @@ counts_df = observed_df_long |>
     ungroup()
 
 sample_prop_scatter(
-    counts_df, dataset, cell_type_labels, 
+    counts_df, dataset, cell_type_labels,
     "sample_proportions_scatter_collapsed.pdf"
 )
 
@@ -441,10 +443,10 @@ sample_prop_scatter(
 ################################################################################
 
 if (dataset == "IF") {
-    collapsed_broad = read.csv(collapsed_results_broad_path) |>
+    collapsed_broad <- read.csv(collapsed_results_broad_path) |>
         mutate(resolution = "broad")
-    
-    collapsed_results = read.csv(collapsed_results_layer_path) |>
+
+    collapsed_results <- read.csv(collapsed_results_layer_path) |>
         mutate(resolution = "layer") |>
         rbind(collapsed_broad) |>
         #   Make one cell type per row
@@ -457,7 +459,7 @@ if (dataset == "IF") {
         pivot_wider(
             names_from = obs_type, values_from = count,
         )
-    
+
     #   Use titlecase (note this is MUCH faster than mutate with 'toTitleCase')
     collapsed_results$deconvo_tool[
         collapsed_results$deconvo_tool == "tangram"
@@ -465,21 +467,20 @@ if (dataset == "IF") {
     collapsed_results$deconvo_tool[
         collapsed_results$deconvo_tool == "cell2location"
     ] <- "Cell2location"
-    
+
     #   Calculate total cells per spot and prepare for plotting
-    count_df = collapsed_results |>
+    count_df <- collapsed_results |>
         filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
         #   Add counts of any cell type for each spot
         group_by(deconvo_tool, resolution, barcode, sample_id) |>
         summarize(observed = sum(observed), actual = sum(actual))
-
 } else {
     #   Data frame of VistoSeg counts
-    visto_df = as_tibble(
+    visto_df <- as_tibble(
         cbind(colnames(spe), colData(spe)[, c("sample_id", "count")])
     )
-    colnames(visto_df) = c("barcode", "sample_id", "actual")
-    
+    colnames(visto_df) <- c("barcode", "sample_id", "actual")
+
     #   Add up counts of all cell types per spot
     count_df <- observed_df_long |>
         filter(deconvo_tool %in% c("Tangram", "Cell2location")) |>
@@ -498,7 +499,7 @@ metrics_df <- count_df |>
     ) |>
     ungroup()
 
-p = ggplot(count_df, aes(x = observed, y = actual)) +
+p <- ggplot(count_df, aes(x = observed, y = actual)) +
     geom_point(alpha = 0.01) +
     facet_grid(
         rows = vars(resolution), cols = vars(deconvo_tool),
