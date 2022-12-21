@@ -13,7 +13,7 @@ k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## For testing
 if (FALSE) {
-    k <- 2
+    k <- 3
 }
 
 library("here")
@@ -26,7 +26,7 @@ dir_rdata <- here::here(
     "processed-data",
     "rdata",
     "spe",
-    "07_layer_differential_expression"
+    "16_position_differential_expression_noWM"
 )
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
@@ -42,6 +42,13 @@ load(
     ),
     verbose = TRUE
 )
+
+## Drop WM
+table(spe$bayesSpace_harmony_2, useNA = "ifany")
+wm_spots <- which(spe$bayesSpace_harmony_2 == 1)
+message(Sys.time(), " dropping WM spots: ", length(wm_spots), " total.")
+spe <- spe[, -wm_spots]
+dim(spe)
 
 ## Convert from character to a factor
 spe$BayesSpace <-

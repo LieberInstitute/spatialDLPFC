@@ -1,11 +1,11 @@
 #!/bin/bash
 #$ -cwd
 #$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
-#$ -N create_pseudobulk_data
-#$ -o logs/01_create_pseudobulk_data.$TASK_ID.txt
-#$ -e logs/01_create_pseudobulk_data.$TASK_ID.txt
+#$ -N create_pseudobulk_data_noWM
+#$ -o logs/01_create_pseudobulk_data_noWM.$TASK_ID.txt
+#$ -e logs/01_create_pseudobulk_data_noWM.$TASK_ID.txt
 #$ -m e
-#$ -t 2-28
+#$ -t 3-28
 #$ -tc 10
 
 echo "**** Job starts ****"
