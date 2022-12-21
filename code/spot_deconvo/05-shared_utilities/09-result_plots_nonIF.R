@@ -298,7 +298,7 @@ load(spe_nonIF_in, verbose = TRUE)
 ################################################################################
 
 spatial_counts_plot_full(
-    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
+    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres"
 )
 
 #-------------------------------------------------------------------------------
