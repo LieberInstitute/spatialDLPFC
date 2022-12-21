@@ -72,3 +72,67 @@ overwrite_scale <- function(p, upper_limit, min_count) {
         ) +
         labs(fill = paste(" min >", min_count))
 }
+
+#   Given a list of ggplot objects 'plot_list', write up to 3 PDFs with
+#   variations of this list. Write the default version as a grid with [ncol]
+#   columns, expected to have a legend and a 1-line title; this is designed for
+#   best internal viewing. Write a second version with legends but no title, for
+#   use in grid-based plots in the manuscript. If [include_individual], write a
+#   third version with one plot per page, the existing titles, and no legends.
+#
+#   plot_list:          list of ggplot objects to plot to multiple PDFs
+#   n_col:              (integer) number of columns in grid versions of the
+#                       plots
+#   plot_dir:           (character) path to base directory for writing plots
+#   file_prefix:        (character) start of filename (without extension)
+#   include_individual: (logical) if TRUE, write a 3rd version of plots with one
+#                       plot per page
+#
+#   Returns NULL.
+write_spot_plots <- function(
+        plot_list, n_col, plot_dir, file_prefix, include_individual
+        ) {
+    #   Scaling factor for 'plot_grid'. 1.03 seems to reduce whitespace without
+    #   introducing overlap, but larger values quickly introduce overlap
+    SCALE = 1.03
+    
+    #   Create two alternate versions of the default plot for use in the
+    #   manuscript. One version has one plot per page, with consistent
+    #   point size and aspect ratio with other individual spot plots. The
+    #   other is a grid version with a legend but no title, consistent with
+    #   grid plots in the manuscript
+    plot_list_individual <- list()
+    plot_list_no_title <- list()
+    for (i in 1:length(plot_list)) {
+        plot_list_individual[[i]] <- plot_list[[i]] +
+            theme(legend.position = "none")
+        plot_list_no_title[[i]] <- plot_list[[i]] + labs(title = NULL)
+    }
+    
+    #   Internal-viewing version
+    pdf(
+        file.path(plot_dir, paste0(file_prefix, ".pdf")),
+        width = 7 * n_col,
+        height = 7 * length(plot_list) / n_col
+    )
+    print(plot_grid(plotlist = plot_list, ncol = n_col), scale = SCALE)
+    dev.off()
+    
+    #   Individual version, if requested
+    if (include_individual) {
+        pdf(file.path(plot_dir, paste0(file_prefix, "_individual.pdf")))
+        print(plot_list_individual)
+        dev.off()
+    }
+    
+    #   No-title version
+    pdf(
+        file.path(
+            plot_dir, paste0(file_prefix, "_no_title.pdf")
+        ),
+        width = 7 * n_col,
+        height = 7 * length(plot_list) / n_col
+    )
+    print(plot_grid(plotlist = plot_list_no_title, ncol = n_col, scale = SCALE))
+    dev.off()
+}

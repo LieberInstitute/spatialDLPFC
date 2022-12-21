@@ -124,11 +124,11 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
 spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual, pdf_prefix) {
     for (sample_id in sample_ids) {
         spe_small <- spe[, spe$sample_id == sample_id]
-
+        
         i <- 1
         plot_list <- list()
         max_list <- list()
-
+        
         #   For each deconvo tool, make a row of plots (each including all cell
         #   types) showed the observed distribution
         for (deconvo_tool in deconvo_tools) {
@@ -136,32 +136,33 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 temp <- spatial_counts_plot(
                     spe_small, full_df, sample_id, deconvo_tool, cell_type,
                     "observed",
-                    paste0(cell_type, " counts (", deconvo_tool, ")")
+                    paste0(cell_type, " Counts (", deconvo_tool, ")")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
                 i <- i + 1
             }
         }
-
+        
         #   Add a row showing the ground-truth counts for each cell type
         if (include_actual) {
             for (cell_type in cell_types_actual) {
                 temp <- spatial_counts_plot(
-                    spe_small, full_df, sample_id, deconvo_tool, cell_type, "actual",
-                    paste0(cell_type, " counts (CART-calculated)")
+                    spe_small, full_df, sample_id, deconvo_tool,
+                    str_to_title(cell_type), "actual",
+                    paste0(cell_type, " Counts (CART-Calculated)")
                 )
                 plot_list[[i]] <- temp[[1]]
                 max_list[[i]] <- temp[[2]]
                 i <- i + 1
             }
         }
-
+        
         max_mat <- matrix(
             unlist(max_list),
             ncol = length(cell_type_vec), byrow = TRUE
         )
-
+        
         #   Now loop back through the plot list (which will be displayed in 2D)
         #   and overwrite the scale to go as high as the largest value in the
         #   column. This allows for easy comparison between deconvo tools
@@ -170,7 +171,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
             for (i_row in 1:(length(deconvo_tools) + include_actual)) {
                 index <- (i_row - 1) * length(cell_type_vec) + i_col
                 upper_limit <- max(max_mat[, i_col])
-
+                
                 plot_list[[index]] <- overwrite_scale(
                     plot_list[[index]],
                     upper_limit = upper_limit,
@@ -178,34 +179,12 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 )
             }
         }
-
-        #   Plot in a grid where cell types are columns and rows are
-        #   deconvolution tools. One PDF per sample
-        pdf(
-            file.path(plot_dir, paste0(pdf_prefix, sample_id, ".pdf")),
-            width = 7 * length(cell_type_vec),
-            height = 7 * (length(deconvo_tools) + include_actual)
+        
+        write_spot_plots(
+            plot_list = plot_list, n_col = length(cell_type_vec),
+            plot_dir = plot_dir, include_individual = TRUE,
+            file_prefix = paste0(pdf_prefix, '_', sample_id)
         )
-        print(plot_grid(plotlist = plot_list, ncol = length(cell_type_vec)))
-        dev.off()
-
-        #   For figures in the paper, create a PDF version with one plot per
-        #   page. Remove the legend to match with other plots in the paper,
-        #   including those with a discrete scale (vis_clus) where the legend
-        #   is outside the plot
-        for (i in 1:length(plot_list)) {
-            plot_list[[i]] <- plot_list[[i]] +
-                theme(legend.position = "none")
-        }
-        pdf(
-            file.path(
-                plot_dir, paste0(pdf_prefix, sample_id, "_individual.pdf")
-            ),
-            width = 7 * length(cell_type_vec),
-            height = 7 * (length(deconvo_tools) + include_actual)
-        )
-        print(plot_grid(plotlist = plot_list, ncol = length(cell_type_vec)))
-        dev.off()
     }
 }
 

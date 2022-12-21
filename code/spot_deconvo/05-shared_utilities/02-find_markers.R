@@ -304,7 +304,6 @@ stopifnot(all(classical_markers_ens %in% rownames(spe)))
 #-------------------------------------------------------------------------------
 
 plot_list <- list()
-plot_list_paper <- list()
 i <- 1
 
 for (j in 1:length(classical_markers)) {
@@ -327,49 +326,20 @@ for (j in 1:length(classical_markers)) {
 
         #   Produce the ggplot object (grid version)
         plot_list[[i]] <- spot_plot(
-            spe,
-            sample_id = sample_id, var_name = classical_markers_ens[j],
-            include_legend = TRUE, is_discrete = FALSE,
-            title = title, assayname = "counts", minCount = 0
+            spe, sample_id = sample_id, var_name = classical_markers_ens[j],
+            include_legend = TRUE, is_discrete = FALSE, title = title,
+            assayname = "counts", minCount = 0
         )
-
-        #   Produce the ggplot object (manuscript version)
-        plot_list_paper[[i]] <- spot_plot(
-            spe,
-            sample_id = sample_id, var_name = classical_markers_ens[j],
-            include_legend = TRUE, is_discrete = FALSE,
-            title = NULL, assayname = "counts", minCount = 0
-        )
-
+        
         i <- i + 1
     }
 }
 
-#   Create a grid version as a single-page PDF
-n_sample <- length(unique(spe$sample_id))
-pdf(
-    file.path(
-        plot_dir, paste0("marker_spatial_sparsity_reference.pdf")
-    ),
-    width = 7 * n_sample,
-    height = 7 * length(classical_markers)
+write_spot_plots(
+    plot_list = plot_list, n_col = length(unique(spe$sample_id)),
+    plot_dir = plot_dir, file_prefix = "marker_spatial_sparsity_reference",
+    include_individual = FALSE
 )
-print(plot_grid(plotlist = plot_list, ncol = n_sample))
-dev.off()
-
-#   Create a manuscript-compatible version by reducing whitespace and removing
-#   titles
-pdf(
-    file.path(
-        plot_dir, paste0("marker_spatial_sparsity_reference_paper.pdf")
-    ),
-    width = 7 * n_sample,
-    height = 7 * length(classical_markers)
-)
-#   We can actually eliminate more whitespace with scale = 1.03; not sure why
-#   scale = 1 leaves some extra space and ~ 1.04 begins to introduce overlap
-print(plot_grid(plotlist = plot_list_paper, ncol = n_sample, scale = 1.03))
-dev.off()
 
 #-------------------------------------------------------------------------------
 #   For IF, show a grid of plots summarizing how sparsely marker genes
@@ -379,7 +349,6 @@ dev.off()
 
 for (n_markers in c(15, 25, 50)) {
     plot_list <- list()
-    plot_list_paper <- list()
     i <- 1
 
     #   Plot proportion of markers having nonzero expression for each cell type
@@ -403,8 +372,7 @@ for (n_markers in c(15, 25, 50)) {
             )
 
             plot_list[[i]] <- spot_plot(
-                spe_small,
-                sample_id = sample_id,
+                spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE, minCount = 0,
                 title = paste0(
@@ -412,42 +380,17 @@ for (n_markers in c(15, 25, 50)) {
                 )
             )
 
-            # Use a 1-line title and remove the legend for the paper version
-            plot_list_paper[[i]] <- spot_plot(
-                spe_small,
-                sample_id = sample_id,
-                var_name = "prop_nonzero_marker", include_legend = FALSE,
-                is_discrete = FALSE, minCount = 0,
-                title = paste0(ct, " (", sample_id, ")")
-            )
-
             i <- i + 1
         }
     }
     n_sample <- length(unique(spe$sample_id))
     n_rows <- length(unique(marker_stats$cellType.target))
-
-    pdf(
-        file.path(
-            plot_dir, paste0("marker_spatial_sparsity_n", n_markers, ".pdf")
-        ),
-        width = 7 * n_sample, height = 7 * n_rows
+    
+    write_spot_plots(
+        plot_list = plot_list, n_col = n_sample, plot_dir = plot_dir,
+        file_prefix = paste0("marker_spatial_sparsity_n", n_markers),
+        include_individual = TRUE
     )
-    print(plot_grid(plotlist = plot_list, ncol = n_sample))
-    dev.off()
-
-    #   Create a manuscript-compatible version with one plot per PDF page
-    #   For figures in the paper, create a PDF version with one plot per
-    #   page. Exactly match the shape (aspect ratio) and visual details
-    #   of other spatial plots in this script
-    pdf(
-        file.path(
-            plot_dir,
-            paste0("marker_spatial_sparsity_n", n_markers, "_paper.pdf")
-        )
-    )
-    print(plot_list_paper)
-    dev.off()
 }
 
 #-------------------------------------------------------------------------------
@@ -465,10 +408,9 @@ if (cell_group == "layer") {
     for (sample_id in unique(spe$sample_id)) {
         #   Produce the ggplot object
         plot_list[[i]] <- spot_plot(
-            spe,
-            sample_id = sample_id,
+            spe, sample_id = sample_id,
             var_name = classical_markers_ens[classical_markers == "PCP4"],
-            include_legend = TRUE, is_discrete = FALSE, title = NULL,
+            include_legend = TRUE, is_discrete = FALSE, title = "PCP4 Counts",
             assayname = "counts", minCount = 0
         )
 
@@ -499,10 +441,12 @@ if (cell_group == "layer") {
             max_list[[i]] <- max(spe_small$prop_nonzero_marker)
 
             plot_list[[i]] <- spot_plot(
-                spe_small,
-                sample_id = sample_id,
+                spe_small, sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
-                is_discrete = FALSE, title = NULL, minCount = 0
+                is_discrete = FALSE, minCount = 0,
+                title = paste0(
+                    "Prop. Excit_L5 markers w/ >0 counts (n = ", n_markers, ")"
+                )
             )
 
             i <- i + 1
@@ -529,15 +473,11 @@ if (cell_group == "layer") {
             )
         }
     }
-
-    pdf(
-        file.path(
-            plot_dir, paste0("sparsity_figure.pdf")
-        ),
-        width = 7 * n_sample, height = 28
+    
+    write_spot_plots(
+        plot_list = plot_list, n_col = n_sample, plot_dir = plot_dir,
+        file_prefix = "sparsity_figure", include_individual = FALSE
     )
-    print(plot_grid(plotlist = plot_list, ncol = n_sample))
-    dev.off()
 }
 
 session_info()

@@ -378,32 +378,12 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 )
             }
         }
-
-        #   Plot in a grid where cell types are columns and rows are
-        #   deconvolution tools. One PDF per sample
-        pdf(
-            file.path(plot_dir, paste0(pdf_prefix, sample_id, ".pdf")),
-            width = 7 * length(cell_type_vec),
-            height = 7 * (length(deconvo_tools) + include_actual)
+        
+        write_spot_plots(
+            plot_list = plot_list, n_col = length(cell_type_vec),
+            plot_dir = plot_dir, include_individual = TRUE,
+            file_prefix = paste0(pdf_prefix, '_', sample_id)
         )
-        print(plot_grid(plotlist = plot_list, ncol = length(cell_type_vec)))
-        dev.off()
-
-        #   For figures in the paper, create a PDF version with one plot per
-        #   page. Remove the legend to match with other plots in the paper,
-        #   including those with a discrete scale (vis_clus) where the legend
-        #   is outside the plot
-        for (i in 1:length(plot_list)) {
-            plot_list[[i]] <- plot_list[[i]] +
-                theme(legend.position = "none")
-        }
-        pdf(
-            file.path(
-                plot_dir, paste0(pdf_prefix, sample_id, "_individual.pdf")
-            )
-        )
-        print(plot_list)
-        dev.off()
     }
 }
 
@@ -654,7 +634,7 @@ observed_df_long <- observed_df |>
 spe <- readRDS(spe_IF_in)
 
 spatial_counts_plot_full(
-    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres_"
+    spe, observed_df_long, cell_types, FALSE, "spatial_counts_fullres"
 )
 
 #   Gather collapsed cell counts so that each row is a unique
@@ -1015,7 +995,7 @@ across_spots(
 #-------------------------------------------------------------------------------
 
 spatial_counts_plot_full(
-    spe, full_df, cell_types_actual, TRUE, "spatial_counts_"
+    spe, full_df, cell_types_actual, TRUE, "spatial_counts"
 )
 
 #-------------------------------------------------------------------------------
