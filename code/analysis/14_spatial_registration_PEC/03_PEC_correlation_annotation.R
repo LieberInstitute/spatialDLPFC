@@ -227,19 +227,20 @@ layer_anno_long <- layer_anno_all |>
     unnest_longer("layers") |>
     # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
     mutate(
-        layer_long = ifelse(Annotation == "layer",
+        layers = ifelse(Annotation == "layer",
             ifelse(
                 grepl("^[0-9]", layers),
                 paste0("Layer", layers),
-                gsub("L", "Layer", layers)
+                gsub("L","Layer",layers)
             ),
             layers
         ),
+        # layers_long = gsub("Layers","L",layers),
         anno_confidence = ifelse(confidence, "high", "low")
     )
 
 layer_anno_long |> count(layers)
-layer_anno_long |> count(layer_long)
+# layer_anno_long |> count(layer_long)
 layer_anno_long |> count(confidence)
 layer_anno_long |> count(Dataset, Annotation)
 layer_anno_long |>
@@ -249,111 +250,118 @@ layer_anno_long |>
     filter(Annotation == "layer", confidence) |>
     count(Dataset, Annotation, cluster)
 
-layer_anno_long |>
-    filter(Annotation == "layer") |>
-    count(layers, layer_long)
-
 #### Plot layer annotation ####
-# highlight cell type layer annotaions
+
+## example for scheamatic plot
+ex_data <- tibble(Dataset = rep(c("A","B","C"), each = 3),
+                  cellType = rep(c("Astro", "Excit", "Oligo"), 3),
+                  Domain = rep(paste0("SpD", 1:3), 3)
+)
+
+tile_data <- expand_grid(Domain = paste0("SpD", 1:3), 
+                         cellType = c("Astro", "Excit", "Oligo")) |>
+  left_join(ex_data) |>
+  mutate(match = is.na(Dataset))
+
+ex_dotplot <- ggplot(tile_data, 
+                     aes(x = cellType, y = Domain)) +
+  geom_tile(aes(fill = match), color = "grey10") +
+  geom_point(data =ex_data,
+             aes(color = Dataset), 
+             position = position_dodge(width = .8)) +
+  scale_fill_manual(values = list(`TRUE` = "white", `FALSE` = "grey"), 
+                    guide="none") +
+  theme_bw()
+
+ggsave(ex_dotplot, filename = here(plot_dir, "ex_dotplot.pdf"), height = 2, width = 3)
+ggsave(ex_dotplot, filename = here(plot_dir, "ex_dotplot.png"), height = 2, width = 3)
+
+# highlight cell type layer annotations
 cell_type_anno <- tibble(cluster = cell_types) |>
     mutate(layer_label = ifelse(grepl("^L[0-9]", cluster), sub(" .*", "", cluster), NA)) |>
     filter(!is.na(layer_label)) |>
-    mutate(layers = str_split(gsub("\\*", "", layer_label), "/")) |>
-    unnest_longer("layers") |>
+    mutate(ml = str_split(gsub("\\*", "", layer_label), "/")) |> ## ml = "manual layer"
+    unnest_longer("ml") |>
     mutate(
-        layers = gsub("b", "", ifelse(
-            grepl("^[0-9]", layers), paste0("L", layers), layers
-        )),
-        val = 1
-    )
+        ml = gsub("b", "", ifelse(
+            grepl("^[0-9]", ml), paste0("L", ml), ml)
+        ),
+        match = TRUE)
 
-cell_type_anno |> count(layers)
+cell_type_anno |> count(ml)
 
 ## Match with bayesSpace spatial annotations for k09 k16 exploration
-bayes_anno <-
-    read.csv(
-        file = here(
-            "processed-data",
-            "rdata",
-            "spe",
-            "08_spatial_registration",
-            "bayesSpace_layer_annotations.csv"
-        )
-    ) |>
-    filter(bayesSpace %in% c("k09", "k16")) |>
-    select(
-        Annotation = bayesSpace,
-        layer_long = cluster,
-        layer_annotation,
-        layer_combo
-    )
+bayes_layers <- get(load(here("processed-data", "rdata", "spe", "08_spatial_registration", "bayesSpace_layer_annotations.Rdata"))) |>
+  select(Annotation = bayesSpace, layers = cluster, layer_combo) |>
+  filter(Annotation %in% c("k09", "k16"))
 
-spatial_layer_anno <- data.frame(
+## Add Layer levels + update factor
+spatial_layer_anno <- tibble(
     Annotation = "layer",
-    layer_long = c(paste0("Layer", 1:6), "WM"),
-    layer_annotation = c(paste0("L", 1:6), "WM")
-) |>
-    mutate(layer_combo = layer_long) |>
-    rbind(bayes_anno) |>
-    mutate(layers = str_split(gsub("\\*", "", layer_annotation), "/")) |>
-    unnest_longer("layers")
+    layers = c(paste0("Layer", 1:6), "WM"),
+    layer_combo = layers
+    ) |>
+    bind_rows(bayes_layers) |>
+  mutate(layer_combo = factor(layer_combo, levels = c(paste0("Layer", 1:6), "WM", levels(bayes_layers$layer_combo))),
+         Annotation = factor(Annotation, levels = c("k16", "k09", "layer")))
 
-spatial_layer_anno
+spatial_layer_anno |> count(Annotation = layer_combo)
 
-cell_type_anno_all <- spatial_layer_anno |>
-    right_join(cell_type_anno |> select(layers, val, cluster))
+spatial_layer_grid <- spatial_layer_anno |> 
+  mutate(ml = str_split(gsub("S.* ~ |ayer","", layer_combo), "/")) |> ## ml = "manual layer"
+  unnest_longer("ml") |>
+  mutate( ml = ifelse(grepl("^[0-9]", ml), paste0("L", ml), ml)) |>
+  left_join(expand_grid(layer_combo = levels(spatial_layer_anno$layer_combo), 
+                        cluster = cell_types)) |> ## expand to all cell types
+  left_join(cell_type_anno |> select(cluster, ml, match)) |> ## TRUE if annotation suggests match
+  replace_na(list(match = FALSE)) |>
+  mutate(layer_combo = factor(layer_combo, levels = levels(spatial_layer_anno$layer_combo)))
 
-## Function for setting the domains in the right order
-layer_combo_factor <- function(x) {
-    spatial_levels <-
-        c(paste0("Layer", seq_len(6)), "WM", bayes_anno$layer_combo)
-    factor(x, levels = spatial_levels)
-}
+spatial_layer_grid |> filter(match) |> count(Annotation)
 
-cell_type_anno_all$layer_combo <-
-    layer_combo_factor(cell_type_anno_all$layer_combo)
+anno_all_grid <- spatial_layer_grid |>
+  ggplot(aes(x = cluster, y = layer_combo)) +
+  geom_tile(aes(fill = match), color = "grey30") +
+  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
+                    guide="none") +
+  facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
+  scale_y_discrete(limits = rev) +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) 
 
-## To have layer at the bottom, then k09, then k16 at the top
-cell_type_anno_all$Annotation <-
-    factor(cell_type_anno_all$Annotation, levels = c("k16", "k09", "layer"))
+ggsave(anno_all_grid, filename = here(plot_dir, "anno_all_test.png"))
 
-anno_all_test <- cell_type_anno_all |>
-    ggplot(aes(x = cluster, y = layer_combo)) +
-    geom_tile(fill = "blue", alpha = 0.2) +
-    facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
-    scale_y_discrete(limits = rev)
+## Add layer_combo to layer_anno_long to add bayesSpace details
+layer_anno_long <- layer_anno_long |> 
+  # left_join(spatial_layer_anno |> select(Annotation, layers, layer_combo)) |>
+  mutate(layer_combo = factor(layer_combo, levels =  levels(spatial_layer_anno$layer_combo)),
+         Annotation = factor(Annotation, levels = c("k16", "k09", "layer")))
 
-ggsave(anno_all_test, filename = here(plot_dir, "anno_all_test.png"))
-
-## Add layer_combo to layer_anno_long to add bayes space details
-layer_anno_long <-
-    layer_anno_long |> left_join(spatial_layer_anno |> select(Annotation, layer_long, layer_combo))
-layer_anno_long$layer_combo <-
-    layer_combo_factor(layer_anno_long$layer_combo)
-
-## To have layer at the bottom, then k09, then k16 at the top
-layer_anno_long$Annotation <-
-    factor(layer_anno_long$Annotation, levels = c("k16", "k09", "layer"))
-
+layer_anno_long |> count(Annotation, layer_combo)  
+  
 #### Dot plots ####
-layer_anno_plot <- layer_anno_long |>
-    filter(Annotation == "layer") |>
-    ggplot(aes(x = cluster, y = layer_combo)) +
-    geom_point(aes(color = Dataset, shape = anno_confidence),
-        position = position_dodge(width = .8)
-    ) +
-    geom_tile(
-        data = cell_type_anno_all |> filter(Annotation == "layer"),
-        fill = "blue",
-        alpha = 0.2
-    ) +
-    theme_bw() +
-    theme(axis.text.x = element_text(
-        angle = 90,
-        vjust = 0.5,
-        hjust = 1
-    )) +
-    scale_y_discrete(limits = rev)
+anno_layer_grid <- spatial_layer_grid |>
+  filter(Annotation == "layer") |>
+  ggplot(aes(x = cluster, y = layer_combo)) +
+  geom_tile(aes(fill = match), color = "grey30") +
+  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
+                    guide="none") +
+  facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
+  scale_y_discrete(limits = rev) +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) 
+
+layer_anno_plot <- anno_layer_grid +
+  geom_point(data = layer_anno_long |> filter(Annotation == "layer"), 
+             aes(color = Dataset, shape = anno_confidence),
+             position = position_dodge(width = .8)
+  )  
 
 ggsave(
     layer_anno_plot,
@@ -363,22 +371,12 @@ ggsave(
 )
 
 ## Filter to high confidence
-layer_anno_plot_filter <- layer_anno_long |>
-    filter(Annotation == "layer", confidence) |>
-    ggplot(aes(x = cluster, y = layer_combo)) +
-    geom_point(aes(color = Dataset), position = position_dodge(width = .8)) +
-    geom_tile(
-        data = cell_type_anno_all |> filter(Annotation == "layer"),
-        fill = "blue",
-        alpha = 0.2
-    ) +
-    theme_bw() +
-    theme(axis.text.x = element_text(
-        angle = 90,
-        vjust = 0.5,
-        hjust = 1
-    )) +
-    scale_y_discrete(limits = rev)
+layer_anno_plot_filter <- anno_layer_grid +
+  geom_point(data = layer_anno_long |> 
+               filter(Annotation == "layer" & confidence), 
+             aes(color = Dataset),
+             position = position_dodge(width = .8)
+  )  
 
 ggsave(
     layer_anno_plot_filter,
@@ -388,67 +386,88 @@ ggsave(
 )
 
 ## All annotations
-label_anno_plot <- layer_anno_long |>
-    ggplot(aes(x = cluster, y = layer_combo)) +
-    geom_point(aes(color = Dataset, shape = anno_confidence),
-        position = position_dodge(width = .8)
-    ) +
-    geom_tile(data = cell_type_anno_all, fill = "blue", alpha = 0.2) +
-    # facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
-    facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
-    theme_bw() +
-    theme(axis.text.x = element_text(
-        angle = 90,
-        vjust = 0.5,
-        hjust = 1
-    )) +
-    labs(y = "BayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types") +
-    scale_y_discrete(limits = rev)
+label_anno_plot <- anno_all_grid +
+  geom_point(data = layer_anno_long, 
+             aes(color = Dataset, shape = anno_confidence),
+             position = position_dodge(width = .8))
 
 ggsave(
     label_anno_plot,
     filename = here(plot_dir, "PE_datasets_all_annotations.png"),
-    height = 10
+    width = 10
 )
 
-## Filter since not all spatial domains have high confident results.
-layer_high_conf <- layer_anno_long |>
-    filter(anno_confidence == "high") |>
-    mutate(layer_combo = droplevels(layer_combo))
-
-## For the annotation, I have to make sure that the levels are exactly the same
-## otherwise geom_tile() later on changes the order
-cells_high_conf <- cell_type_anno_all |>
-    filter(layer_combo %in% levels(layer_high_conf$layer_combo)) |>
-    mutate(layer_combo = factor(
-        as.character(layer_combo),
-        levels = levels(layer_high_conf$layer_combo)
-    ))
-
-label_anno_plot <- layer_high_conf |>
-    ggplot(aes(x = cluster, y = layer_combo)) +
-    geom_point(aes(color = Dataset), position = position_dodge(width = .8)) +
-    geom_tile(data = cells_high_conf, fill = "blue", alpha = 0.2) +
-    # facet_wrap(~Annotation, ncol = 1, scales = "free_y") +
-    facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
-    theme_bw() +
-    theme(
-        axis.text.x = element_text(
-            angle = 90,
-            vjust = 0.5,
-            hjust = 1
-        ),
-        legend.position = "top"
-    ) +
-    labs(y = "BayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types") +
-    scale_y_discrete(limits = rev)
+## All filtered to confident annotations 
+label_anno_plot_filter <- anno_all_grid +
+  geom_point(data = layer_anno_long |> filter(confidence), 
+             aes(color = Dataset),
+             position = position_dodge(width = .8)) +
+    labs(y = "BayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types")+
+  theme(legend.position = "top")
 
 ggsave(
-    label_anno_plot,
+    label_anno_plot_filter,
     filename = here(plot_dir, "PE_datasets_all_annotations_confident.png"),
     height = 7.25,
     width = 8
 )
+
+## Just layer + k09 for main fig
+
+layer_k9_anno_plot <- spatial_layer_grid |>
+  filter(Annotation != "k16") |>
+  ggplot(aes(x = cluster, y = layer_combo)) +
+  geom_tile(aes(fill = match), color = "grey30") +
+  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
+                    guide="none") +
+  facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
+  scale_y_discrete(limits = rev) +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  geom_point(data = layer_anno_long |> filter(Annotation != "k16", confidence), 
+             aes(color = Dataset),
+             position = position_dodge(width = .8)
+  )  +
+  labs(y = "BayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types")+
+  theme(legend.position = "top")
+
+ggsave(
+  layer_k9_anno_plot,
+  filename = here(plot_dir, "PE_datasets_layer-k9_annotation.pdf"),
+  width = 10
+)
+
+
+## Just k16 for supp
+k16_anno_plot <- spatial_layer_grid |>
+  filter(Annotation == "k16") |>
+  ggplot(aes(x = cluster, y = layer_combo)) +
+  geom_tile(aes(fill = match), color = "grey30") +
+  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
+                    guide="none") +
+  facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
+  scale_y_discrete(limits = rev) +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    vjust = 0.5,
+    hjust = 1
+  )) +
+  geom_point(data = layer_anno_long |> filter(Annotation == "k16", confidence), 
+             aes(color = Dataset),
+             position = position_dodge(width = .8)
+  )  +
+  labs(y = "BayesSpace Domain & Annotation", x = "PsychENCODE DLPFC Cell Types")+
+  theme(legend.position = "top")
+
+ggsave(
+  k16_anno_plot,
+  filename = here(plot_dir, "PE_datasets_k16_annotation.pdf"),
+  width = 10
+)
+
 
 # #### Heatmap ####
 # cor_top100 <- transpose(pe_correlation_annotation)$cor_top100
