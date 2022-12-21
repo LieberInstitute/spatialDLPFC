@@ -33,7 +33,7 @@ sce_pseudo <-
     )
 
 lobstr::obj_size(sce_pseudo)
-# 56.41 MB
+# 51.93 MB
 
 # load modeling results for k09 clustering/pseudobulking
 load(here(
@@ -43,7 +43,7 @@ load(here(
 ),
     verbose = TRUE)
 lobstr::obj_size(modeling_results)
-# 4.41 MB
+# 4.56 MB
 
 ## For sig_genes_extract_all() to work https://github.com/LieberInstitute/Visium_IF_AD/blob/5e3518a9d379e90f593f5826cc24ec958f81f4aa/code/05_deploy_app_wholegenome/app.R#L37-L44
 sce_pseudo$spatialLIBD <- sce_pseudo$BayesSpace
@@ -68,16 +68,16 @@ sig_genes <- sig_genes_extract_all(
 stopifnot(length(unique(sig_genes$test)) == choose(k, 2) * 2 + k + 1)
 
 lobstr::obj_size(sig_genes)
-# 17.65 MB
+# 18.22 MB
 
 dim(sig_genes)
-# [1] 122250     12
+# [1] 126210     12
 
 ## Drop parts we don't need to reduce the memory
 sig_genes$in_rows <- NULL
 sig_genes$in_rows_top20 <- NULL
 lobstr::obj_size(sig_genes)
-# 10.80 MB
+# 11.15 MB
 
 # ## Subset sig_genes
 # sig_genes <- subset(sig_genes, fdr < 0.05)
@@ -100,9 +100,9 @@ fix_csv <- function(df) {
 }
 z <- fix_csv(as.data.frame(subset(sig_genes, fdr < 0.05)))
 dim(z)
-# [1] 7272   10
+# [1] 7136   10
 dim(subset(z, top <= 25))
-# [1] 240   10
+# [1] 231  10
 write.csv(
     subset(z, top <= 25),
     file = here(

@@ -144,6 +144,10 @@ We provide the following interactive websites:
     similar to *spatialDLPFC_Visium_Sp09* but with statistical results
     across the *position* (anterior, middle, posterior) adjusting for
     the Sp09 domains.
+  - [spatialDLPFC_Visium_Sp09_position_noWM](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position_noWM):
+    similar to *spatialDLPFC_Visium_Sp09_position* but after dropping
+    the `Sp02D01` spots which correspond to white matter (hence the
+    `noWM` acronym).
   - [spatialDLPFC_Visium_Sp09_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_pseudobulk):
     [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website
     showing the pseudo-bulked Sp09 domains spatial data.
