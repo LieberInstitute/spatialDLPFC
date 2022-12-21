@@ -385,10 +385,10 @@ registration_one_k <- function(k) {
 
     subset_color_bar <- rowAnnotation(
         df = layer_anno_subset |>
-            select(domain_color, layer_anno = layer_annotation),
+            select(domain = domain_color, layer = layer_annotation),
         col = list(
-            domain_color = k_colors_current,
-            layer_anno = libd_intermediate_layer_colors
+            domain = k_colors_current,
+            layer = libd_intermediate_layer_colors
         ),
         show_legend = FALSE
     )
@@ -442,10 +442,10 @@ rownames(anno_matrix_kplus) <- layer_anno_colors$layer_combo
 
 kplus_color_bar <- rowAnnotation(
     df = layer_anno_colors |>
-        select(domain_color, layer_anno = layer_annotation),
+        select(domain = domain_color, layer = layer_annotation),
     col = list(
-        domain_color = k_colors,
-        layer_anno = libd_intermediate_layer_colors
+        domain = k_colors,
+        layer = libd_intermediate_layer_colors
     ),
     show_legend = FALSE
 )
@@ -475,14 +475,7 @@ Heatmap(
 dev.off()
 
 
-pdf(
-  here(
-    plot_dir,
-    "bayesSpace_kplus_spatial_registration_heatmap_color_long.pdf"
-  ),
-  height = 10, width = 5
-)
-Heatmap(
+hm_color_long <- Heatmap(
   cor_kplus,
   name = "Cor",
   col = my.col,
@@ -496,7 +489,30 @@ Heatmap(
     grid.text(anno_matrix_kplus[i, j], x, y, gp = gpar(fontsize = 10))
   }
 )
+
+pdf(
+  here(
+    plot_dir,
+    "bayesSpace_kplus_spatial_registration_heatmap_color_long.pdf"
+  ),
+  height = 10, width = 5
+  # height = 9.5, width = 5
+)
+
+draw(hm_color_long, show_heatmap_legend = FALSE)
+
 dev.off()
+
+## Will create seperate legend and place in Ai
+# lgd2 = Legend(col_fun = circlize::colorRamp2(seq(-1, 1, by = 0.5),
+#                                   RColorBrewer::brewer.pal(5, "PRGn")),
+#               title = "cor",
+#               direction = "horizontal")
+# 
+# pdf(here(plot_dir, "cor_legend.pdf"), height = 1, width = 2)
+# draw(lgd2)
+# dev.off()
+
 
 # sgejobs::job_single('01_layer_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 01_layer_correlation_annotation.R")
 
