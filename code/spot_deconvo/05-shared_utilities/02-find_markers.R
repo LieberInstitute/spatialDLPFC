@@ -337,8 +337,8 @@ for (j in 1:length(classical_markers)) {
         plot_list_paper[[i]] <- spot_plot(
             spe,
             sample_id = sample_id, var_name = classical_markers_ens[j],
-            include_legend = FALSE, is_discrete = FALSE,
-            title = sub("\n", ": ", title), assayname = "counts", minCount = 0
+            include_legend = TRUE, is_discrete = FALSE,
+            title = NULL, assayname = "counts", minCount = 0
         )
 
         i <- i + 1
@@ -357,16 +357,18 @@ pdf(
 print(plot_grid(plotlist = plot_list, ncol = n_sample))
 dev.off()
 
-#   Create a manuscript-compatible version with one plot per PDF page
-#   For figures in the paper, create a PDF version with one plot per
-#   page. Exactly match the shape (aspect ratio) and visual details
-#   of other spatial plots in this script
+#   Create a manuscript-compatible version by reducing whitespace and removing
+#   titles
 pdf(
     file.path(
         plot_dir, paste0("marker_spatial_sparsity_reference_paper.pdf")
-    )
+    ),
+    width = 7 * n_sample,
+    height = 7 * length(classical_markers)
 )
-print(plot_list_paper)
+#   We can actually eliminate more whitespace with scale = 1.03; not sure why
+#   scale = 1 leaves some extra space and ~ 1.04 begins to introduce overlap
+print(plot_grid(plotlist = plot_list_paper, ncol = n_sample, scale = 1.03))
 dev.off()
 
 #-------------------------------------------------------------------------------
