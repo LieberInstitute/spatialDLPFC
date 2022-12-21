@@ -350,11 +350,15 @@ spe_k16_PCA$k16 <- spe_k16_sub$BayesSpace
 head(spe_k16_PCA)
 dim(spe_k16_PCA)
 
-pca_k16 <- ggplot(spe_k16_PCA, aes(x = PC3, y = PC2, color = k16))+
-  geom_point() +
+pca_name <- paste0(colnames(reducedDims(spe_k16_sub)$runPCA), " (",metadata(spe_k16_sub)$PCA_var_explained,"%)")
+
+pca_k16 <- ggplot(spe_k16_PCA, aes(x = PC3, y = PC2, fill = k16))+
+  geom_point(shape = 21, size = 1.7) +
   theme_bw() +
-  scale_color_manual(values = k16_colors) +
-  theme(legend.position = "top")
+  scale_fill_manual(values = k16_colors) +
+  labs(x = pca_name[[3]], y = pca_name[[2]])+
+  theme(legend.position = "top",
+        )
 
 ggsave(pca_k16, filename = here(plot_dir, "pca_k16_2v3.png"), height = 3.4, width = 3)
 ggsave(pca_k16, filename = here(plot_dir, "pca_k16_2v3.pdf"), height = 3.4, width = 3)
