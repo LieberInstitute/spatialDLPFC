@@ -5,19 +5,19 @@ library("sessioninfo")
 
 ## Set up soft links if needed
 withr::with_dir(
-    here("code", "deploy_app_k09_position"),
-    system("ln -s ../../processed-data/rdata/spe/09_position_differential_expression/modeling_results_position_k09.Rdata modeling_results_position_k09.Rdata")
+    here("code", "deploy_app_k09_position_noWM"),
+    system("ln -s ../../processed-data/rdata/spe/16_position_differential_expression_noWM/modeling_results_position_k09.Rdata modeling_results_position_k09.Rdata")
 )
 withr::with_dir(
-    here("code", "deploy_app_k09_position"),
-    system("ln -s ../../processed-data/rdata/spe/07_layer_differential_expression/sce_pseudo_BayesSpace_k09.rds sce_pseudo_BayesSpace_k09.rds")
+    here("code", "deploy_app_k09_position_noWM"),
+    system("ln -s ../../processed-data/rdata/spe/16_position_differential_expression_noWM/sce_pseudo_BayesSpace_k09.rds sce_pseudo_BayesSpace_k09.rds")
 )
 withr::with_dir(
-    here("code", "deploy_app_k09_position"),
+    here("code", "deploy_app_k09_position_noWM"),
     system("ln -s ../../processed-data/rdata/spe/01_build_spe/spe_subset_for_spatialLIBD.rds spe_subset_for_spatialLIBD.rds")
 )
 withr::with_dir(
-    here("code", "deploy_app_k09_position"),
+    here("code", "deploy_app_k09_position_noWM"),
     system("ln -s ../deploy_app_k09/www www")
 )
 
@@ -27,7 +27,7 @@ sce_pseudo <-
     readRDS(
         here(
             "code",
-            "deploy_app_k09_position",
+            "deploy_app_k09_position_noWM",
             "sce_pseudo_BayesSpace_k09.rds"
         )
     )
@@ -38,7 +38,7 @@ lobstr::obj_size(sce_pseudo)
 # load modeling results for k09 clustering/pseudobulking
 load(here(
     "code",
-    "deploy_app_k09_position",
+    "deploy_app_k09_position_noWM",
     "modeling_results_position_k09.Rdata"
 ),
     verbose = TRUE)
@@ -109,8 +109,8 @@ write.csv(
         "processed-data",
         "rdata",
         "spe",
-        "09_position_differential_expression",
-        "spatialDLPFC_model_results_FDR5perc_top25_k09_position.csv"
+        "16_position_differential_expression_noWM",
+        "spatialDLPFC_model_results_FDR5perc_top25_k09_position_noWM.csv"
     )
 )
 ## 7k isn't too large, so we can also write the full CSV in this case
@@ -120,12 +120,12 @@ write.csv(
         "processed-data",
         "rdata",
         "spe",
-        "09_position_differential_expression",
-        "spatialDLPFC_model_results_FDR5perc_all_k09_position.csv"
+        "16_position_differential_expression_noWM",
+        "spatialDLPFC_model_results_FDR5perc_all_k09_position_noWM.csv"
     )
 )
 
-save(sig_genes, file = here::here("code", "deploy_app_k09_position", "sig_genes_subset_k09_position.Rdata"))
+save(sig_genes, file = here::here("code", "deploy_app_k09_position_noWM", "sig_genes_subset_k09_position.Rdata"))
 
 ## Reproducibility information
 print("Reproducibility information:")
