@@ -1,19 +1,19 @@
 # library(sgejobs)
 # sgejobs::job_single(
-#     name = "01_model_position",
+#     name = "02_model_position",
 #     create_shell = TRUE,
 #     queue = "bluejay",
 #     memory = "5G",
 #     task_num = 28,
 #     tc = 10
 # )
-# To execute the script builder, use: qsub 01_model_position.sh
+# To execute the script builder, use: qsub 02_model_position.sh
 
 k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## For testing
 if (FALSE) {
-    k <- 2
+    k <- 3
 }
 
 
@@ -26,19 +26,19 @@ dir_input <- here::here(
     "processed-data",
     "rdata",
     "spe",
-    "07_layer_differential_expression"
+    "16_position_differential_expression_noWM"
 )
 dir_rdata <- here::here(
     "processed-data",
     "rdata",
     "spe",
-    "09_position_differential_expression"
+    "16_position_differential_expression_noWM"
 )
 dir.create(dir_rdata, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_rdata)) ## Check that it was created successfully
 dir_plots <- here::here(
     "plots",
-    "09_position_differential_expression"
+    "16_position_differential_expression_noWM"
 )
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
