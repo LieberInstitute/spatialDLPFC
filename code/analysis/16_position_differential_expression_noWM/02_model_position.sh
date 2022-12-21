@@ -1,12 +1,12 @@
 #!/bin/bash
 #$ -cwd
 #$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
-#$ -N model_position
-#$ -o logs/01_model_position.$TASK_ID.txt
-#$ -e logs/01_model_position.$TASK_ID.txt
-#$ -hold_jid create_pseudobulk_data
+#$ -N model_position_noWM
+#$ -o logs/02_model_position_noWM.$TASK_ID.txt
+#$ -e logs/02_model_position_noWM.$TASK_ID.txt
+#$ -hold_jid create_pseudobulk_data_noWM
 #$ -m e
-#$ -t 2-28
+#$ -t 3-28
 #$ -tc 10
 
 echo "**** Job starts ****"
@@ -26,7 +26,7 @@ module load conda_R/4.2.x
 module list
 
 ## Edit with your job command
-Rscript 01_model_position.R
+Rscript 02_model_position.R
 
 echo "**** Job ends ****"
 date
