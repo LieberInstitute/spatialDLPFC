@@ -13,7 +13,7 @@ k <- as.numeric(Sys.getenv("SGE_TASK_ID"))
 
 ## For testing
 if (FALSE) {
-    k <- 3
+    k <- 9
 }
 
 

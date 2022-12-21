@@ -120,6 +120,11 @@ names(colors_bayesSpace) <-
     paste0("Sp", sprintf("%02d", k), "D", sprintf("%02d", as.integer(names(colors_bayesSpace))))
 sce_pseudo$BayesSpace_colors <- colors_bayesSpace[as.character(sce_pseudo$BayesSpace)]
 
+## Drop unused levels
+message(Sys.time(), " checking how many pseudo-bulked samples are present by spatial domain and position")
+addmargins(table(sce_pseudo$BayesSpace, sce_pseudo$position))
+sce_pseudo$BayesSpace <- droplevels(sce_pseudo$BayesSpace)
+
 ## save RDS file
 saveRDS(
     sce_pseudo,
