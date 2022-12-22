@@ -10,16 +10,31 @@ library("here")
 library("NMF")
 library("sessioninfo")
 library("tidyverse")
+library("getopt")
+
+#   Read in command-line parameters
+spec <- matrix(
+    c(
+        "cell_group", "c", 1, "character", "'broad' or 'layer'",
+        "n_cells_per_type", "n", 1, "integer", "Number of cells for subsetting SCE"
+    ),
+    byrow = TRUE, ncol = 5
+)
+opt <- getopt(spec)
+
+if (opt$n_cells_per_type == 0) {
+    n_cells_dirname = "full_data"
+} else {
+    n_cells_dirname = paste0("subset_n", opt$n_cells_per_type)
+}
 
 ################################################################################
 #   Variable definitions
 ################################################################################
 
-cell_group <- "layer" # "broad" or "layer"
-
 sce_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
-    paste0("sce_", cell_group, ".rds")
+    paste0("sce_", opt$cell_group, ".rds")
 )
 spe_in <- here(
     "processed-data", "rdata", "spe", "01_build_spe",
@@ -28,22 +43,24 @@ spe_in <- here(
 
 marker_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
-    paste0("markers_", cell_group, ".txt")
+    paste0("markers_", opt$cell_group, ".txt")
 )
 marker_stats_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
-    paste0("marker_stats_", cell_group, ".rds")
+    paste0("marker_stats_", opt$cell_group, ".rds")
 )
 
 plot_dir <- here(
-    "plots", "spot_deconvo", "04-spotlight", "nonIF", cell_group
+    "plots", "spot_deconvo", "04-spotlight", "nonIF", opt$cell_group,
+    n_cells_dirname
 )
 processed_dir <- here(
-    "processed-data", "spot_deconvo", "04-spotlight", "nonIF", cell_group
+    "processed-data", "spot_deconvo", "04-spotlight", "nonIF", opt$cell_group,
+    n_cells_dirname
 )
 
 #   Column names in colData(sce)
-if (cell_group == "broad") {
+if (opt$cell_group == "broad") {
     cell_type_var <- "cellType_broad_hc"
 } else {
     cell_type_var <- "layer_level"
@@ -56,13 +73,11 @@ symbol_var <- "gene_name"
 sample_var <- "sample_id"
 cell_count_var <- "count"
 
-#   Used for downsampling single-cell object prior to training
-n_cells_per_type <- 100
-
 ################################################################################
 #   Preprocessing
 ################################################################################
 
+set.seed(11282022)
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -142,9 +157,16 @@ stopifnot(all(rownames(mgs_df) %in% rownames(sce)))
 # split cell indices by identity
 idx <- split(seq(ncol(sce)), sce[[cell_type_var]])
 
-#   This was slightly changed from the tutorial for simplicity
-cs_keep <- lapply(idx, function(i) sample(i, min(length(i), n_cells_per_type)))
-sce <- sce[, unlist(cs_keep)]
+#   Subset to some number of cells per cell type. 100 is used in the tutorial
+#   by default, and here, a value of 0 is a flag indicating to not subset
+if (opt$n_cells_per_type != 0) {
+    #   This was slightly changed from the tutorial for simplicity
+    cs_keep <- lapply(
+        idx,
+        function(i) sample(i, min(length(i), opt$n_cells_per_type))
+    )
+    sce <- sce[, unlist(cs_keep)]
+}
 
 ################################################################################
 #   Train model and deconvolve cell types
