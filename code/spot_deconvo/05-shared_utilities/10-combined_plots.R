@@ -8,7 +8,7 @@ library("cowplot")
 library("sessioninfo")
 
 #   "IF" or "nonIF"
-dataset <- "nonIF"
+dataset <- "IF"
 
 raw_results_broad_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", dataset,
@@ -332,7 +332,7 @@ sample_prop_scatter <- function(counts_df, dataset, color_scale, filename) {
         ungroup()
 
     counts_df <- counts_df |>
-        mutate(broad = log(broad), layer = log(layer))
+        mutate(broad = log10(broad), layer = log10(layer))
 
     #   We'll shape by sample for IF data. For nonIF, there are too many samples
     if (dataset == "IF") {
