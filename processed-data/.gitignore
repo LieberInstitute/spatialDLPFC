@@ -7,10 +7,18 @@ analysis
 *cloupe
 SPATIAL_RNA_COUNTER_CS
 *.gz
+
+#   Logs for spot-deconvolution scripts
 spot_deconvo/01-tangram/logs
+spot_deconvo/02-cellpose/*.log
+spot_deconvo/03-cell2location/*.log
+spot_deconvo/04-spotlight/*.log
+spot_deconvo/05-shared_utilities/logs
+
+#   Files that are too large to host on GitHub
 spot_deconvo/01-tangram/IF/*/*/*.h5ad
 spot_deconvo/01-tangram/nonIF/*/*/*.h5ad
-spot_deconvo/02-cellpose/*.log
+
 spot_deconvo/02-cellpose/masks
 spot_deconvo/02-cellpose/*/*.npy
 spot_deconvo/02-cellpose/richard/*.npy
@@ -18,20 +26,29 @@ spot_deconvo/02-cellpose/richard/*.tif
 spot_deconvo/02-cellpose/richard/models/CP_20220412_*
 spot_deconvo/02-cellpose/richard/models/CP_20220415_150017
 spot_deconvo/02-cellpose/richard/models/CP_20220415_151915
-spot_deconvo/03-cell2location/*.log
+
 spot_deconvo/03-cell2location/IF/*.h5ad
 spot_deconvo/03-cell2location/IF/*/*.h5ad
 spot_deconvo/03-cell2location/IF/*/adata_*/model.pt
 spot_deconvo/03-cell2location/nonIF/*.h5ad
 spot_deconvo/03-cell2location/nonIF/*/*.h5ad
 spot_deconvo/03-cell2location/nonIF/*/adata_*/model.pt
-spot_deconvo/04-spotlight/*.log
+
 spot_deconvo/04-spotlight/IF/*/*.rds
 spot_deconvo/04-spotlight/nonIF/*/*.rds
-spot_deconvo/05-shared_utilities/logs
+
 spot_deconvo/05-shared_utilities/*.rds
 spot_deconvo/05-shared_utilities/*.h5ad
 spot_deconvo/05-shared_utilities/*/*.h5ad
 spot_deconvo/05-shared_utilities/*/*.rds
+
 synapse_upload/03-download
 15_cell_composition/*.rds
+
+#   Outputs when testing SPOTlight with different downsampling parameters
+spot_deconvo/04-spotlight/IF/*/full_data
+spot_deconvo/04-spotlight/IF/*/subset_n*
+spot_deconvo/04-spotlight/nonIF/*/full_data
+spot_deconvo/04-spotlight/nonIF/*/subset_n*
+
+
