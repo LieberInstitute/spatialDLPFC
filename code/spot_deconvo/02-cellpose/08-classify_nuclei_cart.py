@@ -68,7 +68,7 @@ cell_types = {
     "gfap": "astro"
 }
 
-plot_file_type = 'png' # 'pdf' is also supported for higher-quality plots
+plot_file_type = 'pdf' # 'pdf' is also supported for higher-quality plots
 
 ################################################################################
 #   Functions
