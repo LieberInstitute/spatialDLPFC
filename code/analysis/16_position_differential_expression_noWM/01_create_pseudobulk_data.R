@@ -44,8 +44,8 @@ load(
 )
 
 ## Drop WM
-table(spe$bayesSpace_harmony_2, useNA = "ifany")
-wm_spots <- which(spe$bayesSpace_harmony_2 == 1)
+table(spe$bayesSpace_harmony_28, useNA = "ifany")
+wm_spots <- which(spe$bayesSpace_harmony_28 %in% c(16, 6, 17, 20, 28))
 message(Sys.time(), " dropping WM spots: ", length(wm_spots), " total.")
 spe <- spe[, -wm_spots]
 dim(spe)
