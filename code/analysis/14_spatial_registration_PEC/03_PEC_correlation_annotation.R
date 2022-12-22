@@ -251,6 +251,9 @@ layer_anno_long |>
     count(Dataset, Annotation, cluster)
 
 #### Plot layer annotation ####
+## prep color scheme
+grid_fill <- scale_fill_manual(values = list(`TRUE` = "grey80", `FALSE` = "white"), guide="none")
+
 
 ## example for scheamatic plot
 ex_data <- tibble(Dataset = rep(c("A","B","C"), each = 3),
@@ -269,8 +272,7 @@ ex_dotplot <- ggplot(tile_data,
   geom_point(data =ex_data,
              aes(color = Dataset), 
              position = position_dodge(width = .8)) +
-  scale_fill_manual(values = list(`TRUE` = "white", `FALSE` = "grey"), 
-                    guide="none") +
+  grid_fill +
   theme_bw()
 
 ggsave(ex_dotplot, filename = here(plot_dir, "ex_dotplot.pdf"), height = 2, width = 3)
@@ -322,8 +324,7 @@ spatial_layer_grid |> filter(match) |> count(Annotation)
 anno_all_grid <- spatial_layer_grid |>
   ggplot(aes(x = cluster, y = layer_combo)) +
   geom_tile(aes(fill = match), color = "grey30") +
-  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
-                    guide="none") +
+  grid_fill+
   facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
   scale_y_discrete(limits = rev) +
   theme(axis.text.x = element_text(
@@ -347,8 +348,7 @@ anno_layer_grid <- spatial_layer_grid |>
   filter(Annotation == "layer") |>
   ggplot(aes(x = cluster, y = layer_combo)) +
   geom_tile(aes(fill = match), color = "grey30") +
-  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
-                    guide="none") +
+  grid_fill +
   facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
   scale_y_discrete(limits = rev) +
   theme(axis.text.x = element_text(
@@ -418,8 +418,7 @@ layer_k9_anno_plot <- spatial_layer_grid |>
   filter(Annotation != "k16") |>
   ggplot(aes(x = cluster, y = layer_combo)) +
   geom_tile(aes(fill = match), color = "grey30") +
-  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
-                    guide="none") +
+  grid_fill +
   facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
   scale_y_discrete(limits = rev) +
   theme(axis.text.x = element_text(
@@ -446,8 +445,7 @@ k16_anno_plot <- spatial_layer_grid |>
   filter(Annotation == "k16") |>
   ggplot(aes(x = cluster, y = layer_combo)) +
   geom_tile(aes(fill = match), color = "grey30") +
-  scale_fill_manual(values = list(`TRUE` = "grey", `FALSE` = "white"), 
-                    guide="none") +
+  grid_fill +
   facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
   scale_y_discrete(limits = rev) +
   theme(axis.text.x = element_text(
