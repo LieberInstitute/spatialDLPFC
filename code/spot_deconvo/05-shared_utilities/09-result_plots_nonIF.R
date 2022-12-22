@@ -13,7 +13,7 @@ source(
     here("code", "spot_deconvo", "05-shared_utilities", "shared_functions.R")
 )
 
-cell_group <- "layer" # "broad" or "layer"
+cell_group <- "broad" # "broad" or "layer"
 
 sample_ids_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF",
@@ -53,6 +53,14 @@ marker_object_in <- here(
 marker_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
     paste0("markers_", cell_group, ".txt")
+)
+
+bayes_layers_in <- here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "08_spatial_registration",
+    "bayesSpace_layer_annotations.Rdata"
 )
 
 deconvo_tools <- c("Tangram", "Cell2location", "SPOTlight")
@@ -539,12 +547,24 @@ pdf(file.path(plot_dir, "marker_vs_ct_counts_paper.pdf"))
 print(plot_list)
 dev.off()
 
+#   Get corresponding layers for BayesSpace domains. Assumes proper ordering in
+#   'layer_combo'!
+bayes_layers <-
+    get(load(bayes_layers_in)) |>
+    select(Annotation = bayesSpace, layer_long = cluster, layer_combo) |>
+    filter(Annotation == c("k09"))
+
 #   Add k=9 spatial domains into the big tibble (observed_df_long)
 temp_df <- tibble(
-    "barcode" = colnames(spe), "bs_k9" = spe$bayesSpace_pca_9,
+    "barcode" = colnames(spe), "bs_k9" = spe$bayesSpace_harmony_9,
     "sample_id" = spe$sample_id
 ) |>
-    mutate(bs_k9 = paste0("Sp09D0", bs_k9))
+    mutate(
+        bs_k9 = factor(
+            paste0("Sp09D0", bs_k9), levels = bayes_layers$layer_long,
+            order = TRUE
+        )
+    )
 
 observed_df_long <- left_join(
     observed_df_long, temp_df,
