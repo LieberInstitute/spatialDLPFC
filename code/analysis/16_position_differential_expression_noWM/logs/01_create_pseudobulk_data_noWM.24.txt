@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.10
 Loading LIBD module for ruby/3.1.2
 Loading conda_R/4.2.x
 **** Job starts ****
-Wed Dec 21 12:08:53 EST 2022
+Thu Dec 22 14:34:28 EST 2022
 **** JHPCE info ****
 User: lcollado
-Job id: 1349668
+Job id: 1355558
 Job name: create_pseudobulk_data_noWM
-Hostname: compute-098.cm.cluster
+Hostname: compute-095.cm.cluster
 Task id: 24
 Unloading conda_R/4.2.x
 Loading conda_R/4.2.x
@@ -104,43 +104,46 @@ Loading required package: ggplot2
 Loading objects:
   spe
 
-    1     2 
-14353 99574 
-2022-12-21 12:12:58 dropping WM spots: 14353 total.
-[1] 28916 99574
-2022-12-21 12:13:09 make pseudobulk object
-2022-12-21 12:17:10 dropping 52 pseudo-bulked samples that are below 'min_ncells'.
-2022-12-21 12:17:10 drop lowly expressed genes
-2022-12-21 12:17:12 normalize expression
-[1] 11428   600
+    1     2     3     4     5     6     7     8     9    10    11    12    13 
+ 3100  4455  7686 10108  7161  3486  5752  3063  9308  6014  2473  2340  6212 
+   14    15    16    17    19    20    22    23    24    25    26    27    28 
+ 9573  3480  5694  3417  2745  2498  1799  1609  3165  2487  2145   877  3280 
+2022-12-22 14:38:35 dropping WM spots: 18375 total.
+[1] 28916 95552
+2022-12-22 14:38:46 make pseudobulk object
+2022-12-22 14:42:30 dropping 46 pseudo-bulked samples that are below 'min_ncells'.
+2022-12-22 14:42:30 drop lowly expressed genes
+2022-12-22 14:42:31 normalize expression
+[1] 16015   574
                       age BayesSpace diagnosis ncells  position   sample_id sex subject
-Br2720_ant_Sp24D01  48.22    Sp24D01   Control     55  anterior  Br2720_ant   F  Br2720
-Br2720_post_Sp24D01 48.22    Sp24D01   Control    147 posterior Br2720_post   F  Br2720
-Br2743_ant_Sp24D01  61.54    Sp24D01   Control     68  anterior  Br2743_ant   M  Br2743
+Br2720_ant_Sp24D01  48.22    Sp24D01   Control     62  anterior  Br2720_ant   F  Br2720
+Br2720_mid_Sp24D01  48.22    Sp24D01   Control     24    middle  Br2720_mid   F  Br2720
+Br2720_post_Sp24D01 48.22    Sp24D01   Control    149 posterior Br2720_post   F  Br2720
+Br2743_ant_Sp24D01  61.54    Sp24D01   Control     81  anterior  Br2743_ant   M  Br2743
 Br2743_mid_Sp24D01  61.54    Sp24D01   Control     39    middle  Br2743_mid   M  Br2743
 Br3942_ant_Sp24D01  47.53    Sp24D01   Control     81  anterior  Br3942_ant   M  Br3942
-Br3942_mid_Sp24D01  47.53    Sp24D01   Control     57    middle  Br3942_mid   M  Br3942
-Br6423_ant_Sp24D01  51.73    Sp24D01   Control     12  anterior  Br6423_ant   M  Br6423
+Br3942_mid_Sp24D01  47.53    Sp24D01   Control     58    middle  Br3942_mid   M  Br3942
+Br6423_ant_Sp24D01  51.73    Sp24D01   Control     20  anterior  Br6423_ant   M  Br6423
 Br6423_mid_Sp24D01  51.73    Sp24D01   Control     71    middle  Br6423_mid   M  Br6423
 Br6432_ant_Sp24D01  48.88    Sp24D01   Control    153  anterior  Br6432_ant   M  Br6432
 Br6432_mid_Sp24D01  48.88    Sp24D01   Control    148    middle  Br6432_mid   M  Br6432
 Br6432_post_Sp24D01 48.88    Sp24D01   Control     58 posterior Br6432_post   M  Br6432
-Br6471_ant_Sp24D01  55.46    Sp24D01   Control    186  anterior  Br6471_ant   M  Br6471
+Br6471_ant_Sp24D01  55.46    Sp24D01   Control    194  anterior  Br6471_ant   M  Br6471
 Br6471_mid_Sp24D01  55.46    Sp24D01   Control    235    middle  Br6471_mid   M  Br6471
-Br6471_post_Sp24D01 55.46    Sp24D01   Control    158 posterior Br6471_post   M  Br6471
+Br6471_post_Sp24D01 55.46    Sp24D01   Control    156 posterior Br6471_post   M  Br6471
 Br6522_ant_Sp24D01  33.39    Sp24D01   Control    110  anterior  Br6522_ant   M  Br6522
-Br6522_mid_Sp24D01  33.39    Sp24D01   Control     82    middle  Br6522_mid   M  Br6522
+Br6522_mid_Sp24D01  33.39    Sp24D01   Control     81    middle  Br6522_mid   M  Br6522
 Br6522_post_Sp24D01 33.39    Sp24D01   Control    147 posterior Br6522_post   M  Br6522
 Br8325_ant_Sp24D01  57.62    Sp24D01   Control    148  anterior  Br8325_ant   F  Br8325
 Br8325_mid_Sp24D01  57.62    Sp24D01   Control     12    middle  Br8325_mid   F  Br8325
-Br8325_post_Sp24D01 57.62    Sp24D01   Control    157 posterior Br8325_post   F  Br8325
+Br8325_post_Sp24D01 57.62    Sp24D01   Control    191 posterior Br8325_post   F  Br8325
 Br8492_ant_Sp24D01  53.40    Sp24D01   Control     24  anterior  Br8492_ant   F  Br8492
 Br8492_mid_Sp24D01  53.40    Sp24D01   Control     42    middle  Br8492_mid   F  Br8492
-Br8492_post_Sp24D01 53.40    Sp24D01   Control     22 posterior Br8492_post   F  Br8492
+Br8492_post_Sp24D01 53.40    Sp24D01   Control     28 posterior Br8492_post   F  Br8492
 Br8667_ant_Sp24D01  37.33    Sp24D01   Control    255  anterior  Br8667_ant   F  Br8667
-Br8667_mid_Sp24D01  37.33    Sp24D01   Control     82    middle  Br8667_mid   F  Br8667
-Br8667_post_Sp24D01 37.33    Sp24D01   Control     61 posterior Br8667_post   F  Br8667
-Br2720_ant_Sp24D02  48.22    Sp24D02   Control    119  anterior  Br2720_ant   F  Br2720
+Br8667_mid_Sp24D01  37.33    Sp24D01   Control     85    middle  Br8667_mid   F  Br8667
+Br8667_post_Sp24D01 37.33    Sp24D01   Control     69 posterior Br8667_post   F  Br8667
+Br2720_ant_Sp24D02  48.22    Sp24D02   Control    121  anterior  Br2720_ant   F  Br2720
 Br2720_mid_Sp24D02  48.22    Sp24D02   Control     13    middle  Br2720_mid   F  Br2720
 Br2720_post_Sp24D02 48.22    Sp24D02   Control     32 posterior Br2720_post   F  Br2720
 Br2743_ant_Sp24D02  61.54    Sp24D02   Control     15  anterior  Br2743_ant   M  Br2743
@@ -150,9 +153,9 @@ Br3942_ant_Sp24D02  47.53    Sp24D02   Control    355  anterior  Br3942_ant   M 
 Br3942_mid_Sp24D02  47.53    Sp24D02   Control     68    middle  Br3942_mid   M  Br3942
 Br3942_post_Sp24D02 47.53    Sp24D02   Control    152 posterior Br3942_post   M  Br3942
 Br6423_ant_Sp24D02  51.73    Sp24D02   Control     24  anterior  Br6423_ant   M  Br6423
-Br6423_mid_Sp24D02  51.73    Sp24D02   Control    553    middle  Br6423_mid   M  Br6423
+Br6423_mid_Sp24D02  51.73    Sp24D02   Control    551    middle  Br6423_mid   M  Br6423
 Br6423_post_Sp24D02 51.73    Sp24D02   Control     79 posterior Br6423_post   M  Br6423
-Br6432_ant_Sp24D02  48.88    Sp24D02   Control    645  anterior  Br6432_ant   M  Br6432
+Br6432_ant_Sp24D02  48.88    Sp24D02   Control    644  anterior  Br6432_ant   M  Br6432
 Br6432_mid_Sp24D02  48.88    Sp24D02   Control     98    middle  Br6432_mid   M  Br6432
 Br6432_post_Sp24D02 48.88    Sp24D02   Control     41 posterior Br6432_post   M  Br6432
 Br6471_ant_Sp24D02  55.46    Sp24D02   Control     24  anterior  Br6471_ant   M  Br6471
@@ -163,10 +166,10 @@ Br6522_mid_Sp24D02  33.39    Sp24D02   Control    239    middle  Br6522_mid   M 
 Br6522_post_Sp24D02 33.39    Sp24D02   Control    451 posterior Br6522_post   M  Br6522
 Br8325_ant_Sp24D02  57.62    Sp24D02   Control     11  anterior  Br8325_ant   F  Br8325
 Br8325_mid_Sp24D02  57.62    Sp24D02   Control    508    middle  Br8325_mid   F  Br8325
-Br8325_post_Sp24D02 57.62    Sp24D02   Control    428 posterior Br8325_post   F  Br8325
+Br8325_post_Sp24D02 57.62    Sp24D02   Control    426 posterior Br8325_post   F  Br8325
 Br8492_ant_Sp24D02  53.40    Sp24D02   Control    112  anterior  Br8492_ant   F  Br8492
-Br8492_mid_Sp24D02  53.40    Sp24D02   Control    502    middle  Br8492_mid   F  Br8492
-Br8492_post_Sp24D02 53.40    Sp24D02   Control    368 posterior Br8492_post   F  Br8492
+Br8492_mid_Sp24D02  53.40    Sp24D02   Control    501    middle  Br8492_mid   F  Br8492
+Br8492_post_Sp24D02 53.40    Sp24D02   Control    369 posterior Br8492_post   F  Br8492
 Br8667_ant_Sp24D02  37.33    Sp24D02   Control     27  anterior  Br8667_ant   F  Br8667
 Br8667_mid_Sp24D02  37.33    Sp24D02   Control     92    middle  Br8667_mid   F  Br8667
 Br8667_post_Sp24D02 37.33    Sp24D02   Control    434 posterior Br8667_post   F  Br8667
@@ -180,7 +183,7 @@ Br3942_ant_Sp24D03  47.53    Sp24D03   Control    184  anterior  Br3942_ant   M 
 Br3942_mid_Sp24D03  47.53    Sp24D03   Control    388    middle  Br3942_mid   M  Br3942
 Br3942_post_Sp24D03 47.53    Sp24D03   Control     77 posterior Br3942_post   M  Br3942
 Br6423_ant_Sp24D03  51.73    Sp24D03   Control    280  anterior  Br6423_ant   M  Br6423
-Br6423_mid_Sp24D03  51.73    Sp24D03   Control    401    middle  Br6423_mid   M  Br6423
+Br6423_mid_Sp24D03  51.73    Sp24D03   Control    400    middle  Br6423_mid   M  Br6423
 Br6423_post_Sp24D03 51.73    Sp24D03   Control     77 posterior Br6423_post   M  Br6423
 Br6432_ant_Sp24D03  48.88    Sp24D03   Control    218  anterior  Br6432_ant   M  Br6432
 Br6432_mid_Sp24D03  48.88    Sp24D03   Control    400    middle  Br6432_mid   M  Br6432
@@ -198,38 +201,38 @@ Br8492_ant_Sp24D03  53.40    Sp24D03   Control     92  anterior  Br8492_ant   F 
 Br8492_mid_Sp24D03  53.40    Sp24D03   Control    158    middle  Br8492_mid   F  Br8492
 Br8492_post_Sp24D03 53.40    Sp24D03   Control     93 posterior Br8492_post   F  Br8492
 Br8667_ant_Sp24D03  37.33    Sp24D03   Control    504  anterior  Br8667_ant   F  Br8667
-Br8667_mid_Sp24D03  37.33    Sp24D03   Control    491    middle  Br8667_mid   F  Br8667
+Br8667_mid_Sp24D03  37.33    Sp24D03   Control    490    middle  Br8667_mid   F  Br8667
 Br8667_post_Sp24D03 37.33    Sp24D03   Control    436 posterior Br8667_post   F  Br8667
-Br2720_ant_Sp24D04  48.22    Sp24D04   Control    312  anterior  Br2720_ant   F  Br2720
+Br2720_ant_Sp24D04  48.22    Sp24D04   Control    307  anterior  Br2720_ant   F  Br2720
 Br2720_mid_Sp24D04  48.22    Sp24D04   Control     33    middle  Br2720_mid   F  Br2720
 Br2720_post_Sp24D04 48.22    Sp24D04   Control     25 posterior Br2720_post   F  Br2720
 Br2743_ant_Sp24D04  61.54    Sp24D04   Control    401  anterior  Br2743_ant   M  Br2743
-Br2743_mid_Sp24D04  61.54    Sp24D04   Control    555    middle  Br2743_mid   M  Br2743
+Br2743_mid_Sp24D04  61.54    Sp24D04   Control    553    middle  Br2743_mid   M  Br2743
 Br2743_post_Sp24D04 61.54    Sp24D04   Control    417 posterior Br2743_post   M  Br2743
-Br3942_ant_Sp24D04  47.53    Sp24D04   Control    403  anterior  Br3942_ant   M  Br3942
-Br3942_mid_Sp24D04  47.53    Sp24D04   Control    365    middle  Br3942_mid   M  Br3942
+Br3942_ant_Sp24D04  47.53    Sp24D04   Control    402  anterior  Br3942_ant   M  Br3942
+Br3942_mid_Sp24D04  47.53    Sp24D04   Control    364    middle  Br3942_mid   M  Br3942
 Br3942_post_Sp24D04 47.53    Sp24D04   Control    169 posterior Br3942_post   M  Br3942
 Br6423_ant_Sp24D04  51.73    Sp24D04   Control    234  anterior  Br6423_ant   M  Br6423
-Br6423_mid_Sp24D04  51.73    Sp24D04   Control    256    middle  Br6423_mid   M  Br6423
+Br6423_mid_Sp24D04  51.73    Sp24D04   Control    254    middle  Br6423_mid   M  Br6423
 Br6423_post_Sp24D04 51.73    Sp24D04   Control    144 posterior Br6423_post   M  Br6423
-Br6432_ant_Sp24D04  48.88    Sp24D04   Control    507  anterior  Br6432_ant   M  Br6432
+Br6432_ant_Sp24D04  48.88    Sp24D04   Control    506  anterior  Br6432_ant   M  Br6432
 Br6432_mid_Sp24D04  48.88    Sp24D04   Control    116    middle  Br6432_mid   M  Br6432
-Br6432_post_Sp24D04 48.88    Sp24D04   Control    152 posterior Br6432_post   M  Br6432
+Br6432_post_Sp24D04 48.88    Sp24D04   Control    149 posterior Br6432_post   M  Br6432
 Br6471_ant_Sp24D04  55.46    Sp24D04   Control    102  anterior  Br6471_ant   M  Br6471
-Br6471_mid_Sp24D04  55.46    Sp24D04   Control    386    middle  Br6471_mid   M  Br6471
-Br6471_post_Sp24D04 55.46    Sp24D04   Control    506 posterior Br6471_post   M  Br6471
+Br6471_mid_Sp24D04  55.46    Sp24D04   Control    385    middle  Br6471_mid   M  Br6471
+Br6471_post_Sp24D04 55.46    Sp24D04   Control    505 posterior Br6471_post   M  Br6471
 Br6522_ant_Sp24D04  33.39    Sp24D04   Control    280  anterior  Br6522_ant   M  Br6522
 Br6522_mid_Sp24D04  33.39    Sp24D04   Control    325    middle  Br6522_mid   M  Br6522
 Br6522_post_Sp24D04 33.39    Sp24D04   Control    402 posterior Br6522_post   M  Br6522
 Br8325_ant_Sp24D04  57.62    Sp24D04   Control    151  anterior  Br8325_ant   F  Br8325
-Br8325_mid_Sp24D04  57.62    Sp24D04   Control    444    middle  Br8325_mid   F  Br8325
+Br8325_mid_Sp24D04  57.62    Sp24D04   Control    443    middle  Br8325_mid   F  Br8325
 Br8325_post_Sp24D04 57.62    Sp24D04   Control    489 posterior Br8325_post   F  Br8325
-Br8492_ant_Sp24D04  53.40    Sp24D04   Control    804  anterior  Br8492_ant   F  Br8492
-Br8492_mid_Sp24D04  53.40    Sp24D04   Control    509    middle  Br8492_mid   F  Br8492
-Br8492_post_Sp24D04 53.40    Sp24D04   Control    570 posterior Br8492_post   F  Br8492
+Br8492_ant_Sp24D04  53.40    Sp24D04   Control    803  anterior  Br8492_ant   F  Br8492
+Br8492_mid_Sp24D04  53.40    Sp24D04   Control    506    middle  Br8492_mid   F  Br8492
+Br8492_post_Sp24D04 53.40    Sp24D04   Control    569 posterior Br8492_post   F  Br8492
 Br8667_ant_Sp24D04  37.33    Sp24D04   Control    307  anterior  Br8667_ant   F  Br8667
-Br8667_mid_Sp24D04  37.33    Sp24D04   Control    240    middle  Br8667_mid   F  Br8667
-Br8667_post_Sp24D04 37.33    Sp24D04   Control    323 posterior Br8667_post   F  Br8667
+Br8667_mid_Sp24D04  37.33    Sp24D04   Control    239    middle  Br8667_mid   F  Br8667
+Br8667_post_Sp24D04 37.33    Sp24D04   Control    322 posterior Br8667_post   F  Br8667
 Br2720_ant_Sp24D05  48.22    Sp24D05   Control     69  anterior  Br2720_ant   F  Br2720
 Br2720_mid_Sp24D05  48.22    Sp24D05   Control    161    middle  Br2720_mid   F  Br2720
 Br2720_post_Sp24D05 48.22    Sp24D05   Control    453 posterior Br2720_post   F  Br2720
@@ -258,51 +261,50 @@ Br8492_ant_Sp24D05  53.40    Sp24D05   Control     52  anterior  Br8492_ant   F 
 Br8492_mid_Sp24D05  53.40    Sp24D05   Control     43    middle  Br8492_mid   F  Br8492
 Br8492_post_Sp24D05 53.40    Sp24D05   Control    104 posterior Br8492_post   F  Br8492
 Br8667_ant_Sp24D05  37.33    Sp24D05   Control    253  anterior  Br8667_ant   F  Br8667
-Br8667_mid_Sp24D05  37.33    Sp24D05   Control    418    middle  Br8667_mid   F  Br8667
-Br8667_post_Sp24D05 37.33    Sp24D05   Control    406 posterior Br8667_post   F  Br8667
+Br8667_mid_Sp24D05  37.33    Sp24D05   Control    417    middle  Br8667_mid   F  Br8667
+Br8667_post_Sp24D05 37.33    Sp24D05   Control    405 posterior Br8667_post   F  Br8667
 Br2720_ant_Sp24D07  48.22    Sp24D07   Control     12  anterior  Br2720_ant   F  Br2720
-Br2720_post_Sp24D07 48.22    Sp24D07   Control     13 posterior Br2720_post   F  Br2720
-Br2743_ant_Sp24D07  61.54    Sp24D07   Control     67  anterior  Br2743_ant   M  Br2743
-Br2743_mid_Sp24D07  61.54    Sp24D07   Control    190    middle  Br2743_mid   M  Br2743
-Br2743_post_Sp24D07 61.54    Sp24D07   Control    408 posterior Br2743_post   M  Br2743
-Br3942_ant_Sp24D07  47.53    Sp24D07   Control    326  anterior  Br3942_ant   M  Br3942
+Br2720_post_Sp24D07 48.22    Sp24D07   Control     16 posterior Br2720_post   F  Br2720
+Br2743_ant_Sp24D07  61.54    Sp24D07   Control     69  anterior  Br2743_ant   M  Br2743
+Br2743_mid_Sp24D07  61.54    Sp24D07   Control    189    middle  Br2743_mid   M  Br2743
+Br2743_post_Sp24D07 61.54    Sp24D07   Control    409 posterior Br2743_post   M  Br2743
+Br3942_ant_Sp24D07  47.53    Sp24D07   Control    322  anterior  Br3942_ant   M  Br3942
 Br3942_mid_Sp24D07  47.53    Sp24D07   Control    145    middle  Br3942_mid   M  Br3942
-Br3942_post_Sp24D07 47.53    Sp24D07   Control    812 posterior Br3942_post   M  Br3942
+Br3942_post_Sp24D07 47.53    Sp24D07   Control    807 posterior Br3942_post   M  Br3942
 Br6423_ant_Sp24D07  51.73    Sp24D07   Control    204  anterior  Br6423_ant   M  Br6423
 Br6423_mid_Sp24D07  51.73    Sp24D07   Control     97    middle  Br6423_mid   M  Br6423
-Br6423_post_Sp24D07 51.73    Sp24D07   Control    833 posterior Br6423_post   M  Br6423
-Br6432_ant_Sp24D07  48.88    Sp24D07   Control     93  anterior  Br6432_ant   M  Br6432
+Br6423_post_Sp24D07 51.73    Sp24D07   Control    818 posterior Br6423_post   M  Br6423
+Br6432_ant_Sp24D07  48.88    Sp24D07   Control     92  anterior  Br6432_ant   M  Br6432
 Br6432_mid_Sp24D07  48.88    Sp24D07   Control    106    middle  Br6432_mid   M  Br6432
-Br6432_post_Sp24D07 48.88    Sp24D07   Control     74 posterior Br6432_post   M  Br6432
-Br6471_ant_Sp24D07  55.46    Sp24D07   Control     37  anterior  Br6471_ant   M  Br6471
+Br6432_post_Sp24D07 48.88    Sp24D07   Control     73 posterior Br6432_post   M  Br6432
+Br6471_ant_Sp24D07  55.46    Sp24D07   Control     38  anterior  Br6471_ant   M  Br6471
 Br6471_mid_Sp24D07  55.46    Sp24D07   Control     21    middle  Br6471_mid   M  Br6471
-Br6471_post_Sp24D07 55.46    Sp24D07   Control    112 posterior Br6471_post   M  Br6471
+Br6471_post_Sp24D07 55.46    Sp24D07   Control    110 posterior Br6471_post   M  Br6471
 Br6522_ant_Sp24D07  33.39    Sp24D07   Control     70  anterior  Br6522_ant   M  Br6522
 Br6522_mid_Sp24D07  33.39    Sp24D07   Control    254    middle  Br6522_mid   M  Br6522
 Br6522_post_Sp24D07 33.39    Sp24D07   Control     78 posterior Br6522_post   M  Br6522
 Br8325_mid_Sp24D07  57.62    Sp24D07   Control     74    middle  Br8325_mid   F  Br8325
-Br8325_post_Sp24D07 57.62    Sp24D07   Control    275 posterior Br8325_post   F  Br8325
-Br8492_ant_Sp24D07  53.40    Sp24D07   Control    237  anterior  Br8492_ant   F  Br8492
-Br8492_mid_Sp24D07  53.40    Sp24D07   Control    208    middle  Br8492_mid   F  Br8492
-Br8492_post_Sp24D07 53.40    Sp24D07   Control    324 posterior Br8492_post   F  Br8492
-Br8667_ant_Sp24D07  37.33    Sp24D07   Control     28  anterior  Br8667_ant   F  Br8667
+Br8325_post_Sp24D07 57.62    Sp24D07   Control    274 posterior Br8325_post   F  Br8325
+Br8492_ant_Sp24D07  53.40    Sp24D07   Control    236  anterior  Br8492_ant   F  Br8492
+Br8492_mid_Sp24D07  53.40    Sp24D07   Control    205    middle  Br8492_mid   F  Br8492
+Br8492_post_Sp24D07 53.40    Sp24D07   Control    322 posterior Br8492_post   F  Br8492
+Br8667_ant_Sp24D07  37.33    Sp24D07   Control     27  anterior  Br8667_ant   F  Br8667
 Br8667_mid_Sp24D07  37.33    Sp24D07   Control     50    middle  Br8667_mid   F  Br8667
 Br8667_post_Sp24D07 37.33    Sp24D07   Control     38 posterior Br8667_post   F  Br8667
-Br2720_mid_Sp24D08  48.22    Sp24D08   Control     36    middle  Br2720_mid   F  Br2720
-Br2720_post_Sp24D08 48.22    Sp24D08   Control     80 posterior Br2720_post   F  Br2720
+Br2720_mid_Sp24D08  48.22    Sp24D08   Control     35    middle  Br2720_mid   F  Br2720
+Br2720_post_Sp24D08 48.22    Sp24D08   Control     77 posterior Br2720_post   F  Br2720
 Br2743_ant_Sp24D08  61.54    Sp24D08   Control     14  anterior  Br2743_ant   M  Br2743
 Br2743_post_Sp24D08 61.54    Sp24D08   Control     14 posterior Br2743_post   M  Br2743
-Br3942_ant_Sp24D08  47.53    Sp24D08   Control    158  anterior  Br3942_ant   M  Br3942
+Br3942_ant_Sp24D08  47.53    Sp24D08   Control    157  anterior  Br3942_ant   M  Br3942
 Br3942_mid_Sp24D08  47.53    Sp24D08   Control    217    middle  Br3942_mid   M  Br3942
-Br3942_post_Sp24D08 47.53    Sp24D08   Control    112 posterior Br3942_post   M  Br3942
+Br3942_post_Sp24D08 47.53    Sp24D08   Control    111 posterior Br3942_post   M  Br3942
 Br6423_ant_Sp24D08  51.73    Sp24D08   Control    186  anterior  Br6423_ant   M  Br6423
-Br6423_mid_Sp24D08  51.73    Sp24D08   Control    244    middle  Br6423_mid   M  Br6423
+Br6423_mid_Sp24D08  51.73    Sp24D08   Control    243    middle  Br6423_mid   M  Br6423
 Br6423_post_Sp24D08 51.73    Sp24D08   Control    109 posterior Br6423_post   M  Br6423
 Br6432_ant_Sp24D08  48.88    Sp24D08   Control     33  anterior  Br6432_ant   M  Br6432
-Br6432_mid_Sp24D08  48.88    Sp24D08   Control    377    middle  Br6432_mid   M  Br6432
-Br6432_post_Sp24D08 48.88    Sp24D08   Control    369 posterior Br6432_post   M  Br6432
- [ reached 'max' / getOption("max.print") -- omitted 413 rows ]
-2022-12-21 12:17:39 % of variance explained for the top 20 PCs:
+Br6432_mid_Sp24D08  48.88    Sp24D08   Control    376    middle  Br6432_mid   M  Br6432
+ [ reached 'max' / getOption("max.print") -- omitted 387 rows ]
+2022-12-22 14:43:07 % of variance explained for the top 20 PCs:
 $BayesSpace.data
 $BayesSpace.data$platform
 [1] "Visium"
@@ -312,7 +314,7 @@ $BayesSpace.data$is.enhanced
 
 
 $PCA_var_explained
- [1] 21.800  3.280  1.240  1.060  1.040  0.929  0.805  0.612  0.566  0.538  0.529  0.520  0.513  0.506  0.498  0.496  0.490  0.487  0.485  0.484
+ [1] 19.900  3.090  1.190  0.998  0.974  0.859  0.766  0.560  0.536  0.498  0.472  0.463  0.460  0.452  0.450  0.449  0.445  0.439  0.436  0.435
 
 
 > library(Polychrome)
@@ -320,15 +322,14 @@ $PCA_var_explained
 > colors_bayesSpace <- Polychrome::palette36.colors(28)
 
 > names(colors_bayesSpace) <- c(1:28)
-2022-12-21 12:17:42 checking how many pseudo-bulked samples are present by spatial domain and position
+2022-12-22 14:43:09 checking how many pseudo-bulked samples are present by spatial domain and position
          
           anterior middle posterior Sum
-  Sp24D01       10      9         7  26
+  Sp24D01       10     10         7  27
   Sp24D02       10     10        10  30
   Sp24D03       10     10        10  30
   Sp24D04       10     10        10  30
   Sp24D05       10     10        10  30
-  Sp24D06        0      0         0   0
   Sp24D07        9      9        10  28
   Sp24D08        8      9        10  27
   Sp24D09       10     10        10  30
@@ -336,24 +337,24 @@ $PCA_var_explained
   Sp24D11       10     10        10  30
   Sp24D12       10      8        10  28
   Sp24D13       10     10        10  30
-  Sp24D14       10     10        10  30
+  Sp24D14        5      5         9  19
   Sp24D15       10     10        10  30
-  Sp24D16        2      2         3   7
-  Sp24D17        4      3         4  11
+  Sp24D16        0      0         0   0
+  Sp24D17        1      0         0   1
   Sp24D18       10     10        10  30
   Sp24D19        9      9        10  28
   Sp24D21       10     10        10  30
   Sp24D22       10      9        10  29
   Sp24D23       10      9        10  29
-  Sp24D24       10      9         9  28
-  Sum          202    195       203 600
+  Sp24D24       10     10         9  29
+  Sum          192    187       195 574
 [1] "Reproducibility information:"
-[1] "2022-12-21 12:17:52 EST"
+[1] "2022-12-22 14:43:22 EST"
    user  system elapsed 
-526.306   8.349 536.969 
+520.391   9.458 532.148 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.2.2 Patched (2022-12-14 r83487)
+ version  R version 4.2.2 Patched (2022-12-14 r83491)
  os       CentOS Linux 7 (Core)
  system   x86_64, linux-gnu
  ui       X11
@@ -361,7 +362,7 @@ $PCA_var_explained
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2022-12-21
+ date     2022-12-22
  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -493,7 +494,7 @@ $PCA_var_explained
  roxygen2                 7.2.3     2022-12-08 [2] CRAN (R 4.2.2)
  rprojroot                2.0.3     2022-04-02 [2] CRAN (R 4.2.1)
  Rsamtools                2.14.0    2022-11-01 [2] Bioconductor
- RSQLite                  2.2.19    2022-11-24 [2] CRAN (R 4.2.2)
+ RSQLite                  2.2.20    2022-12-22 [2] CRAN (R 4.2.2)
  rstudioapi               0.14      2022-08-22 [2] CRAN (R 4.2.1)
  rsvd                     1.0.5     2021-04-16 [2] CRAN (R 4.2.1)
  rtracklayer              1.58.0    2022-11-01 [2] Bioconductor
@@ -512,7 +513,7 @@ $PCA_var_explained
  spam                     2.9-1     2022-08-07 [2] CRAN (R 4.2.1)
  sparseMatrixStats        1.10.0    2022-11-01 [2] Bioconductor
  SpatialExperiment      * 1.8.0     2022-11-01 [2] Bioconductor
- spatialLIBD            * 1.11.4    2022-12-17 [1] Github (LieberInstitute/spatialLIBD@1aecde8)
+ spatialLIBD            * 1.11.5    2022-12-22 [1] Github (LieberInstitute/spatialLIBD@bceb64d)
  statmod                  1.4.37    2022-08-12 [2] CRAN (R 4.2.1)
  stringi                  1.7.8     2022-07-11 [2] CRAN (R 4.2.1)
  stringr                  1.5.0     2022-12-02 [2] CRAN (R 4.2.2)
@@ -527,7 +528,7 @@ $PCA_var_explained
  viridis                  0.6.2     2021-10-13 [2] CRAN (R 4.2.1)
  viridisLite              0.4.1     2022-08-22 [2] CRAN (R 4.2.1)
  withr                    2.5.0     2022-03-03 [2] CRAN (R 4.2.1)
- xfun                     0.35      2022-11-16 [2] CRAN (R 4.2.2)
+ xfun                     0.36      2022-12-21 [2] CRAN (R 4.2.2)
  XML                      3.99-0.13 2022-12-04 [2] CRAN (R 4.2.2)
  xml2                     1.3.3     2021-11-30 [2] CRAN (R 4.2.1)
  xtable                   1.8-4     2019-04-21 [2] CRAN (R 4.2.1)
@@ -541,4 +542,4 @@ $PCA_var_explained
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Dec 21 12:17:53 EST 2022
+Thu Dec 22 14:43:24 EST 2022
