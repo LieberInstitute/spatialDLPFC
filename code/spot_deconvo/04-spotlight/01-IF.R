@@ -10,16 +10,31 @@ library("here")
 library("NMF")
 library("sessioninfo")
 library("tidyverse")
+library("getopt")
+
+#   Read in command-line parameters
+spec <- matrix(
+    c(
+        "cell_group", "c", 1, "character", "'broad' or 'layer'",
+        "n_cells_per_type", "n", 1, "integer", "Number of cells for subsetting SCE"
+    ),
+    byrow = TRUE, ncol = 5
+)
+opt <- getopt(spec)
+
+if (opt$n_cells_per_type == 0) {
+    n_cells_dirname = "full_data"
+} else {
+    n_cells_dirname = paste0("subset_n", opt$n_cells_per_type)
+}
 
 ################################################################################
 #   Variable definitions
 ################################################################################
 
-cell_group <- "broad" # "broad" or "layer"
-
 sce_in <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
-    paste0("sce_", cell_group, ".rds")
+    paste0("sce_", opt$cell_group, ".rds")
 )
 spe_in <- here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
@@ -27,25 +42,27 @@ spe_in <- here(
 
 marker_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
-    paste0("markers_", cell_group, ".txt")
+    paste0("markers_", opt$cell_group, ".txt")
 )
 marker_stats_path <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities",
-    paste0("marker_stats_", cell_group, ".rds")
+    paste0("marker_stats_", opt$cell_group, ".rds")
 )
 cell_counts_path <- here(
     "processed-data", "spot_deconvo", "02-cellpose", "{}", "clusters.csv"
 )
 
 plot_dir <- here(
-    "plots", "spot_deconvo", "04-spotlight", "IF", cell_group
+    "plots", "spot_deconvo", "04-spotlight", "IF", opt$cell_group,
+    n_cells_dirname
 )
 processed_dir <- here(
-    "processed-data", "spot_deconvo", "04-spotlight", "IF", cell_group
+    "processed-data", "spot_deconvo", "04-spotlight", "IF", opt$cell_group,
+    n_cells_dirname
 )
 
 #   Column names in colData(sce)
-if (cell_group == "broad") {
+if (opt$cell_group == "broad") {
     cell_type_var <- "cellType_broad_hc"
 } else {
     cell_type_var <- "layer_level"
@@ -57,13 +74,11 @@ symbol_var <- "gene_name"
 #   Column names in colData(spe)
 sample_var <- "sample_id"
 
-#   Used for downsampling single-cell object prior to training
-n_cells_per_type <- 100
-
 ################################################################################
 #   Preprocessing
 ################################################################################
 
+set.seed(11282022)
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -76,7 +91,7 @@ gc()
 cell_counts_list <- list()
 for (sample_id in unique(spe[[sample_var]])) {
     this_path <- sub("\\{\\}", sample_id, cell_counts_path)
-
+    
     cell_counts_list[[sample_id]] <- read.csv(this_path)
 }
 
@@ -136,7 +151,7 @@ mgs_fil <- lapply(names(mgs), function(i) {
     # Add gene and cluster id to the dataframe
     x$gene <- rownames(x)
     x$cluster <- i
-
+    
     #   Only take genes that have already been determined to be markers for this
     #   cell type
     x <- x[
@@ -144,7 +159,7 @@ mgs_fil <- lapply(names(mgs), function(i) {
             match(rownames(x), marker_stats$gene)
         ] == i,
     ]
-
+    
     data.frame(x)
 })
 mgs_df <- do.call(rbind, mgs_fil)
@@ -159,9 +174,16 @@ stopifnot(all(rownames(mgs_df) %in% rownames(sce)))
 # split cell indices by identity
 idx <- split(seq(ncol(sce)), sce[[cell_type_var]])
 
-#   This was slightly changed from the tutorial for simplicity
-cs_keep <- lapply(idx, function(i) sample(i, min(length(i), n_cells_per_type)))
-sce <- sce[, unlist(cs_keep)]
+#   Subset to some number of cells per cell type. 100 is used in the tutorial
+#   by default, and here, a value of 0 is a flag indicating to not subset
+if (opt$n_cells_per_type != 0) {
+    #   This was slightly changed from the tutorial for simplicity
+    cs_keep <- lapply(
+        idx,
+        function(i) sample(i, min(length(i), opt$n_cells_per_type))
+    )
+    sce <- sce[, unlist(cs_keep)]
+}
 
 ################################################################################
 #   Train model and deconvolve cell types
@@ -242,7 +264,7 @@ for (sample_id in unique(spe[[sample_var]])) {
     this_sample_indices <- which(spe[[sample_var]] == sample_id)
     temp_spe <- spe[, this_sample_indices]
     temp_mat <- mat[this_sample_indices, ]
-
+    
     #   Scatterpie
     pdf(file.path(plot_dir, paste0("scatterpie_", sample_id, ".pdf")))
     print(
@@ -260,7 +282,7 @@ for (sample_id in unique(spe[[sample_var]])) {
             )
     )
     dev.off()
-
+    
     #   Residuals
     pdf(file.path(plot_dir, paste0("residuals_", sample_id, ".pdf")))
     print(
@@ -296,14 +318,14 @@ clusters <- clusters[, c("key", cell_types)]
 #   Write individual 'clusters.csv' files for each sample
 for (sample_id in unique(spe[[sample_var]])) {
     clusters_small <- clusters[spe[[sample_var]] == sample_id, ]
-
+    
     #   Make sure processed directory exists for this sample
     dir.create(
         file.path(processed_dir, sample_id),
         recursive = TRUE,
         showWarnings = FALSE
     )
-
+    
     write.csv(
         clusters_small,
         file.path(processed_dir, sample_id, "clusters.csv"),
