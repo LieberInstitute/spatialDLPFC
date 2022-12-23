@@ -9,13 +9,12 @@ library("spatialLIBD")
 library("sessioninfo")
 
 cell_groups <- c("broad", "layer")
+deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
 
 sample_ids <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
     "sample_ids.txt"
 )
-
-deconvo_tools <- c("01-tangram", "03-cell2location", "04-spotlight")
 
 spe_IF_in <- here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
@@ -25,77 +24,91 @@ spe_IF_out <- here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF", "spe.rds"
 )
 
-#   "Ground-truth" cell counts from cellpose + trained classification tree
-actual_paths <- here(
-    "processed-data", "spot_deconvo", "02-cellpose", "{sample_id}", "clusters.csv"
+#   CSV of all IF counts at one resolution estimated by all methods 
+raw_results_paths <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    "results_raw_{cell_group}.csv"
 )
 
-#   Cell counts estimated by each deconvolution tool
-observed_paths <- here(
-    "processed-data", "spot_deconvo", "{deconvo_tool}", "IF", "{cell_group}",
-    "{sample_id}", "clusters.csv"
+#   CSV including CART-calculated counts
+collapsed_results_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    "results_collapsed_broad.csv"
 )
+
+################################################################################
+#   Add spot deconvo results to the SPE object
+################################################################################
 
 spe <- readRDS(spe_IF_in)
 
-#   For each sample, resolution, and deconvolution tool (and ground-truth CART
-#   counts), read in cell-type counts and add each as a column to colData(spe)
-for (sample_id in unique(spe$sample_id)) {
-    #   Read in the "ground-truth" counts for this sample
-    actual_path <- sub("\\{sample_id\\}", sample_id, actual_paths)
-    a <- read.csv(actual_path)
-    stopifnot(all(a$key %in% spe$key))
+added_coldata = tibble(
+    'barcode' = colnames(spe), 'sample_id' = spe$sample_id
+)
 
-    #   Use informative column names, and don't duplicate the 'key' column
-    actual_key <- a$key
-    a$counts <- a$n_cells
-    a$n_cells <- NULL
-    a$key <- NULL
-    colnames(a) <- paste0("CART_", colnames(a))
+extra_colnames =  c('barcode', 'sample_id', 'deconvo_tool')
 
-    #   Add CART counts to the object
-    for (cname in colnames(a)) {
-        if (sample_id == unique(spe$sample_id)[1]) {
-            spe[[cname]] <- NA
-        }
-
-        spe[[cname]][match(actual_key, spe$key)] <- a[[cname]]
-    }
-
-    for (cell_group in cell_groups) {
-        for (deconvo_tool in deconvo_tools) {
-            short_deconvo_tool <- ss(deconvo_tool, "-", 2)
-
-            #   Fill in the path with the actual values instead of the
-            #   placeholders
-            observed_path <- sub("\\{sample_id\\}", sample_id, observed_paths)
-            observed_path <- sub("\\{deconvo_tool\\}", deconvo_tool, observed_path)
-            observed_path <- sub("\\{cell_group\\}", cell_group, observed_path)
-
-            #   Read in cell-type counts for this deconvo tool
-            a <- read.csv(observed_path)
-            stopifnot(all(a$key %in% spe$key))
-
-            #   Use unique column names to add to the SPE object
-            observed_key <- a$key
-            a$key <- NULL
-            colnames(a) <- paste0(
-                short_deconvo_tool, "_", cell_group, "_",
-                gsub("\\.", "_", colnames(a))
+for (cell_group in cell_groups) {
+    #   Read in cell counts
+    raw_results = sub("\\{cell_group\\}", cell_group, raw_results_paths) |>
+        read.csv() |>
+        as_tibble()
+    
+    #   Individually add cell counts for each method
+    for (deconvo_tool in deconvo_tools) {
+        these_results = raw_results |>
+            filter(deconvo_tool == {{ deconvo_tool }})
+        
+        #   Take the columns that represent cell types and append the cell group
+        #   and deconvo tool to the colnames
+        added_indices = match(extra_colnames, colnames(these_results))
+        colnames(these_results)[- added_indices] = tolower(
+            paste(
+                cell_group, deconvo_tool,
+                colnames(these_results)[- added_indices], sep = "_"
             )
-
-            #   Add counts to the object
-            for (cname in colnames(a)) {
-                if (sample_id == unique(spe$sample_id)[1]) {
-                    spe[[cname]] <- NA
-                }
-
-                spe[[cname]][match(observed_key, spe$key)] <- a[[cname]]
-            }
+        )
+        
+        #   Add columns to colData(spe)
+        added_coldata_temp = added_coldata |>
+            left_join(these_results, by = c('barcode', 'sample_id')) |>
+            select(- all_of(extra_colnames))
+        
+        if(any(is.na(added_coldata_temp))) {
+            stop("Some cell counts were NA after merging with SPE.")
         }
+        
+        colData(spe) = cbind(colData(spe), added_coldata_temp)
     }
 }
 
+#   Read in CART counts
+these_results = read.csv(collapsed_results_path) |>
+    as_tibble() |>
+    filter(
+        obs_type == "actual",
+        deconvo_tool == deconvo_tools[1]
+    ) |>
+    select(- obs_type)
+
+#   Append 'cart' to cell-type column names
+added_indices = match(extra_colnames, colnames(these_results))
+colnames(these_results)[- added_indices] = paste(
+    'cart', colnames(these_results)[- added_indices], sep = "_"
+)
+
+#   Add columns to colData(spe)
+added_coldata = added_coldata |>
+    left_join(these_results, by = c('barcode', 'sample_id')) |>
+    select(- all_of(extra_colnames))
+
+if(any(is.na(added_coldata))) {
+    stop("Some cell counts were NA after merging with SPE.")
+}
+
+colData(spe) = cbind(colData(spe), added_coldata)
+
+#   Save a new SPE object
 saveRDS(spe, spe_IF_out)
 
 session_info()
