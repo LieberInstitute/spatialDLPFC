@@ -5,8 +5,9 @@
 
 library("here")
 library("jaffelab")
-library("spatialLIBD")
+library("SpatialExperiment")
 library("sessioninfo")
+library("tidyverse")
 
 cell_groups <- c("broad", "layer")
 deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
@@ -107,6 +108,20 @@ if(any(is.na(added_coldata))) {
 }
 
 colData(spe) = cbind(colData(spe), added_coldata)
+
+################################################################################
+#   Add up-to-date cell counts from cellpose and clarify existing ones
+################################################################################
+
+#   Rename outdated VistoSeg counts for clarity
+spe$VistoSeg_count_deprecated = spe$count
+spe$count = NULL
+
+#   Add cellpose counts by adding all cell types for CART counts at each spot
+spe$cellpose_count = colData(spe) |>
+    as_tibble() |>
+    select(starts_with('cart_')) |>
+    rowSums()
 
 #   Save a new SPE object
 saveRDS(spe, spe_IF_out)
