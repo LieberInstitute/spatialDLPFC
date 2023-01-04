@@ -2,6 +2,7 @@
 library("xlsx")
 library("here")
 library("tidyverse")
+library("org.Hs.eg.db")
 
 dir_rdata <- here::here(
   "processed-data",
@@ -40,9 +41,20 @@ data_nagy <- readxl::read_excel(fn_nagy, sheet = "Supplementary Table 32", skip 
 # 4 KAZN       0.485        0.0958  263.      5.06 0.000000780           1.62  0.0211   OPC2   
 # 5 PRAF2     -0.0616       0.0123  383.     -4.99 0.000000907           0.940 0.0211   Ex3    
 
+gene_match_nagy <- select(org.Hs.eg.db, keys=unique(data_nagy$Gene), columns=c("SYMBOL", "ENSEMBL"), keytype="SYMBOL")
+
+data_nagy <- data_nagy |> left_join(gene_match_nagy, by = c("Gene" = "SYMBOL"))
+
+data_nagy |> 
+  filter(FDR < 0.05, is.na(ENSEMBL))
+# Gene       Estimate `Std. Error`    df `t value` `Pr(>|t|)` `Fold Change`    FDR Cluster ENSEMBL
+# AC133680.1  -0.0627       0.0135 2479.     -4.63 0.00000388         0.939 0.0376 Ex3     NA    
+
+# ENSG00000237838 via google?
+
 data_nagy |> 
   filter(FDR < 0.05)  |>
-  count(Cluster)
+  dplyr::count(Cluster)
 
 # Cluster     n
 # <chr>   <int>
@@ -58,6 +70,18 @@ data_nagy |>
 # 10 In8         1
 # 11 OPC2        3
  
+genes_nagy <- data_nagy |> 
+  dplyr::group_by(Cluster) |> 
+  filter(FDR < 0.05 , !is.na(ENSEMBL))  |> 
+  group_map(~pull(.x,ENSEMBL)) 
+
+names(genes_nagy) <- data_nagy |>  ## got to be a better way to preserve names with group_map
+  dplyr::group_by(Cluster) |> 
+  dplyr::filter(FDR < 0.05 , !is.na(ENSEMBL))  %>%
+  dplyr::slice(1) |>
+  pull(Cluster)
+
+
 #### Velmeshev ####
 # -Velmeshev et al.: First tab has the DEGs by cluster
 
@@ -102,7 +126,11 @@ genes_velm <- data_velm |>
   group_by(`Cell type`) |> 
   group_map(~pull(.x,`gene ID`))
 
-names(genes_velm) <- levels(data_velm$`Cell type`)
+names(genes_velm) <- data_velm |>  ## got to be a better way to preserve names with group_map
+  filter(`q value` < 0.05)  |> 
+  group_by(`Cell type`) |> 
+  dplyr::slice(1) |>
+  pull(`Cell type`)
 
 #### Batiuk ####
 # -Batiuk et al.: Table 1 has DEGs by cluster
@@ -120,9 +148,10 @@ dim(data_batiuk)
 
 ## add halves together, convert types
 data_batiuk <- rbind(data_batiuk[,1:12], data_batiuk[,15:26]) |> 
-  type_convert()
+  type_convert() |>
+  mutate(Cell_type = factor(Cell_type))
 
-# Cell_type     baseMean log2FoldChange  lfcSE  stat        pvalue      padj     Z    Za Gene       CellFrac SampleFrac
+# Cell_type     baseMean log2FoldChange  lfcSE  stat        pvalue      FDR     Z    Za Gene       CellFrac SampleFrac
 # <chr>            <dbl>          <dbl>  <dbl> <dbl>         <dbl>     <dbl> <dbl> <dbl> <chr>         <dbl>      <dbl>
 # 1 ID2_LAMP5_CRH    179.           3.69  0.620   5.96 0.00000000259 0.0000320  5.96  4.16 FP236383.1   0.198           1
 # 2 ID2_LAMP5_CRH    393.           2.68  0.534   5.01 0.000000537   0.00332    5.01  2.94 AC060765.2   0.439           1
@@ -130,9 +159,19 @@ data_batiuk <- rbind(data_batiuk[,1:12], data_batiuk[,15:26]) |>
 # 4 ID2_LAMP5_CRH    241.           0.786 0.169   4.67 0.00000307    0.00947    4.67  2.59 CHD5         0.508           1
 # 5 ID2_LAMP5_CRH    175.           0.412 0.0908  4.54 0.00000568    0.0131     4.54  2.48 CDC42BPB     0.421           1
 
+gene_match_batiuk <- select(org.Hs.eg.db, keys=unique(data_batiuk$Gene), columns=c("SYMBOL", "ENSEMBL"), keytype="SYMBOL")
+
+data_batiuk <- data_batiuk |> left_join(gene_match_batiuk, by = c("Gene" = "SYMBOL"))
+
 data_batiuk |> 
-  filter(padj < 0.05) |>
-  count(Cell_type) |> 
+  filter(FDR < 0.05, is.na(ENSEMBL)) |>
+  dplyr::select(Cell_type, Gene, ENSEMBL)
+
+## 92 missing!!
+
+data_batiuk |> 
+  filter(FDR < 0.05) |>
+  dplyr::count(Cell_type) |> 
   arrange(-n)
 
 # Cell_type               n
@@ -149,11 +188,26 @@ data_batiuk |>
 # 10 L5_6_THEMIS_SEMA3A      6
 # … with 23 more rows
 
+genes_batiuk <- data_batiuk |> 
+  dplyr::group_by(Cell_type) |> 
+  filter(FDR < 0.05 , !is.na(ENSEMBL))  |> 
+  group_map(~pull(.x,ENSEMBL)) 
+
+names(genes_batiuk) <- data_batiuk |>  ## got to be a better way to preserve names with group_map
+  dplyr::group_by(Cell_type) |> 
+  dplyr::filter(FDR < 0.05 , !is.na(ENSEMBL))  %>%
+  dplyr::slice(1) |>
+  pull(Cell_type)
+
 
 #### Export Gene lists ####
-sn_DEGs <- list(Velmeshev = genes_velm)
+geneList <- list(Batiuk = genes_batiuk, 
+                 Nagy = genes_nagy,
+                 Velmeshev = genes_velm)
 
-save(sn_DEGs, file = here(dir_rdata, "singleNuc_DEGs.Rdata"))
+map_depth(geneList, 2, length)
+
+save(geneList, file = here(dir_rdata, "gene_sets_SingleNuc.Rdata"))
 
 
 
