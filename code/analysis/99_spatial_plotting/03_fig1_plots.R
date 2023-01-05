@@ -51,7 +51,7 @@ ggsave(vis_clust_k7, filename = here(plot_dir, "vis_clust_Br8667_mid_k7.png"))
 ggsave(vis_clust_k7, filename = here(plot_dir, "vis_clust_Br8667_mid_k7.pdf"))
 
 #### plot example genes  ####
-example_genes <- c("SNAP25","MBP","PCP4")
+example_genes <- c("SNAP25","MOBP","PCP4")
 names(example_genes) <- example_genes
 my_text_size <- 25
 
@@ -106,3 +106,11 @@ ggsave(patchwork_genes, filename = here(plot_dir, "vis_gene_Br8667_mid-ALL.pdf")
 # })
 
 
+# sgejobs::job_single('03_fig1_plots', create_shell = TRUE, queue= 'bluejay', memory = '5G', command = "Rscript 03_fig1_plots.R")
+
+## Reproducibility information
+print("Reproducibility information:")
+Sys.time()
+proc.time()
+options(width = 120)
+sessioninfo::session_info()
