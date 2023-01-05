@@ -79,7 +79,7 @@ gene_plots <- map(example_genes, function(gene){
 
 ## patchwork together
 
-patchwork_genes <- gene_plots$SNAP25 + gene_plots$MBP + gene_plots$PCP4
+patchwork_genes <- gene_plots$SNAP25 + gene_plots$MOBP + gene_plots$PCP4
 ggsave(patchwork_genes, filename = here(plot_dir, "vis_gene_Br8667_mid-ALL.png"),width = 18)
 ggsave(patchwork_genes, filename = here(plot_dir, "vis_gene_Br8667_mid-ALL.pdf"),width = 18)
 

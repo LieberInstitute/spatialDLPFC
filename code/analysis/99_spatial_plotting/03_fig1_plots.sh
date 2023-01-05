@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l bluejay,mem_free=5G,h_vmem=5G,h_fsize=100G
+#$ -l bluejay,mem_free=15G,h_vmem=15G,h_fsize=100G
 #$ -N fig1_plots
 #$ -o logs/03_fig1_plots.txt
 #$ -e logs/03_fig1_plots.txt
