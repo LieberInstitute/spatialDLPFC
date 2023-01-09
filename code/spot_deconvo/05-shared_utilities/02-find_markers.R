@@ -54,6 +54,27 @@ classical_markers <- c(
 
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
 
+#   Define variables related to cell_group
+if (cell_group == "broad") {
+    cell_types <- c(
+        "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"
+    )
+    
+    colors_col <- "cell_type_colors_broad"
+    cell_column <- "cellType_broad_hc"
+    cell_type_nrow <- 2
+} else {
+    cell_types <- c(
+        "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit_L2_3", "Excit_L3",
+        "Excit_L3_4_5", "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6",
+        "Inhib"
+    )
+    
+    colors_col <- "cell_type_colors_layer"
+    cell_column <- "layer_level"
+    cell_type_nrow <- 3
+}
+
 ###############################################################################
 #  Load objects and preprocess 'marker_stats'
 ###############################################################################
@@ -77,8 +98,18 @@ marker_stats$symbol <- rowData(sce)$gene_name[
 #   Filter out mitochondrial genes
 marker_stats <- marker_stats[!grepl("^MT-", marker_stats$symbol), ]
 
+#   Change "/" to "_" for layer-level cell types
+marker_stats <- marker_stats |>
+    mutate(
+        cellType.target = gsub("/", "_", cellType.target),
+        cellType = gsub("/", "_", cellType)
+    )
+stopifnot(
+    identical(sort(unique(marker_stats$cellType.target)), sort(cell_types))
+)
+
 #   "Re-rank" rank_ratio, since there may be missing ranks now
-for (ct in unique(marker_stats$cellType.target)) {
+for (ct in cell_types) {
     old_ranks <- marker_stats |>
         filter(cellType.target == ct) |>
         pull(rank_ratio) |>
@@ -187,16 +218,6 @@ my_plotExpression <- function(sce, genes, assay = "logcounts", ct = "cellType", 
     return(expression_violin)
 }
 
-if (cell_group == "broad") {
-    colors_col <- "cell_type_colors_broad"
-    cell_column <- "cellType_broad_hc"
-    cell_type_nrow <- 2
-} else {
-    colors_col <- "cell_type_colors_layer"
-    cell_column <- "layer_level"
-    cell_type_nrow <- 3
-}
-
 #   Plot mean-ratio distribution by cell type/ layer
 boxplot_mean_ratio <- function(n_markers, plot_name) {
     p <- marker_stats |>
@@ -230,7 +251,7 @@ print("Writing markers...")
 
 #   Visually show how markers look for each cell type
 plot_list <- lapply(
-    unique(marker_stats$cellType.target),
+    cell_types,
     function(ct) {
         genes <- marker_stats |>
             filter(
@@ -352,7 +373,7 @@ for (n_markers in c(15, 25, 50)) {
     i <- 1
 
     #   Plot proportion of markers having nonzero expression for each cell type
-    for (ct in unique(marker_stats$cellType.target)) {
+    for (ct in cell_types) {
         #   Get markers for this cell type
         markers <- marker_stats |>
             filter(
