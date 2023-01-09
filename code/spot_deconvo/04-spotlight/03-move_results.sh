@@ -9,7 +9,6 @@ good_results_name=subset_n1000
 
 for dataset in IF nonIF; do
     for resolution in broad layer; do
-        echo $dataset $resolution
         plot_dir=$base_dir/plots/spot_deconvo/04-spotlight/$dataset/$resolution
 
         #   Make a copy of the old plots
