@@ -78,7 +78,7 @@ if (cell_group == "broad") {
     )
 }
 
-cell_type_labels <- c("#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1")
+cell_type_labels <- c("#3BB273", "#663894", "#E49AB0", "#E07000", "#768282")
 names(cell_type_labels) <- cell_types_actual
 
 dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)

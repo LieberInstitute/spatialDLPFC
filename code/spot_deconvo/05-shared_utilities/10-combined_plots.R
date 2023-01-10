@@ -102,10 +102,8 @@ names(libd_layer_colors)[
     match(c(paste0("Layer", 1:6), "WM"), names(libd_layer_colors))
 ] <- c(paste("Layer", 1:6), "WM")
 
-cell_type_labels <- c(
-    "#3BB273", "#663894", "#E49AB0", "#E07000", "#95B8D1"
-)
-names(cell_type_labels) <- c(cell_types_actual)
+cell_type_labels <- c("#3BB273", "#663894", "#E49AB0", "#E07000", "#768282")
+names(cell_type_labels) <- cell_types_actual
 
 set.seed(11282022)
 dir.create(plot_dir, showWarnings = FALSE)
