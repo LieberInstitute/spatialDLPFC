@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
 #$ -l caracol,mem_free=10G,h_vmem=10G,h_fsize=100G
-#$ -N pseudobulk_data_SZBDMulti-Seq
-#$ -o logs/01_pseudobulk_data_SZBDMulti-Seq.txt
-#$ -e logs/01_pseudobulk_data_SZBDMulti-Seq.txt
+#$ -N pseudobulk_data_MultiomeBrain-DLPFC
+#$ -o logs/01_pseudobulk_data_MultiomeBrain-DLPFC.txt
+#$ -e logs/01_pseudobulk_data_MultiomeBrain-DLPFC.txt
 #$ -m e
 
 echo "**** Job starts ****"
@@ -37,7 +37,7 @@ fi
 export CUDA_VISIBLE_DEVICES=$(echo "$avail_gpus" | head -n $NUM_GPUS | paste -sd ",")
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R SZBDMulti-Seq_annotated.h5ad
+Rscript 01_pseudobulk_data.R MultiomeBrain-DLPFC_annotated.h5ad
 
 echo "**** Job ends ****"
 date

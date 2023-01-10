@@ -53,10 +53,26 @@ job_loop(
 ## What outputs exist?
 output_dir <- here("processed-data", "rdata", "spe", "14_spatial_registration_PEC")
 list.files(output_dir, pattern = "pseudobulk")
+# [1] "pseudobulk_CMC.rds"               "pseudobulk_DevBrain-snRNAseq.rds" "pseudobulk_IsoHuB.rds"           
+# [4] "pseudobulk_SZBDMulti.rds"         "pseudobulk_UCLA-ASD.rds"          "pseudobulk_Urban-DLPFC.rds"
 
-# CMC -
-# DevBrain - done
-# IsoHuB - done
-# SZBDMulti - queueu 200G
-# UCLA-ASD - queue 100G
-# Urban-DLPFC -running
+list.files(output_dir, pattern = "registration_stats")
+# [1] "registration_stats_CMC.rds"               "registration_stats_DevBrain-snRNAseq.rds"
+# [3] "registration_stats_IsoHuB.rds"            "registration_stats_UCLA-ASD.rds"         
+# [5] "registration_stats_Urban-DLPFC.rds"   
+
+#### V4 files ####
+raw_data_dir_v4 <- here("raw-data", "psychENCODE", "version4")
+h5ad_files_v4 <- list.files(raw_data_dir_v4, pattern = "h5ad")
+names(h5ad_files_v4) <- ss(basename(h5ad_files_v4),"_")
+
+# UCLA-ASD ## use mismatches_removed?
+# "SZBDMulti-Seq_annotated.h5ad" "UCLA-ASD_annotated_mismatches_removed.h5ad" 
+
+datasets_v4 <- unique(names(h5ad_files_v4))
+
+job_loop(
+  loops = list(PE_data = datasets_v4),
+  name = "01_pseudobulk_data_check",
+  create_shell = TRUE
+)

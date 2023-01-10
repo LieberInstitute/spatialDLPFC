@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=100G,h_vmem=100G,h_fsize=100G
+#$ -l caracol,mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -N pseudobulk_data_UCLA-ASD
 #$ -o logs/01_pseudobulk_data_UCLA-ASD.txt
 #$ -e logs/01_pseudobulk_data_UCLA-ASD.txt
@@ -17,7 +17,7 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
-module load conda_R/4.2
+module load conda_R/4.2.x
 
 ## List current modules for reproducibility
 module list
@@ -36,8 +36,8 @@ fi
 
 export CUDA_VISIBLE_DEVICES=$(echo "$avail_gpus" | head -n $NUM_GPUS | paste -sd ",")
 
-## Sumbit Rscript
-Rscript 01_pseudobulk_data.R UCLA-ASD/UCLA-ASD-snRNAseq_annotated_mismatches_removed.h5ad
+## Edit with your job command
+Rscript 01_pseudobulk_data.R UCLA-ASD_annotated.h5ad
 
 echo "**** Job ends ****"
 date
