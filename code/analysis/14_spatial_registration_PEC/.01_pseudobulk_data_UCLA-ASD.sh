@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=10G,h_vmem=10G,h_fsize=100G
+#$ -l caracol,mem_free=100G,h_vmem=100G,h_fsize=100G
 #$ -N pseudobulk_data_UCLA-ASD
 #$ -o logs/01_pseudobulk_data_UCLA-ASD.txt
 #$ -e logs/01_pseudobulk_data_UCLA-ASD.txt
