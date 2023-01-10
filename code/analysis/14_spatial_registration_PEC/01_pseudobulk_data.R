@@ -10,12 +10,16 @@ args <- commandArgs(trailingOnly = TRUE)
 input_file <- args[1]
 message("input = ", input_file)
 
-dataset <- dirname(input_file)
+dataset <- ss(input_file,"_")
 message("\n#### Running: ", dataset, " ####")
 # filepath <- here("raw-data", "psychENCODE", "version2", dataset, paste0(dataset, "-snRNAseq_annotated.h5ad"))
 
-## for v3 data
-filepath <- here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized", input_file)
+# ## for v3 data
+# filepath <- here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized", input_file)
+
+## for V4 data
+filepath <- here("raw-data", "psychENCODE", "version4", input_file)
+
 stopifnot(file.exists(filepath))
 
 message(Sys.time(), " - Reading data from: ", filepath)
