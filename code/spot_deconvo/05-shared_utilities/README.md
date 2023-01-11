@@ -2,7 +2,7 @@ Several processing steps for spot deconvolution (e.g. moving R objects to python
 
 We're performing spot deconvolution at two different cell-type resolutions, and almost every R script in this directory has a variable called `cell_group` which can be set to either `"layer"` or `"broad"` to appropriately run each script at the right resolution.
 
-[Computational Workflow](computational_workflow.png)
+![Computational Workflow](computational_workflow.png)
 
 - `01-r_to_python.*`: starting from the IF and non-IF `SpatialExperiment`s and the `SingleCellExperiment`, filter out some cells, convert R objects to `AnnData` objects for use in python, and rank all genes as markers.
 - `02-find_markers.*`: find 25 "mean ratio" markers for each cell type and produce many exploratory plots to assess the quality of these markers
