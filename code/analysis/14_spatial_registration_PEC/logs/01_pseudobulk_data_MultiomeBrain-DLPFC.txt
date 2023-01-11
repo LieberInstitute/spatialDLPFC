@@ -6,11 +6,11 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2.x
 **** Job starts ****
-Tue Jan 10 10:29:40 EST 2023
+Tue Jan 10 22:00:05 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 1874664
-Job name: pseudobulk_data_IsoHuB
+Job id: 1876109
+Job name: pseudobulk_data_MultiomeBrain-DLPFC
 Hostname: compute-126.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2.x
@@ -102,41 +102,69 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-input = IsoHuB_annotated.h5ad
+input = MultiomeBrain-DLPFC_annotated.h5ad
 
-#### Running: IsoHuB ####
-2023-01-10 10:30:01 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version4/IsoHuB_annotated.h5ad
-Warning message:
-The names of these selected uns items have been modified to match R
+#### Running: MultiomeBrain-DLPFC ####
+2023-01-10 22:00:37 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version4/MultiomeBrain-DLPFC_annotated.h5ad
+Warning messages:
+1: The names of these selected uns$uns_dict items have been modified to match R
+conventions: '1041-Schizophrenia-DLPFC' -> 'X1041.Schizophrenia.DLPFC',
+'1317-Bipolar-DLPFC' -> 'X1317.Bipolar.DLPFC', '1320-Schizophrenia-DLPFC' ->
+'X1320.Schizophrenia.DLPFC', '1390-Control-DLPFC' -> 'X1390.Control.DLPFC',
+'1414-Bipolar-DLPFC' -> 'X1414.Bipolar.DLPFC', '1461-Bipolar-DLPFC' ->
+'X1461.Bipolar.DLPFC', '1507-Schizophrenia-DLPFC' ->
+'X1507.Schizophrenia.DLPFC', '1601-Bipolar-DLPFC' -> 'X1601.Bipolar.DLPFC',
+'1676-Schizophrenia-DLPFC' -> 'X1676.Schizophrenia.DLPFC', '1713-Bipolar-DLPFC'
+-> 'X1713.Bipolar.DLPFC', '1734-Bipolar-DLPFC' -> 'X1734.Bipolar.DLPFC',
+'2052-Control-DLPFC' -> 'X2052.Control.DLPFC', '2083-Bipolar-DLPFC' ->
+'X2083.Bipolar.DLPFC', '2275-Bipolar-DLPFC' -> 'X2275.Bipolar.DLPFC',
+'2520-Bipolar-DLPFC' -> 'X2520.Bipolar.DLPFC', '2653-Schizophrenia-DLPFC' ->
+'X2653.Schizophrenia.DLPFC', '2677-Schizophrenia-DLPFC' ->
+'X2677.Schizophrenia.DLPFC', '2686-Bipolar-DLPFC' -> 'X2686.Bipolar. [... truncated] 
+2: The names of these selected uns$var_dict items have been modified to match R
+conventions: '1041-Schizophrenia-DLPFC' -> 'X1041.Schizophrenia.DLPFC',
+'1317-Bipolar-DLPFC' -> 'X1317.Bipolar.DLPFC', '1320-Schizophrenia-DLPFC' ->
+'X1320.Schizophrenia.DLPFC', '1390-Control-DLPFC' -> 'X1390.Control.DLPFC',
+'1414-Bipolar-DLPFC' -> 'X1414.Bipolar.DLPFC', '1461-Bipolar-DLPFC' ->
+'X1461.Bipolar.DLPFC', '1507-Schizophrenia-DLPFC' ->
+'X1507.Schizophrenia.DLPFC', '1601-Bipolar-DLPFC' -> 'X1601.Bipolar.DLPFC',
+'1676-Schizophrenia-DLPFC' -> 'X1676.Schizophrenia.DLPFC', '1713-Bipolar-DLPFC'
+-> 'X1713.Bipolar.DLPFC', '1734-Bipolar-DLPFC' -> 'X1734.Bipolar.DLPFC',
+'2052-Control-DLPFC' -> 'X2052.Control.DLPFC', '2083-Bipolar-DLPFC' ->
+'X2083.Bipolar.DLPFC', '2275-Bipolar-DLPFC' -> 'X2275.Bipolar.DLPFC',
+'2520-Bipolar-DLPFC' -> 'X2520.Bipolar.DLPFC', '2653-Schizophrenia-DLPFC' ->
+'X2653.Schizophrenia.DLPFC', '2677-Schizophrenia-DLPFC' ->
+'X2677.Schizophrenia.DLPFC', '2686-Bipolar-DLPFC' -> 'X2686.Bipolar. [... truncated] 
+3: The names of these selected uns items have been modified to match R
 conventions: '_attr2type' -> 'X_attr2type' 
 
 SCE Dimesions:
-[1] 33339 29675
+[1]  33818 141277
 [1] "n_genes"      "n_counts"     "Channel"      "anno"         "subclass"    
 [6] "azimuth"      "sampleID"     "individualID"
 Cell Types:
 
      Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
-      3466        224        391         67       6492       1501        178 
+     16429        595       2818        185      21796       4657       1016 
      L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
-        26       1364        241        781        156        289        571 
+       116       8249       2015       6653       1115       1669       1515 
 Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
-       182       1400       5142       1735        120        195       1398 
+       720       6355      41533       6418        328       2299       5392 
        SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
-        71        407       1719          9       1460         90 
-2023-01-10 10:30:49 revert to counts
-2023-01-10 10:30:58 Pseudobulk
-2023-01-10 10:30:58 make pseudobulk object
-2023-01-10 10:31:26 dropping 13 pseudo-bulked samples that are below 'min_ncells'.
-2023-01-10 10:31:26 drop lowly expressed genes
-2023-01-10 10:31:26 normalize expression
+       245        797       4429         43       3607        283 
+2023-01-10 22:01:57 revert to counts
+2023-01-10 22:02:14 Pseudobulk
+2023-01-10 22:02:14 make pseudobulk object
+2023-01-10 22:05:44 dropping 79 pseudo-bulked samples that are below 'min_ncells'.
+2023-01-10 22:05:44 drop lowly expressed genes
+2023-01-10 22:05:45 normalize expression
 
 SCE Pseudobulk Dimesions:
-[1] 27308   116
+[1] 27751   474
 [1] "Reproducibility information:"
-[1] "2023-01-10 10:31:44 EST"
+[1] "2023-01-10 22:06:17 EST"
    user  system elapsed 
- 87.333   4.059 116.067 
+320.891  10.071 370.119 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.2 Patched (2023-01-06 r83591)
@@ -340,4 +368,4 @@ SCE Pseudobulk Dimesions:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Jan 10 10:31:45 EST 2023
+Tue Jan 10 22:06:20 EST 2023
