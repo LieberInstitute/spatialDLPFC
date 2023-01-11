@@ -51,7 +51,11 @@ counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
 #### Pseudobulk ####
 message(Sys.time(), " Pseudobulk")
-sce_pseudo <- registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID", covars = NULL)
+sce_pseudo <- registration_pseudobulk(sce, 
+                                      var_registration = "cellType", 
+                                      # var_sample_id = "sampleID", 
+                                      var_sample_id = "individualID",  ## for SZDBMulti-Seq
+                                      covars = NULL)
 
 message("\nSCE Pseudobulk Dimesions:")
 dim(sce_pseudo)
