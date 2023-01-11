@@ -1,5 +1,6 @@
 library("SingleCellExperiment")
 library("spatialLIBD")
+library("jaffelab")
 library("here")
 library("sessioninfo")
 
@@ -7,6 +8,9 @@ library("sessioninfo")
 args <- commandArgs(trailingOnly = TRUE)
 dataset <- args[1]
 message("Running - ", dataset)
+
+## for testing
+# dataset <- "MultiomeBrain-DLPFC"
 
 sce_pseudo <- readRDS(file = here(
     "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
@@ -33,27 +37,38 @@ if (any(var_tab == 0)) message("Dropping Empty Levels: ", paste0(names(var_tab)[
 ## Drop Levels
 sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
 
+#### Add Dx col ####
+sce_pseudo$Dx <- factor(ss(as.character(sce_pseudo$sampleID),"-",2))
+table(sce_pseudo$Dx)
+# Bipolar       Control Schizophrenia 
+# 219           119           136
 
 #### Run models ####
-registration_mod <- registration_model(sce_pseudo)
-block_cor <- registration_block_cor(sce_pseudo, registration_model = registration_mod)
-
-gene_name <- "gene_name"
-gene_ensembl <- "featureid"
-
-results_enrichment <-
+purrr::map(rafalib::splitit(sce_pseudo$Dx), function(i){
+  sce_temp <- sce_pseudo[,i]
+  
+  registration_mod <- registration_model(sce_pseudo)
+  block_cor <- registration_block_cor(sce_pseudo, registration_model = registration_mod)
+  
+  gene_name <- "gene_name"
+  gene_ensembl <- "featureid"
+  
+  results_enrichment <-
     registration_stats_enrichment(
-        sce_pseudo,
-        block_cor = block_cor,
-        gene_ensembl = gene_ensembl,
-        gene_name = gene_name
+      sce_pseudo,
+      block_cor = block_cor,
+      gene_ensembl = gene_ensembl,
+      gene_name = gene_name
     )
+  
+})
+
 
 ## Save results
 saveRDS(results_enrichment,
     file = here(
         "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
-        paste0("registration_stats_", dataset, ".rds")
+        paste0("registration_stats_Dx_", dataset, ".rds")
     )
 )
 
@@ -64,6 +79,9 @@ saveRDS(results_enrichment,
 #               "SZBDMulti",
 #               "UCLA-ASD",
 #               "Urban-DLPFC")
+
+# sgejobs::job_single('05_compute_registration_Dx', create_shell = TRUE, queue= 'bluejay', memory = '10G', command = "Rscript 05_compute_registration_Dx.R")
+
 #
 # job_loop(
 #   loops = list(dataset = datasets),
