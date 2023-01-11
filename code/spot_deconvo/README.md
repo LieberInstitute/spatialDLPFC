@@ -7,3 +7,9 @@ At JHPCE, each python tool is managed in its own python virtual environment, whi
 - `cellpose/2.0`
 - `tangram/1.0.2`
 - `cell2location/0.8a0`
+
+# Computational Workflow
+
+Spot deconvolution is performed following the below workflow. The code directories used for each portion are listed in black font on the left. See the README in `02-cellpose` to describe steps used to segment IF images and train a CART to classify cell types as an alternative to spot deconvolution via `tangram`, `cell2location`, and `SPOTlight`. These steps are performed prior to the workflow shown below.
+
+![Computational Workflow](computational_workflow.png)
