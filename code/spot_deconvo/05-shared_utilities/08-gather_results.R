@@ -3,9 +3,6 @@ library("jaffelab")
 library("tidyverse")
 library("sessioninfo")
 
-cell_group <- "broad" # "broad" or "layer"
-dataset <- "IF" # "IF" or "nonIF"
-
 for (cell_group in c("broad", "layer")) {
     for (dataset in c("IF", "nonIF")) {
         print(paste("Gathering results for", cell_group, dataset, "..."))
