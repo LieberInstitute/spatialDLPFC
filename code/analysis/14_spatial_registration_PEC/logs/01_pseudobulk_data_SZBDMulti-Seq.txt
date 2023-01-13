@@ -6,10 +6,10 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2.x
 **** Job starts ****
-Tue Jan 10 22:00:05 EST 2023
+Thu Jan 12 14:31:39 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 1876104
+Job id: 1948884
 Job name: pseudobulk_data_SZBDMulti-Seq
 Hostname: compute-126.cm.cluster
 Task id: undefined
@@ -105,7 +105,7 @@ here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 input = SZBDMulti-Seq_annotated.h5ad
 
 #### Running: SZBDMulti-Seq ####
-2023-01-10 22:00:37 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version4/SZBDMulti-Seq_annotated.h5ad
+2023-01-12 14:31:55 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version4/SZBDMulti-Seq_annotated.h5ad
 Warning messages:
 1: The names of these selected uns$uns_dict items have been modified to match R
 conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
@@ -152,11 +152,21 @@ Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb
       4756       4663      52653      11177       1913        499      26391 
        SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
        379       3555      16899        408      18152        238 
-2023-01-10 22:07:12 revert to counts
-2023-01-10 22:08:54 Pseudobulk
-Error in registration_pseudobulk(sce, var_registration = "cellType", var_sample_id = "sampleID",  : 
-  var_sample_id %in% colnames(colData(sce)) is not TRUE
-Calls: registration_pseudobulk -> stopifnot
+2023-01-12 14:39:25 revert to counts
+2023-01-12 14:41:15 Pseudobulk
+2023-01-12 14:41:15 make pseudobulk object
+2023-01-12 15:43:41 dropping 339 pseudo-bulked samples that are below 'min_ncells'.
+2023-01-12 15:43:42 drop lowly expressed genes
+2023-01-12 15:43:45 normalize expression
+
+SCE Pseudobulk Dimesions:
+[1] 26908  1489
+[1] "Reproducibility information:"
+[1] "2023-01-12 15:46:03 EST"
+    user   system  elapsed 
+4305.759  110.936 4463.444 
+Error in La_library() : LAPACK routines cannot be loaded
+Calls: session_info ... as_platform_info -> stopifnot -> drop_null -> os_name
 Execution halted
 **** Job ends ****
-Tue Jan 10 22:08:55 EST 2023
+Thu Jan 12 15:46:07 EST 2023
