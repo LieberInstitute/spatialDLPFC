@@ -114,8 +114,8 @@ colData(spe) = cbind(colData(spe), added_coldata)
 ################################################################################
 
 #   Rename outdated VistoSeg counts for clarity
-spe$VistoSeg_count_deprecated = spe$count
-spe$count = NULL
+spe$VistoSeg_count_deprecated = spe$counts
+spe$counts = NULL
 
 #   Add cellpose counts by adding all cell types for CART counts at each spot
 spe$cellpose_count = colData(spe) |>
