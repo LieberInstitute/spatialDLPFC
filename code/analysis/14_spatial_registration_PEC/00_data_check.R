@@ -67,7 +67,7 @@ h5ad_files_v4 <- list.files(raw_data_dir_v4, pattern = "h5ad")
 names(h5ad_files_v4) <- ss(basename(h5ad_files_v4),"_")
 
 # UCLA-ASD ## use mismatches_removed?
-# "SZBDMulti-Seq_annotated.h5ad" "UCLA-ASD_annotated_mismatches_removed.h5ad" 
+# "UCLA-ASD_annotated_mismatches_removed.h5ad" 
 
 datasets_v4 <- unique(names(h5ad_files_v4))
 
