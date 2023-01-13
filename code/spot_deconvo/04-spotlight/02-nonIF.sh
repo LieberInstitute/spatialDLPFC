@@ -3,7 +3,7 @@
 #$ -N "nonIF"
 #$ -o /dev/null
 #$ -e /dev/null
-#$ -l mf=60G,h_vmem=60G,h_fsize=50G
+#$ -l caracol,mf=450G,h_vmem=450G,h_fsize=50G
 
 cell_group="broad"
 n_cells=0

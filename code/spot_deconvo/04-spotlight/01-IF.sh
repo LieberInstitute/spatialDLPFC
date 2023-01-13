@@ -3,10 +3,10 @@
 #$ -N "IF"
 #$ -o /dev/null
 #$ -e /dev/null
-#$ -l mf=20G,h_vmem=20G,h_fsize=50G
+#$ -l caracol,mf=450G,h_vmem=450G,h_fsize=50G
 
 cell_group="broad"
-n_cells=100
+n_cells=0
 
 #   Determine the log name for this run
 log_dir="../../../processed-data/spot_deconvo/04-spotlight"
