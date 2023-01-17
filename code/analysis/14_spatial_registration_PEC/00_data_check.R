@@ -70,9 +70,72 @@ names(h5ad_files_v4) <- ss(basename(h5ad_files_v4),"_")
 # "UCLA-ASD_annotated_mismatches_removed.h5ad" 
 
 datasets_v4 <- unique(names(h5ad_files_v4))
+# [1] "CMC"                 "DevBrain-snRNAseq"   "IsoHuB"              "MultiomeBrain-DLPFC" "SZBDMulti-Seq"      
+# [6] "UCLA-ASD"
 
-job_loop(
-  loops = list(PE_data = datasets_v4),
-  name = "01_pseudobulk_data_check",
-  create_shell = TRUE
-)
+# job_loop(
+#   loops = list(PE_data = datasets_v4),
+#   name = "01_pseudobulk_data_check",
+#   create_shell = TRUE
+# )
+
+
+#### Check Dx in metadata ####
+
+metadata_fn <- map(datasets_v4, ~here("raw-data", "psychENCODE", "version4", paste0("individual_", .x, "_metadata.csv")))
+names(metadata_fn) <- datasets_v4
+
+## no metadata for multiomeBrain
+metadata <- map(metadata_fn[map_lgl(metadata_fn, file.exists)], ~read.csv(.x))
+
+map(metadata , ~.x |> dplyr::count(primaryDiagnosis))
+
+# $CMC
+# primaryDiagnosis  n
+# 1          control 53
+# 2    Schizophrenia 48
+# 
+# $`DevBrain-snRNAseq`
+# primaryDiagnosis  n
+# 1 Autism Spectrum Disorder 11
+# 2           Not Applicable  7
+# 3        Williams Syndrome  3
+# 
+# $IsoHuB
+# primaryDiagnosis n
+# 1          control 3
+# 2   Not Applicable 2
+# 
+# $`SZBDMulti-Seq`
+# primaryDiagnosis  n
+# 1 Bipolar Disorder 24
+# 2   Not Applicable 24
+# 3    Schizophrenia 24
+# 
+# $`UCLA-ASD`
+# primaryDiagnosis  n
+# 1 Autism Spectrum Disorder 62
+# 2                  control 77
+# 3                     <NA>  1
+
+
+dx_data <- map(metadata , ~.x |> 
+                 dplyr::select(individualID, primaryDiagnosis) |>
+                 dplyr::mutate(primaryDiagnosis = gsub("Not Applicable|control","Control",primaryDiagnosis)) |>
+                 dplyr::filter(!is.na(primaryDiagnosis)))
+
+## for mulitome (for now)
+
+sce_pseudo <- readRDS(file = here(
+  "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
+  paste0("pseudobulk_MultiomeBrain-DLPFC.rds")
+))
+
+dx_data$`MultiomeBrain-DLPFC` <- unique(data.frame(individualID = sce_pseudo$individualID, 
+                       primaryDiagnosis = ss(as.character(sce_pseudo$sampleID), "-", 2)))
+
+map(dx_data , ~.x |> dplyr::count(primaryDiagnosis))
+
+walk2(dx_data, names(dx_data), ~write.csv(.x, file = here("processed-data", "rdata", "spe", "14_spatial_registration_PEC",
+                                                          paste0("primaryDiagnosis_",.y,".csv"))))
+
