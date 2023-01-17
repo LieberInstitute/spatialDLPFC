@@ -11,6 +11,7 @@ message("Running - ", dataset)
 
 ## for testing
 # dataset <- "MultiomeBrain-DLPFC"
+# dataset <- "UCLA-ASD"
 
 sce_pseudo <- readRDS(file = here(
     "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
@@ -38,13 +39,21 @@ if (any(var_tab == 0)) message("Dropping Empty Levels: ", paste0(names(var_tab)[
 sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
 
 #### Add Dx col ####
-sce_pseudo$Dx <- factor(ss(as.character(sce_pseudo$sampleID),"-",2))
-table(sce_pseudo$Dx)
-# Bipolar       Control Schizophrenia 
-# 219           119           136
+dx_data <- read.csv(here("processed-data", "rdata", "spe", "14_spatial_registration_PEC",
+                                     paste0("primaryDiagnosis_",dataset,".csv")))
+
+dx_data |> dplyr::count(primaryDiagnosis)
+
+sce_pseudo$primaryDiagnosis <- dx_data$primaryDiagnosis[match(sce_pseudo$individualID, dx_data$individualID)]
+
+## exclude any Dx NAs
+sce_pseudo <- sce_pseudo[, !is.na(sce_pseudo$primaryDiagnosis)]
+
+table(sce_pseudo$registration_variable, sce_pseudo$primaryDiagnosis)
+
 
 #### Run models ####
-purrr::map(rafalib::splitit(sce_pseudo$Dx), function(i){
+purrr::map(rafalib::splitit(sce_pseudo$primaryDiagnosis), function(i){
   sce_temp <- sce_pseudo[,i]
   
   registration_mod <- registration_model(sce_pseudo)
@@ -85,7 +94,7 @@ saveRDS(results_enrichment,
 #
 # job_loop(
 #   loops = list(dataset = datasets),
-#   name = '02_compute_registration_stats',
+#   name = '05_compute_registration_Dx',
 #   create_shell = TRUE
 # )
 
