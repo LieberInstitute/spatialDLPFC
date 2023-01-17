@@ -1,3 +1,4 @@
+
 library("spatialLIBD")
 library("tidyverse")
 library("xlsx")
@@ -7,7 +8,9 @@ library("here")
 library("sessioninfo")
 
 ## plot dir
-plot_dir <- here("plots", "14_spatial_registration_PEC")
+plot_dir <- here("plots", "14_spatial_registration_PEC", "06_PEC_correlation_annotation_Dx")
+if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+
 data_dir <-
     here(
         "processed-data",
@@ -76,65 +79,74 @@ correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
         "rdata",
         "spe",
         "14_spatial_registration_PEC",
-        paste0("registration_stats_", dataset, ".rds")
+        paste0("registration_stats_Dx_", dataset, ".rds")
     ))
-
-    registration_t_stats <-
-        registration_stats[, grep("^t_stat", colnames(registration_stats))]
-    colnames(registration_t_stats) <-
+    
+    cor_top100 <- map(registration_stats, function(dx_stats){
+      
+      registration_t_stats <-
+        dx_stats[, grep("^t_stat", colnames(dx_stats))]
+      
+      colnames(registration_t_stats) <-
         gsub("^t_stat_", "", colnames(registration_t_stats))
+      
+      # Fix Cell Types
 
-    # Fix Cell Types
-    colnames(registration_t_stats) <-
-        cell_types[colnames(registration_t_stats)]
-
-    #### Correlate with modeling results ####
-    cor_top100 <-
+      #### Correlate with modeling results ####
+      cor_top100 <-
         map(
-            modeling_results,
-            ~ layer_stat_cor(
-                registration_t_stats,
-                .x,
-                model_type = "enrichment",
-                reverse = FALSE,
-                top_n = 100
-            )
+          modeling_results,
+          ~ layer_stat_cor(
+            registration_t_stats,
+            .x,
+            model_type = "enrichment",
+            reverse = FALSE,
+            top_n = 100
+          )
         )
+      
+      # rownames(cor_top100) <-
+      #   cell_types[rownames(cor_top100)]
+      
+      return(cor_top100)
+    })
 
-    # ## Plot
-    if (make_cor_plot) {
-        pdf(here(
-            plot_dir,
-            paste0("spatial_registration_plot_", dataset, ".pdf")
-        ))
-        map(cor_top100, layer_stat_cor_plot, max = 1)
-        dev.off()
-    }
 
     #### Annotate Layers ####
-    layer_anno <-
-        map2(cor_top100, names(cor_top100), function(cor, name) {
-            anno <- annotate_registered_clusters(
-                cor_stats_layer = cor,
-                confidence_threshold = 0.25,
-                cutoff_merge_ratio = 0.10
-            )
-            colnames(anno) <- gsub("layer", name, colnames(anno))
-            return(anno)
-        })
-
-    layer_anno <- reduce(layer_anno, left_join, by = "cluster")
-    return(list(cor_top100 = cor_top100, layer_anno = layer_anno))
+    layer_anno <- map2(cor_top100, names(cor_top100),function(dx_cor, dx){
+      
+      layer_anno <- map2(dx_cor, names(dx_cor), function(cor, name) {
+        anno <- annotate_registered_clusters(
+          cor_stats_layer = cor,
+          confidence_threshold = 0.25,
+          cutoff_merge_ratio = 0.10
+        )
+        colnames(anno) <- gsub("layer", name, colnames(anno))
+        return(anno)
+      })
+      
+      layer_anno <- reduce(layer_anno, left_join, by = "cluster")
+      layer_anno$PrimaryDx <- dx
+      
+      return(layer_anno)
+    })
+    
+    layer_anno2 <- do.call("bind_rows", layer_anno)
+    
+    return(list(cor_top100 = cor_top100, layer_anno = layer_anno2))
 }
+        
+
+ 
 
 # datasets <- c("CMC", "DevBrain-snRNAseq", "IsoHuB", "SZBDMulti", "UCLA-ASD", "Urban-DLPFC")
 datasets <-
     c(
-        "CMC",
-        "DevBrain-snRNAseq",
-        "IsoHuB",
-        "UCLA-ASD",
-        "Urban-DLPFC"
+        # "CMC",
+        # "DevBrain-snRNAseq",
+        # "IsoHuB",
+        # "UCLA-ASD",
+      "MultiomeBrain-DLPFC"
     )
 names(datasets) <- datasets
 
@@ -142,7 +154,7 @@ names(datasets) <- datasets
 pe_correlation_annotation <- map(datasets, correlate_and_annotate)
 # pe_correlation_annotation <- map(datasets, correlate_and_annotate, make_cor_plot = TRUE)
 save(pe_correlation_annotation,
-    file = here(data_dir, "PEC_correlation_annotation.Rdata")
+    file = here(data_dir, "PEC_correlation_annotation_Dx.Rdata")
 )
 
 #### Save Output to XLSX sheet ####
@@ -212,6 +224,15 @@ layer_anno_all <- do.call("rbind", layer_anno) |>
         Dataset = gsub("\\.[0-9]+", "", Dataset),
         layer_label_order = gsub("\\*", "", fix_layer_order2(layer_label))
     )
+
+layer_anno_all |> count(Dataset, PrimaryDx)
+
+layer_anno_all |> mutate(dup = duplicated(cluster, layer_label))
+
+## all are the same?
+layer_anno_all |> count(layer_label, cluster)
+layer_anno_all |> count(k09_label, cluster)
+layer_anno_all |> count(k16_label, cluster)
 
 layer_anno_long <- layer_anno_all |>
     select(Dataset, cluster, ends_with("label")) |>
