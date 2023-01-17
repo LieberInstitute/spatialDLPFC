@@ -1,3 +1,7 @@
+################################################################################
+#   Functions related to spot plots
+################################################################################
+
 #   Wrapper around 'vis_gene' and 'vis_clus' to ensure exactly consistent
 #   aspect ratio and point sizes, for use in producing manuscript figures
 #
@@ -134,5 +138,112 @@ write_spot_plots <- function(
         height = 7 * length(plot_list) / n_col
     )
     print(plot_grid(plotlist = plot_list_no_title, ncol = n_col, scale = SCALE))
+    dev.off()
+}
+
+################################################################################
+#   Other functions
+################################################################################
+
+#   Make a list of which layers we expect each cell type to be most highly
+#   expressed in. Necessary for the below function 'layer_dist_barplot'
+corresponding_layers <- list(
+    "Astro" = "L1",
+    "EndoMural" = "L1",
+    "Excit" = paste0("L", 2:6),
+    "Excit_L2_3" = c("L2", "L3"),
+    "Excit_L3" = "L3",
+    "Excit_L3_4_5" = c("L3", "L4", "L5"),
+    "Excit_L4" = "L4",
+    "Excit_L5" = "L5",
+    "Excit_L5_6" = c("L5", "L6"),
+    "Excit_L6" = "L6",
+    "Inhib" = paste0("L", 2:6),
+    "Micro" = c("L1", "WM"),
+    "Oligo" = "WM",
+    "OPC" = c("L1", "WM")
+)
+
+#   Given a tibble with columns 'label' (manual layer label), 'deconvo_tool',
+#   'cell_type', and 'count', write a set of barplots to PDF under [plot_dir]
+#   with name [filename]. 'ylab' give the y-axis label; 'x_var' is the x-axis
+#   variable (as a string); 'fill_var' is the fill variable as a string;
+#   'fill_scale' is passed to 'scale_fill_manual(values = [fill_scale])';
+#   'fill_lab' is the fill label; 'xlab' is the x-axis label
+#
+#   The barplots are faceted by deconvo_tool, with x-axis including each
+#   manually annotated layer. Each barplot includes counts for each cell type
+#   in each layer. Each cell type is expected to have a maximal value (across
+#   all bars in the facet) at a particular layer; an "O" is placed at the layer
+#   with maximal value for each cell type if the layer is "correct" (e.g.
+#   'Excit_L3' has maximal value in layer 3), and an "X" is placed if the layer
+#   is incorrect. Total counts of "O"s for each facet across all cell types is
+#   tallied and reported in the facet titles.
+layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_scale, fill_lab, xlab) {
+    #   Add a column 'layer_match' to indicate rows where each cell type
+    #   has a maximal value across layers. We'll mark these with an "X"
+    #   on the barplots
+    counts_df <- counts_df |>
+        group_by(deconvo_tool, cell_type) |>
+        mutate(layer_match = count == max(count)) |>
+        ungroup()
+    
+    #   Add a column 'correct_layer' indicating whether for a cell type
+    #   and deconvo tool, the cell_type has maximal value in the correct/
+    #   expected layer
+    counts_df$correct_layer <- sapply(
+        1:nrow(counts_df),
+        function(i) {
+            counts_df$layer_match[i] &&
+                (counts_df$label[i] %in%
+                     corresponding_layers[[
+                         as.character(counts_df$cell_type)[i]
+                     ]]
+                )
+        }
+    )
+    
+    #   For each deconvo tool, add up how many times cell types have maximal
+    #   value in the correct layers
+    correct_df <- counts_df |>
+        group_by(deconvo_tool) |>
+        summarize(num_matches = sum(correct_layer)) |>
+        ungroup()
+    print("Number of times cell types have maximal value in the correct layer:")
+    print(correct_df)
+    
+    print("Full list of which cell types matched the expected layer, by method:")
+    counts_df |>
+        group_by(deconvo_tool) |>
+        filter(correct_layer) |>
+        select(cell_type) |>
+        ungroup() |>
+        print(n = nrow(counts_df))
+    
+    #   Add the "layer accuracy" in the facet titles in the upcoming plot
+    correct_labeller <- paste0(
+        correct_df$deconvo_tool, ": ", correct_df$num_matches, "/",
+        length(cell_types)
+    )
+    names(correct_labeller) <- correct_df |> pull(deconvo_tool)
+    correct_labeller <- labeller(deconvo_tool = correct_labeller)
+    
+    p <- ggplot(
+        counts_df,
+        aes_string(x = x_var, y = "count", fill = fill_var)
+    ) +
+        facet_wrap(~deconvo_tool, labeller = correct_labeller) +
+        geom_bar(stat = "identity") +
+        labs(x = xlab, y = ylab, fill = fill_lab) +
+        scale_fill_manual(values = fill_scale) +
+        geom_text(
+            aes(label = ifelse(correct_layer, "O", ifelse(layer_match, "X", ""))),
+            position = position_stack(vjust = 0.5)
+        ) +
+        theme_bw(base_size = 16) +
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+    
+    pdf(file.path(plot_dir, filename), width = 10, height = 5)
+    print(p)
     dev.off()
 }
