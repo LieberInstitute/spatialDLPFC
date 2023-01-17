@@ -6,7 +6,7 @@
 ## Create the logs directory
 mkdir -p logs
 
-for dataset in CMC DevBrain-snRNAseq SZBDMulti-Seq UCLA-ASD Urban-DLPFC; do
+for dataset in CMC DevBrain-snRNAseq SZBDMulti-Seq UCLA-ASD MultiomeBrain-DLPFC; do
 
     ## Internal script name
     SHORT="05_compute_registration_Dx_${dataset}"
@@ -17,7 +17,7 @@ for dataset in CMC DevBrain-snRNAseq SZBDMulti-Seq UCLA-ASD Urban-DLPFC; do
     cat > .${SHORT}.sh <<EOF
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
+#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
 #$ -N ${NAME}
 #$ -o logs/${SHORT}.txt
 #$ -e logs/${SHORT}.txt
@@ -35,7 +35,7 @@ echo "Hostname: \${HOSTNAME}"
 echo "Task id: \${SGE_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
-module load conda_R/4.2
+module load conda_R/4.2.x
 
 ## List current modules for reproducibility
 module list
