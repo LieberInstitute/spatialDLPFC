@@ -48,23 +48,21 @@ sce_pseudo$primaryDiagnosis <- dx_data$primaryDiagnosis[match(sce_pseudo$individ
 
 ## exclude any Dx NAs
 sce_pseudo <- sce_pseudo[, !is.na(sce_pseudo$primaryDiagnosis)]
-sce_pseudo$primaryDiagnosis <- droplevels(sce_pseudo$primaryDiagnosis)
-
 table(sce_pseudo$registration_variable, sce_pseudo$primaryDiagnosis)
-
 
 #### Run models ####
 results_enrichment <- purrr::map(rafalib::splitit(sce_pseudo$primaryDiagnosis), function(i){
   sce_temp <- sce_pseudo[,i]
+  message("New Dx - ", ncol(sce_temp), " cols")
   
-  registration_mod <- registration_model(sce_pseudo)
-  block_cor <- registration_block_cor(sce_pseudo, registration_model = registration_mod)
+  registration_mod <- registration_model(sce_temp)
+  block_cor <- registration_block_cor(sce_temp, registration_model = registration_mod)
   
   gene_name <- "gene_name"
   gene_ensembl <- "featureid"
   
   registration_stats_enrichment(
-      sce_pseudo,
+      sce_temp,
       block_cor = block_cor,
       gene_ensembl = gene_ensembl,
       gene_name = gene_name
