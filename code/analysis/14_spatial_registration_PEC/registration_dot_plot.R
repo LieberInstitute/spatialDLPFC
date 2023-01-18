@@ -39,16 +39,19 @@
 #' 
 registration_dot_plot <- function(annotation_df, 
                                   color_by = "Dataset",
+                                  cluster_by = "cluster",
+                                  layer_by = "layer_label",
                                   grid_fill = list(`TRUE` = "grey80", `FALSE` = "white"),
                                   ct_anno = NULL){
   
-  if(is.factor(annotation_df$layer_label)){
-    layer_lable_levels <- levels(annotation_df$layer_label)
+  if(is.factor(annotation_df[[layer_by]])){
+    layer_lable_levels <- levels(annotation_df[[layer_by]])
   } else { 
-    layer_lable_levels <- unique(annotation_df$layer_label)
+    layer_lable_levels <- unique(annotation_df[[layer_by]])
   }
   
-  tile_data <- tidyr::expand_grid(cluster = annotation_df$cluster, layer_label = layer_lable_levels) 
+  tile_data <- tidyr::expand_grid(cluster = annotation_df[[cluster_by]], layer_label = layer_lable_levels) 
+  colnames(tile_data) <- c(cluster_by,layer_by)
   
   if(is.null(ct_anno)){
     tile_data$Match <- FALSE
@@ -59,7 +62,7 @@ registration_dot_plot <- function(annotation_df,
   }
   
   ex_dotplot <- ggplot2::ggplot(tile_data, 
-                                ggplot2::aes(x = cluster, y = layer_label)) +
+                                ggplot2::aes(x = .data[[cluster_by]], y = .data[[layer_by]])) +
     ggplot2::geom_tile(ggplot2::aes(fill = Match), color = "grey10") + 
     ggplot2::geom_point(data = annotation_df,
                         ggplot2::aes(color = .data[[color_by]]), 
@@ -68,4 +71,56 @@ registration_dot_plot <- function(annotation_df,
     ggplot2::theme_bw()
   
   return(ex_dotplot)
+}
+
+registration_dot_plot2 <- function(annotation_df, 
+                                  color_by = "PrimaryDx",
+                                  cluster_by = "cell_type",
+                                  layer_by = "layer_combo",
+                                  conf_only = FALSE,
+                                  grid_fill = list(`TRUE` = "grey80", `FALSE` = "white"),
+                                  ct_anno = NULL){
+  
+  layer_df <- annotation_df |> select(any_of(c(layer_by, "Annotation"))) |> dplyr::distinct()
+  
+  tile_data <- tidyr::expand_grid(layer_df, cell_type = levels(annotation_df[[cluster_by]]))  ## fix name!
+  
+
+  if(is.null(ct_anno)){
+    tile_data$Match <- FALSE
+  } else {
+    tile_data <- tile_data |>
+      dplyr::left_join(ct_anno) |>
+      tidyr::replace_na(list(Match = FALSE))
+  }
+  
+  grid_plot <- ggplot2::ggplot(tile_data, 
+                                ggplot2::aes(x = .data[[cluster_by]], y = .data[[layer_by]])) +
+    ggplot2::geom_tile(ggplot2::aes(fill = Match), color = "grey10")
+  
+  if(conf_only){
+    annotation_df <- annotation_df |> filter(confidence)
+    dot_plot <- grid_plot +
+      ggplot2::geom_point(data = annotation_df,
+                          ggplot2::aes(color = .data[[color_by]]),
+                          position = ggplot2::position_dodge(width = .8))
+  } else{
+    dot_plot <- grid_plot + 
+      ggplot2::geom_point(data = annotation_df,
+                          ggplot2::aes(color = .data[[color_by]], shape = confidence),
+                          position = ggplot2::position_dodge(width = .8)) 
+  }
+  
+    dot_plot <- dot_plot +
+    ggplot2::scale_fill_manual(values = grid_fill, guide="none") +
+    ggplot2::theme_bw() +
+    facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
+    scale_y_discrete(limits = rev) +
+    theme(axis.text.x = element_text(
+      angle = 90,
+      vjust = 0.5,
+      hjust = 1
+    ))
+  
+  return(dot_plot)
 }
