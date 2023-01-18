@@ -121,8 +121,7 @@ map(metadata , ~.x |> dplyr::count(primaryDiagnosis))
 
 dx_data <- map(metadata , ~.x |> 
                  dplyr::select(individualID, primaryDiagnosis) |>
-                 dplyr::mutate(primaryDiagnosis = gsub("Not Applicable|control","Control",primaryDiagnosis)) |>
-                 dplyr::filter(!is.na(primaryDiagnosis)))
+                 dplyr::mutate(primaryDiagnosis = gsub("Not Applicable|control","Control",primaryDiagnosis)))
 
 ## for mulitome (for now)
 
@@ -136,6 +135,39 @@ dx_data$`MultiomeBrain-DLPFC` <- unique(data.frame(individualID = sce_pseudo$ind
 
 map(dx_data , ~.x |> dplyr::count(primaryDiagnosis))
 
+# $CMC
+# primaryDiagnosis  n
+# 1          Control 53
+# 2    Schizophrenia 48
+# 
+# $`DevBrain-snRNAseq`
+# primaryDiagnosis  n
+# 1 Autism Spectrum Disorder 11
+# 2                  Control  7
+# 3        Williams Syndrome  3
+# 
+# $IsoHuB
+# primaryDiagnosis n
+# 1          Control 5
+# 
+# $`SZBDMulti-Seq`
+# primaryDiagnosis  n
+# 1 Bipolar Disorder 24
+# 2          Control 24
+# 3    Schizophrenia 24
+# 
+# $`UCLA-ASD`
+# primaryDiagnosis  n
+# 1 Autism Spectrum Disorder 62
+# 2                  Control 77
+# 
+# $`MultiomeBrain-DLPFC`
+# primaryDiagnosis  n
+# 1          Bipolar 10
+# 2          Control  5
+# 3    Schizophrenia  6
+
 walk2(dx_data, names(dx_data), ~write.csv(.x, file = here("processed-data", "rdata", "spe", "14_spatial_registration_PEC",
-                                                          paste0("primaryDiagnosis_",.y,".csv"))))
+                                                          paste0("primaryDiagnosis_",.y,".csv")),
+                                          row.names = FALSE))
 
