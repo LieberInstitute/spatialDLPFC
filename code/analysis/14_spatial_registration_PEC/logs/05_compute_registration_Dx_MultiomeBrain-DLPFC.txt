@@ -6,10 +6,195 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2.x
 **** Job starts ****
-Tue Jan 17 16:29:04 EST 2023
+Wed Jan 18 12:23:24 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 2638097
+Job id: 2667878
+Job name: compute_registration_Dx_MultiomeBrain-DLPFC
+Hostname: compute-144.cm.cluster
+Task id: undefined
+Unloading conda_R/4.2.x
+Loading conda_R/4.2.x
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SpatialExperiment
+Loading required package: rafalib
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Running - MultiomeBrain-DLPFC
+
+SCE Dimesions:
+[1] 27751   474
+2023-01-18 12:23:56 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+Cell Types:
+
+     Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
+        21         19         21          9         21         21         21 
+     L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
+         2         21         21         21         18         20         20 
+Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
+        21         20         21         21         13         21         21 
+       SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
+         7         17         21          0         20         15 
+Dropping Empty Levels: Sst.Chodl 
+  primaryDiagnosis  n
+1          Bipolar 10
+2          Control  5
+3    Schizophrenia  6
+            
+             Bipolar Control Schizophrenia
+  Astro           10       5             6
+  Chandelier       9       4             6
+  Endo            10       5             6
+  Immune           5       2             2
+  L2.3.IT         10       5             6
+  L4.IT           10       5             6
+  L5.6.NP         10       5             6
+  L5.ET            1       1             0
+  L5.IT           10       5             6
+  L6.CT           10       5             6
+  L6.IT           10       5             6
+  L6.IT.Car3       8       5             5
+  L6b              9       5             6
+  Lamp5            9       5             6
+  Lamp5.Lhx6      10       5             6
+  Micro            9       5             6
+  Oligo           10       5             6
+  OPC             10       5             6
+  Pax6             6       4             3
+  PC              10       5             6
+  Pvalb           10       5             6
+  SMC              1       4             2
+  Sncg             7       4             6
+  Sst             10       5             6
+  Vip              9       5             6
+  VLMC             6       5             4
+New Dx - 219 cols
+2023-01-18 12:23:58 create model matrix
+2023-01-18 12:23:58 run duplicateCorrelation()
+2023-01-18 12:25:18 The estimated correlation is: 0.0724485697062869
+2023-01-18 12:25:18 computing enrichment statistics
+2023-01-18 12:25:50 extract and reformat enrichment results
+New Dx - 119 cols
+2023-01-18 12:25:50 create model matrix
+2023-01-18 12:25:50 run duplicateCorrelation()
+2023-01-18 12:26:34 The estimated correlation is: 0.0425495543780941
+2023-01-18 12:26:34 computing enrichment statistics
+2023-01-18 12:26:45 extract and reformat enrichment results
+New Dx - 136 cols
+2023-01-18 12:26:45 create model matrix
+Error in `purrr::map()`:
+ℹ In index: 3.
+ℹ With name: Schizophrenia.
+Caused by error:
+! The resulting model is not full rank. You might have some 'var_registration' levels that are empty which you can drop with 'droplevels()'. Check the output of 'table(sce_pseudo[[var_registration]])'.
+Backtrace:
+     ▆
+  1. ├─purrr::map(...)
+  2. │ └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
+  3. │   ├─purrr:::with_indexed_errors(...)
+  4. │   │ └─base::withCallingHandlers(...)
+  5. │   ├─purrr:::call_with_cleanup(...)
+  6. │   └─global .f(.x[[i]], ...)
+  7. │     └─spatialLIBD::registration_model(sce_temp)
+  8. │       └─base::stop(...)
+  9. └─base::.handleSimpleError(...)
+ 10.   └─purrr (local) h(simpleError(msg, call))
+ 11.     └─cli::cli_abort(...)
+ 12.       └─rlang::abort(...)
+Execution halted
+**** Job ends ****
+Wed Jan 18 12:26:46 EST 2023
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.2.x
+**** Job starts ****
+Wed Jan 18 12:50:11 EST 2023
+**** JHPCE info ****
+User: lhuuki
+Job id: 2667932
 Job name: compute_registration_Dx_MultiomeBrain-DLPFC
 Hostname: compute-089.cm.cluster
 Task id: undefined
@@ -103,18 +288,6 @@ Running - MultiomeBrain-DLPFC
 
 SCE Dimesions:
 [1] 27751   474
-2023-01-17 16:29:50 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-Cell Types:
-
-     Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
-        21         19         21          9         21         21         21 
-     L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
-         2         21         21         21         18         20         20 
-Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
-        21         20         21         21         13         21         21 
-       SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
-         7         17         21          0         20         15 
-Dropping Empty Levels: Sst.Chodl 
   primaryDiagnosis  n
 1          Bipolar 10
 2          Control  5
@@ -145,30 +318,38 @@ Dropping Empty Levels: Sst.Chodl
   SMC              1       4             2
   Sncg             7       4             6
   Sst             10       5             6
+  Sst.Chodl        0       0             0
   Vip              9       5             6
   VLMC             6       5             4
-2023-01-17 16:29:53 create model matrix
-2023-01-17 16:29:54 run duplicateCorrelation()
-2023-01-17 16:36:51 The estimated correlation is: 0.0679797872749368
-2023-01-17 16:36:51 computing enrichment statistics
-2023-01-17 16:39:20 extract and reformat enrichment results
-2023-01-17 16:39:22 create model matrix
-2023-01-17 16:39:22 run duplicateCorrelation()
-2023-01-17 16:46:19 The estimated correlation is: 0.0679797872749368
-2023-01-17 16:46:19 computing enrichment statistics
-2023-01-17 16:48:46 extract and reformat enrichment results
-2023-01-17 16:48:46 create model matrix
-2023-01-17 16:48:46 run duplicateCorrelation()
-2023-01-17 16:55:45 The estimated correlation is: 0.0679797872749368
-2023-01-17 16:55:45 computing enrichment statistics
-2023-01-17 16:58:13 extract and reformat enrichment results
+2023-01-18 12:50:58 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+Dx: Bipolar - 219 cols
+Dropping Empty Levels: Sst.Chodl 
+2023-01-18 12:50:59 create model matrix
+2023-01-18 12:50:59 run duplicateCorrelation()
+2023-01-18 12:52:48 The estimated correlation is: 0.0724485697062869
+2023-01-18 12:52:48 computing enrichment statistics
+2023-01-18 12:53:31 extract and reformat enrichment results
+Dx: Control - 119 cols
+Dropping Empty Levels: Sst.Chodl 
+2023-01-18 12:53:33 create model matrix
+2023-01-18 12:53:33 run duplicateCorrelation()
+2023-01-18 12:54:43 The estimated correlation is: 0.0425495543780941
+2023-01-18 12:54:43 computing enrichment statistics
+2023-01-18 12:55:02 extract and reformat enrichment results
+Dx: Schizophrenia - 136 cols
+Dropping Empty Levels: L5.ET Sst.Chodl 
+2023-01-18 12:55:02 create model matrix
+2023-01-18 12:55:02 run duplicateCorrelation()
+2023-01-18 12:56:14 The estimated correlation is: 0.062337927332656
+2023-01-18 12:56:14 computing enrichment statistics
+2023-01-18 12:56:34 extract and reformat enrichment results
 [1] "Reproducibility information:"
-[1] "2023-01-17 16:58:18 EST"
-    user   system  elapsed 
-1691.032   42.893 1752.540 
+[1] "2023-01-18 12:56:38 EST"
+   user  system elapsed 
+358.892  13.350 383.489 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.2.2 Patched (2023-01-14 r83624)
+ version  R version 4.2.2 Patched (2023-01-18 r83635)
  os       CentOS Linux 7 (Core)
  system   x86_64, linux-gnu
  ui       X11
@@ -176,7 +357,7 @@ Dropping Empty Levels: Sst.Chodl
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2023-01-17
+ date     2023-01-18
  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -224,7 +405,7 @@ Dropping Empty Levels: Sst.Chodl
  dplyr                    1.0.10    2022-09-01 [2] CRAN (R 4.2.1)
  dqrng                    0.3.0     2021-05-01 [2] CRAN (R 4.2.1)
  DropletUtils             1.18.1    2022-11-22 [2] Bioconductor
- DT                       0.26      2022-10-19 [2] CRAN (R 4.2.1)
+ DT                       0.27      2023-01-17 [2] CRAN (R 4.2.2)
  edgeR                    3.40.1    2022-12-14 [2] Bioconductor
  ellipsis                 0.3.2     2021-04-29 [2] CRAN (R 4.2.1)
  ExperimentHub            2.6.0     2022-11-01 [2] Bioconductor
@@ -352,7 +533,5 @@ Dropping Empty Levels: Sst.Chodl
  [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/R/4.2.x/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Error: unexpected end of input
-Execution halted
 **** Job ends ****
-Tue Jan 17 16:58:20 EST 2023
+Wed Jan 18 12:56:42 EST 2023

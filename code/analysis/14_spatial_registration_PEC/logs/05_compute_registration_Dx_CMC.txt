@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2.x
 **** Job starts ****
-Tue Jan 17 16:29:03 EST 2023
+Wed Jan 18 12:23:24 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 2638093
+Job id: 2667874
 Job name: compute_registration_Dx_CMC
-Hostname: compute-124.cm.cluster
+Hostname: compute-129.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2.x
 Loading conda_R/4.2.x
@@ -103,7 +103,7 @@ Running - CMC
 
 SCE Dimesions:
 [1] 28835  2101
-2023-01-17 16:29:38 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2023-01-18 12:24:05 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
 Cell Types:
 
      Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
@@ -146,23 +146,166 @@ Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb
   Sst.Chodl        2             4
   Vip             52            46
   VLMC            30            23
-2023-01-17 16:29:42 create model matrix
-2023-01-17 16:29:42 run duplicateCorrelation()
-2023-01-17 22:05:04 The estimated correlation is: 0.095623546228705
-2023-01-17 22:05:04 computing enrichment statistics
-2023-01-17 22:38:42 extract and reformat enrichment results
-2023-01-17 22:38:42 create model matrix
-2023-01-17 22:38:42 run duplicateCorrelation()
-2023-01-18 04:12:50 The estimated correlation is: 0.095623546228705
-2023-01-18 04:12:50 computing enrichment statistics
-2023-01-18 04:45:33 extract and reformat enrichment results
+New Dx - 1143 cols
+2023-01-18 12:24:08 create model matrix
+2023-01-18 12:24:08 run duplicateCorrelation()
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.2.x
+**** Job starts ****
+Wed Jan 18 12:50:14 EST 2023
+**** JHPCE info ****
+User: lhuuki
+Job id: 2667928
+Job name: compute_registration_Dx_CMC
+Hostname: compute-144.cm.cluster
+Task id: undefined
+Unloading conda_R/4.2.x
+Loading conda_R/4.2.x
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: SpatialExperiment
+Loading required package: rafalib
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+Running - CMC
+
+SCE Dimesions:
+[1] 28835  2101
+  primaryDiagnosis  n
+1          Control 53
+2    Schizophrenia 48
+            
+             Control Schizophrenia
+  Astro           53            46
+  Chandelier      43            35
+  Endo            41            26
+  Immune          25            24
+  L2.3.IT         53            47
+  L4.IT           53            46
+  L5.6.NP         46            39
+  L5.ET           14            11
+  L5.IT           53            46
+  L6.CT           47            42
+  L6.IT           53            47
+  L6.IT.Car3      42            33
+  L6b             46            36
+  Lamp5           50            42
+  Lamp5.Lhx6      50            43
+  Micro           45            37
+  Oligo           53            46
+  OPC             53            43
+  Pax6            37            23
+  PC              46            38
+  Pvalb           52            47
+  SMC              3             5
+  Sncg            49            38
+  Sst             52            45
+  Sst.Chodl        2             4
+  Vip             52            46
+  VLMC            30            23
+2023-01-18 12:50:56 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+Dx: Control - 1143 cols
+2023-01-18 12:50:58 create model matrix
+2023-01-18 12:50:58 run duplicateCorrelation()
+2023-01-18 14:15:04 The estimated correlation is: 0.0883736541021314
+2023-01-18 14:15:04 computing enrichment statistics
+2023-01-18 14:30:05 extract and reformat enrichment results
+Dx: Schizophrenia - 958 cols
+2023-01-18 14:30:06 create model matrix
+2023-01-18 14:30:06 run duplicateCorrelation()
+2023-01-18 15:22:58 The estimated correlation is: 0.101656728602542
+2023-01-18 15:22:58 computing enrichment statistics
+2023-01-18 15:32:45 extract and reformat enrichment results
 [1] "Reproducibility information:"
-[1] "2023-01-18 04:45:35 EST"
-     user    system   elapsed 
-43806.155   375.526 44191.544 
+[1] "2023-01-18 15:32:47 EST"
+    user   system  elapsed 
+9645.943  100.999 9751.804 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.2.2 Patched (2023-01-14 r83624)
+ version  R version 4.2.2 Patched (2023-01-18 r83635)
  os       CentOS Linux 7 (Core)
  system   x86_64, linux-gnu
  ui       X11
@@ -218,7 +361,7 @@ Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb
  dplyr                    1.0.10    2022-09-01 [2] CRAN (R 4.2.1)
  dqrng                    0.3.0     2021-05-01 [2] CRAN (R 4.2.1)
  DropletUtils             1.18.1    2022-11-22 [2] Bioconductor
- DT                       0.26      2022-10-19 [2] CRAN (R 4.2.1)
+ DT                       0.27      2023-01-17 [2] CRAN (R 4.2.2)
  edgeR                    3.40.1    2022-12-14 [2] Bioconductor
  ellipsis                 0.3.2     2021-04-29 [2] CRAN (R 4.2.1)
  ExperimentHub            2.6.0     2022-11-01 [2] Bioconductor
@@ -346,7 +489,5 @@ Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb
  [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/R/4.2.x/lib64/R/library
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-Error: unexpected end of input
-Execution halted
 **** Job ends ****
-Wed Jan 18 04:45:42 EST 2023
+Wed Jan 18 15:32:49 EST 2023
