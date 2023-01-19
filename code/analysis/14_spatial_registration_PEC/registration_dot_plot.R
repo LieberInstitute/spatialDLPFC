@@ -82,8 +82,10 @@ registration_dot_plot2 <- function(annotation_df,
                                   ct_anno = NULL){
   
   layer_df <- annotation_df |> select(any_of(c(layer_by, "Annotation"))) |> dplyr::distinct()
+  ct_df <- annotation_df %>% select(any_of(c(cluster_by, "ct_cat"))) |> dplyr::distinct()
   
-  tile_data <- tidyr::expand_grid(layer_df, cell_type = levels(annotation_df[[cluster_by]]))  ## fix name!
+  # tile_data <- tidyr::expand_grid(layer_df, cell_type = levels(annotation_df[[cluster_by]]))  ## fix name!
+  tile_data <- tidyr::expand_grid(layer_df, ct_df)  ## fix name!
   
 
   if(is.null(ct_anno)){
@@ -115,7 +117,7 @@ registration_dot_plot2 <- function(annotation_df,
     dot_plot <- dot_plot +
     ggplot2::scale_fill_manual(values = grid_fill, guide="none") +
     ggplot2::theme_bw() +
-    facet_grid(Annotation ~ ., scales = "free_y", space = "free") +
+    facet_grid(Annotation ~ ct_cat , scales = "free", space = "free") +
     scale_y_discrete(limits = rev) +
     theme(axis.text.x = element_text(
       angle = 90,

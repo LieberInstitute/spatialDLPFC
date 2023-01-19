@@ -42,7 +42,7 @@ modeling_results <-
 names(modeling_results)
 
 pec_cell_types <- c(
-  # Non-neuronal cells (5)
+  # Non-neuronal cells (8)
   "Astro",
   "Endo",
   "Immune",
@@ -75,7 +75,8 @@ pec_cell_types <- c(
 )
 
 pec_cell_type_tb <- tibble(cell_type = factor(pec_cell_types, levels = pec_cell_types), 
-                          cluster =  make.names(cell_type))
+                          cluster =  make.names(cell_type),
+                          ct_cat = unlist(map2(c("Non-neuronal", "Excit", "Inhib"),c(8, 9, 10), rep)))
 
 # layer_anno[[1]] |> left_join(pec_cell_type_tb) |> filter(is.na(cell_type))
 
@@ -147,9 +148,9 @@ correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
         
 # datasets <- c("CMC", "DevBrain-snRNAseq", "IsoHuB", "SZBDMulti", "UCLA-ASD", "Urban-DLPFC")
 datasets <-
-  c(
+  c( # No isohub not. case-control
     "CMC",
-    # "DevBrain-snRNAseq",
+    "DevBrain-snRNAseq",
     "UCLA-ASD",
     "MultiomeBrain-DLPFC",
     "SZBDMulti-Seq"
@@ -162,9 +163,6 @@ pe_correlation_annotation <- map(datasets, correlate_and_annotate)
 save(pe_correlation_annotation,
     file = here(data_dir, "PEC_correlation_annotation_Dx.Rdata")
 )
-
-corner(pe_correlation_annotation$`UCLA-ASD`$cor_top100$Control)
-corner(pe_correlation_annotation$`UCLA-ASD`$cor_top100$`Autism Spectrum Disorder`)
 
 #### Save Output to XLSX sheet ####
 key <- data.frame(
@@ -240,13 +238,13 @@ spatial_layer_anno <- tibble(
   mutate(layer_combo = factor(layer_combo, levels = c(paste0("Layer", 1:6), "WM", levels(bayes_layers$layer_combo))),
          Annotation = factor(Annotation, levels = c("k16", "k09", "layer")))
 
-## Extract Layer anno, pivot longer 
+## Extract Layer anno, pivot each longer 
 layer_anno <- transpose(pe_correlation_annotation)$layer_anno
 
 layer_anno_long <- map(layer_anno,  ~.x|> 
     left_join(pec_cell_type_tb,  by = "cluster") |>
-    select(PrimaryDx, cell_type, ends_with("label")) |>
-    pivot_longer(!c(PrimaryDx, cell_type),
+    select(PrimaryDx, cell_type, ct_cat, ends_with("label")) |>
+    pivot_longer(!c(PrimaryDx, cell_type, ct_cat),
         names_to = "Annotation",
         values_to = "label"
     ) |>
@@ -272,6 +270,20 @@ layer_anno_long <- map(layer_anno,  ~.x|>
       left_join(spatial_layer_anno)
     )
 
+
+sort(unique(unlist(map(layer_anno_long, ~.x$PrimaryDx))))
+# [1] "Autism Spectrum Disorder" "Bipolar"                  "Bipolar Disorder"         "Control"                 
+# [5] "Schizophrenia"            "Williams Syndrome"     
+
+dx_colors = c(
+  Control = "#2e282a",
+  `Autism Spectrum Disorder` = "#76b041",
+  `Bipolar` = "#17bebb",
+  `Bipolar Disorder` = "#17bebb",
+  Schizophrenia = "#e4572e",
+  `Williams Syndrome` = "#CC9C00"
+)
+
 #### Plot layer annotation ####
 
 ## prep cell type annotation
@@ -296,19 +308,24 @@ spatial_layer_anno |>
 
 source("registration_dot_plot.R")
 
-dot_test <- registration_dot_plot2(layer_anno_long[[1]], ct_anno = cell_type_anno, conf_only = TRUE)
+dot_test <- registration_dot_plot2(layer_anno_long[[1]], ct_anno = cell_type_anno, conf_only = FALSE)
 ggsave(dot_test, filename = here(plot_dir, "dot_test.png"))
 
 walk2(layer_anno_long, names(layer_anno_long), function(data, name){
   
-  # dotplot <- registration_dot_plot2(data, ct_anno = cell_type_anno) + 
-  #   labs(title = name)
-  #   ggsave(dotplot, filename = here(plot_dir, paste0("registration_anno_dotplot_dx_",name,".png")), width = 10)
-  #   
-    dotplot_conf <- registration_dot_plot2(data, ct_anno = cell_type_anno, conf_only = TRUE) + 
-      labs(title = name)
-    ggsave(dotplot_conf, filename = here(plot_dir, paste0("registration_anno_dotplot_dx_conf_",name,".png")), width = 10)
-    
+  temp_dx_colors <- dx_colors[unique(data$PrimaryDx)]
+  
+  dotplot <- registration_dot_plot2(data, ct_anno = cell_type_anno) +
+    labs(title = name) +
+    scale_color_manual(values = temp_dx_colors)
+  
+    ggsave(dotplot, filename = here(plot_dir, paste0("registration_anno_dotplot_dx_",name,".png")), width = 10)
+
+    # dotplot_conf <- registration_dot_plot2(data, ct_anno = cell_type_anno, conf_only = TRUE) + 
+    #   labs(title = name) +
+    #   scale_color_manual(values = temp_dx_colors)
+    # ggsave(dotplot_conf, filename = here(plot_dir, paste0("registration_anno_dotplot_dx_conf_",name,".png")), width = 10)
+    # 
 })
 
 
