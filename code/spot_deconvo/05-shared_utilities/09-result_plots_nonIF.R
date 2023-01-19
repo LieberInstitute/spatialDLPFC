@@ -556,15 +556,15 @@ bayes_layers <-
 
 #   Add k=9 spatial domains into the big tibble (observed_df_long)
 temp_df <- tibble(
-    "barcode" = colnames(spe), "bs_k9" = spe$bayesSpace_harmony_9,
+    "barcode" = colnames(spe),
+    "bs_k9" = factor(
+        bayes_layers[
+            paste0("Sp09D0", spe$bayesSpace_harmony_9), "layer_combo"
+        ],
+        levels = bayes_layers$layer_combo
+    ),
     "sample_id" = spe$sample_id
-) |>
-    mutate(
-        bs_k9 = factor(
-            paste0("Sp09D0", bs_k9), levels = bayes_layers$layer_long,
-            order = TRUE
-        )
-    )
+)
 
 observed_df_long <- left_join(
     observed_df_long, temp_df,
