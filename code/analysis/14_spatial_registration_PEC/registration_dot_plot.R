@@ -16,9 +16,9 @@
 #' Dataset = "A"
 #' )
 #' 
-#' test_anno_b <- data.frame(cluster = c("Astro", "Excit", "Oligo"),
+#' test_anno_b <- data.frame(cluster = c("Astro", "Excit" ,"Excit", "Oligo"),
 #' layer_confidence = "good",
-#' layer_label = paste0("SpD", c(1, 1, 3)),
+#' layer_label = paste0("SpD", c(1, 1,2, 3)),
 #' Dataset = "B"
 #' )
 #' 
@@ -109,9 +109,9 @@ registration_dot_plot2 <- function(annotation_df,
   } else{
     dot_plot <- grid_plot + 
       ggplot2::geom_point(data = annotation_df,
-                          ggplot2::aes(color = .data[[color_by]], alpha = confidence),
+                          ggplot2::aes(color = .data[[color_by]], alpha = layer_confidence),
                           position = ggplot2::position_dodge(width = .8)) +
-      scale_alpha_discrete(range = c(0.35, 1))
+      scale_alpha_discrete(range = c(good = 1, poor = .25))
   }
   
     dot_plot <- dot_plot +

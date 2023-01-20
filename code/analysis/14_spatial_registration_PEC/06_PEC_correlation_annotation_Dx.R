@@ -164,6 +164,8 @@ save(pe_correlation_annotation,
     file = here(data_dir, "PEC_correlation_annotation_Dx.Rdata")
 )
 
+# load(here(data_dir, "PEC_correlation_annotation_Dx.Rdata"), verbose = TRUE)
+
 #### Save Output to XLSX sheet ####
 key <- data.frame(
     data = c("annotation", paste0("cor_", names(modeling_results))),
@@ -265,7 +267,7 @@ layer_anno_long <- map(layer_anno,  ~.x|>
             layers
         ),
         # layers_long = gsub("Layers","L",layers),
-        anno_confidence = ifelse(confidence, "high", "low"),
+      layer_confidence = ifelse(confidence, "good", "poor"),
       Annotation = factor(Annotation, levels = c("k16", "k09", "layer"))) |> 
       left_join(spatial_layer_anno)
     )
@@ -285,8 +287,12 @@ dx_colors = c(
 )
 
 #### Plot layer annotation ####
-
 ## prep cell type annotation
+spatial_layer_anno_long <- spatial_layer_anno |> 
+  mutate(ml = str_split(gsub("S.* ~ |ayer","", layer_combo), "/")) |> ## ml = "manual layer"
+  unnest_longer("ml") |> 
+  mutate(ml = ifelse(grepl("^[0-9]", ml), paste0("L", ml), ml))
+
 cell_type_anno <- pec_cell_type_tb |>
   mutate(layer_label = ifelse(grepl("^L[0-9]", cell_type), sub(" .*", "", cell_type), NA)) |>
   filter(!is.na(layer_label)) |>
@@ -296,9 +302,7 @@ cell_type_anno <- pec_cell_type_tb |>
     ml = gsub("b", "", ifelse(
       grepl("^[0-9]", ml), paste0("L", ml), ml)),
     Match = TRUE) |>
-  left_join(spatial_layer_anno |> 
-              mutate(ml = str_split(gsub("S.* ~ |ayer","", layer_combo), "/")) |> ## ml = "manual layer"
-              unnest_longer("ml")) |>
+  left_join(spatial_layer_anno_long) |>
   select(cell_type, layer_combo, Match)
 
 
@@ -308,9 +312,7 @@ spatial_layer_anno |>
 
 source("registration_dot_plot.R")
 
-dot_test <- registration_dot_plot2(layer_anno_long[[1]], ct_anno = cell_type_anno, conf_only = FALSE)
-ggsave(dot_test, filename = here(plot_dir, "dot_test.png"))
-
+## Plot Dx
 walk2(layer_anno_long, names(layer_anno_long), function(data, name){
   
   temp_dx_colors <- dx_colors[unique(data$PrimaryDx)]
@@ -327,6 +329,42 @@ walk2(layer_anno_long, names(layer_anno_long), function(data, name){
     # ggsave(dotplot_conf, filename = here(plot_dir, paste0("registration_anno_dotplot_dx_conf_",name,".png")), width = 10)
     # 
 })
+
+#### Combine Control, plot to compare Datasets ####
+
+## IsoHuB??
+control_anno_long <- do.call("rbind", map2(layer_anno_long, names(layer_anno_long),
+                                           ~.x |> 
+                                             mutate(Dataset = .y) |> 
+                                             filter(PrimaryDx == "Control")
+                                           )
+                             )
+   
+dotplot_control_datasets <- registration_dot_plot2(control_anno_long, color_by = "Dataset", ct_anno = cell_type_anno) +
+  theme(legend.position = "bottom")
+ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_dotplot_control.png"), width = 11)
+ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_dotplot_control.pdf"), width = 11)
+
+#### ASD Astrocyte Subset ####
+
+astro_anno <- do.call("rbind", map2(layer_anno_long[c("DevBrain-snRNAseq", "UCLA-ASD")], c("DevBrain", "UCLA-ASD"), 
+     ~.x |> 
+       filter(cell_type == "Astro") |>
+       mutate(cell_type = paste0(cell_type, "\n", .y))))
+
+asd_dx_colors <- dx_colors[unique(astro_anno$PrimaryDx)]
+
+astro_asd_datasets <- registration_dot_plot2(astro_anno, color_by = "PrimaryDx") +
+  scale_color_manual(values = asd_dx_colors) +
+  # theme(axis.text.x = element_text(angle = 0))
+  theme_bw()
+
+ggsave(astro_asd_datasets, filename = here(plot_dir, "registration_anno_dotplot_astro_asd.png"), height = 5)
+ggsave(astro_asd_datasets, filename = here(plot_dir, "registration_anno_dotplot_astro_asd.pdf"), height = 5)
+
+#### ASD Astrocyte Heatmap ####
+
+
 
 
 # sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
