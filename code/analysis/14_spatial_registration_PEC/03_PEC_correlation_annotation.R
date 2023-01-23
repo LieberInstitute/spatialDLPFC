@@ -38,34 +38,39 @@ modeling_results <-
     c(list(layer = layer_modeling_results), modeling_results)
 names(modeling_results)
 
-cell_types <- c(
-    "Astro",
-    "Chandelier",
-    "Endo",
-    "L2/3 IT",
-    "L4 IT",
-    "L5 ET",
-    "L5 IT",
-    "L5/6 NP",
-    "L6 CT",
-    "L6 IT",
-    "L6 IT Car3",
-    "L6b",
-    "Lamp5",
-    "Lamp5 Lhx6",
-    "Micro/PVM",
-    "OPC",
-    "Oligo",
-    "Pax6",
-    "Pvalb",
-    "Sncg",
-    "Sst",
-    "Sst Chodl",
-    "VLMC",
-    "Vip"
+pec_cell_types <- c(
+  # Non-neuronal cells (5)
+  "Astro",
+  "Endo",
+  "Micro/PVM",
+  "OPC",
+  "Oligo",
+  #Excit (9)
+  "L2/3 IT",
+  "L4 IT",
+  "L5 ET",
+  "L5 IT",
+  "L5/6 NP",
+  "L6 CT",
+  "L6 IT",
+  "L6 IT Car3",
+  "L6b",
+  # Inhib (10)
+  "Chandelier",
+  "Lamp5",
+  "Lamp5 Lhx6",
+  "Pax6",
+  "Pvalb",
+  "Sncg",
+  "Sst",
+  "Sst Chodl",
+  "VLMC",
+  "Vip"
 )
 
-names(cell_types) <- make.names(cell_types)
+cell_type_order <- tibble(cell_type = factor(pec_cell_types, levels = pec_cell_types), 
+                          cluster =  make.names(cell_type))
+
 
 
 correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
