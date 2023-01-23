@@ -363,8 +363,147 @@ ggsave(astro_asd_datasets, filename = here(plot_dir, "registration_anno_dotplot_
 ggsave(astro_asd_datasets, filename = here(plot_dir, "registration_anno_dotplot_astro_asd.pdf"), height = 5)
 
 #### ASD Astrocyte Heatmap ####
+combine_cor <- function(cor_list){
+  ## combine Annotations by column
+  # cor_list <- map_depth(cor_list, 2, ~do.call("cbind", .x))
+  
+  # just want k16
+  cor_list <- map_depth(cor_list, 2, "k16")
+  
+  ## combine Dx by row
+  
+  cor_list2 <- map(cor_list,  function(data){
+    cor <- do.call("rbind", data)
+    rownames(cor) <- paste0(rep(names(data), map_int(data, nrow)), ".", rownames(cor))
+    return(cor)
+  })
+  
+  cor <- do.call("rbind", cor_list2)
+  rownames(cor) <- paste0(rep(names(cor_list2), map_int(cor_list2, nrow)), ".", rownames(cor))
+  return(cor)
+  }
+
+cor_asd <- transpose(pe_correlation_annotation)$cor_top100[c("DevBrain-snRNAseq", "UCLA-ASD")]
+cor_asd <- combine_cor(cor_asd)
+dim(cor_asd)
+
+k16_annotation <- bayes_layers |> filter(Annotation == "k16")
+asd_astro <- t(cor_asd[grepl("Astro",rownames(cor_asd)),k16_annotation$layers])
+
+## whats happenign in the annotation?
+apply(asd_astro, 2, rank)
+
+asd_test <- asd_astro[c("Sp16D02 ~ L1", "Sp16D14 ~ L1"),]
+apply(asd_test, 2, rank)
+
+annotate_registered_clusters(t(asd_astro))
+
+## are these values correct??
+pe_correlation_annotation$"DevBrain-snRNAseq"$cor_top100$Control$k16["Astro",c("Sp16D02", "Sp16D14")]
+
+annotate_registered_clusters(pe_correlation_annotation$"DevBrain-snRNAseq"$cor_top100$Control$k16["Astro",,drop=FALSE])
+annotate_registered_clusters(pe_correlation_annotation$"DevBrain-snRNAseq"$cor_top100$`Autism Spectrum Disorder`$k16["Astro",,drop=FALSE])
+
+## confidence_threshold = 0.25,
+# cutoff_merge_ratio = 0.10
+asd_astro[c("Sp16D02 ~ L1", "Sp16D14 ~ L1"),]
+# DevBrain-snRNAseq.Autism Spectrum Disorder.Astro DevBrain-snRNAseq.Control.Astro
+# Sp16D02 ~ L1                                        0.5373625                       0.5215637
+# Sp16D14 ~ L1                                        0.5981215                       0.5696782
+# DevBrain-snRNAseq.Williams Syndrome.Astro UCLA-ASD.Autism Spectrum Disorder.Astro UCLA-ASD.Control.Astro
+# Sp16D02 ~ L1                                 0.5245672                               0.5535913              0.5535345
+# Sp16D14 ~ L1                                 0.5779144                               0.6091387              0.5963688
+
+(asd_test["Sp16D14 ~ L1",]- asd_test["Sp16D02 ~ L1",])/asd_test["Sp16D14 ~ L1",]
+# DevBrain-snRNAseq.Autism Spectrum Disorder.Astro                  DevBrain-snRNAseq.Control.Astro 
+# 0.10158305                                       0.08445910 
+# DevBrain-snRNAseq.Williams Syndrome.Astro          UCLA-ASD.Autism Spectrum Disorder.Astro 
+# 0.09230992                                       0.09119004 
+# UCLA-ASD.Control.Astro 
+# 0.07182516 
+
+# asd_astro <- t(cor_asd[,k16_annotation$layers])
+rownames(asd_astro) <- k16_annotation$layer_combo
+
+asd_dataset_annotation <- data.frame(cn = colnames(asd_astro)) |>
+  separate(cn, into = c("Dataset", "PrimaryDx", "cell_type"), sep = "\\.", extra = "merge") 
+
+rownames(asd_dataset_annotation) <- colnames(asd_astro)
+
+asd_astro <- asd_astro[,rownames(asd_dataset_annotation |> arrange(cell_type))]
+
+rownames(asd_dataset_annotation) <- colnames(asd_astro)
+
+## Annotaiton matrix for subset
+anno_matrix <- do.call("cbind", map2(layer_anno_long[c("DevBrain-snRNAseq", "UCLA-ASD")], c("DevBrain-snRNAseq", "UCLA-ASD"),
+                    ~.x |>
+                      mutate(fill = ifelse(confidence, "X", "*"),
+                             name = paste0(.y, ".", PrimaryDx, ".",cell_type)) |>
+                      filter(Annotation == "k16", cell_type == "Astro") |>
+                      select(name, layer_combo, fill) |>
+                      pivot_wider(names_from = "layer_combo", values_from = "fill", values_fill = "") |>
+                      filter(!is.na(name)) |>
+                      column_to_rownames("name") |>
+                      t()))
+
+anno_matrix <- anno_matrix[c("Sp16D02 ~ L1", "Sp16D14 ~ L1"),]
+
+# library(ComplexHeatmap)
+
+cell_color_bar <- columnAnnotation(
+  df = asd_dataset_annotation,
+  col = list(PrimaryDx = asd_dx_colors)
+)
+
+layer_anno_colors <- k16_annotation |>
+  mutate(domain_color = as.integer(gsub("Sp[0-9]+D", "", layers))) |>
+  separate(layer_combo, into = c(NA, "layer_color"), " ~ ", remove = FALSE) |>
+  select(Annotation, layer_combo, layers, domain_color, layer_color)
+
+# domain colors from polychrome
+k_colors <- Polychrome::palette36.colors(28)
+names(k_colors) <- c(1:28)
+
+source(here("code", "analysis", "08_spatial_registration", "libd_intermediate_layer_colors.R"))
+libd_intermediate_layer_colors <- c(spatialLIBD::libd_layer_colors, libd_intermediate_layer_colors)
+names(libd_intermediate_layer_colors) <- gsub("ayer", "", names(libd_intermediate_layer_colors))
 
 
+bayes_color_bar <- rowAnnotation(
+  df = layer_anno_colors |>
+    select(domain_color, layer_color),
+  col = list(
+    domain_color = k_colors,
+    layer_color = libd_intermediate_layer_colors
+  ),
+  show_legend = FALSE
+)
+
+theSeq <- seq(min(asd_astro), max(asd_astro), by = 0.01)
+my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))
+
+pdf(here(plot_dir, "Astro_asd_Sp16.pdf"), width = 8.5, height = 11)
+
+Heatmap(asd_astro,
+        name = "Cor",
+        col= my.col,
+        show_column_names = FALSE,
+        bottom_annotation = cell_color_bar,
+        right_annotation = bayes_color_bar,
+        cluster_rows = FALSE)
+
+Heatmap(asd_astro[c("Sp16D02 ~ L1", "Sp16D14 ~ L1"),],
+        name = "Cor",
+        col= tail(my.col,50),
+        show_column_names = FALSE,
+        bottom_annotation = cell_color_bar,
+        # right_annotation = bayes_color_bar,
+        cluster_rows = FALSE
+        # cell_fun = function(j, i, x, y, width, height, fill) {
+        #   grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+        # }
+        )
+dev.off()
 
 
 # sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
