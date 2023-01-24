@@ -1,9 +1,59 @@
 
-library("purrr")
+library("tidyverse")
 library("here")
 library("jaffelab")
 library("sgejobs")
 
+data_dir <-
+  here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "14_spatial_registration_PEC"
+  )
+
+
+#### Define PEC & store cell type details ####
+pec_cell_types <- c(
+  # Non-neuronal cells (8)
+  "Astro",
+  "Endo",
+  "Immune",
+  "Micro",
+  "OPC",
+  "Oligo",
+  "PC",
+  "SMC",      
+  #Excit (9)
+  "L2/3 IT",
+  "L4 IT",
+  "L5 ET",
+  "L5 IT",
+  "L5/6 NP",
+  "L6 CT",
+  "L6 IT",
+  "L6 IT Car3",
+  "L6b",
+  # Inhib (10)
+  "Chandelier",
+  "Lamp5",
+  "Lamp5 Lhx6",
+  "Pax6",
+  "Pvalb",
+  "Sncg",
+  "Sst",
+  "Sst Chodl",
+  "VLMC",
+  "Vip"
+)
+
+pec_cell_type_tb <- tibble(cell_type = factor(pec_cell_types, levels = pec_cell_types), 
+                           cluster =  make.names(cell_type),
+                           ct_cat = unlist(map2(c("Non-neuronal", "Excit", "Inhib"),c(8, 9, 10), rep)))
+
+save(pec_cell_type_tb, file = here(data_dir, "pec_cell_type_tb.Rdata"))
+
+#### Chck V3 data ####
 raw_data_dir <- here("raw-data", "psychENCODE", "version3", "scRNAseq_AllenCTHarmonized")
 list.files(raw_data_dir)
 # [1] "CMC"                           "DevBrain-snRNAseq"             "Documentation"
