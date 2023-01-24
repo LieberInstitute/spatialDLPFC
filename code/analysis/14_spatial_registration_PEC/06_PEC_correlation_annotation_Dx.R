@@ -19,6 +19,8 @@ data_dir <-
         "14_spatial_registration_PEC"
     )
 
+load(here(data_dir, "pec_cell_type_tb.Rdata"), verbose = TRUE)
+
 #### Load Layer and k Data  ####
 layer_modeling_results <- fetch_data(type = "modeling_results")
 
@@ -41,42 +43,6 @@ modeling_results <-
     c(list(layer = layer_modeling_results), modeling_results)
 names(modeling_results)
 
-pec_cell_types <- c(
-  # Non-neuronal cells (8)
-  "Astro",
-  "Endo",
-  "Immune",
-  "Micro",
-  "OPC",
-  "Oligo",
-  "PC",
-  "SMC",      
-  #Excit (9)
-  "L2/3 IT",
-  "L4 IT",
-  "L5 ET",
-  "L5 IT",
-  "L5/6 NP",
-  "L6 CT",
-  "L6 IT",
-  "L6 IT Car3",
-  "L6b",
-  # Inhib (10)
-  "Chandelier",
-  "Lamp5",
-  "Lamp5 Lhx6",
-  "Pax6",
-  "Pvalb",
-  "Sncg",
-  "Sst",
-  "Sst Chodl",
-  "VLMC",
-  "Vip"
-)
-
-pec_cell_type_tb <- tibble(cell_type = factor(pec_cell_types, levels = pec_cell_types), 
-                          cluster =  make.names(cell_type),
-                          ct_cat = unlist(map2(c("Non-neuronal", "Excit", "Inhib"),c(8, 9, 10), rep)))
 
 # layer_anno[[1]] |> left_join(pec_cell_type_tb) |> filter(is.na(cell_type))
 
@@ -134,8 +100,9 @@ correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
         return(anno)
       })
       
-      layer_anno <- reduce(layer_anno, left_join, by = "cluster")
-      layer_anno$PrimaryDx <- dx
+      layer_anno <- reduce(layer_anno, left_join, by = "cluster") |>
+        left_join(pec_cell_type_tb) |>
+        mutate(PrimaryDx = dx)
       
       return(layer_anno)
     })
@@ -146,11 +113,10 @@ correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
     return(list(cor_top100 = cor_top100, layer_anno = layer_anno2))
 }
         
-# datasets <- c("CMC", "DevBrain-snRNAseq", "IsoHuB", "SZBDMulti", "UCLA-ASD", "Urban-DLPFC")
 datasets <-
-  c( # No isohub not. case-control
-    "CMC",
+  c("CMC",
     "DevBrain-snRNAseq",
+    "IsoHuB", # not. case-control but we want same format 
     "UCLA-ASD",
     "MultiomeBrain-DLPFC",
     "SZBDMulti-Seq"
