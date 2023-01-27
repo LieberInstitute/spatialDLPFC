@@ -64,7 +64,7 @@ for (sample_id in sample_ids) {
         ) |>
         select(c("x", "y", "deconvo_tool", "cell_type", "count"))
         
-    write.csv(file.path(out_dir, paste0("loopy_", sample_id, ".csv")))
+    write.csv(loopy_results, file.path(out_dir, paste0("loopy_", sample_id, ".csv")))
 }
 
 session_info()
