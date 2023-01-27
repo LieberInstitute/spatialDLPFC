@@ -62,9 +62,12 @@ for (sample_id in sample_ids) {
             cols = all_of(cell_types), names_to = "cell_type",
             values_to = "count"
         ) |>
-        select(c("x", "y", "deconvo_tool", "cell_type", "count"))
+        select(c("barcode", "x", "y", "deconvo_tool", "cell_type", "count"))
         
-    write.csv(loopy_results, file.path(out_dir, paste0("loopy_", sample_id, ".csv")))
+    write.csv(
+        loopy_results, file.path(out_dir, paste0("loopy_", sample_id, ".csv")),
+        quote = FALSE, row.names = FALSE
+    )
 }
 
 session_info()
