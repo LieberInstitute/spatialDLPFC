@@ -1,14 +1,8 @@
-## Documenting the analysis_IF folder for spatialDLPFC study
+This directory contains work to process and generate interactive spatialLIBD shiny app to visualize Visium_IF data. It contains 3 folders:
 
-internal filepath: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/analysis_IF
-github: https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/analysis_IF
+Old code:
+01_build_spe_IF: contains scripts and files needed to generated a basic spe object
+02_shinyapp: contains scripts for generating shinyapp
 
-Visium_IF was performed on 4 samples as a part of the spatialDLPFC study. This folder contains the analysis performed for those samples. There are two subfolders here:
-
-## 1. 01_build_spe_IF: 
-internal: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/analysis_IF/01_build_spe_IF
-Contains the script used to generate the basic spe object (01_build_basic_spe.R) and the bash script which was used to run the .R script(01_build_basic_spe.sh). output of the bash script is saved in the logs folder in a .txt file (01_build_basic_spe.txt)   
-
-## 2. 02_shinyapp
-internal: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/analysis_IF/02_shinyapp
-Contains scripts used to generate and deploy the spatialLIBD shiny app. app.R script was used to generate the app and deploy.R script was used to deploy the app. The documentation for the app along with customized icons is soft linked in www folder. Some huge files were ignored using the .gitignore file.
+Latest work:
+03_spatialLIBD_app: contains scripts for deploying the sptailLIBD shiny app, some of the large files were added to the .gitignore file. Customized documentation for the app is saved in their scripts under www folder.

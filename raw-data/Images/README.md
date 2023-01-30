@@ -1,6 +1,10 @@
-## Documenting the Images folder under raw-data directory for spatialDLPFC study
+## This directory documents the Images folder
 
-internal: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/Images
-github: https://github.com/LieberInstitute/spatialDLPFC/tree/main/raw-data/Images
+round*: contains H&E stained high resolution images obtained from the microscope (n=32 samples)
 
-Contains scanned raw images from the microscope, MATLAB scripts from VistoSeg pipeline and SpaceRanger scripts for Visum samples (n = 33 samples) and Visium_IF samples (n=4 samples). 
+spaceranger_ranger_trial: contains scripts to test spaceranger
+
+spotspotcheck-master: contains MATLAB scripts from VistoSeg pipeline, used to visualize cell segmentation using GUI.
+
+VisiumIF: contains immunofluorescent images from n=4 samples and individual unmixed tiles from inForm
+ 
