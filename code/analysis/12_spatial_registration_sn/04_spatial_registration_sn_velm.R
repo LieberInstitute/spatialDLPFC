@@ -59,8 +59,8 @@ rowData(sce.asd) <- DataFrame(gene_id = rownames(sce.asd))
 counts(sce.asd) <- 2^(logcounts(sce.asd)) - 1 ## remove log2(counts + 1)
 
 ## Run spatial registration
-message(Sys.time(), "- Run full PFC data")
-sn_hc_registration <- registration_wrapper(
+message(Sys.time(), "- Run full PFC data ####")
+sn_velm_registration <- registration_wrapper(
     sce = sce.asd,
     var_registration = "cellType",
     var_sample_id = "sample",
@@ -70,10 +70,10 @@ sn_hc_registration <- registration_wrapper(
 )
 
 
-sn_hc_registration_dx <- purrr::map(c(asd = "ASD", control = "Control"), function(dx){
-  message(Sys.time(), "- Run ", dx, " PFC data")
+sn_velm_registration_dx <- purrr::map(c(asd = "ASD", control = "Control"), function(dx){
+  message(Sys.time(), "- Run ", dx, " data ####")
   sce.asd.temp <- sce.asd[,sce.asd$diagnosis == dx]
-  sn_hc_registration <- registration_wrapper(
+  sn_velm_registration <- registration_wrapper(
     sce = sce.asd.temp,
     var_registration = "cellType",
     var_sample_id = "sample",
@@ -86,8 +86,8 @@ sn_hc_registration_dx <- purrr::map(c(asd = "ASD", control = "Control"), functio
 ## try combo Dx cell type?
 sce.asd$combo <- paste0(sce.asd$cellType, "_", sce.asd$diagnosis)
 
-message(Sys.time(), "- Run full PFC data with combo")
-sn_hc_registration_combo <- registration_wrapper(
+message(Sys.time(), "- Run full PFC data with combo ####")
+sn_velm_registration_combo <- registration_wrapper(
   sce = sce.asd,
   var_registration = "combo",
   var_sample_id = "sample",
@@ -96,10 +96,16 @@ sn_hc_registration_combo <- registration_wrapper(
   gene_name = "gene_name"
 )
 
+message("#### SAVING ####")
+velm_registration <- list(all = sn_velm_registration, combo = sn_velm_registration_combo)
+velm_registration <- c(velm_registration, sn_velm_registration_dx)
 
-save(sn_hc_registration, sn_hc_registration_dx, sn_hc_registration_combo,  file = here(data_dir, "sn_hc_registration.Rdata"))
+names(velm_registration)
+# [1] "all"     "combo"   "asd"     "control"
 
-# sgejobs::job_single('01_spatial_registration_sn', create_shell = TRUE, memory = '25G', command = "Rscript 01_spatial_registration_sn.R")
+save(velm_registration,  file = here(data_dir, "sn_velm_registration_velm.Rdata"))
+
+# sgejobs::job_single('04_spatial_registration_sn_velm', create_shell = TRUE, memory = '75G', command = "Rscript 04_spatial_registration_sn_velm.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
