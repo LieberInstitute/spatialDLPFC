@@ -83,16 +83,18 @@
 #'
 #' gene_set_enrichment_plot(
 #'     asd_sfari_enrichment,
-#'     gene_count_x = sfari_gene_count,
-#'     gene_count_y = layer_gene_count
+#'     gene_count_col = sfari_gene_count,
+#'     gene_count_row = layer_gene_count
 #' )
-gene_set_enrichment_plot <-
+gene_set_enrichment_plot_complex <-
     function(enrichment,
     PThresh = 12,
     ORcut = 3,
     enrichOnly = FALSE,
-    gene_count_x = NULL,
-    gene_count_y = NULL,
+    gene_count_col = NULL,
+    gene_count_row = NULL,
+    anno_title_col = NULL,
+    anno_title_row = NULL,
     mypal = c(
         "white",
         grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
@@ -109,7 +111,7 @@ gene_set_enrichment_plot <-
         stopifnot(is(enrichment, "data.frame"))
         stopifnot(all(c("ID", "test", "OR", "Pval") %in% colnames(enrichment)))
         stopifnot(ORcut <= PThresh)
-        stopifnot(length(xlabs) == length(unique(enrichment$ID)))
+        # stopifnot(length(xlabs) == length(unique(enrichment$ID)))
 
         ## Convert to -log10 scale and threshold the pvalues
         enrichment$log10_P_thresh <-
@@ -148,20 +150,22 @@ gene_set_enrichment_plot <-
         
         ##define annotations
         
-        stopifnot(setequal(rownames(gene_count_x), colnames(wide_p)))
-        stopifnot(setequal(rownames(gene_count_y), rownames(wide_p)))
+        stopifnot(setequal(rownames(gene_count_col), colnames(wide_p)))
+        stopifnot(setequal(rownames(gene_count_row), rownames(wide_p)))
         
-        group_gene_anno = columnAnnotation(n_genes = anno_barplot(gene_count_x[colnames(wide_p),]))
-        layer_gene_anno = rowAnnotation(n_genes = anno_barplot(gene_count_y[rownames(wide_p),]))
+        col_gene_anno = ComplexHeatmap::columnAnnotation(`n genes` = ComplexHeatmap::anno_barplot(gene_count_col[colnames(wide_p),]),
+                                                           annotation_label = anno_title_col)
+        row_gene_anno = ComplexHeatmap::rowAnnotation(`n genes` = ComplexHeatmap::anno_barplot(gene_count_row[rownames(wide_p),]),
+                                                      annotation_label = anno_title_row)
 
-        Heatmap(wide_p,
+        ComplexHeatmap::Heatmap(wide_p,
                 col = mypal,
                 name = "-log10(p-val)",
-                rect_gp = gpar(col = "black", lwd = 1),
+                rect_gp = grid::gpar(col = "black", lwd = 1),
                 cluster_rows = FALSE,
                 cluster_columns = FALSE,
-                right_annotation = layer_gene_anno,
-                top_annotation = group_gene_anno,
+                right_annotation = row_gene_anno,
+                top_annotation = col_gene_anno,
                 cell_fun = function(j, i, x, y, width, height, fill) {
                   grid.text(wide_or[i, j], x, y, gp = gpar(fontsize = 10))
                 }
@@ -178,8 +182,9 @@ get_gene_list_count <- function(gene_list){
 
 get_gene_enrichment_count <- function(model_results = fetch_data(type = "modeling_results"),
                                       model_type = "enrichment",
-                                      fdr_cut = 0.1){
-  model_results <- modeling_results[[model_type]]
+                                      fdr_cut = 0.1,
+                                      bayes_anno= bayes_anno){
+  model_results <- model_results[[model_type]]
   
   tstats <-
     model_results[, grep("[f|t]_stat_", colnames(model_results))]
