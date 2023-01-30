@@ -46,6 +46,7 @@ stopifnot(file.exists(dir_plots))
 load(here(dir_rdata, "gene_sets_SingleNuc.Rdata"), verbose = TRUE)
 names(geneList)
 
+
 ## Specify what k's we want to look at
 k_list <- c(2, 7, 9, 16, 28)
 names(k_list) <- paste0("k", sprintf("%02d", k_list))
@@ -93,7 +94,7 @@ enriched <-
         ) |>
         left_join(bayes_anno, by = "test") |>
         mutate(
-          test = factor(layer_combo, levels = rev(bayes_anno$layer_combo[bayes_anno$layer_combo %in% layer_combo]))
+          test = factor(layer_combo, levels = bayes_anno$layer_combo[bayes_anno$layer_combo %in% layer_combo])
         ) |>
         select(-c(layer_combo, Annotation, fdr_cut, model_type))
     )
@@ -106,31 +107,58 @@ save(enriched, file = here(dir_rdata, "enriched_singleNuc.Rdata"))
 ## Some sets are much larger than others
 map_depth(enriched,2 ,~ filter(.x, test == unique(test)[1])[, c("SetSize", "ID")])
 
-## Find the position for the text title on the plots
-y_text <-
-    map_int(enriched, ~ length(unique(.x$test))) * 15 + c(3, 12, 15, 25, 45)
 
+## source updated enrichment plot 
+source(here("code", "analysis","10_clinical_gene_set_enrichment", "gene_set_enrichment_plot_complex.R"))
+
+## how many genes for each domain or DE set, 
+gene_enrichment_count <- map(bayesSpace_registration, function(r){
+  en_count <- get_gene_enrichment_count(r)
+  ##reorder to match layer_combo
+  rownames(en_count) <- bayes_anno$layer_combo[match(rownames(en_count), bayes_anno$test)]
+  layer_order <- bayes_anno$layer_combo[bayes_anno$layer_combo %in% rownames(en_count)]
+  return(en_count[layer_order,,drop = FALSE])
+  })
+
+gene_list_count <- map(geneList, get_gene_list_count)
+
+
+## Find the position for the text title on the plots
+# y_text <-
+#     map_int(enriched, ~ length(unique(.x$test))) * 15 + c(3, 12, 15, 25, 45)
+# 
+
+pdf(here(dir_plots, "Enrich_Velmeshev_k09.pdf"), height = 8, width = 10)
+  gene_set_enrichment_plot_complex(enriched$Velmeshev$k09,
+                           gene_count_col = gene_list_count[["Velmeshev"]],
+                           gene_count_row = gene_enrichment_count[["k09"]],
+                           anno_title_col = "n ASD DE Genes",
+                           anno_title_row = "n Domain\nGenes")
+dev.off()
 
 walk2(enriched, names(enriched), function(enriched, ds_name){
   
-  pdf(here(dir_plots, paste0(ds_name, "_FDR05.pdf")), height = 8, width = 9)
-  walk2(enriched, y_text, function(x, ypos) {
-
-    m <- match(unique(x$ID), x$ID)
-    gene_set_enrichment_plot(x, xlabs = x$ID[m])
-
-    # text(
-    #   x = 3,
-    #   y = ypos,
-    #   c(paste0(ds_name, " et al.")),
-    #   xpd = TRUE,
-    #   cex = 2.5,
-    #   font = 2
-    # )
+  pdf(here(dir_plots, paste0("Enrich_", ds_name, "_FDR05.pdf")), height = 8, width = 9)
+  map2(enriched, names(enriched), function(x, k) {
+          message(ds_name, " - ", k)
+    
+          print(gene_set_enrichment_plot_complex(x,
+               gene_count_col = gene_list_count[[ds_name]],
+               gene_count_row = gene_enrichment_count[[k]],
+               anno_title_col = "n DE Genes",
+               anno_title_row = "n Domain\nGenes"))
+    
   })
   dev.off()
   
 })
+
+
+## 2x2 example 
+
+gene_list_count
+
+
 
 ## Reproducibility information
 print("Reproducibility information:")
