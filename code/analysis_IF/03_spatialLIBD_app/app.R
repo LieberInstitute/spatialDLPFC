@@ -30,11 +30,13 @@ spatialLIBD::run_app(
         "ManualAnnotation"
     ),
     spe_continuous_vars = c(
-        vars[grep("^(tangram|CART|cell2location|spotlight)_", vars)],
+        vars[grep("^(broad|layer|cart)_", vars)],
         "sum_umi",
         "sum_gene",
         "expr_chrM",
-        "expr_chrM_ratio"
+        "expr_chrM_ratio",
+        "VistoSeg_count_deprecated",
+        "cellpose_count"
     ),
     default_cluster = "10x_graphclust",
     docs_path = "www"
