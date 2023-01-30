@@ -11,4 +11,4 @@ Contains the script used to generate the basic spe object (01_build_basic_spe.R)
 
 ## 2. 02_shinyapp
 internal: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/code/analysis_IF/02_shinyapp
-Contains the script used to generate the script for generating and deploying the spatialLIBD shiny app. app.R script was used to generate the app and deploy.R script was used to deploy the app. Some huge files were ignored using the .gitignore file.
+Contains scripts used to generate and deploy the spatialLIBD shiny app. app.R script was used to generate the app and deploy.R script was used to deploy the app. The documentation for the app along with customized icons is soft linked in www folder. Some huge files were ignored using the .gitignore file.
