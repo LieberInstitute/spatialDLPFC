@@ -428,7 +428,7 @@ co <- column_order(heatmap_k9)
 velm_col_order_k9 <- colnames(cor_k9)[co]
 
 
-pdf(here(plot_dir, "spatial_registration_Velemshev_heatmap_k9.pdf"))
+pdf(here(plot_dir, "spatial_registration_Velemshev_heatmap_k9.pdf"), height = 8, width = 10)
 draw(heatmap_k9)
 dev.off()
 
