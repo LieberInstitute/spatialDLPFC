@@ -97,20 +97,18 @@ correlate_and_annotate <- function(registration_stats, make_cor_plot = FALSE) {
 #### Load velm data ####
 load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn", "sn_velm_registration.Rdata"), verbose = TRUE)
 
-# velm_registration <- list(all = sn_hc_registration, combo = sn_hc_registration_combo)
 velm_registration <- sn_hc_registration_dx
-
 names(velm_registration)
-# [1] "all"     "combo"   "asd"     "control"
+# [1] "asd"     "control"
 
 ## extract enrichment data
 velm_registration <- map(velm_registration, ~pluck(.x, "enrichment"))
 
 ## Calculate correlations and annotations for each dataset
-pe_correlation_annotation <- map(velm_registration , correlate_and_annotate)
+velm_correlation_annotation <- map(velm_registration , correlate_and_annotate)
 
-save(pe_correlation_annotation,
-    file = here(data_dir, "PEC_correlation_annotation.Rdata")
+save(velm_correlation_annotation,
+    file = here(data_dir, "Velmeshev_correlation_annotation.Rdata")
 )
 
 #### Save Output to XLSX sheet ####
@@ -125,7 +123,7 @@ key <- data.frame(
 )
 
 ## Clear file and write key
-annotation_xlsx <- here(data_dir, "PEC_spatial_annotations.xlsx")
+annotation_xlsx <- here(data_dir, "spatial_annotations_Velmeshev.xlsx")
 write.xlsx(
     key,
     file = annotation_xlsx,
@@ -136,8 +134,8 @@ write.xlsx(
 
 ## write annotations
 walk2(
-    pe_correlation_annotation,
-    names(pe_correlation_annotation),
+    velm_correlation_annotation,
+    names(velm_correlation_annotation),
     ~ write.xlsx(
         .x$layer_anno,
         file = annotation_xlsx,
@@ -148,7 +146,7 @@ walk2(
 )
 
 ## write correlations
-walk2(pe_correlation_annotation, names(pe_correlation_annotation), function(data, name) {
+walk2(velm_correlation_annotation, names(velm_correlation_annotation), function(data, name) {
     name <- paste0("cor_", name)
     # message(name)
     walk2(
@@ -188,7 +186,7 @@ source(
     max.deparse.length = 500
 )
 
-layer_anno <- transpose(pe_correlation_annotation)$layer_anno
+layer_anno <- transpose(velm_correlation_annotation)$layer_anno
 
 layer_anno_all <- do.call("rbind", layer_anno) |>
     rownames_to_column("PrimaryDx") |>
@@ -208,7 +206,8 @@ layer_anno_long <- layer_anno_all |>
     mutate(
         confidence = !grepl("\\*", label),
         layers = str_split(gsub("\\*", "", label), "/"),
-        Annotation = gsub("_label", "", Annotation)
+        Annotation = gsub("_label", "", Annotation),
+        cluster = factor(cluster)
     ) |>
     unnest_longer("layers") |>
     # mutate(layers = ifelse(Annotation == "layer" & grepl("^[0-9]",layers), paste0("L",layers), layers))
@@ -225,7 +224,6 @@ layer_anno_long <- layer_anno_all |>
         anno_confidence = ifelse(confidence, "high", "low")
     ) |>
   left_join(spatial_layer_anno)
-
 
 #### Plot layer annotation ####
 
@@ -270,39 +268,6 @@ dotplot_control_datasets <- registration_dot_plot2(control_anno_long, color_by =
 ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_dotplot_control.png"), width = 12)
 
 #### Control only Heatmap ####
-#### Spatial Registration Heatmap ####
-
-cor_top100 <- pe_correlation_annotation$control$cor_top100
-
-## Build cor all
-cor_top100$k09 <- cor_top100$k09[rownames(cor_top100$layer), ]
-cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer), ]
-cor_top100$layer <- cor_top100$layer[, c(paste0("Layer", seq_len(6)), "WM")]
-
-cor_all <- t(do.call("cbind", cor_top100))
-corner(cor_all)
-rownames(cor_all)
-
-## Annotation matrix
-anno_matrix <- layer_anno_long |>
-  filter(PrimaryDx == "control") |>
-  mutate(fill = ifelse(confidence, "X", "*")) |>
-  select(cluster, layer_combo, fill) |>
-  pivot_wider(names_from = "layer_combo", values_from = "fill", values_fill = "") |>
-  filter(!is.na(cluster)) |>
-  column_to_rownames("cluster") |>
-  t()
-
-## check rownames match
-setequal(rownames(cor_all), rownames(anno_matrix))
-setdiff(rownames(cor_all), levels(layer_anno_long$layer_combo))
-setdiff(rownames(cor_all), rownames(anno_matrix))
-# [1] "Sp09D09 ~ WM" "Sp16D12 ~ L6" "Sp16D11 ~ WM" "Sp16D13 ~ WM" ## missing need to fix!
-setdiff(rownames(anno_matrix), rownames(cor_all))
-
-anno_matrix <- anno_matrix[rownames(cor_all), colnames(cor_all)]
-corner(anno_matrix)
-corner(cor_all)
 
 ## Color setup
 ## match spatialLIBD color scale
@@ -343,14 +308,65 @@ bayes_color_bar <- rowAnnotation(
   show_legend = FALSE
 )
 
+
+#### Spatial Registration Heatmap ####
+cor_top100 <- velm_correlation_annotation$control$cor_top100
+
+## Build cor all
+cor_top100$k09 <- cor_top100$k09[rownames(cor_top100$layer), ]
+cor_top100$k16 <- cor_top100$k16[rownames(cor_top100$layer), ]
+cor_top100$layer <- cor_top100$layer[, c(paste0("Layer", seq_len(6)), "WM")]
+
+cor_all <- t(do.call("cbind", cor_top100))
+corner(cor_all)
+
 ## reorder and rename to meet bayes annotations
-
-
 cor_all <- cor_all[layer_anno_colors$layers,]
 rownames(cor_all) <- layer_anno_colors$layer_combo
 
+## Annotation matrix
+anno_matrix <- layer_anno_long |>
+  filter(PrimaryDx == "control") |>
+  mutate(fill = ifelse(confidence, "X", "*")) |>
+  select(cluster, layer_combo, fill) |>
+  pivot_wider(names_from = "layer_combo", values_from = "fill", values_fill = "") 
+
+## nned a better way to fix this...
+setdiff(rownames(cor_all), colnames(anno_matrix))
+# [1] "Sp09D09 ~ WM" "Sp16D12 ~ L6" "Sp16D11 ~ WM" "Sp16D13 ~ WM" ## missing need to fix!
+
+anno_matrix <- anno_matrix |>
+  mutate("Sp16D12 ~ L6" = "", ## add missing domains
+         "Sp16D12 ~ L6" = "",
+         "Sp16D11 ~ WM" = "",
+         "Sp16D13 ~ WM" = "",
+         "Sp09D09 ~ WM" = "") |>
+  column_to_rownames("cluster") |>
+  t()
+
+fix_velm_ct <- function(ct){
+  ct <- gsub("(\\d)\\.(\\d)","\\1/\\2",ct)
+  gsub("\\.","-", ct)
+}
+
+colnames(cor_all) <- fix_velm_ct(colnames(cor_all))
+colnames(anno_matrix) <- fix_velm_ct(colnames(anno_matrix))
+
+setequal(colnames(cor_all), colnames(anno_matrix)) # good
+
+# check rownames match
+setequal(rownames(cor_all), rownames(anno_matrix))
+setdiff(rownames(anno_matrix), rownames(cor_all))
+setdiff(rownames(cor_all), rownames(anno_matrix))
+
+## reorder
+anno_matrix <- anno_matrix[rownames(cor_all), colnames(cor_all)]
+corner(anno_matrix)
+corner(cor_all)
+
+
 ## Ordered heatmap
-pdf(here(plot_dir, "spatial_registration_Velemshev_heatmap_bayesAnno.pdf"), height = 8, width = 10)
+pdf(here(plot_dir, "spatial_registration_Velemshev_heatmap.pdf"), height = 8, width = 10)
 Heatmap(cor_all,
         name = "Cor",
         col = my.col,
@@ -358,11 +374,11 @@ Heatmap(cor_all,
         rect_gp = gpar(col = "black", lwd = 1),
         cluster_rows = FALSE,
         cluster_columns = TRUE,
-        right_annotation = bayes_color_bar
+        right_annotation = bayes_color_bar,
         # bottom_annotation = cell_color_bar,
-        # cell_fun = function(j, i, x, y, width, height, fill) {
-        #   grid.text(anno_matrix_reorder[i, j], x, y, gp = gpar(fontsize = 10))
-        # }
+        cell_fun = function(j, i, x, y, width, height, fill) {
+          grid.text(anno_matrix[i, j], x, y, gp = gpar(fontsize = 10))
+        }
 )
 dev.off()
 
@@ -382,73 +398,83 @@ bayes_color_bar_k9 <- rowAnnotation(
 #### K09 ####
 
 cor_k9 <- cor_all[as.character(layer_anno_colors_k9$layer_combo),]
-
+anno_matrix_k9 <- anno_matrix[rownames(cor_k9),]
 ## Ordered heatmap
 
-## also case?
-case_k9 <- t(pe_correlation_annotation$asd$cor_top100$k09)
+# ## also case?
+# case_k9 <- t(velm_correlation_annotation$asd$cor_top100$k09)
+# 
+# case_k9 <- case_k9[layer_anno_colors_k9$layers,colnames(cor_k9)]
+# rownames(case_k9) <- layer_anno_colors_k9$layer_combo
+# 
+# diff_k09 = (cor_k9 - case_k9)/cor_k9
 
-case_k9 <- case_k9[layer_anno_colors_k9$layers,colnames(cor_k9)]
-rownames(case_k9) <- layer_anno_colors_k9$layer_combo
+heatmap_k9 <- Heatmap(cor_k9,
+                      name = "Cor",
+                      col = tail(my.col,-1), ## if same num weird behavior ?
+                      # row_split = layer_anno_colors$Annotation,
+                      rect_gp = gpar(col = "black", lwd = 1),
+                      cluster_rows = FALSE,
+                      cluster_columns = TRUE,
+                      right_annotation = bayes_color_bar_k9,
+                      # bottom_annotation = cell_color_bar,
+                      cell_fun = function(j, i, x, y, width, height, fill) {
+                        grid.text(anno_matrix_k9[i, j], x, y, gp = gpar(fontsize = 10))
+                      }
+)
 
-diff_k09 = (cor_k9 - case_k9)/cor_k9
+co <- column_order(heatmap_k9)
+# [1] 12 11 17 15 16  8  7 13 14  9 10  1  5  6  2  3  4
+velm_col_order_k9 <- colnames(cor_k9)[co]
+
 
 pdf(here(plot_dir, "spatial_registration_Velemshev_heatmap_k9.pdf"))
-Heatmap(cor_k9,
-        name = "Cor",
-        col = tail(my.col,-1), ## if same num weird behavior ?
-        # row_split = layer_anno_colors$Annotation,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE,
-        cluster_columns = TRUE,
-        right_annotation = bayes_color_bar_k9
-        # bottom_annotation = cell_color_bar,
-        # cell_fun = function(j, i, x, y, width, height, fill) {
-        #   grid.text(anno_matrix_reorder[i, j], x, y, gp = gpar(fontsize = 10))
-        # }
-)
-
-Heatmap(case_k9,
-        name = "Cor - case",
-        col = tail(my.col,-1), ## if same num weird behavior ?
-        # row_split = layer_anno_colors$Annotation,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE,
-        cluster_columns = TRUE,
-        right_annotation = bayes_color_bar_k9
-        # bottom_annotation = cell_color_bar,
-        # cell_fun = function(j, i, x, y, width, height, fill) {
-        #   grid.text(anno_matrix_reorder[i, j], x, y, gp = gpar(fontsize = 10))
-        # }
-)
-
+draw(heatmap_k9)
 dev.off()
 
+## save annotation data
+save(anno_matrix_k9, velm_col_order_k9, file = here(data_dir, "Velmeshev_k9_annotation_details.Rdata"))
 
-## k09 control - case
-case_k9 <- t(pe_correlation_annotation$asd$cor_top100$k09)
 
-case_k9 <- case_k9[layer_anno_colors_k9$layers,colnames(cor_k9)]
-rownames(case_k9) <- layer_anno_colors_k9$layer_combo
+# Heatmap(case_k9,
+#         name = "Cor - case",
+#         col = tail(my.col,-1), ## if same num weird behavior ?
+#         # row_split = layer_anno_colors$Annotation,
+#         rect_gp = gpar(col = "black", lwd = 1),
+#         cluster_rows = FALSE,
+#         cluster_columns = TRUE,
+#         right_annotation = bayes_color_bar_k9
+#         # bottom_annotation = cell_color_bar,
+#         # cell_fun = function(j, i, x, y, width, height, fill) {
+#         #   grid.text(anno_matrix_reorder[i, j], x, y, gp = gpar(fontsize = 10))
+#         # }
+# )
 
-diff_k09 = (cor_k9 - case_k9)/cor_k9
 
-## Ordered heatmap
-pdf(here(plot_dir, "spatial_registration_Velemshev_heatmap_k9_diff.pdf"))
-Heatmap(diff_k09,
-        name = "Percent diff",
-        col = tail(my.col,-1), ## if same num weird behavior ?
-        # row_split = layer_anno_colors$Annotation,
-        rect_gp = gpar(col = "black", lwd = 1),
-        cluster_rows = FALSE,
-        cluster_columns = TRUE,
-        right_annotation = bayes_color_bar_k9
-        # bottom_annotation = cell_color_bar,
-        # cell_fun = function(j, i, x, y, width, height, fill) {
-        #   grid.text(anno_matrix_reorder[i, j], x, y, gp = gpar(fontsize = 10))
-        # }
-)
-dev.off()
+# ## k09 control - case
+# case_k9 <- t(velm_correlation_annotation$asd$cor_top100$k09)
+# 
+# case_k9 <- case_k9[layer_anno_colors_k9$layers,colnames(cor_k9)]
+# rownames(case_k9) <- layer_anno_colors_k9$layer_combo
+# 
+# diff_k09 = (cor_k9 - case_k9)/cor_k9
+# 
+# ## Ordered heatmap
+# pdf(here(plot_dir, "spatial_registration_Velemshev_heatmap_k9_diff.pdf"))
+# Heatmap(diff_k09,
+#         name = "Percent diff",
+#         col = tail(my.col,-1), ## if same num weird behavior ?
+#         # row_split = layer_anno_colors$Annotation,
+#         rect_gp = gpar(col = "black", lwd = 1),
+#         cluster_rows = FALSE,
+#         cluster_columns = TRUE,
+#         right_annotation = bayes_color_bar_k9
+#         # bottom_annotation = cell_color_bar,
+#         # cell_fun = function(j, i, x, y, width, height, fill) {
+#         #   grid.text(anno_matrix_reorder[i, j], x, y, gp = gpar(fontsize = 10))
+#         # }
+# )
+# dev.off()
 
 
 # sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
