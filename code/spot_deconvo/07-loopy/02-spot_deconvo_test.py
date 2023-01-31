@@ -10,7 +10,7 @@ from rasterio import Affine
 from loopy.sample import Sample
 from loopy.utils.utils import remove_dupes
 
-deconvo_tools = ['tangram', 'cell2location']
+deconvo_tools = ['tangram', 'cell2location', 'CART']
 cell_types = ["astro", "micro", "neuron", "oligo", "other"]
 spot_diameter_m = 55e-6 # 55-micrometer diameter for Visium spot
 img_channels = ['Lipofuscin', 'DAPI', 'GFAP', 'NeuN', 'OLIG2', 'TMEM119']
@@ -55,9 +55,7 @@ out_dir = Path(str(out_dir).format(sample_id_spot))
 #   Import spot-deconvo results
 loopy_csv = pd.read_csv(loopy_results_path)
 loopy_csv.index = loopy_csv['barcode']
-loopy_csv.rename(
-    {'barcode': 'id', 'x': 'y', 'y': 'x'}, axis = 1, inplace = True
-)
+loopy_csv.rename({'barcode': 'id'}, axis = 1, inplace = True)
 
 #   Define the Sample object and add coordinates
 this_sample = Sample(name = sample_id_spot, path = out_dir)

@@ -43,7 +43,7 @@ for (sample_id in sample_ids) {
         as_tibble() |>
         select(c(1, 5, 6))
 
-    colnames(tissue_positions) = c("barcode", "x", "y")
+    colnames(tissue_positions) = c("barcode", "y", "x")
     
     #   Sanity check: all barcodes from the results should be in the spaceranger
     #   output
@@ -55,7 +55,12 @@ for (sample_id in sample_ids) {
     
     loopy_results = collapsed_results |>
         filter(
-            sample_id == {{ sample_id }}, obs_type == "observed"
+            sample_id == {{ sample_id }},
+            (obs_type == "observed") |
+                (obs_type == "actual" & deconvo_tool == deconvo_tools[1])
+        ) |>
+        mutate(
+            deconvo_tool = ifelse(obs_type == "actual", "CART", deconvo_tool)
         ) |>
         left_join(tissue_positions, by = "barcode") |>
         pivot_longer(
