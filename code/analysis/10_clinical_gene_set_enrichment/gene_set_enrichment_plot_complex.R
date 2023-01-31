@@ -95,6 +95,8 @@ gene_set_enrichment_plot_complex <-
     gene_count_row = NULL,
     anno_title_col = NULL,
     anno_title_row = NULL,
+    column_order = NULL,
+    anno_add = NULL,
     mypal = c(
         "white",
         grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
@@ -148,8 +150,22 @@ gene_set_enrichment_plot_complex <-
         wide_or <- make_wide("OR_char")
         wide_p <- make_wide("log10_P_thresh")
         
-        ##define annotations
+        ## Reorder 
+        if(!is.null(column_order)){
+          stopifnot(setequal(column_order, colnames(wide_or)))
+          wide_or <- wide_or[, column_order]
+          wide_p <- wide_p[, column_order]
+        }
         
+        if(!is.null(anno_add)){
+          stopifnot(setequal(colnames(anno_add), colnames(wide_or)))
+          stopifnot(setequal(rownames(anno_add), rownames(wide_or)))
+          
+          wide_or[] <- paste0(anno_add[rownames(wide_or), colnames(wide_or)],"\n",wide_or)
+          
+        }
+        
+        ##define annotations
         stopifnot(setequal(rownames(gene_count_col), colnames(wide_p)))
         stopifnot(setequal(rownames(gene_count_row), rownames(wide_p)))
         
@@ -167,7 +183,7 @@ gene_set_enrichment_plot_complex <-
                 right_annotation = row_gene_anno,
                 top_annotation = col_gene_anno,
                 cell_fun = function(j, i, x, y, width, height, fill) {
-                  grid.text(wide_or[i, j], x, y, gp = gpar(fontsize = 10))
+                  grid::grid.text(wide_or[i, j], x, y, gp = grid::gpar(fontsize = 10))
                 }
                 )
         

@@ -128,13 +128,33 @@ gene_list_count <- map(geneList, get_gene_list_count)
 #     map_int(enriched, ~ length(unique(.x$test))) * 15 + c(3, 12, 15, 25, 45)
 # 
 
+load(here("processed-data",
+          "rdata",
+          "spe",
+          "12_spatial_registration_sn", 
+          "05_velm_correlation_annotation", 
+          "Velmeshev_k9_annotation_details.Rdata"),
+     verbose = TRUE)
+
 pdf(here(dir_plots, "Enrich_Velmeshev_k09.pdf"), height = 8, width = 10)
   gene_set_enrichment_plot_complex(enriched$Velmeshev$k09,
                            gene_count_col = gene_list_count[["Velmeshev"]],
                            gene_count_row = gene_enrichment_count[["k09"]],
                            anno_title_col = "n ASD DE Genes",
-                           anno_title_row = "n Domain\nGenes")
+                           anno_title_row = "n Domain\nGenes",
+                           column_order = velm_col_order_k9)
 dev.off()
+
+pdf(here(dir_plots, "Enrich_Velmeshev_k09anno.pdf"), height = 8, width = 10)
+gene_set_enrichment_plot_complex(enriched$Velmeshev$k09,
+                                 gene_count_col = gene_list_count[["Velmeshev"]],
+                                 gene_count_row = gene_enrichment_count[["k09"]],
+                                 anno_title_col = "n ASD DE Genes",
+                                 anno_title_row = "n Domain\nGenes",
+                                 column_order = velm_col_order_k9,
+                                 anno_add = anno_matrix_k9)
+dev.off()
+
 
 walk2(enriched, names(enriched), function(enriched, ds_name){
   
@@ -152,12 +172,6 @@ walk2(enriched, names(enriched), function(enriched, ds_name){
   dev.off()
   
 })
-
-
-## 2x2 example 
-
-gene_list_count
-
 
 
 ## Reproducibility information
