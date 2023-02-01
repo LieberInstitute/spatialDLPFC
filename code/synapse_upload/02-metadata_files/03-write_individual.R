@@ -5,6 +5,7 @@ library("sessioninfo")
 library("here")
 library("readxl")
 library("SpatialExperiment")
+library("tidyverse")
 
 template_path <- here(
     "code", "synapse_upload", "templates", "template_individual_human.xlsx"
@@ -14,20 +15,17 @@ spe_path <- here(
     "processed-data", "rdata", "spe", "01_build_spe", "spe_filtered_final.Rdata"
 )
 
-fastq_naming_path <- here(
-    "processed-data", "synapse_upload", "01-prepare_fastq",
-    "fastq_renaming_scheme.csv"
+write_path_synapse <- here(
+    "processed-data", "synapse_upload", "02-metadata_files", "individual.csv"
 )
 
-write_path <- here(
-    "processed-data", "synapse_upload", "02-metadata_files", "individual.csv"
+write_path_paper <- here(
+    "processed-data", "synapse_upload", "02-metadata_files", "demographics.csv"
 )
 
 ###############################################################################
 #  Load and preprocess phenotype data
 ###############################################################################
-
-fastq_naming <- read.csv(fastq_naming_path)
 
 #   Load phenotype data and take the first row for each donor
 load(spe_path, verbose = TRUE)
@@ -86,6 +84,15 @@ template_names <- colnames(read_excel(template_path))
 stopifnot(all(template_names %in% colnames(meta_df)))
 stopifnot(all(colnames(meta_df) %in% template_names))
 
-write.csv(meta_df, write_path, row.names = FALSE)
+write.csv(meta_df, write_path_synapse, row.names = FALSE)
+
+#   Take the non-NA columns with their original colnames and write to CSV
+#   (for use as a supplementary table in the paper). Add the brain region
+#   (DLPFC for all donors)
+pd |>
+    as_tibble() |>
+    select(c("subject", "sex", "diagnosis", "age")) |>
+    mutate("brain_region" = "DLPFC") |>
+    write.csv(file = write_path_paper, quote = FALSE, row.names = FALSE)
 
 session_info()
