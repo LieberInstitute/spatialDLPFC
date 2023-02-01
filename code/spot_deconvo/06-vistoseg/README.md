@@ -1,0 +1,1 @@
+This directory involved some temporary experimentation with re-running `VistoSeg` on the IF data to produce per-spot total cell counts, when there was an issue with `Cellpose` counts. The issue with `Cellpose` usage was fixed and this work with `VistoSeg` was then abandoned.
