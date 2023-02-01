@@ -9,8 +9,8 @@ Loading conda_R/4.2.x
 Wed Feb  1 11:42:04 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 2877491
-Job name: pseudobulk_data_IsoHuB
+Job id: 2877496
+Job name: pseudobulk_data_PTSDBrainomics
 Hostname: compute-126.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2.x
@@ -102,41 +102,71 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-input = IsoHuB_annotated.h5ad
+input = PTSDBrainomics_annotated.h5ad
 
-#### Running: IsoHuB ####
-2023-02-01 11:42:26 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version5/IsoHuB_annotated.h5ad
-Warning message:
-The names of these selected uns items have been modified to match R
+#### Running: PTSDBrainomics ####
+2023-02-01 11:42:26 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version5/PTSDBrainomics_annotated.h5ad
+Warning messages:
+1: The names of these selected uns$uns_dict items have been modified to match R
+conventions: 'sc1_D19-6588_DLPFC' -> 'sc1_D19.6588_DLPFC',
+'sc11_D19-6574_DLPFC' -> 'sc11_D19.6574_DLPFC', 'sc12_D19-6577_DLPFC' ->
+'sc12_D19.6577_DLPFC', 'sc13_D19-5544_DLPFC' -> 'sc13_D19.5544_DLPFC',
+'sc18_D19-6586_DLPFC' -> 'sc18_D19.6586_DLPFC', 'sc2_D19-6571_DLPFC' ->
+'sc2_D19.6571_DLPFC', 'sc21_D19-6580_DLPFC' -> 'sc21_D19.6580_DLPFC',
+'sc3_D19-6592_DLPFC' -> 'sc3_D19.6592_DLPFC', 'sc31_D19-1934_DLPFC' ->
+'sc31_D19.1934_DLPFC', 'sc31_D19-6579_DLPFC' -> 'sc31_D19.6579_DLPFC',
+'sc32_D19-5546_DLPFC' -> 'sc32_D19.5546_DLPFC', 'sc33_D19-6587_DLPFC' ->
+'sc33_D19.6587_DLPFC', 'sc34_D19-5542_DLPFC' -> 'sc34_D19.5542_DLPFC',
+'sc35_D19-5545_DLPFC' -> 'sc35_D19.5545_DLPFC', 'sc42_D19-6589_DLPFC' ->
+'sc42_D19.6589_DLPFC', 'sc43_D19-6575_DLPFC' -> 'sc43_D19.6575_DLPFC',
+'sc44_D19-6584_DLPFC' -> 'sc44_D19.6584_DLPFC', 'sc5_D19-6590_DLPFC' ->
+'sc5_D19.6590_DLPFC', 'sc6_D19-5539_DLPFC' -> 'sc6_D19.5539_DLPFC', and
+'sc7 [... truncated] 
+2: The names of these selected uns$var_dict items have been modified to match R
+conventions: 'sc1_D19-6588_DLPFC' -> 'sc1_D19.6588_DLPFC',
+'sc11_D19-6574_DLPFC' -> 'sc11_D19.6574_DLPFC', 'sc12_D19-6577_DLPFC' ->
+'sc12_D19.6577_DLPFC', 'sc13_D19-5544_DLPFC' -> 'sc13_D19.5544_DLPFC',
+'sc18_D19-6586_DLPFC' -> 'sc18_D19.6586_DLPFC', 'sc2_D19-6571_DLPFC' ->
+'sc2_D19.6571_DLPFC', 'sc21_D19-6580_DLPFC' -> 'sc21_D19.6580_DLPFC',
+'sc3_D19-6592_DLPFC' -> 'sc3_D19.6592_DLPFC', 'sc31_D19-1934_DLPFC' ->
+'sc31_D19.1934_DLPFC', 'sc31_D19-6579_DLPFC' -> 'sc31_D19.6579_DLPFC',
+'sc32_D19-5546_DLPFC' -> 'sc32_D19.5546_DLPFC', 'sc33_D19-6587_DLPFC' ->
+'sc33_D19.6587_DLPFC', 'sc34_D19-5542_DLPFC' -> 'sc34_D19.5542_DLPFC',
+'sc35_D19-5545_DLPFC' -> 'sc35_D19.5545_DLPFC', 'sc42_D19-6589_DLPFC' ->
+'sc42_D19.6589_DLPFC', 'sc43_D19-6575_DLPFC' -> 'sc43_D19.6575_DLPFC',
+'sc44_D19-6584_DLPFC' -> 'sc44_D19.6584_DLPFC', 'sc5_D19-6590_DLPFC' ->
+'sc5_D19.6590_DLPFC', 'sc6_D19-5539_DLPFC' -> 'sc6_D19.5539_DLPFC', and
+'sc7 [... truncated] 
+3: The names of these selected uns items have been modified to match R
 conventions: '_attr2type' -> 'X_attr2type' 
 
 SCE Dimesions:
-[1] 33339 29675
+[1]  33877 198572
 [1] "n_genes"      "n_counts"     "Channel"      "anno"         "subclass"    
 [6] "azimuth"      "sampleID"     "individualID"
 Cell Types:
 
      Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
-      3466        224        391         67       6492       1501        178 
+     17605       1498        838        241      44560      10415       1872 
      L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
-        26       1364        241        781        156        289        571 
+       535      13803       2345       9497       1342       1760       3284 
 Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
-       182       1400       5142       1735        120        195       1398 
+      1295       9419      35866      10498        614       1046       9804 
        SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
-        71        407       1719          9       1460         90 
-2023-02-01 11:43:08 revert to counts
-2023-02-01 11:43:17 Pseudobulk
-2023-02-01 11:43:17 make pseudobulk object
-2023-02-01 11:43:52 dropping 13 pseudo-bulked samples that are below 'min_ncells'.
-2023-02-01 11:43:52 drop lowly expressed genes
-2023-02-01 11:43:52 normalize expression
+       141       1714       9112         79       9242        147 
+2023-02-01 11:44:39 revert to counts
+2023-02-01 11:45:12 Pseudobulk
+2023-02-01 11:45:12 make pseudobulk object
+2023-02-01 11:51:16 dropping 71 pseudo-bulked samples that are below 'min_ncells'.
+2023-02-01 11:51:17 drop lowly expressed genes
+2023-02-01 11:51:17 normalize expression
 
 SCE Pseudobulk Dimesions:
-[1] 27308   116
+[1] 27064   425
 [1] "Reproducibility information:"
-[1] "2023-02-01 11:44:10 EST"
+[1] "2023-02-01 11:51:50 EST"
    user  system elapsed 
- 92.418   5.083 121.778 
+535.864  16.443 581.272 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.2 Patched (2023-01-31 r83743)
@@ -339,5 +369,7 @@ SCE Pseudobulk Dimesions:
  NOTE: Python version was forced by use_python function
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Error in sion_info() : could not find function "sion_info"
+Execution halted
 **** Job ends ****
-Wed Feb  1 11:44:15 EST 2023
+Wed Feb  1 11:51:51 EST 2023

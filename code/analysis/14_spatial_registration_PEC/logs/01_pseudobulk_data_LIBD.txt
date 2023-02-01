@@ -9,8 +9,8 @@ Loading conda_R/4.2.x
 Wed Feb  1 11:42:04 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 2877491
-Job name: pseudobulk_data_IsoHuB
+Job id: 2877495
+Job name: pseudobulk_data_LIBD
 Hostname: compute-126.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2.x
@@ -102,41 +102,41 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-input = IsoHuB_annotated.h5ad
+input = LIBD_annotated.h5ad
 
-#### Running: IsoHuB ####
-2023-02-01 11:42:26 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version5/IsoHuB_annotated.h5ad
+#### Running: LIBD ####
+2023-02-01 11:42:26 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version5/LIBD_annotated.h5ad
 Warning message:
 The names of these selected uns items have been modified to match R
 conventions: '_attr2type' -> 'X_attr2type' 
 
 SCE Dimesions:
-[1] 33339 29675
+[1] 33783 52214
 [1] "n_genes"      "n_counts"     "Channel"      "anno"         "subclass"    
 [6] "azimuth"      "sampleID"     "individualID"
 Cell Types:
 
      Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
-      3466        224        391         67       6492       1501        178 
+      4485        144       1306        150       9791       1646        714 
      L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
-        26       1364        241        781        156        289        571 
+       155       4594        732       2536        362        920        492 
 Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
-       182       1400       5142       1735        120        195       1398 
+       258       1712      10017       1965         77       1266       1425 
        SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
-        71        407       1719          9       1460         90 
-2023-02-01 11:43:08 revert to counts
-2023-02-01 11:43:17 Pseudobulk
-2023-02-01 11:43:17 make pseudobulk object
-2023-02-01 11:43:52 dropping 13 pseudo-bulked samples that are below 'min_ncells'.
-2023-02-01 11:43:52 drop lowly expressed genes
-2023-02-01 11:43:52 normalize expression
+       217        174       5485         37       1388        166 
+2023-02-01 11:43:19 revert to counts
+2023-02-01 11:43:31 Pseudobulk
+2023-02-01 11:43:31 make pseudobulk object
+2023-02-01 11:44:44 dropping 53 pseudo-bulked samples that are below 'min_ncells'.
+2023-02-01 11:44:44 drop lowly expressed genes
+2023-02-01 11:44:44 normalize expression
 
 SCE Pseudobulk Dimesions:
-[1] 27308   116
+[1] 25646   212
 [1] "Reproducibility information:"
-[1] "2023-02-01 11:44:10 EST"
+[1] "2023-02-01 11:45:07 EST"
    user  system elapsed 
- 92.418   5.083 121.778 
+151.220   5.873 178.816 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.2 Patched (2023-01-31 r83743)
@@ -340,4 +340,4 @@ SCE Pseudobulk Dimesions:
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Feb  1 11:44:15 EST 2023
+Wed Feb  1 11:45:09 EST 2023
