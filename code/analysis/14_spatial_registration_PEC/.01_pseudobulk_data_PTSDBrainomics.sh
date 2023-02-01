@@ -1,9 +1,9 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=50G,h_vmem=50G,h_fsize=100G
-#$ -N pseudobulk_data_UCLA-ASD
-#$ -o logs/01_pseudobulk_data_UCLA-ASD.txt
-#$ -e logs/01_pseudobulk_data_UCLA-ASD.txt
+#$ -l caracol,mem_free=10G,h_vmem=50G,h_fsize=500G
+#$ -N pseudobulk_data_PTSDBrainomics
+#$ -o logs/01_pseudobulk_data_PTSDBrainomics.txt
+#$ -e logs/01_pseudobulk_data_PTSDBrainomics.txt
 #$ -m e
 
 echo "**** Job starts ****"
@@ -37,7 +37,7 @@ fi
 export CUDA_VISIBLE_DEVICES=$(echo "$avail_gpus" | head -n $NUM_GPUS | paste -sd ",")
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R UCLA-ASD_annotated_mismatches_removed.h5ad
+Rscript 01_pseudobulk_data.R PTSDBrainomics_annotated.h5ad
 
 echo "**** Job ends ****"
 date

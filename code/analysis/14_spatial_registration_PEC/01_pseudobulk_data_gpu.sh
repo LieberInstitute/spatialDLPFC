@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ## Usage:
-# sh 01_pseudobulk_data.sh
+# sh 01_pseudobulk_data_gpu.sh
 
 ## Create the logs directory
 mkdir -p logs
 
- for PE_data in CMC DevBrain-snRNAseq IsoHuB MultiomeBrain-DLPFC SZBDMulti-Seq UCLA-ASD; do
+for PE_data in CMC DevBrain-snRNAseq IsoHuB MultiomeBrain-DLPFC SZBDMulti-Seq UCLA-ASD LIBD PTSDBrainomics; do
 
     ## Internal script name
     SHORT="01_pseudobulk_data_${PE_data}"
@@ -17,7 +17,7 @@ mkdir -p logs
     cat > .${SHORT}.sh <<EOF
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=10G,h_vmem=10G,h_fsize=100G
+#$ -l caracol,mem_free=50G,h_vmem=50G,h_fsize=100G
 #$ -N ${NAME}
 #$ -o logs/${SHORT}.txt
 #$ -e logs/${SHORT}.txt

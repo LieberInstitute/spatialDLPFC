@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=50G,h_vmem=50G,h_fsize=100G
+#$ -l caracol,mem_free=10G,h_vmem=50G,h_fsize=500G
 #$ -N pseudobulk_data_DevBrain-snRNAseq
 #$ -o logs/01_pseudobulk_data_DevBrain-snRNAseq.txt
 #$ -e logs/01_pseudobulk_data_DevBrain-snRNAseq.txt
