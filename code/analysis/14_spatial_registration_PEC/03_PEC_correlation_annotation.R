@@ -308,7 +308,7 @@ ggsave(dotplot, filename = here(plot_dir, paste0("registration_anno_dotplot_all.
 ggsave(dotplot, filename = here(plot_dir, paste0("registration_anno_dotplot_all.pdf")), width = 13)
 
 
-# sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '10G', command = "Rscript 03_correlate_spatial.R")
+# sgejobs::job_single('03_PEC_correlation_annotation', create_shell = TRUE, memory = '10G', command = "Rscript 03_PEC_correlation_annotation.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
