@@ -6,7 +6,7 @@
 ## Create the logs directory
 mkdir -p logs
 
-for dataset in CMC DevBrain-snRNAseq SZBDMulti-Seq UCLA-ASD MultiomeBrain-DLPFC; do
+for dataset in CMC DevBrain-snRNAseq SZBDMulti-Seq UCLA-ASD MultiomeBrain-DLPFC LIBD PTSDBrainomics; do
 
     ## Internal script name
     SHORT="05_compute_registration_Dx_${dataset}"
