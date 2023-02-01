@@ -109,7 +109,7 @@ registration_dot_plot2 <- function(annotation_df,
   } else{
     dot_plot <- grid_plot + 
       ggplot2::geom_point(data = annotation_df,
-                          ggplot2::aes(color = .data[[color_by]], alpha = layer_confidence),
+                          ggplot2::aes(color = .data[[color_by]], alpha = anno_confidence),
                           position = ggplot2::position_dodge(width = .8)) +
       scale_alpha_discrete(range = c(good = 1, poor = .25))
   }
