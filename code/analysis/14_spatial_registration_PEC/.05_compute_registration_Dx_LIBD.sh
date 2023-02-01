@@ -1,10 +1,10 @@
 #!/bin/bash
 #$ -cwd
-#$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
-#$ -N compute_registration_stats_SZBDMulti-Seq
-#$ -o logs/02_compute_registration_stats_SZBDMulti-Seq.txt
-#$ -e logs/02_compute_registration_stats_SZBDMulti-Seq.txt
-#$ -hold_jid pseudobulk_data_SZBDMulti-Seq
+#$ -l mem_free=10G,h_vmem=10G,h_fsize=100G
+#$ -N compute_registration_Dx_LIBD
+#$ -o logs/05_compute_registration_Dx_LIBD.txt
+#$ -e logs/05_compute_registration_Dx_LIBD.txt
+#$ -hold_jid pseudobulk_data_LIBD
 #$ -m e
 
 echo "**** Job starts ****"
@@ -24,7 +24,7 @@ module load conda_R/4.2.x
 module list
 
 ## Sumbit Rscript
-Rscript 02_compute_registration_stats.R SZBDMulti-Seq
+Rscript 05_compute_registration_Dx.R LIBD
 
 echo "**** Job ends ****"
 date

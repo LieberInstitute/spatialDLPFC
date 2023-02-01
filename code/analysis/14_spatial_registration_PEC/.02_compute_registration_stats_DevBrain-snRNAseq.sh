@@ -4,7 +4,7 @@
 #$ -N compute_registration_stats_DevBrain-snRNAseq
 #$ -o logs/02_compute_registration_stats_DevBrain-snRNAseq.txt
 #$ -e logs/02_compute_registration_stats_DevBrain-snRNAseq.txt
-#$ -hold_jid pseudobulk_data_DevBrain
+#$ -hold_jid pseudobulk_data_DevBrain-snRNAseq
 #$ -m e
 
 echo "**** Job starts ****"
