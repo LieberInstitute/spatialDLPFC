@@ -173,7 +173,7 @@ Make heatmap of top 5 enriched genes in each region:cluster for k = 9. Save data
 
 ### 10_Clinical_Gene_Set_Enrichment
 `01_Clinical_Gene_Set_Enrichment.R`
-Perform clinical geneset enrichment on several published datasets and my k = 9 pseudobulked data. 
+Perform clinical geneset enrichment on several published datasets and k = 9 pseudobulked data. 
 
 ### 11_gene_ontology
 `gene_ontology.R`
@@ -230,17 +230,20 @@ Make plots of top 20 svgs. Only did this for the clusters pairs: 13 and 7, 16 an
 Make plots for top 20 svg. Plots here: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/13_nnSVG/pairwise/combine_2`
 
 ### 14_spatial_registration_PEC
-`01_pseudobulk_DevBrain.R`
-Spatial registration of DevBrain dataset against manual annotations, my k = 9, and k = 16 data. Plots are here: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/14_spatial_registration_PEC/DevBrain`
+`01_pseudobulk_data.R` Data was psuedo-bulked by `subclass` and `IndividualID` and saved so it could be used
+for both the all data and Dx (by primary diagnosis, i.e. seperate for case and control samples). Done in parallel by data set.
 
-`02_pseudobulk_SZBD.R`
-This study contained 2 annotated datasets with different numbers of cells. I only performed spatial registration on the first one. This dataset took a really long time to pseudobulk. 
+`02_compute_registration_stats.R` Then internal steps of `spatialLIBD::registration_wrapper` (`registration_block_cor`, `registration_mode`, and `registration_stats_enrichment`) was then run on the pseudo bulk data.  Done in parallel by data set.
 
-`03_pseudobulk_CMC.R`
+`03_PEC_correlation_annotation.R` The enrichment statistics are used for spatial registration with layer, k09, and k16 data. Correlation values are used for layer annotation. Plot Summary dot plot of annotation across all 8 data sets.
 
-`04_pseudobulk_IsoHUB.R`
+`04_PEC_check_expression.R` brief check of expression of some genes of interest across the data sets.
 
-`05_pseudobulk_UCLA.R`
+`05_compute_registration_Dx.R` Compute registration sets, but separate the data by Dx.
+
+`06_PEC_correlation_annotation_Dx.R` Spatial registration and annotation of the Dx enrichment statistics
+
+`07_PEC_annotation_Dx_plots.R` Create dotplot of Dx annotations
 
 ### 15_cell_composition
 Some exploratory down-stream analyses using spot deconvolution results to understand the cell composition in ant/mid/post controlling for spatial domains
