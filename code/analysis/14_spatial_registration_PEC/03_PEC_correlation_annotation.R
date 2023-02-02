@@ -107,7 +107,7 @@ datasets <-
     "LIBD",
     "MultiomeBrain-DLPFC",
     "PTSDBrainomics",
-    # "SZBDMulti-Seq", - hopefully this runs this time 
+    "SZBDMulti-Seq", 
     "UCLA-ASD"
   )
 names(datasets) <- datasets
