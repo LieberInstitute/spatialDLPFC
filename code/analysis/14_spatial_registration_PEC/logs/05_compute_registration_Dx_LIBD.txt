@@ -6,11 +6,11 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2.x
 **** Job starts ****
-Wed Feb  1 16:42:37 EST 2023
+Wed Feb  1 16:42:38 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 2885770
-Job name: compute_registration_Dx_MultiomeBrain-DLPFC
+Job id: 2885771
+Job name: compute_registration_Dx_LIBD
 Hostname: compute-129.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2.x
@@ -99,69 +99,53 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-Running - MultiomeBrain-DLPFC
+Running - LIBD
 
 SCE Dimesions:
-[1] 27751   474
+[1] 25646   212
   primaryDiagnosis  n
-1          Bipolar 10
-2          Control  5
-3    Schizophrenia  6
+1          Control 10
             
-             Bipolar Control Schizophrenia
-  Astro           10       5             6
-  Chandelier       9       4             6
-  Endo            10       5             6
-  Immune           5       2             2
-  L2.3.IT         10       5             6
-  L4.IT           10       5             6
-  L5.6.NP         10       5             6
-  L5.ET            1       1             0
-  L5.IT           10       5             6
-  L6.CT           10       5             6
-  L6.IT           10       5             6
-  L6.IT.Car3       8       5             5
-  L6b              9       5             6
-  Lamp5            9       5             6
-  Lamp5.Lhx6      10       5             6
-  Micro            9       5             6
-  Oligo           10       5             6
-  OPC             10       5             6
-  Pax6             6       4             3
-  PC              10       5             6
-  Pvalb           10       5             6
-  SMC              1       4             2
-  Sncg             7       4             6
-  Sst             10       5             6
-  Sst.Chodl        0       0             0
-  Vip              9       5             6
-  VLMC             6       5             4
+             Control
+  Astro           10
+  Chandelier       5
+  Endo             9
+  Immune           6
+  L2.3.IT         10
+  L4.IT            9
+  L5.6.NP          8
+  L5.ET            3
+  L5.IT            9
+  L6.CT            9
+  L6.IT            9
+  L6.IT.Car3       8
+  L6b              9
+  Lamp5            7
+  Lamp5.Lhx6       8
+  Micro           10
+  Oligo           10
+  OPC             10
+  Pax6             4
+  PC              10
+  Pvalb            9
+  SMC              9
+  Sncg             6
+  Sst             10
+  Sst.Chodl        0
+  Vip             10
+  VLMC             5
 2023-02-01 16:43:01 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-Dx: Bipolar - 219 cols
+Dx: Control - 212 cols
 Dropping Empty Levels: Sst.Chodl 
 2023-02-01 16:43:02 create model matrix
 2023-02-01 16:43:02 run duplicateCorrelation()
-2023-02-01 16:43:58 The estimated correlation is: 0.0724485697062869
-2023-02-01 16:43:58 computing enrichment statistics
-2023-02-01 16:44:23 extract and reformat enrichment results
-Dx: Control - 119 cols
-Dropping Empty Levels: Sst.Chodl 
-2023-02-01 16:44:24 create model matrix
-2023-02-01 16:44:24 run duplicateCorrelation()
-2023-02-01 16:44:56 The estimated correlation is: 0.0425495543780941
-2023-02-01 16:44:56 computing enrichment statistics
-2023-02-01 16:45:06 extract and reformat enrichment results
-Dx: Schizophrenia - 136 cols
-Dropping Empty Levels: L5.ET Sst.Chodl 
-2023-02-01 16:45:07 create model matrix
-2023-02-01 16:45:07 run duplicateCorrelation()
-2023-02-01 16:45:40 The estimated correlation is: 0.062337927332656
-2023-02-01 16:45:40 computing enrichment statistics
-2023-02-01 16:45:52 extract and reformat enrichment results
+2023-02-01 16:43:54 The estimated correlation is: 0.0948375210191938
+2023-02-01 16:43:54 computing enrichment statistics
+2023-02-01 16:44:16 extract and reformat enrichment results
 [1] "Reproducibility information:"
-[1] "2023-02-01 16:45:54 EST"
+[1] "2023-02-01 16:44:18 EST"
    user  system elapsed 
-185.331   5.482 194.528 
+ 88.362   3.887  96.881 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.2 Patched (2023-01-31 r83743)
@@ -349,4 +333,4 @@ Dropping Empty Levels: L5.ET Sst.Chodl
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Feb  1 16:45:56 EST 2023
+Wed Feb  1 16:44:19 EST 2023

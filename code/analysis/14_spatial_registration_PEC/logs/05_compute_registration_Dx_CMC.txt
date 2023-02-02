@@ -6,163 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.2.x
 **** Job starts ****
-Wed Jan 18 12:23:24 EST 2023
+Wed Feb  1 16:42:27 EST 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 2667874
+Job id: 2885766
 Job name: compute_registration_Dx_CMC
-Hostname: compute-129.cm.cluster
-Task id: undefined
-Unloading conda_R/4.2.x
-Loading conda_R/4.2.x
-
-Currently Loaded Modules:
-  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
-  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
-  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
-  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2.x
-  5) gcc/4.4.7        10) git-lfs/2.8.0
-
- 
-
-Loading required package: SummarizedExperiment
-Loading required package: MatrixGenerics
-Loading required package: matrixStats
-
-Attaching package: ‘MatrixGenerics’
-
-The following objects are masked from ‘package:matrixStats’:
-
-    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
-    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
-    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
-    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
-    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
-    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
-    colWeightedMeans, colWeightedMedians, colWeightedSds,
-    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
-    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
-    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
-    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
-    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
-    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
-    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
-    rowWeightedSds, rowWeightedVars
-
-Loading required package: GenomicRanges
-Loading required package: stats4
-Loading required package: BiocGenerics
-
-Attaching package: ‘BiocGenerics’
-
-The following objects are masked from ‘package:stats’:
-
-    IQR, mad, sd, var, xtabs
-
-The following objects are masked from ‘package:base’:
-
-    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
-    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
-    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
-    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
-    table, tapply, union, unique, unsplit, which.max, which.min
-
-Loading required package: S4Vectors
-
-Attaching package: ‘S4Vectors’
-
-The following objects are masked from ‘package:base’:
-
-    expand.grid, I, unname
-
-Loading required package: IRanges
-Loading required package: GenomeInfoDb
-Loading required package: Biobase
-Welcome to Bioconductor
-
-    Vignettes contain introductory material; view with
-    'browseVignettes()'. To cite Bioconductor, see
-    'citation("Biobase")', and for packages 'citation("pkgname")'.
-
-
-Attaching package: ‘Biobase’
-
-The following object is masked from ‘package:MatrixGenerics’:
-
-    rowMedians
-
-The following objects are masked from ‘package:matrixStats’:
-
-    anyMissing, rowMedians
-
-Loading required package: SpatialExperiment
-Loading required package: rafalib
-here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-Running - CMC
-
-SCE Dimesions:
-[1] 28835  2101
-2023-01-18 12:24:05 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-Cell Types:
-
-     Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
-        99         78         67         49        100         99         85 
-     L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
-        25         99         89        100         75         82         92 
-Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
-        93         82         99         96         60         84         99 
-       SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
-         8         87         97          6         98         53 
-  primaryDiagnosis  n
-1          Control 53
-2    Schizophrenia 48
-            
-             Control Schizophrenia
-  Astro           53            46
-  Chandelier      43            35
-  Endo            41            26
-  Immune          25            24
-  L2.3.IT         53            47
-  L4.IT           53            46
-  L5.6.NP         46            39
-  L5.ET           14            11
-  L5.IT           53            46
-  L6.CT           47            42
-  L6.IT           53            47
-  L6.IT.Car3      42            33
-  L6b             46            36
-  Lamp5           50            42
-  Lamp5.Lhx6      50            43
-  Micro           45            37
-  Oligo           53            46
-  OPC             53            43
-  Pax6            37            23
-  PC              46            38
-  Pvalb           52            47
-  SMC              3             5
-  Sncg            49            38
-  Sst             52            45
-  Sst.Chodl        2             4
-  Vip             52            46
-  VLMC            30            23
-New Dx - 1143 cols
-2023-01-18 12:24:08 create model matrix
-2023-01-18 12:24:08 run duplicateCorrelation()
-Adding LIBD modules
-Loading git
-Loading LIBD module for git-status-size/github
-Loading LIBD module for git-lfs/2.8.0
-Loading LIBD module for rmate/1.5.9
-Loading LIBD module for ruby/2.6.4p104
-Loading conda_R/4.2.x
-**** Job starts ****
-Wed Jan 18 12:50:14 EST 2023
-**** JHPCE info ****
-User: lhuuki
-Job id: 2667928
-Job name: compute_registration_Dx_CMC
-Hostname: compute-144.cm.cluster
+Hostname: compute-124.cm.cluster
 Task id: undefined
 Unloading conda_R/4.2.x
 Loading conda_R/4.2.x
@@ -286,26 +135,26 @@ SCE Dimesions:
   Sst.Chodl        2             4
   Vip             52            46
   VLMC            30            23
-2023-01-18 12:50:56 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2023-02-01 16:43:09 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
 Dx: Control - 1143 cols
-2023-01-18 12:50:58 create model matrix
-2023-01-18 12:50:58 run duplicateCorrelation()
-2023-01-18 14:15:04 The estimated correlation is: 0.0883736541021314
-2023-01-18 14:15:04 computing enrichment statistics
-2023-01-18 14:30:05 extract and reformat enrichment results
+2023-02-01 16:43:11 create model matrix
+2023-02-01 16:43:11 run duplicateCorrelation()
+2023-02-01 17:31:00 The estimated correlation is: 0.0883736541021314
+2023-02-01 17:31:00 computing enrichment statistics
+2023-02-01 17:40:06 extract and reformat enrichment results
 Dx: Schizophrenia - 958 cols
-2023-01-18 14:30:06 create model matrix
-2023-01-18 14:30:06 run duplicateCorrelation()
-2023-01-18 15:22:58 The estimated correlation is: 0.101656728602542
-2023-01-18 15:22:58 computing enrichment statistics
-2023-01-18 15:32:45 extract and reformat enrichment results
+2023-02-01 17:40:07 create model matrix
+2023-02-01 17:40:07 run duplicateCorrelation()
+2023-02-01 18:10:52 The estimated correlation is: 0.101656728602542
+2023-02-01 18:10:52 computing enrichment statistics
+2023-02-01 18:17:21 extract and reformat enrichment results
 [1] "Reproducibility information:"
-[1] "2023-01-18 15:32:47 EST"
+[1] "2023-02-01 18:17:24 EST"
     user   system  elapsed 
-9645.943  100.999 9751.804 
+5616.771   68.938 5694.867 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
- version  R version 4.2.2 Patched (2023-01-18 r83635)
+ version  R version 4.2.2 Patched (2023-01-31 r83743)
  os       CentOS Linux 7 (Core)
  system   x86_64, linux-gnu
  ui       X11
@@ -313,7 +162,7 @@ Dx: Schizophrenia - 958 cols
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2023-01-18
+ date     2023-02-01
  pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -344,7 +193,7 @@ Dx: Schizophrenia - 958 cols
  cachem                   1.0.6     2021-08-19 [2] CRAN (R 4.2.1)
  cli                      3.6.0     2023-01-09 [2] CRAN (R 4.2.2)
  codetools                0.2-18    2020-11-04 [3] CRAN (R 4.2.2)
- colorspace               2.0-3     2022-02-21 [2] CRAN (R 4.2.1)
+ colorspace               2.1-0     2023-01-23 [2] CRAN (R 4.2.2)
  config                   0.3.1     2020-12-17 [2] CRAN (R 4.2.1)
  cowplot                  1.1.1     2020-12-30 [2] CRAN (R 4.2.1)
  crayon                   1.5.2     2022-09-29 [2] CRAN (R 4.2.1)
@@ -358,22 +207,22 @@ Dx: Schizophrenia - 958 cols
  digest                   0.6.31    2022-12-11 [2] CRAN (R 4.2.2)
  doParallel               1.0.17    2022-02-07 [2] CRAN (R 4.2.1)
  dotCall64                1.0-2     2022-10-03 [2] CRAN (R 4.2.1)
- dplyr                    1.0.10    2022-09-01 [2] CRAN (R 4.2.1)
+ dplyr                    1.1.0     2023-01-29 [2] CRAN (R 4.2.2)
  dqrng                    0.3.0     2021-05-01 [2] CRAN (R 4.2.1)
  DropletUtils             1.18.1    2022-11-22 [2] Bioconductor
  DT                       0.27      2023-01-17 [2] CRAN (R 4.2.2)
- edgeR                    3.40.1    2022-12-14 [2] Bioconductor
+ edgeR                    3.40.2    2023-01-19 [2] Bioconductor
  ellipsis                 0.3.2     2021-04-29 [2] CRAN (R 4.2.1)
  ExperimentHub            2.6.0     2022-11-01 [2] Bioconductor
- fansi                    1.0.3     2022-03-24 [2] CRAN (R 4.2.1)
+ fansi                    1.0.4     2023-01-22 [2] CRAN (R 4.2.2)
  fastmap                  1.1.0     2021-01-25 [2] CRAN (R 4.2.1)
  fields                   14.1      2022-08-12 [2] CRAN (R 4.2.1)
  filelock                 1.0.2     2018-10-05 [2] CRAN (R 4.2.1)
  foreach                  1.5.2     2022-02-02 [2] CRAN (R 4.2.1)
- fs                       1.5.2     2021-12-08 [2] CRAN (R 4.2.1)
- gargle                   1.2.1     2022-09-08 [2] CRAN (R 4.2.1)
+ fs                       1.6.0     2023-01-23 [2] CRAN (R 4.2.2)
+ gargle                   1.3.0     2023-01-30 [2] CRAN (R 4.2.2)
  generics                 0.1.3     2022-07-05 [2] CRAN (R 4.2.1)
- GenomeInfoDb           * 1.34.6    2023-01-03 [2] Bioconductor
+ GenomeInfoDb           * 1.34.7    2023-01-24 [2] Bioconductor
  GenomeInfoDbData         1.2.9     2022-09-29 [2] Bioconductor
  GenomicAlignments        1.34.0    2022-11-01 [2] Bioconductor
  GenomicRanges          * 1.50.2    2022-12-16 [2] Bioconductor
@@ -399,24 +248,24 @@ Dx: Schizophrenia - 958 cols
  jquerylib                0.1.4     2021-04-26 [2] CRAN (R 4.2.1)
  jsonlite                 1.8.4     2022-12-06 [2] CRAN (R 4.2.2)
  KEGGREST                 1.38.0    2022-11-01 [2] Bioconductor
- knitr                    1.41      2022-11-18 [2] CRAN (R 4.2.2)
+ knitr                    1.42      2023-01-25 [2] CRAN (R 4.2.2)
  later                    1.3.0     2021-08-18 [2] CRAN (R 4.2.1)
  lattice                  0.20-45   2021-09-22 [3] CRAN (R 4.2.2)
  lazyeval                 0.2.2     2019-03-15 [2] CRAN (R 4.2.1)
  lifecycle                1.0.3     2022-10-07 [2] CRAN (R 4.2.1)
- limma                    3.54.0    2022-11-01 [2] Bioconductor
+ limma                    3.54.1    2023-01-26 [2] Bioconductor
  locfit                   1.5-9.7   2023-01-02 [2] CRAN (R 4.2.2)
  magick                   2.7.3     2021-08-18 [2] CRAN (R 4.2.1)
  magrittr                 2.0.3     2022-03-30 [2] CRAN (R 4.2.1)
  maps                     3.4.1     2022-10-30 [2] CRAN (R 4.2.2)
- MASS                     7.3-58.1  2022-08-03 [3] CRAN (R 4.2.2)
+ MASS                     7.3-58.2  2023-01-23 [3] CRAN (R 4.2.2)
  Matrix                   1.5-3     2022-11-11 [2] CRAN (R 4.2.2)
  MatrixGenerics         * 1.10.0    2022-11-01 [2] Bioconductor
  matrixStats            * 0.63.0    2022-11-18 [2] CRAN (R 4.2.2)
  memoise                  2.0.1     2021-11-26 [2] CRAN (R 4.2.1)
  mime                     0.12      2021-09-28 [2] CRAN (R 4.2.1)
  munsell                  0.5.0     2018-06-12 [2] CRAN (R 4.2.1)
- nlme                     3.1-161   2022-12-15 [2] CRAN (R 4.2.2)
+ nlme                     3.1-162   2023-01-31 [2] CRAN (R 4.2.2)
  paletteer                1.5.0     2022-10-19 [2] CRAN (R 4.2.1)
  pillar                   1.8.1     2022-08-19 [2] CRAN (R 4.2.1)
  pkgconfig                2.0.3     2019-09-22 [2] CRAN (R 4.2.1)
@@ -432,8 +281,8 @@ Dx: Schizophrenia - 958 cols
  rafalib                * 1.0.0     2015-08-09 [1] CRAN (R 4.2.2)
  rappdirs                 0.3.3     2021-01-31 [2] CRAN (R 4.2.1)
  RColorBrewer             1.1-3     2022-04-03 [2] CRAN (R 4.2.1)
- Rcpp                     1.0.9     2022-07-08 [2] CRAN (R 4.2.1)
- RCurl                    1.98-1.9  2022-10-03 [2] CRAN (R 4.2.1)
+ Rcpp                     1.0.10    2023-01-22 [2] CRAN (R 4.2.2)
+ RCurl                    1.98-1.10 2023-01-27 [2] CRAN (R 4.2.2)
  rematch2                 2.1.2     2020-05-01 [2] CRAN (R 4.2.1)
  restfulr                 0.0.15    2022-06-16 [2] CRAN (R 4.2.1)
  rhdf5                    2.42.0    2022-11-01 [2] Bioconductor
@@ -449,7 +298,7 @@ Dx: Schizophrenia - 958 cols
  rsvd                     1.0.5     2021-04-16 [2] CRAN (R 4.2.1)
  rtracklayer              1.58.0    2022-11-01 [2] Bioconductor
  S4Vectors              * 0.36.1    2022-12-05 [2] Bioconductor
- sass                     0.4.4     2022-11-24 [2] CRAN (R 4.2.2)
+ sass                     0.4.5     2023-01-24 [2] CRAN (R 4.2.2)
  ScaledMatrix             1.6.0     2022-11-01 [2] Bioconductor
  scales                   1.2.1     2022-08-20 [2] CRAN (R 4.2.1)
  scater                   1.26.1    2022-11-13 [2] Bioconductor
@@ -468,20 +317,20 @@ Dx: Schizophrenia - 958 cols
  stringr                  1.5.0     2022-12-02 [2] CRAN (R 4.2.2)
  SummarizedExperiment   * 1.28.0    2022-11-01 [2] Bioconductor
  tibble                   3.1.8     2022-07-22 [2] CRAN (R 4.2.1)
- tidyr                    1.2.1     2022-09-08 [2] CRAN (R 4.2.1)
+ tidyr                    1.3.0     2023-01-24 [2] CRAN (R 4.2.2)
  tidyselect               1.2.0     2022-10-10 [2] CRAN (R 4.2.1)
  usethis                  2.1.6     2022-05-25 [2] CRAN (R 4.2.1)
- utf8                     1.2.2     2021-07-24 [2] CRAN (R 4.2.1)
- vctrs                    0.5.1     2022-11-16 [2] CRAN (R 4.2.2)
+ utf8                     1.2.3     2023-01-31 [2] CRAN (R 4.2.2)
+ vctrs                    0.5.2     2023-01-23 [2] CRAN (R 4.2.2)
  vipor                    0.4.5     2017-03-22 [2] CRAN (R 4.2.1)
  viridis                  0.6.2     2021-10-13 [2] CRAN (R 4.2.1)
  viridisLite              0.4.1     2022-08-22 [2] CRAN (R 4.2.1)
- xfun                     0.36      2022-12-21 [2] CRAN (R 4.2.2)
+ xfun                     0.37      2023-01-31 [2] CRAN (R 4.2.2)
  XML                      3.99-0.13 2022-12-04 [2] CRAN (R 4.2.2)
  xml2                     1.3.3     2021-11-30 [2] CRAN (R 4.2.1)
  xtable                   1.8-4     2019-04-21 [2] CRAN (R 4.2.1)
  XVector                  0.38.0    2022-11-01 [2] Bioconductor
- yaml                     2.3.6     2022-10-18 [2] CRAN (R 4.2.1)
+ yaml                     2.3.7     2023-01-23 [2] CRAN (R 4.2.2)
  zlibbioc                 1.44.0    2022-11-01 [2] Bioconductor
 
  [1] /users/lhuuki/R/4.2.x
@@ -490,4 +339,4 @@ Dx: Schizophrenia - 958 cols
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Jan 18 15:32:49 EST 2023
+Wed Feb  1 18:17:28 EST 2023
