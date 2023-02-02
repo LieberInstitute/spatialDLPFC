@@ -155,8 +155,8 @@ dotplot_control_datasets <- registration_dot_plot2(control_anno_long, color_by =
   scale_color_manual(values = pec_dataset_colors) +
   labs(x = "PsychENCODE DLPFC Cell Types", y = "Spatial Domains")
 
-ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_dotplot_control.png"), width = 12)
-ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_dotplot_control.pdf"), width = 12)
+ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_dotplot_control.png"), width = 13)
+ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_dotplot_control.pdf"), width = 13)
 
 # #### ASD Astrocyte Subset ####
 # 
@@ -353,7 +353,7 @@ ggsave(dotplot_control_datasets, filename = here(plot_dir, "registration_anno_do
 # 
 
 
-# sgejobs::job_single('03_correlate_spatial', create_shell = TRUE, memory = '25G', command = "Rscript 03_correlate_spatial.R")
+# sgejobs::job_single('07_PEC_annotation_Dx_plots', create_shell = TRUE, memory = '25G', command = "Rscript 07_PEC_annotation_Dx_plots.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
