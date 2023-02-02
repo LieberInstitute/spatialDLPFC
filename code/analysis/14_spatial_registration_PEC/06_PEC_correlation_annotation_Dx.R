@@ -109,12 +109,15 @@ correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
 }
         
 datasets <-
+  datasets <-
   c("CMC",
     "DevBrain-snRNAseq",
-    "IsoHuB", # not case-control but we want same format 
-    "UCLA-ASD",
+    "IsoHuB",
+    "LIBD",
     "MultiomeBrain-DLPFC",
-    "SZBDMulti-Seq"
+    # "PTSDBrainomics",
+    "SZBDMulti-Seq",
+    "UCLA-ASD"
   )
 names(datasets) <- datasets
 
