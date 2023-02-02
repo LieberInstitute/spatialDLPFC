@@ -119,34 +119,17 @@ Create heatmap of top 5 enriched genes for each layer.
 Plots of the numbers of enriched and downregulated genes in each layer. 
 
 ### 08_spatial_registration
-`01_spatial_registration.R`
+`01_layer_correlation_annotation.R`
 Perform spatial registration on BayesSpace clusters for k = 2 to k = 28 against manual annotations.
 
-`01_spatial_registration.sh`
+`02_t_stat_cor_plot.R`
+Make t-stat correlation plot for figure 1. 
 
-`01a_spatial_registration_16_23.sh`
+`03_jaccard.R`
+Computer and plot Jaccard Index aka correspondence between clusters at different ks 
 
-`01b_spatial_registration_24_28.sh`
-
-`02_bad_clusters.R`
-Originally created script to investigate BayesSpace clusters that didn't look like any of the manual annotations according to spatial registration. Then made heatmaps of the number of spots from each BayesSpace at k = 9 fall into which of the BayesSpace clusters at k = 16. Also did this with k = 9 vs k = 28. This is a supplementary figure called spots_in_cluster.
-
-`03_custom_spatial_registration_plots.R`
-Make custom versions of spatial registration plots for manuscript. 
-
-`03_custom_spatial_registration_plots.sh`
-
-`04_color_bar.R`
-Make color bar to go under spatial registration plots of figure 2.
-
-`layer_matrix_plot_AS.R`
-My version of layer_matrix_plot() function.
-
-`layer_stat_cor_plot_AS.R`
-My version of layer_stat_cor_plot() function.
-
-`05_t_stat_cor_plot.R`
-Make t-stat correlation plot for figure 2. 
+`libd_intermediate_layer_colors.R`
+Create color pallet to expand on  `spatialLIBD::libd_layer_colors` add an intermediate color for hybrid layers like L2/3
 
 ### 09_region_differential_expression
 `01_preliminary_analysis_region.R`
@@ -186,48 +169,12 @@ Performed gene ontology analysis for k = 9 pseudobulked data.
 Perform spatial registartion of snRNA-seq data against manual annotations and visium k = 9, k = 16 data, and k = 28. Did this using top 100 gene as well as all genes. Also did this for just the excitatory clusters of the snRNA-seq data. 
 
 ### 13_nnSVG
-`01_nnSVG.R`
-Ran nnSVG just regularly across the whole tissue. Results `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/whole_tissue`
-
-`01_nnSVG.sh`
-
-`02_nnSVG_pairwise_subset.R`
-Run nnSVG by subsetting the data for just the two clusters of interest. Results objects contain "subset" in the name. Did this for 6 pairs of clusters that Kristen was interested in. Results are here `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise` I submitted two jobs to each the shared queue, bluejay, and caracol. Bash scripts below. 
-
-`02_nnSVG_pairwise_subset_caracol.sh`
-
-`02_nnSVG_pairwise_subset_bluejay.sh`
-
-`02_nnSVG_pairwise_subset_shared.sh`
-
-`03_nnSVG_pairwise_combine_clusters_2.R`
-The second way we ran nnSVG was to merge/combine the clusters that we're trying to compare and run nnSVG with cluster as a covariate. We were able to do this all at once for pairs that didn't have any over-lapping clusters. The scripts for this contain the word "combine_clusters", the results objects contain "merge_pairs." Scripts labeled with _2 was before making certain changed to the script that Lukas suggested. Results are here: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise` This script combines the following pairs of clusters: 5 and 9, 4 and 16, 7 and 13. 
-
-`03_nnSVG_pairwise_combine_clusters_2.sh`
-
-`04_nnSVG_pairwise_combine_clusters_3.R`
-_3 contains modifications that Lukas suggested which were to add the filter_genes_counts and filter_genes_pcspots parameters to the filter_genes() function. Results are here: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/rdata/spe/13_nnSVG/pairwise` This script is for pairs: 5 and 9, 4 and 16, 7 and 13. 
-
-`05_nnSVG_pairwise_combine_clusters_12_13.R`
-Run nnSVG with modifications from Lukas after combining clusters 12 and 13.
-
-`05_nnSVG_pairwise_combine_clusters_12_13.sh`
-
-`06_nnSVG_pairwise_combine_clusters_12_7.R`
-Run nnSVG with modifications from Lukas after combining clusters 12 and 7.
-
-`06_nnSVG_pairwise_combine_clusters_12_7.sh`
-
-`07_nnSVG_pairwise_combine_clusters_12_16.R`
-Run nnSVG with modifications from Lukas after combining clusters 12 and 6.
-
-`07_nnSVG_pairwise_combine_clusters_12_16.sh`
-
-`08_nnSVG_pairwise_subset_results.R`
-Make plots of top 20 svgs. Only did this for the clusters pairs: 13 and 7, 16 and 4 because those were the only ones that ran all the way through. The jobs got stuck and didn't finish. Plots here: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/13_nnSVG/pairwise/subset_13_7` and `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/13_nnSVG/pairwise/subset_16_4`
-
-`09_nnSVG_pairwise_combine_clusters_results.R`
-Make plots for top 20 svg. Plots here: `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/plots/13_nnSVG/pairwise/combine_2`
+Exploratory part of this analysis, may be refined later
+`00_mod_check.R`
+`01_nnSVG_pairwise_modTest.R`
+`01_nnSVG_pairwise.R`
+`02_compile_nnSVG_output.R`
+`03_summarize_nnSVG_output.R`
 
 ### 14_spatial_registration_PEC
 `01_pseudobulk_data.R` Data was psuedo-bulked by `subclass` and `IndividualID` and saved so it could be used
