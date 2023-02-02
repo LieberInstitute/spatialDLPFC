@@ -259,4 +259,23 @@ output_dir <- here("processed-data", "rdata", "spe", "14_spatial_registration_PE
 list.files(output_dir, pattern = "pseudobulk")
 # [1] "pseudobulk_CMC.rds"                 "pseudobulk_DevBrain-snRNAseq.rds"   "pseudobulk_IsoHuB.rds"             
 # [4] "pseudobulk_LIBD.rds"                "pseudobulk_MultiomeBrain-DLPFC.rds" "pseudobulk_PTSDBrainomics.rds"     
-# [7] "pseudobulk_SZBDMulti-
+# [7] "pseudobulk_SZBDMulti-Seq.rds"       "pseudobulk_SZBDMulti.rds"           "pseudobulk_UCLA-ASD.rds" 
+
+list.files(output_dir, pattern = "registration_stats")
+# [1] "registration_stats_CMC.rds"               "registration_stats_DevBrain-snRNAseq.rds"
+# [3] "registration_stats_IsoHuB.rds"            "registration_stats_UCLA-ASD.rds"         
+# [5] "registration_stats_Urban-DLPFC.rds"   
+
+
+## No metadata for LIBD or PTSD 2/1
+
+pb_sce <- readRDS(here(output_dir, "pseudobulk_PTSDBrainomics.rds"))
+colData(pb_sce)
+
+samp <- as.character(unique(pb_sce$sampleID))
+
+gsub("-(\\d\\d\\d\\d)","\\1", samp)
+
+
+cat(as.character(unique(pb_sce$sampleID)), sep = "\n")
+
