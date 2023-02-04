@@ -18,19 +18,20 @@ cor_stats_layer <- layer_stat_cor(
 )
 
 layer_matrix_plot_AS <-
-    function(matrix_values,
-    matrix_labels = NULL,
-    xlabs = NULL,
-    layerHeights = NULL,
-    mypal = c(
-        "white",
-        grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
-    ),
-    breaks = NULL,
-    axis.args = NULL,
-    srt = 0,
-    mar = c(8, 4 + (max(nchar(rownames(matrix_values))) %/% 3) * 0.5, 4, 2) + 0.1,
-    cex = 1.2) {
+    function(
+        matrix_values,
+        matrix_labels = NULL,
+        xlabs = NULL,
+        layerHeights = NULL,
+        mypal = c(
+            "white",
+            grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
+        ),
+        breaks = NULL,
+        axis.args = NULL,
+        srt = 0,
+        mar = c(8, 4 + (max(nchar(rownames(matrix_values))) %/% 3) * 0.5, 4, 2) + 0.1,
+        cex = 1.2) {
         ## Create some default values in case the user didn't specify them
         if (is.null(xlabs)) {
             if (is.null(colnames(matrix_values))) {
@@ -110,11 +111,12 @@ layer_matrix_plot_AS <-
     }
 
 layer_stat_cor_plot_AS <-
-    function(cor_stats_layer,
-    max = 0.81,
-    min = -max,
-    layerHeights = NULL,
-    cex = 1.2) {
+    function(
+        cor_stats_layer,
+        max = 0.81,
+        min = -max,
+        layerHeights = NULL,
+        cex = 1.2) {
         ## From https://github.com/LieberInstitute/HumanPilot/blob/master/Analysis/Layer_Guesses/dlpfc_snRNAseq_annotation.R
         theSeq <- seq(min, max, by = 0.01)
         my.col <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(7, "PRGn"))(length(theSeq))

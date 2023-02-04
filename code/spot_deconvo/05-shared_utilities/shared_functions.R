@@ -18,8 +18,9 @@
 #   minCount:       passed to 'minCount' for 'vis_gene' if not [is_discrete]
 #
 #   Returns a ggplot object
-spot_plot <- function(spe, sample_id, title, var_name, include_legend, is_discrete,
-    colors = NULL, assayname = "logcounts", minCount = 0.5) {
+spot_plot <- function(
+        spe, sample_id, title, var_name, include_legend, is_discrete,
+        colors = NULL, assayname = "logcounts", minCount = 0.5) {
     POINT_SIZE <- 2.3
 
     #   If the quantity to plot is discrete, use 'vis_clus'. Otherwise use
@@ -93,13 +94,11 @@ overwrite_scale <- function(p, upper_limit, min_count) {
 #                       plot per page
 #
 #   Returns NULL.
-write_spot_plots <- function(
-        plot_list, n_col, plot_dir, file_prefix, include_individual
-        ) {
+write_spot_plots <- function(plot_list, n_col, plot_dir, file_prefix, include_individual) {
     #   Scaling factor for 'plot_grid'. 1.03 seems to reduce whitespace without
     #   introducing overlap, but larger values quickly introduce overlap
-    SCALE = 1.03
-    
+    SCALE <- 1.03
+
     #   Create two alternate versions of the default plot for use in the
     #   manuscript. One version has one plot per page, with consistent
     #   point size and aspect ratio with other individual spot plots. The
@@ -112,7 +111,7 @@ write_spot_plots <- function(
             theme(legend.position = "none")
         plot_list_no_title[[i]] <- plot_list[[i]] + labs(title = NULL)
     }
-    
+
     #   Internal-viewing version
     pdf(
         file.path(plot_dir, paste0(file_prefix, ".pdf")),
@@ -121,14 +120,14 @@ write_spot_plots <- function(
     )
     print(plot_grid(plotlist = plot_list, ncol = n_col), scale = SCALE)
     dev.off()
-    
+
     #   Individual version, if requested
     if (include_individual) {
         pdf(file.path(plot_dir, paste0(file_prefix, "_individual.pdf")))
         print(plot_list_individual)
         dev.off()
     }
-    
+
     #   No-title version
     pdf(
         file.path(
@@ -187,7 +186,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         group_by(deconvo_tool, cell_type) |>
         mutate(layer_match = count == max(count)) |>
         ungroup()
-    
+
     #   Add a column 'correct_layer' indicating whether for a cell type
     #   and deconvo tool, the cell_type has maximal value in the correct/
     #   expected layer
@@ -196,13 +195,13 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         function(i) {
             counts_df$layer_match[i] &&
                 (counts_df$label[i] %in%
-                     corresponding_layers[[
-                         as.character(counts_df$cell_type)[i]
-                     ]]
+                    corresponding_layers[[
+                        as.character(counts_df$cell_type)[i]
+                    ]]
                 )
         }
     )
-    
+
     #   For each deconvo tool, add up how many times cell types have maximal
     #   value in the correct layers
     correct_df <- counts_df |>
@@ -211,7 +210,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         ungroup()
     print("Number of times cell types have maximal value in the correct layer:")
     print(correct_df)
-    
+
     print("Full list of which cell types matched the expected layer, by method:")
     counts_df |>
         group_by(deconvo_tool) |>
@@ -219,7 +218,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         select(cell_type) |>
         ungroup() |>
         print(n = nrow(counts_df))
-    
+
     #   Add the "layer accuracy" in the facet titles in the upcoming plot
     correct_labeller <- paste0(
         correct_df$deconvo_tool, ": ", correct_df$num_matches, "/",
@@ -227,7 +226,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
     )
     names(correct_labeller) <- correct_df |> pull(deconvo_tool)
     correct_labeller <- labeller(deconvo_tool = correct_labeller)
-    
+
     p <- ggplot(
         counts_df,
         aes_string(x = x_var, y = "count", fill = fill_var)
@@ -242,7 +241,7 @@ layer_dist_barplot <- function(counts_df, filename, ylab, x_var, fill_var, fill_
         ) +
         theme_bw(base_size = 16) +
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
-    
+
     pdf(file.path(plot_dir, filename), width = 10, height = 5)
     print(p)
     dev.off()

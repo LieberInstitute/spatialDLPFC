@@ -1,4 +1,3 @@
-
 library("SpatialExperiment")
 library("spatialLIBD")
 library("nnSVG")

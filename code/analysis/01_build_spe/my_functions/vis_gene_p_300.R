@@ -1,14 +1,15 @@
 vis_gene_p_300 <-
-    function(spe,
-    d,
-    sampleid,
-    spatial,
-    title,
-    viridis = TRUE,
-    image_id = "lowres",
-    alpha = 1,
-    cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
-    point_size = 1.25) {
+    function(
+        spe,
+        d,
+        sampleid,
+        spatial,
+        title,
+        viridis = TRUE,
+        image_id = "lowres",
+        alpha = 1,
+        cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
+        point_size = 1.25) {
         ## Some variables
         pxl_row_in_fullres <- pxl_col_in_fullres <- key <- COUNT <- NULL
         # stopifnot(all(c("pxl_col_in_fullres", "pxl_row_in_fullres", "COUNT", "key") %in% colnames(d)))

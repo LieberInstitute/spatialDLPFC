@@ -23,9 +23,9 @@ spec <- matrix(
 opt <- getopt(spec)
 
 if (opt$n_cells_per_type == 0) {
-    n_cells_dirname = "full_data"
+    n_cells_dirname <- "full_data"
 } else {
-    n_cells_dirname = paste0("subset_n", opt$n_cells_per_type)
+    n_cells_dirname <- paste0("subset_n", opt$n_cells_per_type)
 }
 
 ################################################################################
@@ -91,7 +91,7 @@ gc()
 cell_counts_list <- list()
 for (sample_id in unique(spe[[sample_var]])) {
     this_path <- sub("\\{\\}", sample_id, cell_counts_path)
-    
+
     cell_counts_list[[sample_id]] <- read.csv(this_path)
 }
 
@@ -151,7 +151,7 @@ mgs_fil <- lapply(names(mgs), function(i) {
     # Add gene and cluster id to the dataframe
     x$gene <- rownames(x)
     x$cluster <- i
-    
+
     #   Only take genes that have already been determined to be markers for this
     #   cell type
     x <- x[
@@ -159,7 +159,7 @@ mgs_fil <- lapply(names(mgs), function(i) {
             match(rownames(x), marker_stats$gene)
         ] == i,
     ]
-    
+
     data.frame(x)
 })
 mgs_df <- do.call(rbind, mgs_fil)
@@ -264,7 +264,7 @@ for (sample_id in unique(spe[[sample_var]])) {
     this_sample_indices <- which(spe[[sample_var]] == sample_id)
     temp_spe <- spe[, this_sample_indices]
     temp_mat <- mat[this_sample_indices, ]
-    
+
     #   Scatterpie
     pdf(file.path(plot_dir, paste0("scatterpie_", sample_id, ".pdf")))
     print(
@@ -282,7 +282,7 @@ for (sample_id in unique(spe[[sample_var]])) {
             )
     )
     dev.off()
-    
+
     #   Residuals
     pdf(file.path(plot_dir, paste0("residuals_", sample_id, ".pdf")))
     print(
@@ -318,14 +318,14 @@ clusters <- clusters[, c("key", cell_types)]
 #   Write individual 'clusters.csv' files for each sample
 for (sample_id in unique(spe[[sample_var]])) {
     clusters_small <- clusters[spe[[sample_var]] == sample_id, ]
-    
+
     #   Make sure processed directory exists for this sample
     dir.create(
         file.path(processed_dir, sample_id),
         recursive = TRUE,
         showWarnings = FALSE
     )
-    
+
     write.csv(
         clusters_small,
         file.path(processed_dir, sample_id, "clusters.csv"),

@@ -74,12 +74,12 @@
 #'         )(50)
 #'     )
 #' )
-#'  enrichment <- asd_sfari_enrichment
+#' enrichment <- asd_sfari_enrichment
 #' ## Specify the layer heights so it resembles more the length of each
 #' ## layer in the brain
-#' 
-#' sfari_gene_count = get_gene_count(gene_list = asd_sfari_geneList)
-#' layer_gene_count = get_gene_enrichment_count(model_results = modeling_results)
+#'
+#' sfari_gene_count <- get_gene_count(gene_list = asd_sfari_geneList)
+#' layer_gene_count <- get_gene_enrichment_count(model_results = modeling_results)
 #'
 #' gene_set_enrichment_plot(
 #'     asd_sfari_enrichment,
@@ -87,20 +87,21 @@
 #'     gene_count_row = layer_gene_count
 #' )
 gene_set_enrichment_plot_complex <-
-    function(enrichment,
-    PThresh = 12,
-    ORcut = 3,
-    enrichOnly = FALSE,
-    gene_count_col = NULL,
-    gene_count_row = NULL,
-    anno_title_col = NULL,
-    anno_title_row = NULL,
-    column_order = NULL,
-    anno_add = NULL,
-    mypal = c(
-        "white",
-        grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
-    )) {
+    function(
+        enrichment,
+        PThresh = 12,
+        ORcut = 3,
+        enrichOnly = FALSE,
+        gene_count_col = NULL,
+        gene_count_row = NULL,
+        anno_title_col = NULL,
+        anno_title_row = NULL,
+        column_order = NULL,
+        anno_add = NULL,
+        mypal = c(
+            "white",
+            grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
+        )) {
         ## Re-order and shorten names if they match our data
         # if (all(unique(enrichment$test) %in% c("WM", paste0("Layer", seq_len(6))))) {
         #     enrichment$test <-
@@ -145,75 +146,80 @@ gene_set_enrichment_plot_complex <-
             res <- res[, levels(as.factor(enrichment$test))]
             t(res)
         }
-        
+
         ## Define matrix
         wide_or <- make_wide("OR_char")
         wide_p <- make_wide("log10_P_thresh")
-        
-        ## Reorder 
-        if(!is.null(column_order)){
-          stopifnot(setequal(column_order, colnames(wide_or)))
-          wide_or <- wide_or[, column_order]
-          wide_p <- wide_p[, column_order]
+
+        ## Reorder
+        if (!is.null(column_order)) {
+            stopifnot(setequal(column_order, colnames(wide_or)))
+            wide_or <- wide_or[, column_order]
+            wide_p <- wide_p[, column_order]
         }
-        
-        if(!is.null(anno_add)){
-          stopifnot(setequal(colnames(anno_add), colnames(wide_or)))
-          stopifnot(setequal(rownames(anno_add), rownames(wide_or)))
-          
-          wide_or[] <- paste0(anno_add[rownames(wide_or), colnames(wide_or)],"\n",wide_or)
-          
+
+        if (!is.null(anno_add)) {
+            stopifnot(setequal(colnames(anno_add), colnames(wide_or)))
+            stopifnot(setequal(rownames(anno_add), rownames(wide_or)))
+
+            wide_or[] <- paste0(anno_add[rownames(wide_or), colnames(wide_or)], "\n", wide_or)
         }
-        
-        ##define annotations
+
+        ## define annotations
         stopifnot(setequal(rownames(gene_count_col), colnames(wide_p)))
         stopifnot(setequal(rownames(gene_count_row), rownames(wide_p)))
-        
-        col_gene_anno = ComplexHeatmap::columnAnnotation(`n genes` = ComplexHeatmap::anno_barplot(gene_count_col[colnames(wide_p),]),
-                                                           annotation_label = anno_title_col)
-        row_gene_anno = ComplexHeatmap::rowAnnotation(`n genes` = ComplexHeatmap::anno_barplot(gene_count_row[rownames(wide_p),]),
-                                                      annotation_label = anno_title_row)
+
+        col_gene_anno <- ComplexHeatmap::columnAnnotation(
+            `n genes` = ComplexHeatmap::anno_barplot(gene_count_col[colnames(wide_p), ]),
+            annotation_label = anno_title_col
+        )
+        row_gene_anno <- ComplexHeatmap::rowAnnotation(
+            `n genes` = ComplexHeatmap::anno_barplot(gene_count_row[rownames(wide_p), ]),
+            annotation_label = anno_title_row
+        )
 
         ComplexHeatmap::Heatmap(wide_p,
-                col = mypal,
-                name = "-log10(p-val)",
-                rect_gp = grid::gpar(col = "black", lwd = 1),
-                cluster_rows = FALSE,
-                cluster_columns = FALSE,
-                right_annotation = row_gene_anno,
-                top_annotation = col_gene_anno,
-                cell_fun = function(j, i, x, y, width, height, fill) {
-                  grid::grid.text(wide_or[i, j], x, y, gp = grid::gpar(fontsize = 10))
-                }
-                )
-        
+            col = mypal,
+            name = "-log10(p-val)",
+            rect_gp = grid::gpar(col = "black", lwd = 1),
+            cluster_rows = FALSE,
+            cluster_columns = FALSE,
+            right_annotation = row_gene_anno,
+            top_annotation = col_gene_anno,
+            cell_fun = function(j, i, x, y, width, height, fill) {
+                grid::grid.text(wide_or[i, j], x, y, gp = grid::gpar(fontsize = 10))
+            }
+        )
     }
 
 
-get_gene_list_count <- function(gene_list){
-  data.frame(row.names = names(gene_list),
-             n =purrr::map_int(gene_list, ~sum(!is.na(.x))))
+get_gene_list_count <- function(gene_list) {
+    data.frame(
+        row.names = names(gene_list),
+        n = purrr::map_int(gene_list, ~ sum(!is.na(.x)))
+    )
 }
 
 
 get_gene_enrichment_count <- function(model_results = fetch_data(type = "modeling_results"),
-                                      model_type = "enrichment",
-                                      fdr_cut = 0.1,
-                                      bayes_anno= bayes_anno){
-  model_results <- model_results[[model_type]]
-  
-  tstats <-
-    model_results[, grep("[f|t]_stat_", colnames(model_results))]
-  colnames(tstats) <-
-    gsub("[f|t]_stat_", "", colnames(tstats))
-  
-  fdrs <-
-    model_results[, grep("fdr_", colnames(model_results))]
+    model_type = "enrichment",
+    fdr_cut = 0.1,
+    bayes_anno = bayes_anno) {
+    model_results <- model_results[[model_type]]
 
-  enrich_count <- sapply(seq(along.with = tstats), function(i) {
-    layer <- sum(tstats[, i] > 0 & fdrs[, i] < fdr_cut)
-  })
-  data.frame(row.names = colnames(tstats),
-             n = enrich_count)
-  }
+    tstats <-
+        model_results[, grep("[f|t]_stat_", colnames(model_results))]
+    colnames(tstats) <-
+        gsub("[f|t]_stat_", "", colnames(tstats))
 
+    fdrs <-
+        model_results[, grep("fdr_", colnames(model_results))]
+
+    enrich_count <- sapply(seq(along.with = tstats), function(i) {
+        layer <- sum(tstats[, i] > 0 & fdrs[, i] < fdr_cut)
+    })
+    data.frame(
+        row.names = colnames(tstats),
+        n = enrich_count
+    )
+}

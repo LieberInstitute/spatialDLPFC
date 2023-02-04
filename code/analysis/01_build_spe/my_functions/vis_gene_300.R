@@ -1,16 +1,17 @@
 vis_gene_300 <-
-    function(spe,
-    sampleid,
-    geneid = "SCGB2A2; ENSG00000110484",
-    spatial = TRUE,
-    assayname = "logcounts",
-    minCount = 0,
-    viridis = TRUE,
-    image_id = "lowres",
-    alpha = 1,
-    cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
-    point_size = 1.25,
-    ...) {
+    function(
+        spe,
+        sampleid,
+        geneid = "SCGB2A2; ENSG00000110484",
+        spatial = TRUE,
+        assayname = "logcounts",
+        minCount = 0,
+        viridis = TRUE,
+        image_id = "lowres",
+        alpha = 1,
+        cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
+        point_size = 1.25,
+        ...) {
         spe_sub <- spe[, spe$sample_id == sampleid]
         d <- as.data.frame(cbind(colData(spe_sub), SpatialExperiment::spatialCoords(spe_sub)), optional = TRUE)
 

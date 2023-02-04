@@ -476,27 +476,27 @@ dev.off()
 
 
 hm_color_long <- Heatmap(
-  cor_kplus,
-  name = "Cor",
-  col = my.col,
-  row_split = layer_anno_colors$bayesSpace,
-  rect_gp = gpar(col = "black", lwd = 1),
-  cluster_rows = FALSE,
-  cluster_columns = FALSE,
-  right_annotation = kplus_color_bar,
-  bottom_annotation = layer_color_bar,
-  cell_fun = function(j, i, x, y, width, height, fill) {
-    grid.text(anno_matrix_kplus[i, j], x, y, gp = gpar(fontsize = 10))
-  }
+    cor_kplus,
+    name = "Cor",
+    col = my.col,
+    row_split = layer_anno_colors$bayesSpace,
+    rect_gp = gpar(col = "black", lwd = 1),
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    right_annotation = kplus_color_bar,
+    bottom_annotation = layer_color_bar,
+    cell_fun = function(j, i, x, y, width, height, fill) {
+        grid.text(anno_matrix_kplus[i, j], x, y, gp = gpar(fontsize = 10))
+    }
 )
 
 pdf(
-  here(
-    plot_dir,
-    "bayesSpace_kplus_spatial_registration_heatmap_color_long.pdf"
-  ),
-  height = 10, width = 5
-  # height = 9.5, width = 5
+    here(
+        plot_dir,
+        "bayesSpace_kplus_spatial_registration_heatmap_color_long.pdf"
+    ),
+    height = 10, width = 5
+    # height = 9.5, width = 5
 )
 
 draw(hm_color_long, show_heatmap_legend = FALSE)
@@ -508,7 +508,7 @@ dev.off()
 #                                   RColorBrewer::brewer.pal(5, "PRGn")),
 #               title = "cor",
 #               direction = "horizontal")
-# 
+#
 # pdf(here(plot_dir, "cor_legend.pdf"), height = 1, width = 2)
 # draw(lgd2)
 # dev.off()

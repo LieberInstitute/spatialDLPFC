@@ -22,8 +22,10 @@ message("\nSCE Dimesions:")
 dim(sce_pseudo)
 
 #### Add Dx col ####
-dx_data <- read.csv(here("processed-data", "rdata", "spe", "14_spatial_registration_PEC",
-                         paste0("primaryDiagnosis_",dataset,".csv")))
+dx_data <- read.csv(here(
+    "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
+    paste0("primaryDiagnosis_", dataset, ".csv")
+))
 
 dx_data |> dplyr::count(primaryDiagnosis)
 
@@ -47,29 +49,28 @@ sce_pseudo <- sce_pseudo[, sce_pseudo$ncells >= min_ncells]
 
 #### Run models ####
 dx_split <- rafalib::splitit(sce_pseudo$primaryDiagnosis)
-results_enrichment <- purrr::map2(dx_split, names(dx_split), function(i, dx_name){
-  sce_temp <- sce_pseudo[,i]
-  message("Dx: ", dx_name, " - ", ncol(sce_temp), " cols")
-  var_tab <- table(sce_temp$registration_variable)
-  
-  if (any(var_tab == 0)) message("Dropping Empty Levels: ", paste0(names(var_tab)[var_tab == 0], collpase = " "))
-  ## Drop Levels
-  sce_temp$registration_variable <- droplevels(sce_temp$registration_variable)
-  
-  
-  registration_mod <- registration_model(sce_temp)
-  block_cor <- registration_block_cor(sce_temp, registration_model = registration_mod)
-  
-  gene_name <- "gene_name"
-  gene_ensembl <- "featureid"
-  
-  registration_stats_enrichment(
-      sce_temp,
-      block_cor = block_cor,
-      gene_ensembl = gene_ensembl,
-      gene_name = gene_name
+results_enrichment <- purrr::map2(dx_split, names(dx_split), function(i, dx_name) {
+    sce_temp <- sce_pseudo[, i]
+    message("Dx: ", dx_name, " - ", ncol(sce_temp), " cols")
+    var_tab <- table(sce_temp$registration_variable)
+
+    if (any(var_tab == 0)) message("Dropping Empty Levels: ", paste0(names(var_tab)[var_tab == 0], collpase = " "))
+    ## Drop Levels
+    sce_temp$registration_variable <- droplevels(sce_temp$registration_variable)
+
+
+    registration_mod <- registration_model(sce_temp)
+    block_cor <- registration_block_cor(sce_temp, registration_model = registration_mod)
+
+    gene_name <- "gene_name"
+    gene_ensembl <- "featureid"
+
+    registration_stats_enrichment(
+        sce_temp,
+        block_cor = block_cor,
+        gene_ensembl = gene_ensembl,
+        gene_name = gene_name
     )
-  
 })
 
 

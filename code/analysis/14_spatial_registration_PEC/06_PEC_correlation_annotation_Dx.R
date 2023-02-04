@@ -1,4 +1,3 @@
-
 library("spatialLIBD")
 library("tidyverse")
 library("xlsx")
@@ -9,7 +8,7 @@ library("sessioninfo")
 
 ## plot dir
 plot_dir <- here("plots", "14_spatial_registration_PEC", "06_PEC_correlation_annotation_Dx")
-if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
+if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 
 data_dir <-
     here(
@@ -56,69 +55,68 @@ correlate_and_annotate <- function(dataset, make_cor_plot = FALSE) {
         "14_spatial_registration_PEC",
         paste0("registration_stats_Dx_", dataset, ".rds")
     ))
-    
-    cor_top100 <- map2(registration_stats, names(registration_stats), function(dx_stats, dx_name){
-      
-      registration_t_stats <-
-        dx_stats[, grep("^t_stat", colnames(dx_stats))]
-      
-      colnames(registration_t_stats) <-
-        paste0(gsub("^t_stat_", "", colnames(registration_t_stats)),"-",dx_name)
-      
-      # Fix Cell Types
 
-      #### Correlate with modeling results ####
-      cor_top100 <-
-        map(
-          modeling_results,
-          ~ layer_stat_cor(
-            registration_t_stats,
-            .x,
-            model_type = "enrichment",
-            reverse = FALSE,
-            top_n = 100
-          )
-        )
-      
-      return(cor_top100)
+    cor_top100 <- map2(registration_stats, names(registration_stats), function(dx_stats, dx_name) {
+        registration_t_stats <-
+            dx_stats[, grep("^t_stat", colnames(dx_stats))]
+
+        colnames(registration_t_stats) <-
+            paste0(gsub("^t_stat_", "", colnames(registration_t_stats)), "-", dx_name)
+
+        # Fix Cell Types
+
+        #### Correlate with modeling results ####
+        cor_top100 <-
+            map(
+                modeling_results,
+                ~ layer_stat_cor(
+                    registration_t_stats,
+                    .x,
+                    model_type = "enrichment",
+                    reverse = FALSE,
+                    top_n = 100
+                )
+            )
+
+        return(cor_top100)
     })
 
 
     #### Annotate Layers ####
-    layer_anno <- map2(cor_top100, names(cor_top100),function(dx_cor, dx){
-      
-      layer_anno <- map2(dx_cor, names(dx_cor), function(cor, name) {
-        anno <- annotate_registered_clusters(
-          cor_stats_layer = cor,
-          confidence_threshold = 0.25,
-          cutoff_merge_ratio = 0.10
-        )
-        colnames(anno) <- gsub("layer", name, colnames(anno))
-        return(anno)
-      })
-      
-      layer_anno <- purrr::reduce(layer_anno, left_join, by = "cluster") 
-      
-      return(layer_anno)
+    layer_anno <- map2(cor_top100, names(cor_top100), function(dx_cor, dx) {
+        layer_anno <- map2(dx_cor, names(dx_cor), function(cor, name) {
+            anno <- annotate_registered_clusters(
+                cor_stats_layer = cor,
+                confidence_threshold = 0.25,
+                cutoff_merge_ratio = 0.10
+            )
+            colnames(anno) <- gsub("layer", name, colnames(anno))
+            return(anno)
+        })
+
+        layer_anno <- purrr::reduce(layer_anno, left_join, by = "cluster")
+
+        return(layer_anno)
     })
-    
+
     layer_anno2 <- do.call("bind_rows", layer_anno) |>
-      mutate(Dataset = dataset, .before = 1)
-    
+        mutate(Dataset = dataset, .before = 1)
+
     return(list(cor_top100 = cor_top100, layer_anno = layer_anno2))
 }
-        
+
 datasets <-
-  datasets <-
-  c("CMC",
-    "DevBrain-snRNAseq",
-    "IsoHuB",
-    "LIBD",
-    "MultiomeBrain-DLPFC",
-    # "PTSDBrainomics",
-    "SZBDMulti-Seq",
-    "UCLA-ASD"
-  )
+    datasets <-
+    c(
+        "CMC",
+        "DevBrain-snRNAseq",
+        "IsoHuB",
+        "LIBD",
+        "MultiomeBrain-DLPFC",
+        # "PTSDBrainomics",
+        "SZBDMulti-Seq",
+        "UCLA-ASD"
+    )
 names(datasets) <- datasets
 
 ## Calculate correlations and annotations for each dataset
@@ -140,7 +138,7 @@ save(pe_correlation_annotation,
 #         "Correlation values with k16 domains"
 #     )
 # )
-# 
+#
 # ## Clear file and write key
 # annotation_xlsx <- here(data_dir, "PEC_spatial_annotations.xlsx")
 # write.xlsx(
@@ -150,7 +148,7 @@ save(pe_correlation_annotation,
 #     append = FALSE,
 #     row.names = FALSE
 # )
-# 
+#
 # ## write annotations
 # walk2(
 #     pe_correlation_annotation,
@@ -163,7 +161,7 @@ save(pe_correlation_annotation,
 #         row.names = FALSE
 #     )
 # )
-# 
+#
 # ## write correlations
 # walk2(pe_correlation_annotation, names(pe_correlation_annotation), function(data, name) {
 #     name <- paste0("cor_", name)

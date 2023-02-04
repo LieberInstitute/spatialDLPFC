@@ -227,16 +227,16 @@ sce$cellType_layer <- factor(cellType_layer_annotations$cellType_layer[match(sce
     levels = c(
         "Astro", "EndoMural", "Micro", "Oligo", "OPC",
         "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4", "Excit_L5",
-        "Excit_L5/6", "Excit_L6","Excit_ambig", "Inhib"
+        "Excit_L5/6", "Excit_L6", "Excit_ambig", "Inhib"
     )
 )
 sce$layer_annotation <- factor(cellType_layer_annotations$layer_annotation[match(sce$cellType_hc, cellType_layer_annotations$cluster)])
 
 table(sce$cellType_layer)
-# Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4 
-# 3979         2157         1601        10894         1940           82        10459         3043         2388 
-# Excit_L5   Excit_L5/6     Excit_L6  Excit_ambig        Inhib 
-# 2505         2487         1792         2053        11067 
+# Astro    EndoMural        Micro        Oligo          OPC   Excit_L2/3     Excit_L3 Excit_L3/4/5     Excit_L4
+# 3979         2157         1601        10894         1940           82        10459         3043         2388
+# Excit_L5   Excit_L5/6     Excit_L6  Excit_ambig        Inhib
+# 2505         2487         1792         2053        11067
 
 table(sce$layer_annotation)
 #    L1    L1*  L1/WM     L2    L2*   L2/3     L3   L3/4  L3/4* L3/4/5     L4

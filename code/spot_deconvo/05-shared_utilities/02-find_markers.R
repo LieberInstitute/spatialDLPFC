@@ -59,7 +59,7 @@ if (cell_group == "broad") {
     cell_types <- c(
         "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"
     )
-    
+
     colors_col <- "cell_type_colors_broad"
     cell_column <- "cellType_broad_hc"
     cell_type_nrow <- 2
@@ -69,7 +69,7 @@ if (cell_group == "broad") {
         "Excit_L3_4_5", "Excit_L4", "Excit_L5", "Excit_L5_6", "Excit_L6",
         "Inhib"
     )
-    
+
     colors_col <- "cell_type_colors_layer"
     cell_column <- "layer_level"
     cell_type_nrow <- 3
@@ -160,8 +160,9 @@ write_markers <- function(n_markers, out_path) {
     writeLines(marker_stats_temp$gene, con = out_path)
 }
 
-my_plotExpression <- function(sce, genes, assay = "logcounts", ct = "cellType", fill_colors = NULL,
-    title = NULL, marker_stats) {
+my_plotExpression <- function(
+        sce, genes, assay = "logcounts", ct = "cellType", fill_colors = NULL,
+        title = NULL, marker_stats) {
     cat_df <- as.data.frame(colData(sce))[, ct, drop = FALSE]
     expression_long <- reshape2::melt(as.matrix(assays(sce)[[assay]][genes, ]))
 
@@ -347,11 +348,12 @@ for (j in 1:length(classical_markers)) {
 
         #   Produce the ggplot object (grid version)
         plot_list[[i]] <- spot_plot(
-            spe, sample_id = sample_id, var_name = classical_markers_ens[j],
+            spe,
+            sample_id = sample_id, var_name = classical_markers_ens[j],
             include_legend = TRUE, is_discrete = FALSE, title = title,
             assayname = "counts", minCount = 0
         )
-        
+
         i <- i + 1
     }
 }
@@ -393,7 +395,8 @@ for (n_markers in c(15, 25, 50)) {
             )
 
             plot_list[[i]] <- spot_plot(
-                spe_small, sample_id = sample_id,
+                spe_small,
+                sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE, minCount = 0,
                 title = paste0(
@@ -406,7 +409,7 @@ for (n_markers in c(15, 25, 50)) {
     }
     n_sample <- length(unique(spe$sample_id))
     n_rows <- length(unique(marker_stats$cellType.target))
-    
+
     write_spot_plots(
         plot_list = plot_list, n_col = n_sample, plot_dir = plot_dir,
         file_prefix = paste0("marker_spatial_sparsity_n", n_markers),
@@ -429,7 +432,8 @@ if (cell_group == "layer") {
     for (sample_id in unique(spe$sample_id)) {
         #   Produce the ggplot object
         plot_list[[i]] <- spot_plot(
-            spe, sample_id = sample_id,
+            spe,
+            sample_id = sample_id,
             var_name = classical_markers_ens[classical_markers == "PCP4"],
             include_legend = TRUE, is_discrete = FALSE, title = "PCP4 Counts",
             assayname = "counts", minCount = 0
@@ -462,7 +466,8 @@ if (cell_group == "layer") {
             max_list[[i]] <- max(spe_small$prop_nonzero_marker)
 
             plot_list[[i]] <- spot_plot(
-                spe_small, sample_id = sample_id,
+                spe_small,
+                sample_id = sample_id,
                 var_name = "prop_nonzero_marker", include_legend = TRUE,
                 is_discrete = FALSE, minCount = 0,
                 title = paste0(
@@ -494,7 +499,7 @@ if (cell_group == "layer") {
             )
         }
     }
-    
+
     write_spot_plots(
         plot_list = plot_list, n_col = n_sample, plot_dir = plot_dir,
         file_prefix = "sparsity_figure", include_individual = FALSE

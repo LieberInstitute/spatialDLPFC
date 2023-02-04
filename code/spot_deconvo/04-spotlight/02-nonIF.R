@@ -23,9 +23,9 @@ spec <- matrix(
 opt <- getopt(spec)
 
 if (opt$n_cells_per_type == 0) {
-    n_cells_dirname = "full_data"
+    n_cells_dirname <- "full_data"
 } else {
-    n_cells_dirname = paste0("subset_n", opt$n_cells_per_type)
+    n_cells_dirname <- paste0("subset_n", opt$n_cells_per_type)
 }
 
 ################################################################################

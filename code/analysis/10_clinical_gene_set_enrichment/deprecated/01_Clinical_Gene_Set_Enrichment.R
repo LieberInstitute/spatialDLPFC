@@ -661,10 +661,11 @@ enrichLong_ASD <- enrichLong_ASD[order(enrichLong_ASD$ID2, enrichLong_ASD$LayerF
 ### custom heatmap
 midpoint <- function(x) x[-length(x)] + diff(x) / 2
 
-customLayerEnrichment <- function(enrichTab, groups, xlabs,
-    Pthresh = 12, ORcut = 3, enrichOnly = FALSE,
-    layerHeights = c(0, 40, 55, 75, 85, 110, 120, 135, 145, 155),
-    mypal = c("white", colorRampPalette(brewer.pal(9, "YlOrRd"))(50)), ...) {
+customLayerEnrichment <- function(
+        enrichTab, groups, xlabs,
+        Pthresh = 12, ORcut = 3, enrichOnly = FALSE,
+        layerHeights = c(0, 40, 55, 75, 85, 110, 120, 135, 145, 155),
+        mypal = c("white", colorRampPalette(brewer.pal(9, "YlOrRd"))(50)), ...) {
     wide_p <- -log10(enrichTab[groups, grep("Pval", colnames(enrichTab))])
     wide_p[wide_p > Pthresh] <- Pthresh
     wide_p <- t(round(wide_p[

@@ -51,8 +51,10 @@ initial[["ReducedDimensionPlot1"]] <- new(
     LabelCentersColor = "#000000",
     VersionInfo = list(iSEE = structure(
         list(c(2L, 10L, 0L)),
-        class = c("package_version",
-            "numeric_version")
+        class = c(
+            "package_version",
+            "numeric_version"
+        )
     )),
     PanelId = c(ReducedDimensionPlot = 1L),
     PanelHeight = 600L,
@@ -82,8 +84,10 @@ initial[["ComplexHeatmapPlot1"]] <- new(
     ClusterRowsMethod = "ward.D2",
     DataBoxOpen = FALSE,
     VisualChoices = "Annotations",
-    ColumnData = c("BayesSpace",
-        "subject"),
+    ColumnData = c(
+        "BayesSpace",
+        "subject"
+    ),
     RowData = character(0),
     CustomBounds = FALSE,
     LowerBound = NA_real_,
@@ -101,8 +105,10 @@ initial[["ComplexHeatmapPlot1"]] <- new(
     OrderColumnSelection = TRUE,
     VersionInfo = list(iSEE = structure(
         list(c(2L, 10L, 0L)),
-        class = c("package_version",
-            "numeric_version")
+        class = c(
+            "package_version",
+            "numeric_version"
+        )
     )),
     PanelId = c(ComplexHeatmapPlot = 1L),
     PanelHeight = 600L,
@@ -125,13 +131,17 @@ initial[["RowDataTable1"]] <- new(
     "RowDataTable",
     Selected = "SNAP25",
     Search = "",
-    SearchColumns = c("",
-        "", "", "", "", "", ""),
+    SearchColumns = c(
+        "",
+        "", "", "", "", "", ""
+    ),
     HiddenColumns = character(0),
     VersionInfo = list(iSEE = structure(
         list(c(2L, 10L, 0L)),
-        class = c("package_version",
-            "numeric_version")
+        class = c(
+            "package_version",
+            "numeric_version"
+        )
     )),
     PanelId = c(RowDataTable = 1L),
     PanelHeight = 600L,

@@ -2,7 +2,7 @@ library("here")
 library("withr")
 
 with_dir(here(), {
-    rmarkdown::render('README.Rmd', 'html_document')
+    rmarkdown::render("README.Rmd", "html_document")
     system("mv README.html ~/Dropbox/Code/spatialDLPFC_website/index.html")
 })
 

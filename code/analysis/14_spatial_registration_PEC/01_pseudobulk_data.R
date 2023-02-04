@@ -10,7 +10,7 @@ args <- commandArgs(trailingOnly = TRUE)
 input_file <- args[1]
 message("input = ", input_file)
 
-dataset <- ss(input_file,"_")
+dataset <- ss(input_file, "_")
 message("\n#### Running: ", dataset, " ####")
 
 ## for V5 data
@@ -47,11 +47,12 @@ counts(sce)@x <- 2^(counts(sce)@x) - 1 ## remove log2(counts + 1)
 
 #### Pseudobulk ####
 message(Sys.time(), " Pseudobulk")
-sce_pseudo <- registration_pseudobulk(sce, 
-                                      var_registration = "cellType", 
-                                      # var_sample_id = "sampleID", 
-                                      var_sample_id = "individualID",  ## for SZDBMulti-Seq
-                                      covars = NULL)
+sce_pseudo <- registration_pseudobulk(sce,
+    var_registration = "cellType",
+    # var_sample_id = "sampleID",
+    var_sample_id = "individualID", ## for SZDBMulti-Seq
+    covars = NULL
+)
 
 message("\nSCE Pseudobulk Dimesions:")
 dim(sce_pseudo)
@@ -83,7 +84,7 @@ session_info()
 # tz       US/Eastern
 # date     2023-02-01
 # pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/bin/pandoc
-# 
+#
 # ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 # package                * version   date (UTC) lib source
 # AnnotationDbi            1.60.0    2022-11-01 [2] Bioconductor
@@ -257,8 +258,8 @@ session_info()
 # yaml                     2.3.7     2023-01-23 [2] CRAN (R 4.2.2)
 # zellkonverter          * 1.8.0     2022-11-01 [1] Bioconductor
 # zlibbioc                 1.44.0    2022-11-01 [2] Bioconductor
-# 
+#
 # [1] /users/lhuuki/R/4.2.x
 # [2] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/R/4.2.x/lib64/R/site-library
 # [3] /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/R/4.2.x/lib64/R/library
-# 
+#

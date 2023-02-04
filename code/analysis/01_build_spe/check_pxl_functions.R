@@ -1,7 +1,7 @@
 ## Write a function for checking the array_row, array_col, pxl_row_in_fullres, pxl_col_in_fullres data
 check_pxl <- function(spe_source, spe_target) {
-    #stopifnot(all(unique(spe_source$sample_id) %in% unique(spe_target$sample_id)))
-    #spe_target$sample_id <- gsub("_2|_all|_extra_reads|DLPFC_|_manual_alignment", "", spe_target$sample_id)
+    # stopifnot(all(unique(spe_source$sample_id) %in% unique(spe_target$sample_id)))
+    # spe_target$sample_id <- gsub("_2|_all|_extra_reads|DLPFC_|_manual_alignment", "", spe_target$sample_id)
     spe_target <- add_key(spe_target)
     spe_source <- add_key(spe_source)
 
@@ -14,9 +14,9 @@ check_pxl <- function(spe_source, spe_target) {
     }
 
     if (identical(spe_source$array_row, spe_target$array_row[m]) &
-            identical(spe_source$array_col, spe_target$array_col[m]) &
-            identical(spatialCoords(spe_source)[, "pxl_row_in_fullres"], spatialCoords(spe_target)[m, "pxl_row_in_fullres"]) &
-            identical(spatialCoords(spe_source)[, "pxl_col_in_fullres"], spatialCoords(spe_target)[m, "pxl_col_in_fullres"])) {
+        identical(spe_source$array_col, spe_target$array_col[m]) &
+        identical(spatialCoords(spe_source)[, "pxl_row_in_fullres"], spatialCoords(spe_target)[m, "pxl_row_in_fullres"]) &
+        identical(spatialCoords(spe_source)[, "pxl_col_in_fullres"], spatialCoords(spe_target)[m, "pxl_col_in_fullres"])) {
         return("All good!")
     }
 

@@ -1,34 +1,34 @@
-
 library("tidyverse")
 library("here")
 
 data_dir <-
-  here(
-    "processed-data", "rdata", "spe","99_spatial_plotting"
-  )
+    here(
+        "processed-data", "rdata", "spe", "99_spatial_plotting"
+    )
 if (!dir.exists(data_dir)) {
-  dir.create(data_dir)
+    dir.create(data_dir)
 }
 
 spaceranger_dirs <- list.files(here("processed-data", "rerun_spaceranger"))
-names(spaceranger_dirs) <- map_chr(strsplit(spaceranger_dirs,"_"),~paste0(.x[[2]],"_",.x[[3]]))
+names(spaceranger_dirs) <- map_chr(strsplit(spaceranger_dirs, "_"), ~ paste0(.x[[2]], "_", .x[[3]]))
 
 # "outs/spatial/tissue_positions_list.csv
 
-sr_csv <- map_chr(spaceranger_dirs, ~here("processed-data", "rerun_spaceranger", .x, "outs", "spatial", "tissue_positions_list.csv"))
+sr_csv <- map_chr(spaceranger_dirs, ~ here("processed-data", "rerun_spaceranger", .x, "outs", "spatial", "tissue_positions_list.csv"))
 all(map_lgl(sr_csv, file.exists))
 # TRUE
 
-sr_positions <- map(sr_csv, ~read.csv(.x, header = FALSE))
+sr_positions <- map(sr_csv, ~ read.csv(.x, header = FALSE))
 
 head(sr_positions[[1]])
 
-frame_lims <- map_dfr(sr_positions, function(p){
-  list(x_min = min(p$V6),
-       x_max = max(p$V6),
-       y_min = min(p$V5),
-       y_max = max(p$V5)
-  )
+frame_lims <- map_dfr(sr_positions, function(p) {
+    list(
+        x_min = min(p$V6),
+        x_max = max(p$V6),
+        y_min = min(p$V5),
+        y_max = max(p$V5)
+    )
 })
 
 frame_lims <- frame_lims %>% add_column(sample_id = names(sr_positions), .before = 1)
@@ -61,32 +61,38 @@ write.csv(frame_lims, file = here(data_dir, "frame_limits.csv"), row.names = FAL
 
 ## dimensions are all about the same
 frame_lims |>
-  transmute(x_diff = x_max - x_min,
-            y_diff = y_max - y_min,
-            ratio = x_diff/y_diff,
-            area = x_diff * y_diff) |>
-  summary()
+    transmute(
+        x_diff = x_max - x_min,
+        y_diff = y_max - y_min,
+        ratio = x_diff / y_diff,
+        area = x_diff * y_diff
+    ) |>
+    summary()
 
-# x_diff          y_diff     
-# Min.   :17584   Min.   :18550  
-# 1st Qu.:17624   1st Qu.:18590  
-# Median :17690   Median :18658  
-# Mean   :17886   Mean   :18858  
-# 3rd Qu.:18232   3rd Qu.:19211  
-# Max.   :18347   Max.   :19324  
+# x_diff          y_diff
+# Min.   :17584   Min.   :18550
+# 1st Qu.:17624   1st Qu.:18590
+# Median :17690   Median :18658
+# Mean   :17886   Mean   :18858
+# 3rd Qu.:18232   3rd Qu.:19211
+# Max.   :18347   Max.   :19324
 
 #### Adjust to catch edge of fiducial frame ####
 
-frame_adj <- list(x_left = -2250,
-                  x_right = 1950, # good  
-                  y_down = -2200, # Add space for legend 
-                  y_up = 2800)
+frame_adj <- list(
+    x_left = -2250,
+    x_right = 1950, # good
+    y_down = -2200, # Add space for legend
+    y_up = 2800
+)
 
 frame_edge_lims <- frame_lims |>
-  mutate(x_min = x_min + frame_adj$x_left,
-         x_max = x_max + frame_adj$x_right,
-         y_min = y_min + frame_adj$y_down,
-         y_max = y_max + frame_adj$y_up)
+    mutate(
+        x_min = x_min + frame_adj$x_left,
+        x_max = x_max + frame_adj$x_right,
+        y_min = y_min + frame_adj$y_down,
+        y_max = y_max + frame_adj$y_up
+    )
 
 write.csv(frame_edge_lims, file = here(data_dir, "frame_edge_limits.csv"), row.names = FALSE)
 

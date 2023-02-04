@@ -36,12 +36,14 @@ lobstr::obj_size(sce_pseudo)
 # 56.41 MB
 
 # load modeling results for k09 clustering/pseudobulking
-load(here(
-    "code",
-    "deploy_app_k09",
-    "modeling_results_BayesSpace_k09.Rdata"
-),
-    verbose = TRUE)
+load(
+    here(
+        "code",
+        "deploy_app_k09",
+        "modeling_results_BayesSpace_k09.Rdata"
+    ),
+    verbose = TRUE
+)
 lobstr::obj_size(modeling_results)
 # 15.87 MB
 

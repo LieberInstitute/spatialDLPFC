@@ -94,8 +94,8 @@ spe <- readRDS(spe_IF_in)
 #-------------------------------------------------------------------------------
 
 #   Form a list of data frames containing the deconvolution results
-observed_df_list = list()
-i = 1
+observed_df_list <- list()
+i <- 1
 
 for (sample_id in sample_ids) {
     for (subset_choice in subset_choices) {
@@ -110,10 +110,10 @@ for (sample_id in sample_ids) {
                 sample_id = {{ sample_id }},
                 deconvo_tool = "SPOTlight",
                 barcode = ss(key, "_", 1)
-            )  |>
-            select(- key)
-        
-        i = i + 1
+            ) |>
+            select(-key)
+
+        i <- i + 1
     }
 }
 
@@ -126,18 +126,18 @@ layer_ann <- data.frame()
 for (sample_id in sample_ids) {
     this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
     layer_ann_small <- read.csv(this_layer_path)
-    
+
     layer_ann_small$barcode <- colnames(spe[, spe$sample_id == sample_id])[
         layer_ann_small$id + 1
     ]
     layer_ann_small$sample_id <- sample_id
-    
+
     layer_ann <- rbind(layer_ann, layer_ann_small)
 }
 layer_ann$id <- NULL
 
 #   Collapse list of results into one tibble and add layer annotation
-observed_df = do.call(rbind, observed_df_list) |>
+observed_df <- do.call(rbind, observed_df_list) |>
     melt(
         id.vars = c("barcode", "sample_id", "deconvo_tool", "subset_choice"),
         variable.name = "cell_type", value.name = "count"
@@ -161,7 +161,7 @@ stopifnot(
 #-------------------------------------------------------------------------------
 
 #   Format data for plotting
-count_df = observed_df |>
+count_df <- observed_df |>
     #   For each manually annotated label, subset choice and sample_id,
     #   normalize by the total counts of all cell types
     group_by(subset_choice, label, sample_id) |>
@@ -181,10 +181,11 @@ count_df = observed_df |>
             match(subset_choice, subset_choices)
         ]
     ) |>
-    select(- subset_choice)
+    select(-subset_choice)
 
 layer_dist_barplot(
-    count_df, filename = "layer_distribution_barplot_prop_even.pdf",
+    count_df,
+    filename = "layer_distribution_barplot_prop_even.pdf",
     ylab = "Proportion of Counts", x_var = "label", fill_var = "cell_type",
     fill_scale = estimated_cell_labels, fill_lab = "Cell Type",
     xlab = "Annotated Layer"

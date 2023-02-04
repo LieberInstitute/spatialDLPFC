@@ -91,8 +91,9 @@ dir.create(plot_dir, showWarnings = FALSE, recursive = TRUE)
 #   in the plot given the SpatialExperiment, long-format
 #   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
 #   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
-spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
-    title) {
+spatial_counts_plot <- function(
+        spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
+        title) {
     #   Grab counts for just this sample, deconvo tool, and cell type
     counts_df <- full_df |>
         filter(
@@ -132,11 +133,11 @@ spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, c
 spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual, pdf_prefix) {
     for (sample_id in sample_ids) {
         spe_small <- spe[, spe$sample_id == sample_id]
-        
+
         i <- 1
         plot_list <- list()
         max_list <- list()
-        
+
         #   For each deconvo tool, make a row of plots (each including all cell
         #   types) showed the observed distribution
         for (deconvo_tool in deconvo_tools) {
@@ -151,7 +152,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 i <- i + 1
             }
         }
-        
+
         #   Add a row showing the ground-truth counts for each cell type
         if (include_actual) {
             for (cell_type in cell_types_actual) {
@@ -165,12 +166,12 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 i <- i + 1
             }
         }
-        
+
         max_mat <- matrix(
             unlist(max_list),
             ncol = length(cell_type_vec), byrow = TRUE
         )
-        
+
         #   Now loop back through the plot list (which will be displayed in 2D)
         #   and overwrite the scale to go as high as the largest value in the
         #   column. This allows for easy comparison between deconvo tools
@@ -179,7 +180,7 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
             for (i_row in 1:(length(deconvo_tools) + include_actual)) {
                 index <- (i_row - 1) * length(cell_type_vec) + i_col
                 upper_limit <- max(max_mat[, i_col])
-                
+
                 plot_list[[index]] <- overwrite_scale(
                     plot_list[[index]],
                     upper_limit = upper_limit,
@@ -187,11 +188,11 @@ spatial_counts_plot_full <- function(spe, full_df, cell_type_vec, include_actual
                 )
             }
         }
-        
+
         write_spot_plots(
             plot_list = plot_list, n_col = length(cell_type_vec),
             plot_dir = plot_dir, include_individual = TRUE,
-            file_prefix = paste0(pdf_prefix, '_', sample_id)
+            file_prefix = paste0(pdf_prefix, "_", sample_id)
         )
     }
 }
