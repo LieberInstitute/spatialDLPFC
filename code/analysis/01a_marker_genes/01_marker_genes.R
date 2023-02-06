@@ -117,7 +117,7 @@ plots_histology <- lapply(plots_histology, function(p) {
 })
 
 ## Obtain plots for a few key genes
-key_genes <- c("MOBP", "SNAP25", "PCP4")
+key_genes <- c("MBP", "SNAP25", "PCP4")
 names(key_genes) <- key_genes
 plots_genes <- lapply(key_genes, function(g) {
     message(Sys.time(), " processing gene ", g)
@@ -195,7 +195,7 @@ lapply(unique(sample_info$positions), function(position) {
     plots_list <- c(
         plots_histology[position_subset$row[i]],
         plots_genes$SNAP25[position_subset$row[i]],
-        plots_genes$MOBP[position_subset$row[i]],
+        plots_genes$MBP[position_subset$row[i]],
         plots_genes$PCP4[position_subset$row[i]]
     )
     pdf(
