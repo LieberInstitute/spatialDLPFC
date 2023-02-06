@@ -153,11 +153,11 @@ as.data.frame(enriched) |>
     filter(fdr < 0.05) |>
     mutate(direction = sign(stat)) |>
     group_by(test, direction) |>
-    filter(!duplicated(gene)) |>
+    filter(!duplicated(ensembl)) |>
     tally() |>
     as.data.frame()
 #         test direction     n
-# 1    Sp09D01        -1 10293
+# 1    Sp09D01        -1 10294
 # 2    Sp09D01         1   612
 # 3    Sp09D02        -1  1760
 # 4    Sp09D02         1  1010
@@ -200,13 +200,13 @@ as.data.frame(enriched) |>
     filter(fdr < 0.05) |>
     mutate(direction = sign(stat)) |>
     group_by(Analysis, direction) |>
-    filter(!duplicated(gene)) |>
+    filter(!duplicated(ensembl)) |>
     tally()
 # # A tibble: 4 × 3
 # # Groups:   Analysis [2]
 #   Analysis direction     n
 #   <fct>        <dbl> <int>
-# 1 Sp09            -1 11337
+# 1 Sp09            -1 11338
 # 2 Sp09             1  5931
 # 3 position        -1  1402
 # 4 position         1   512
@@ -226,12 +226,12 @@ as.data.frame(enriched) |>
     filter(fdr < 0.05) |>
     mutate(direction = sign(stat)) |>
     group_by(Analysis) |>
-    filter(!duplicated(gene)) |>
+    filter(!duplicated(ensembl)) |>
     tally()
 # # A tibble: 2 × 2
 #   Analysis     n
 #   <fct>    <int>
-# 1 Sp09     11801
+# 1 Sp09     11802
 # 2 position  1661
 
 ## Reproducibility information
