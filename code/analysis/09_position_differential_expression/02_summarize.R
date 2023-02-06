@@ -50,14 +50,14 @@ pdf(
 plotExplanatoryVariables(vars) + theme_classic(base_size = 30)
 dev.off()
 
+
+
 ## Load Sp09 DE results
 load(here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"),
     verbose = TRUE
 )
 sig_domain <- sig_genes
 rm(sig_genes)
-
-
 
 ## Load position DE results
 load(
@@ -116,7 +116,123 @@ dev.off()
 
 
 ## Summarize into a table
+library("dplyr")
+as.data.frame(enriched) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(test, direction) |>
+    tally() |>
+    as.data.frame()
+#         test direction     n
+# 1    Sp09D01        -1 10294
+# 2    Sp09D01         1   612
+# 3    Sp09D02        -1  1760
+# 4    Sp09D02         1  1010
+# 5    Sp09D03        -1   416
+# 6    Sp09D03         1  1069
+# 7    Sp09D04        -1   253
+# 8    Sp09D04         1  1228
+# 9    Sp09D05        -1   309
+# 10   Sp09D05         1   956
+# 11   Sp09D06        -1  3554
+# 12   Sp09D06         1  1638
+# 13   Sp09D07        -1    52
+# 14   Sp09D07         1   642
+# 15   Sp09D08        -1   470
+# 16   Sp09D08         1  1856
+# 17   Sp09D09        -1    91
+# 18   Sp09D09         1   609
+# 19  anterior        -1  1305
+# 20  anterior         1   276
+# 21    middle        -1    35
+# 22    middle         1   112
+# 23 posterior        -1    65
+# 24 posterior         1   125
 
+as.data.frame(enriched) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(test, direction) |>
+    filter(!duplicated(gene)) |>
+    tally() |>
+    as.data.frame()
+#         test direction     n
+# 1    Sp09D01        -1 10293
+# 2    Sp09D01         1   612
+# 3    Sp09D02        -1  1760
+# 4    Sp09D02         1  1010
+# 5    Sp09D03        -1   416
+# 6    Sp09D03         1  1069
+# 7    Sp09D04        -1   253
+# 8    Sp09D04         1  1228
+# 9    Sp09D05        -1   309
+# 10   Sp09D05         1   956
+# 11   Sp09D06        -1  3554
+# 12   Sp09D06         1  1638
+# 13   Sp09D07        -1    52
+# 14   Sp09D07         1   642
+# 15   Sp09D08        -1   470
+# 16   Sp09D08         1  1856
+# 17   Sp09D09        -1    91
+# 18   Sp09D09         1   609
+# 19  anterior        -1  1305
+# 20  anterior         1   276
+# 21    middle        -1    35
+# 22    middle         1   112
+# 23 posterior        -1    65
+# 24 posterior         1   125
+
+as.data.frame(enriched) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(Analysis, direction) |>
+    tally()
+# # A tibble: 4 × 3
+# # Groups:   Analysis [2]
+#   Analysis direction     n
+#   <fct>        <dbl> <int>
+# 1 Sp09            -1 17199
+# 2 Sp09             1  9620
+# 3 position        -1  1405
+# 4 position         1   513
+
+as.data.frame(enriched) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(Analysis, direction) |>
+    filter(!duplicated(gene)) |>
+    tally()
+# # A tibble: 4 × 3
+# # Groups:   Analysis [2]
+#   Analysis direction     n
+#   <fct>        <dbl> <int>
+# 1 Sp09            -1 11337
+# 2 Sp09             1  5931
+# 3 position        -1  1402
+# 4 position         1   512
+
+as.data.frame(enriched) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(Analysis) |>
+    tally()
+# # A tibble: 2 × 2
+#   Analysis     n
+#   <fct>    <int>
+# 1 Sp09     26819
+# 2 position  1918
+
+as.data.frame(enriched) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(Analysis) |>
+    filter(!duplicated(gene)) |>
+    tally()
+# # A tibble: 2 × 2
+#   Analysis     n
+#   <fct>    <int>
+# 1 Sp09     11801
+# 2 position  1661
 
 ## Reproducibility information
 print("Reproducibility information:")
@@ -164,7 +280,7 @@ session_info()
 #  DelayedMatrixStats     1.20.0    2022-11-01 [1] Bioconductor
 #  devtools             * 2.4.5     2022-10-11 [1] CRAN (R 4.2.0)
 #  digest                 0.6.31    2022-12-11 [1] CRAN (R 4.2.0)
-#  dplyr                  1.1.0     2023-01-29 [1] CRAN (R 4.2.0)
+#  dplyr                * 1.1.0     2023-01-29 [1] CRAN (R 4.2.0)
 #  dqrng                  0.3.0     2021-05-01 [1] CRAN (R 4.2.0)
 #  DropletUtils           1.18.1    2022-11-23 [1] Bioconductor
 #  edgeR                  3.40.2    2023-01-22 [1] Bioconductor
