@@ -13,14 +13,6 @@ dir_plots <- here::here(
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
 
-## Load Sp09 DE results
-load(here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"),
-    verbose = TRUE
-)
-sig_domain <- sig_genes
-rm(sig_genes)
-
-
 ## load sce_pseudo data
 sce_pseudo <-
     readRDS(
@@ -57,6 +49,15 @@ pdf(
 )
 plotExplanatoryVariables(vars) + theme_classic(base_size = 30)
 dev.off()
+
+## Load Sp09 DE results
+load(here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"),
+    verbose = TRUE
+)
+sig_domain <- sig_genes
+rm(sig_genes)
+
+
 
 ## Load position DE results
 load(
@@ -112,6 +113,10 @@ ggplot(subset(enriched, fdr < 0.05), aes(x = stat, fill = test)) +
     theme(axis.text.x = element_text(size = 8)) +
     ylab("Count (log10 scale)")
 dev.off()
+
+
+## Summarize into a table
+
 
 ## Reproducibility information
 print("Reproducibility information:")
