@@ -1,4 +1,5 @@
 library("SpatialExperiment")
+library("scater")
 library("here")
 library("sessioninfo")
 library("ggplot2")
@@ -18,6 +19,44 @@ load(here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"),
 )
 sig_domain <- sig_genes
 rm(sig_genes)
+
+
+## load sce_pseudo data
+sce_pseudo <-
+    readRDS(
+        here(
+            "processed-data",
+            "rdata",
+            "spe",
+            "07_layer_differential_expression",
+            paste0("sce_pseudo_BayesSpace_k09.rds")
+        )
+    )
+
+## Define variables to use
+vars <- c(
+    "age",
+    "sample_id",
+    "BayesSpace",
+    "subject",
+    "sex",
+    "position"
+)
+
+## Obtain percent of variance explained at the gene level
+## using scater::getVarianceExplained()
+vars <- getVarianceExplained(sce_pseudo,
+    variables = vars
+)
+
+## Now visualize the percent of variance explained across all genes
+pdf(
+    file = file.path(dir_plots, "sce_pseudo_gene_explanatory_vars_k09_large.pdf"),
+    width = 18,
+    height = 5
+)
+plotExplanatoryVariables(vars) + theme_classic(base_size = 30)
+dev.off()
 
 ## Load position DE results
 load(
@@ -98,9 +137,13 @@ session_info()
 # ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
 #  package              * version   date (UTC) lib source
 #  beachmat               2.14.0    2022-11-01 [1] Bioconductor
+#  beeswarm               0.4.0     2021-06-01 [1] CRAN (R 4.2.0)
 #  Biobase              * 2.58.0    2022-11-01 [1] Bioconductor
 #  BiocGenerics         * 0.44.0    2022-11-01 [1] Bioconductor
+#  BiocNeighbors          1.16.0    2022-11-01 [1] Bioconductor
 #  BiocParallel           1.32.5    2022-12-25 [1] Bioconductor
+#  BiocSingular           1.14.0    2022-11-01 [1] Bioconductor
+#  biocthis               1.9.1     2022-11-01 [1] Github (lcolladotor/biocthis@af38c7c)
 #  bitops                 1.0-7     2021-04-24 [1] CRAN (R 4.2.0)
 #  brio                   1.1.3     2021-11-30 [1] CRAN (R 4.2.0)
 #  cachem                 1.0.6     2021-08-19 [1] CRAN (R 4.2.0)
@@ -109,6 +152,7 @@ session_info()
 #  codetools              0.2-19    2023-02-01 [1] CRAN (R 4.2.0)
 #  colorout               1.2-2     2022-03-01 [1] Github (jalvesaq/colorout@79931fd)
 #  colorspace             2.1-0     2023-01-23 [1] CRAN (R 4.2.0)
+#  cowplot                1.1.1     2020-12-30 [1] CRAN (R 4.2.0)
 #  crayon                 1.5.2     2022-09-29 [1] CRAN (R 4.2.0)
 #  data.table             1.14.6    2022-11-16 [1] CRAN (R 4.2.0)
 #  DelayedArray           0.24.0    2022-11-01 [1] Bioconductor
@@ -121,14 +165,18 @@ session_info()
 #  edgeR                  3.40.2    2023-01-22 [1] Bioconductor
 #  ellipsis               0.3.2     2021-04-29 [1] CRAN (R 4.2.0)
 #  fansi                  1.0.4     2023-01-22 [1] CRAN (R 4.2.0)
+#  farver                 2.1.1     2022-07-06 [1] CRAN (R 4.2.1)
 #  fastmap                1.1.0     2021-01-25 [1] CRAN (R 4.2.0)
 #  fs                     1.6.0     2023-01-23 [1] CRAN (R 4.2.0)
 #  generics               0.1.3     2022-07-05 [1] CRAN (R 4.2.0)
 #  GenomeInfoDb         * 1.34.9    2023-02-02 [1] Bioconductor
 #  GenomeInfoDbData       1.2.9     2022-11-02 [1] Bioconductor
 #  GenomicRanges        * 1.50.2    2022-12-18 [1] Bioconductor
+#  ggbeeswarm             0.7.1     2022-12-16 [1] CRAN (R 4.2.2)
 #  ggplot2              * 3.4.0     2022-11-04 [1] CRAN (R 4.2.0)
+#  ggrepel                0.9.3     2023-02-03 [1] CRAN (R 4.2.0)
 #  glue                   1.6.2     2022-02-24 [1] CRAN (R 4.2.0)
+#  gridExtra              2.3       2017-09-09 [1] CRAN (R 4.2.0)
 #  gtable                 0.3.1     2022-09-01 [1] CRAN (R 4.2.1)
 #  HDF5Array              1.26.0    2022-11-01 [1] Bioconductor
 #  here                 * 1.0.1     2020-12-13 [1] CRAN (R 4.2.0)
@@ -137,6 +185,8 @@ session_info()
 #  htmlwidgets            1.6.1     2023-01-07 [1] CRAN (R 4.2.0)
 #  httpuv                 1.6.8     2023-01-12 [1] CRAN (R 4.2.0)
 #  IRanges              * 2.32.0    2022-11-01 [1] Bioconductor
+#  irlba                  2.3.5.1   2022-10-03 [1] CRAN (R 4.2.1)
+#  labeling               0.4.2     2020-10-20 [1] CRAN (R 4.2.0)
 #  later                  1.3.0     2021-08-18 [1] CRAN (R 4.2.0)
 #  lattice                0.20-45   2021-09-22 [1] CRAN (R 4.2.2)
 #  lifecycle              1.0.3     2022-10-07 [1] CRAN (R 4.2.1)
@@ -164,6 +214,7 @@ session_info()
 #  prompt                 1.0.1     2022-03-01 [1] Github (gaborcsardi/prompt@7ef0f2e)
 #  ps                     1.7.2     2022-10-26 [1] CRAN (R 4.2.0)
 #  purrr                  1.0.1     2023-01-10 [1] CRAN (R 4.2.0)
+#  R.cache                0.16.0    2022-07-21 [1] CRAN (R 4.2.0)
 #  R.methodsS3            1.8.2     2022-06-13 [1] CRAN (R 4.2.0)
 #  R.oo                   1.25.0    2022-06-12 [1] CRAN (R 4.2.0)
 #  R.utils                2.12.2    2022-11-11 [1] CRAN (R 4.2.0)
@@ -179,10 +230,13 @@ session_info()
 #  rprojroot              2.0.3     2022-04-02 [1] CRAN (R 4.2.0)
 #  rsthemes               0.3.1     2022-03-01 [1] Github (gadenbuie/rsthemes@bbe73ca)
 #  rstudioapi             0.14      2022-08-22 [1] CRAN (R 4.2.0)
+#  rsvd                   1.0.5     2021-04-16 [1] CRAN (R 4.2.0)
 #  S4Vectors            * 0.36.1    2022-12-07 [1] Bioconductor
+#  ScaledMatrix           1.6.0     2022-11-01 [1] Bioconductor
 #  scales                 1.2.1     2022-08-20 [1] CRAN (R 4.2.0)
+#  scater               * 1.26.1    2022-11-13 [1] Bioconductor
 #  scatterplot3d          0.3-42    2022-09-08 [1] CRAN (R 4.2.0)
-#  scuttle                1.8.4     2023-01-22 [1] Bioconductor
+#  scuttle              * 1.8.4     2023-01-22 [1] Bioconductor
 #  sessioninfo          * 1.2.2     2021-12-06 [1] CRAN (R 4.2.0)
 #  shiny                  1.7.4     2022-12-15 [1] CRAN (R 4.2.2)
 #  SingleCellExperiment * 1.20.0    2022-11-01 [1] Bioconductor
@@ -190,6 +244,7 @@ session_info()
 #  SpatialExperiment    * 1.8.0     2022-11-01 [1] Bioconductor
 #  stringi                1.7.12    2023-01-11 [1] CRAN (R 4.2.0)
 #  stringr                1.5.0     2022-12-02 [1] CRAN (R 4.2.0)
+#  styler                 1.9.0     2023-01-15 [1] CRAN (R 4.2.0)
 #  SummarizedExperiment * 1.28.0    2022-11-01 [1] Bioconductor
 #  suncalc                0.5.1     2022-09-29 [1] CRAN (R 4.2.0)
 #  testthat             * 3.1.6     2022-12-09 [1] CRAN (R 4.2.0)
@@ -200,6 +255,9 @@ session_info()
 #  usethis              * 2.1.6     2022-05-25 [1] CRAN (R 4.2.0)
 #  utf8                   1.2.3     2023-01-31 [1] CRAN (R 4.2.0)
 #  vctrs                  0.5.2     2023-01-23 [1] CRAN (R 4.2.0)
+#  vipor                  0.4.5     2017-03-22 [1] CRAN (R 4.2.0)
+#  viridis                0.6.2     2021-10-13 [1] CRAN (R 4.2.0)
+#  viridisLite            0.4.1     2022-08-22 [1] CRAN (R 4.2.0)
 #  withr                  2.5.0     2022-03-03 [1] CRAN (R 4.2.0)
 #  xtable                 1.8-4     2019-04-21 [1] CRAN (R 4.2.0)
 #  XVector                0.38.0    2022-11-01 [1] Bioconductor
