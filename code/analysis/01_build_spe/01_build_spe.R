@@ -385,7 +385,56 @@ dim(spe)
 low_lib_remove <- which(colData(spe)$scran_low_lib_size == TRUE)
 
 length(low_lib_remove)
-# [1] 7685
+# [1] 4866
+
+addmargins(table(spe$scran_low_lib_size))
+# TRUE  FALSE    Sum
+# 4866 113927 118793
+addmargins(table(spe$scran_low_lib_size)) / ncol(spe) * 100
+#     TRUE      FALSE        Sum
+# 4.096201  95.903799 100.000000
+addmargins(table(spe$sample_id, spe$scran_low_lib_size))
+#               TRUE  FALSE    Sum
+# Br2720_ant     121   3046   3167
+# Br2720_mid      29   1796   1825
+# Br2720_post     61   4623   4684
+# Br2743_ant      76   4068   4144
+# Br2743_mid     174   4072   4246
+# Br2743_post    309   3553   3862
+# Br3942_ant     199   3842   4041
+# Br3942_mid     557   3371   3928
+# Br3942_post    243   4157   4400
+# Br6423_ant     118   3788   3906
+# Br6423_mid     112   3872   3984
+# Br6423_post     32   3819   3851
+# Br6432_ant      79   3905   3984
+# Br6432_mid     142   3369   3511
+# Br6432_post    273   2614   2887
+# Br6471_ant      52   3135   3187
+# Br6471_mid      65   4476   4541
+# Br6471_post     31   4385   4416
+# Br6522_ant      35   4263   4298
+# Br6522_mid      43   3724   3767
+# Br6522_post     49   3861   3910
+# Br8325_ant      87   3442   3529
+# Br8325_mid     320   3840   4160
+# Br8325_post    223   4176   4399
+# Br8492_ant      84   4709   4793
+# Br8492_mid     566   3869   4435
+# Br8492_post     51   4567   4618
+# Br8667_ant      37   3621   3658
+# Br8667_mid     326   3939   4265
+# Br8667_post    372   4025   4397
+# Sum           4866 113927 118793
+
+apply(table(spe$sample_id, spe$scran_low_lib_size), 2, summary)
+#          TRUE    FALSE
+# Min.     29.00 1796.000
+# 1st Qu.  51.25 3570.000
+# Median   99.50 3865.000
+# Mean    162.20 3797.567
+# 3rd Qu. 238.00 4135.750
+# Max.    566.00 4709.000
 
 # remove remove spots that have low lib size
 spe <- spe[, -low_lib_remove]
