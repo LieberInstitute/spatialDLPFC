@@ -6,10 +6,8 @@ library("ggplot2")
 library("Polychrome")
 
 ## Plot directory
-dir_plots <- here::here(
-    "plots",
-    "09_position_differential_expression"
-)
+dir_plots <- here::here("plots",
+    "09_position_differential_expression")
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
 
@@ -26,20 +24,17 @@ sce_pseudo <-
     )
 
 ## Define variables to use
-vars <- c(
-    "age",
+vars <- c("age",
     "sample_id",
     "BayesSpace",
     "subject",
     "sex",
-    "position"
-)
+    "position")
 
 ## Obtain percent of variance explained at the gene level
 ## using scater::getVarianceExplained()
 vars <- getVarianceExplained(sce_pseudo,
-    variables = vars
-)
+    variables = vars)
 
 ## Now visualize the percent of variance explained across all genes
 pdf(
@@ -54,9 +49,14 @@ dev.off()
 
 ## Load Sp09 DE results
 load(here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"),
-    verbose = TRUE
-)
+    verbose = TRUE)
 sig_domain <- sig_genes
+rm(sig_genes)
+
+## Load Sp16 DE results
+load(here("code", "deploy_app_k16", "sig_genes_subset_k16.Rdata"),
+    verbose = TRUE)
+sig_domain_16 <- sig_genes
 rm(sig_genes)
 
 ## Load position DE results
@@ -92,7 +92,7 @@ pdf(
 ## Plot densities of t-statistics
 ggplot(enriched, aes(x = stat, fill = test)) +
     geom_density() +
-    facet_grid(~ Analysis + test, margins = "test") +
+    facet_grid( ~ Analysis + test, margins = "test") +
     xlab("Enrichment t-statistic") +
     scale_color_manual(values = colors, name = "Test") +
     scale_fill_manual(values = colors, name = "Test") +
@@ -103,7 +103,7 @@ ggplot(enriched, aes(x = stat, fill = test)) +
 ## Plot histogram of t-statistics with FDR < 5%
 ggplot(subset(enriched, fdr < 0.05), aes(x = stat, fill = test)) +
     geom_histogram() +
-    facet_grid(~ Analysis + test, margins = "test") +
+    facet_grid( ~ Analysis + test, margins = "test") +
     xlab("Enrichment t-statistic (FDR <5%)") +
     scale_color_manual(values = colors, name = "Test") +
     scale_fill_manual(values = colors, name = "Test") +
@@ -233,6 +233,87 @@ as.data.frame(enriched) |>
 #   <fct>    <int>
 # 1 Sp09     11802
 # 2 position  1661
+
+
+## Get ANOVA / pairwise for k=9 or 16 numbers
+nrow(subset(sig_domain, model_type == "anova"))
+# [1] 12225
+sum(subset(sig_domain, model_type == "anova")$fdr < 0.05)
+# [1] 11341
+mean(subset(sig_domain, model_type == "anova")$fdr < 0.05) * 100
+# [1] 92.76892
+
+
+nrow(subset(sig_domain_16, model_type == "anova"))
+# [1] 9587
+sum(subset(sig_domain_16, model_type == "anova")$fdr < 0.05)
+# [1] 9042
+mean(subset(sig_domain_16, model_type == "anova")$fdr < 0.05) * 100
+# [1] 94.31522
+
+nrow(subset(sig_position, model_type == "anova"))
+# [1] 12225
+sum(subset(sig_position, model_type == "anova")$fdr < 0.05)
+# [1] 1220
+mean(subset(sig_position, model_type == "anova")$fdr < 0.05) * 100
+# 1] 9.97955
+
+as.data.frame(subset(sig_domain_16, model_type == "enrichment")) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(direction) |>
+    filter(!duplicated(ensembl)) |>
+    tally()
+# # A tibble: 2 × 2
+#   direction     n
+#       <dbl> <int>
+# 1        -1  9214
+# 2         1  4471
+
+as.data.frame(subset(sig_domain, model_type == "pairwise")) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(direction) |>
+    filter(!duplicated(ensembl)) |>
+    tally()
+# # A tibble: 2 × 2
+#   direction     n
+#       <dbl> <int>
+# 1        -1 11995
+# 2         1 11995
+
+as.data.frame(subset(sig_domain_16, model_type == "pairwise")) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(direction) |>
+    filter(!duplicated(ensembl)) |>
+    tally()
+# # A tibble: 2 × 2
+#   direction     n
+#       <dbl> <int>
+# 1        -1  9535
+# 2         1  9535
+
+as.data.frame(subset(sig_position, model_type == "pairwise")) |>
+    filter(fdr < 0.05) |>
+    mutate(direction = sign(stat)) |>
+    group_by(direction) |>
+    filter(!duplicated(ensembl)) |>
+    tally()
+# # A tibble: 2 × 2
+#   direction     n
+#       <dbl> <int>
+# 1        -1  1486
+# 2         1  1486
+
+as.data.frame(subset(sig_position, model_type == "pairwise")) |>
+    filter(fdr < 0.05) |>
+    filter(!duplicated(ensembl)) |>
+    tally()
+#      n
+# 1 1486
+1486 / 12225 * 100
+# [1] 12.15542
 
 ## Reproducibility information
 print("Reproducibility information:")
