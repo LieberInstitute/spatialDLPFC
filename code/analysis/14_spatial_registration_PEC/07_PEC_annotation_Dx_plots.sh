@@ -1,7 +1,7 @@
 #!/bin/bash
 #$ -cwd
 #$ -l mem_free=25G,h_vmem=25G,h_fsize=100G
-#$ -N 07_PEC_annotation_Dx_plots
+#$ -N PEC_annotation_Dx_plots
 #$ -o logs/07_PEC_annotation_Dx_plots.txt
 #$ -e logs/07_PEC_annotation_Dx_plots.txt
 #$ -m e
@@ -17,7 +17,7 @@ echo "Hostname: ${HOSTNAME}"
 echo "Task id: ${SGE_TASK_ID}"
 
 ## Load the R module (absent since the JHPCE upgrade to CentOS v7)
-module load conda_R
+module load conda_R/4.2.x
 
 ## List current modules for reproducibility
 module list

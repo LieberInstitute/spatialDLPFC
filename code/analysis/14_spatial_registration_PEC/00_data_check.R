@@ -156,17 +156,18 @@ h5ad_files_v5 <- list.files(raw_data_dir_v5, pattern = "h5ad")
 datasets_v5 <- unique(names(h5ad_files_v5))
 
 ## add LIBD & PTSD
-job_loop(
-    loops = list(PE_data = c("LIBD", "PTSDBrainomics")),
-    name = "01_pseudobulk_data_check",
-    create_shell = TRUE
-)
+# job_loop(
+#     loops = list(PE_data = c("LIBD", "PTSDBrainomics")),
+#     name = "01_pseudobulk_data_check",
+#     create_shell = TRUE
+# )
 
 
 #### Check Dx in metadata ####
 
 metadata_fn <- map(datasets_v5, ~ here("raw-data", "psychENCODE", "metadata", paste0("individual_", .x, "_metadata.csv")))
 names(metadata_fn) <- datasets_v5
+
 
 ## no metadata for multiomeBrain
 metadata <- map(metadata_fn[map_lgl(metadata_fn, file.exists)], ~ read.csv(.x))
@@ -256,7 +257,7 @@ map(dx_data, ~ .x |> dplyr::count(primaryDiagnosis))
 # 2          Control  5
 # 3    Schizophrenia  6
 
-walk2(dx_data["LIBD"], names(dx_data["LIBD"]), ~ write.csv(.x,
+walk2(dx_data["PTSDBrainomics"], names(dx_data["PTSDBrainomics"]), ~ write.csv(.x,
     file = here(
         "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
         paste0("primaryDiagnosis_", .y, ".csv")

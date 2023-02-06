@@ -23,7 +23,7 @@ module load conda_R/4.2.x
 module list
 
 ## Edit with your job command
-Rscript 01a_marker_genes.R
+Rscript 01_marker_genes.R
 
 echo "**** Job ends ****"
 date
