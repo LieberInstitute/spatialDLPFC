@@ -137,7 +137,7 @@ We provide the following interactive websites:
 * snRNA-seq (n = 19)
   - [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq): [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website showing the n = 19 snRNA-seq samples at single nucleus resolution.
 * Visium SPG (n = 4)
-  - [spatialDLPFC_Visium_SPG](https://libd.shinyapps.io/spatialDLPFC_Visium_SPG): [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website showing the spatially-resolved data Visium SPG (n = 4) with statistical results comparing the Sp09 domains.
+  - [spatialDLPFC_Visium_SPG](https://libd.shinyapps.io/spatialDLPFC_Visium_SPG): [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website showing the spatially-resolved data Visium SPG (n = 4).
   - [spatialDLPFC Visium SPG on Loopy](https://loopybrowser.com/): [`loopy`](https://github.com/chaichontat/loopy-browser) website that allows to zoom in at the spot or cell level.
   
 If you are interested in running the [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) applications locally, you can do so thanks to the [`spatialLIBD::run_app()`](http://research.libd.org/spatialLIBD/reference/run_app.html), which you can also use with your own data as shown in our [vignette for publicly available datasets provided by 10x Genomics](http://bioconductor.org/packages/release/data/experiment/vignettes/spatialLIBD/inst/doc/TenX_data_download.html).
@@ -279,7 +279,9 @@ ggplot2::ggsave(here::here("img", "Br6255_ant_Sp16.png"),
 
 ### Raw data
 
-You can access all the raw data through [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC` and `jhpce#DLPFC_snRNAseq`). This includes all the input FASTQ files as well as the outputs from tools such as [`SpaceRanger`](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger) or [`CellRanger`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger). The files are _mostly_ organized following the [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project) project structure.
+The source data described in this manuscript are available via the PsychENCODE Knowledge Portal (https://PsychENCODE.synapse.org/). The PsychENCODE Knowledge Portal is a platform for accessing data, analyses, and tools generated through grants funded by the National Institute of Mental Health (NIMH) PsychENCODE Consortium. Data is available for general research use according to the following requirements for data access and data attribution: (https://PsychENCODE.synapse.org/DataAccess). For access to content described in this manuscript see: https://www.synapse.org/#!Synapse:syn51032055/datasets/.
+
+You can also access all the raw data through [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC` and `jhpce#DLPFC_snRNAseq`). This includes all the input FASTQ files as well as the outputs from tools such as [`SpaceRanger`](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger) or [`CellRanger`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger). The files are _mostly_ organized following the [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project) project structure.
 
 
 ## Internal
@@ -304,7 +306,7 @@ You can access all the raw data through [Globus](http://research.libd.org/globus
   * `FASTQ_renamed`: renamed symbolic links to the original FASTQs, with consistent nomenclature
   * `Images`: raw images from the scanner in `.tif` format and around 3 GB per sample.
   * `images_raw_align_json`
-  * `psychENCODE`: external data from PsychENCODE, originally retrieved from [here](https://www.synapse.org/#!Synapse:syn30108587.1/datasets/)
+  * `psychENCODE`: external data from PsychENCODE DOI: [10.7303/syn2787333](https://doi.org/10.7303/syn2787333).
   * `sample_info`: spreadsheet with information about samples (sample ID, sample name, slide serial number, capture area ID)
   
 This project is organized along the [_R/Bioconductor-powered Team Data Science_ group guidelines](https://lcolladotor.github.io/bioc_team_ds/organizing-your-work.html#.Yaf9fPHMIdk).  It aims to follow the [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project) structure, though most of the `code/analysis` output is saved at `processed-data/rdata/spe` directory unlike what's specified in the template structure. This is due to historical reasons.
