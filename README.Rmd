@@ -51,11 +51,17 @@ Thank you for your interest in our work!
 ## Citing our work
 
 
-Please cite this [manuscript](TODO) if you use data from this project. Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
+Please cite this [manuscript](TODO) if you use data from this project. 
+
+> TODO
+
+Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
 
 ```
 TODO
 ```
+
+### Cite `spatialLIBD`
 
 Below is the citation output from using `citation('spatialLIBD')` in R. Please run this yourself to check for any updates on how to cite __spatialLIBD__.
 
@@ -65,13 +71,36 @@ print(citation("spatialLIBD"), bibtex = TRUE)
 
 Please note that the `spatialLIBD` was only made possible thanks to many other R and bioinformatics software authors, which are cited either in the vignettes and/or the paper(s) describing the package.
 
+### Cite `Loopy`
+
+To cite [`loopy`](https://github.com/chaichontat/loopy-browser) please use:
+
+> Performant web-based interactive visualization tool for spatially-resolved transcriptomics experiments
+Chaichontat Sriworarat, Annie Nguyen, Nicholas J. Eagles, Leonardo Collado-Torres, Keri Martinowich, Kristen R. Maynard, Stephanie C. Hicks. bioRxiv 2023.01.28.525943; doi: https://doi.org/10.1101/2023.01.28.525943
+
+Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
+
+```
+@article {Sriworarat2023.01.28.525943,
+	author = {Sriworarat, Chaichontat and Nguyen, Annie and Eagles, Nicholas J. and Collado-Torres, Leonardo and Martinowich, Keri and Maynard, Kristen R. and Hicks, Stephanie C.},
+	title = {Performant web-based interactive visualization tool for spatially-resolved transcriptomics experiments},
+	elocation-id = {2023.01.28.525943},
+	year = {2023},
+	doi = {10.1101/2023.01.28.525943},
+	publisher = {Cold Spring Harbor Laboratory},
+	URL = {https://www.biorxiv.org/content/early/2023/01/29/2023.01.28.525943},
+	eprint = {https://www.biorxiv.org/content/early/2023/01/29/2023.01.28.525943.full.pdf},
+	journal = {bioRxiv}
+}
+```
+
 
 
 ## Interactive Websites
 
 We provide the following interactive websites:
 
-* Visium
+* Visium (n = 30)
   - [spatialDLPFC_Visium_Sp09](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09): [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website showing the spatially-resolved Visium data (n = 30) with statistical results comparing the Sp09 domains.
   - [spatialDLPFC_Visium_Sp16](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16): similar but with the Sp16 domains.
   - [spatialDLPFC_Visium_Sp09_position](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position): similar to _spatialDLPFC_Visium_Sp09_ but with statistical results across the _position_ (anterior, middle, posterior) adjusting for the Sp09 domains.
@@ -80,9 +109,9 @@ We provide the following interactive websites:
   - [spatialDLPFC_Visium_Sp16_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16_pseudobulk): similar to _spatialDLPFC_Visium_Sp09_pseudobulk_ but with the Sp16 domains data.
   - [spatialDLPFC_Visium_Sp28_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp28_pseudobulk): similar to _spatialDLPFC_Visium_Sp09_pseudobulk_ but with the Sp28 domains data.
   - [spatialDLPFC Visium on Loopy](https://loopybrowser.com/): [`loopy`](https://github.com/chaichontat/loopy-browser) website that allows to zoom in at the spot or cell level.
-* snRNA-seq
+* snRNA-seq (n = 19)
   - [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq): [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website showing the n = 19 snRNA-seq samples at single nucleus resolution.
-* Visium SPG
+* Visium SPG (n = 4)
   - [spatialDLPFC_Visium_SPG](https://libd.shinyapps.io/spatialDLPFC_Visium_SPG): [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website showing the spatially-resolved data Visium SPG (n = 4) with statistical results comparing the Sp09 domains.
   - [spatialDLPFC Visium SPG on Loopy](https://loopybrowser.com/): [`loopy`](https://github.com/chaichontat/loopy-browser) website that allows to zoom in at the spot or cell level.
   
