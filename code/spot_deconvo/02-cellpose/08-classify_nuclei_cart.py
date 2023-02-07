@@ -95,7 +95,7 @@ def plot_roi(img, props, indices, vmax: int = 128, pad: int = 25):
         j += 1
         
         for i in range(1, 6):
-            axs[j].imshow(
+            a = axs[j].imshow(
                 img[
                     i,
                     max(0, bbox[0] - pad) : min(img.shape[1], bbox[2] + pad),
@@ -104,13 +104,14 @@ def plot_roi(img, props, indices, vmax: int = 128, pad: int = 25):
                 vmax=vmax,
                 aspect="equal",
             )
+            plt.colorbar(a, ax = axs[j])
             
             if j < 6:
                 axs[j].set_title(names[i])
             
             axs[j].grid(False)
             j += 1
-    
+    #
     return fig
 
 ################################################################################
@@ -119,26 +120,7 @@ def plot_roi(img, props, indices, vmax: int = 128, pad: int = 25):
 
 # os.environ['SGE_TASK_ID'] = '1'
 
-rng = default_rng()
-
-img_path = pyhere.here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '{}.tif')
-expanded_mask_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'expanded_masks.npy'
-)
-spot_path = pyhere.here(
-    'processed-data', '01_spaceranger_IF', '{}', 'outs', 'spatial',
-    'tissue_positions_list.csv'
-)
-df_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'df.csv'
-)
-
-clusters_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'clusters.csv'
-)
-cells_path = pyhere.here(
-    'processed-data', 'spot_deconvo', '02-cellpose', '{}', 'cell_metrics.csv'
-)
+rng = default_rng(0)
 
 #-------------------------------------------------------------------------------
 #   Read in sample info and adjust paths for this particular sample ID
@@ -215,7 +197,7 @@ for cell_type in df['cell_type'].unique():
         df[df['cell_type'] == cell_type].index,
         examples_per_type, replace = False
     )
-    
+
     #   Print numeric intensities for these cells
     print(f'Intensities for {examples_per_type} random {cell_type} cells:')
     print(df.loc[indices][cell_types.keys()])
