@@ -224,8 +224,7 @@ We provide the following interactive websites:
 - Visium SPG (n = 4)
   - [spatialDLPFC_Visium_SPG](https://libd.shinyapps.io/spatialDLPFC_Visium_SPG):
     [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website
-    showing the spatially-resolved data Visium SPG (n = 4) with
-    statistical results comparing the Sp09 domains.
+    showing the spatially-resolved data Visium SPG (n = 4).
   - [spatialDLPFC Visium SPG on Loopy](https://loopybrowser.com/):
     [`loopy`](https://github.com/chaichontat/loopy-browser) website that
     allows to zoom in at the spot or cell level.
@@ -385,7 +384,18 @@ p16
 
 ### Raw data
 
-You can access all the raw data through
+The source data described in this manuscript are available via the
+PsychENCODE Knowledge Portal (<https://PsychENCODE.synapse.org/>). The
+PsychENCODE Knowledge Portal is a platform for accessing data, analyses,
+and tools generated through grants funded by the National Institute of
+Mental Health (NIMH) PsychENCODE Consortium. Data is available for
+general research use according to the following requirements for data
+access and data attribution:
+(<https://PsychENCODE.synapse.org/DataAccess>). For access to content
+described in this manuscript see:
+<https://www.synapse.org/#!Synapse:syn51032055/datasets/>.
+
+You can also access all the raw data through
 [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC` and
 `jhpce#DLPFC_snRNAseq`). This includes all the input FASTQ files as well
 as the outputs from tools such as
@@ -427,9 +437,8 @@ project structure.
   - `Images`: raw images from the scanner in `.tif` format and around 3
     GB per sample.
   - `images_raw_align_json`
-  - `psychENCODE`: external data from PsychENCODE, originally retrieved
-    from
-    [here](https://www.synapse.org/#!Synapse:syn30108587.1/datasets/)
+  - `psychENCODE`: external data from PsychENCODE DOI:
+    [10.7303/syn2787333](https://doi.org/10.7303/syn2787333).
   - `sample_info`: spreadsheet with information about samples (sample
     ID, sample name, slide serial number, capture area ID)
 
