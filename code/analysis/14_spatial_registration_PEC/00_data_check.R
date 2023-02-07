@@ -15,7 +15,7 @@ data_dir <-
 
 #### Define PEC & store cell type details ####
 pec_cell_types <- c(
-    # Non-neuronal cells (8)
+    # Non-neuronal cells (9)
     "Astro",
     "Endo",
     "Immune",
@@ -24,6 +24,7 @@ pec_cell_types <- c(
     "Oligo",
     "PC",
     "SMC",
+    "VLMC",
     # Excit (9)
     "L2/3 IT",
     "L4 IT",
@@ -34,7 +35,7 @@ pec_cell_types <- c(
     "L6 IT",
     "L6 IT Car3",
     "L6b",
-    # Inhib (10)
+    # Inhib (9)
     "Chandelier",
     "Lamp5",
     "Lamp5 Lhx6",
@@ -43,14 +44,13 @@ pec_cell_types <- c(
     "Sncg",
     "Sst",
     "Sst Chodl",
-    "VLMC",
     "Vip"
 )
 
 pec_cell_type_tb <- tibble(
     cell_type = factor(pec_cell_types, levels = pec_cell_types),
     cluster = make.names(cell_type),
-    ct_cat = unlist(map2(c("Non-neuronal", "Excit", "Inhib"), c(8, 9, 10), rep))
+    ct_cat = unlist(map2(c("Non-neuronal", "Excit", "Inhib"), c(9, 9, 9), rep))
 )
 
 save(pec_cell_type_tb, file = here(data_dir, "pec_cell_type_tb.Rdata"))
