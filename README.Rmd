@@ -22,6 +22,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![DOI](https://zenodo.org/badge/314001778.svg)](https://zenodo.org/badge/latestdoi/314001778)
+
 ## Overview
 
 <img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" align="left" width="300px" />
@@ -73,10 +75,11 @@ We provide the following interactive websites:
   - [spatialDLPFC_Visium_Sp09](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09): [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website showing the spatially-resolved Visium data (n = 30) with statistical results comparing the Sp09 domains.
   - [spatialDLPFC_Visium_Sp16](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16): similar but with the Sp16 domains.
   - [spatialDLPFC_Visium_Sp09_position](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position): similar to _spatialDLPFC_Visium_Sp09_ but with statistical results across the _position_ (anterior, middle, posterior) adjusting for the Sp09 domains.
-  - [spatialDLPFC_Visium_Sp09_position_noWM](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position_noWM): similar to _spatialDLPFC_Visium_Sp09_position_ but after dropping the `Sp02D01` spots which correspond to white matter (hence the `noWM` acronym).
+  - [spatialDLPFC_Visium_Sp09_position_noWM](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position_noWM): similar to _spatialDLPFC_Visium_Sp09_position_ but after dropping the `SP28D06`, `SP28D16`, `SP28D17`, `SP28D20` and `SP28D28` spots which correspond to white matter (hence the `noWM` acronym).
   - [spatialDLPFC_Visium_Sp09_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_pseudobulk): [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website showing the pseudo-bulked Sp09 domains spatial data.
   - [spatialDLPFC_Visium_Sp16_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16_pseudobulk): similar to _spatialDLPFC_Visium_Sp09_pseudobulk_ but with the Sp16 domains data.
   - [spatialDLPFC_Visium_Sp28_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp28_pseudobulk): similar to _spatialDLPFC_Visium_Sp09_pseudobulk_ but with the Sp28 domains data.
+  - [spatialDLPFC Visium on Loopy](https://loopybrowser.com/): [`loopy`](https://github.com/chaichontat/loopy-browser) website that allows to zoom in at the spot or cell level.
 * snRNA-seq
   - [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq): [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website showing the n = 19 snRNA-seq samples at single nucleus resolution.
 * Visium SPG
@@ -259,4 +262,4 @@ TODO
 
 ### Other related files
 
-- reference transcriptome from 10x Genomics: `/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A/`
+- Reference transcriptome from 10x Genomics: `/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A/`
