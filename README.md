@@ -3,6 +3,8 @@ spatialDLPFC
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+[![DOI](https://zenodo.org/badge/314001778.svg)](https://zenodo.org/badge/latestdoi/314001778)
+
 ## Overview
 
 <img src="http://research.libd.org/spatialDLPFC/img/Br6255_ant_Sp09.png" align="left" width="300px" />
@@ -73,9 +75,14 @@ matter, and cortical layers, respectively.
 ## Citing our work
 
 Please cite this [manuscript](TODO) if you use data from this project.
+
+> TODO
+
 Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
 
     TODO
+
+### Cite `spatialLIBD`
 
 Below is the citation output from using `citation('spatialLIBD')` in R.
 Please run this yourself to check for any updates on how to cite
@@ -129,11 +136,61 @@ Please note that the `spatialLIBD` was only made possible thanks to many
 other R and bioinformatics software authors, which are cited either in
 the vignettes and/or the paper(s) describing the package.
 
+### Cite `Loopy`
+
+To cite [`loopy`](https://github.com/chaichontat/loopy-browser) please
+use:
+
+> Performant web-based interactive visualization tool for
+> spatially-resolved transcriptomics experiments Chaichontat Sriworarat,
+> Annie Nguyen, Nicholas J. Eagles, Leonardo Collado-Torres, Keri
+> Martinowich, Kristen R. Maynard, Stephanie C. Hicks bioRxiv
+> 2023.01.28.525943; doi: <https://doi.org/10.1101/2023.01.28.525943>
+
+Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
+
+    @article {Sriworarat2023.01.28.525943,
+        author = {Sriworarat, Chaichontat and Nguyen, Annie and Eagles, Nicholas J. and Collado-Torres, Leonardo and Martinowich, Keri and Maynard, Kristen R. and Hicks, Stephanie C.},
+        title = {Performant web-based interactive visualization tool for spatially-resolved transcriptomics experiments},
+        elocation-id = {2023.01.28.525943},
+        year = {2023},
+        doi = {10.1101/2023.01.28.525943},
+        publisher = {Cold Spring Harbor Laboratory},
+        URL = {https://www.biorxiv.org/content/early/2023/01/29/2023.01.28.525943},
+        eprint = {https://www.biorxiv.org/content/early/2023/01/29/2023.01.28.525943.full.pdf},
+        journal = {bioRxiv}
+    }
+
+### Cite `VistoSeg`
+
+To cite [`VistoSeg`](http://research.libd.org/VistoSeg/) please use:
+
+> VistoSeg: processing utilities for high-resolution Visium/Visium-IF
+> images for spatial transcriptomics data. Madhavi Tippani, Heena R.
+> Divecha, Joseph L. Catallini II, Sang Ho Kwon, Lukas M. Weber, Abby
+> Spangler, Andrew E. Jaffe, Stephanie C. Hicks, Keri Martinowich,
+> Leonardo Collado-Torres, Stephanie C. Page, Kristen R. Maynard bioRxiv
+> 2021.08.04.452489; doi: <https://doi.org/10.1101/2021.08.04.452489>
+
+Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
+
+    @article {Tippani2021.08.04.452489,
+        author = {Tippani, Madhavi and Divecha, Heena R. and Catallini, Joseph L. and Kwon, Sang Ho and Weber, Lukas M. and Spangler, Abby and Jaffe, Andrew E. and Hicks, Stephanie C. and Martinowich, Keri and Collado-Torres, Leonardo and Page, Stephanie C. and Maynard, Kristen R.},
+        title = {VistoSeg: processing utilities for high-resolution Visium/Visium-IF images for spatial transcriptomics data},
+        elocation-id = {2021.08.04.452489},
+        year = {2022},
+        doi = {10.1101/2021.08.04.452489},
+        publisher = {Cold Spring Harbor Laboratory},
+        URL = {https://www.biorxiv.org/content/early/2022/05/13/2021.08.04.452489},
+        eprint = {https://www.biorxiv.org/content/early/2022/05/13/2021.08.04.452489.full.pdf},
+        journal = {bioRxiv}
+    }
+
 ## Interactive Websites
 
 We provide the following interactive websites:
 
-- Visium
+- Visium (n = 30)
   - [spatialDLPFC_Visium_Sp09](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09):
     [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website
     showing the spatially-resolved Visium data (n = 30) with statistical
@@ -146,8 +203,8 @@ We provide the following interactive websites:
     the Sp09 domains.
   - [spatialDLPFC_Visium_Sp09_position_noWM](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position_noWM):
     similar to *spatialDLPFC_Visium_Sp09_position* but after dropping
-    the `Sp02D01` spots which correspond to white matter (hence the
-    `noWM` acronym).
+    the `SP28D06`, `SP28D16`, `SP28D17`, `SP28D20` and `SP28D28` spots
+    which correspond to white matter (hence the `noWM` acronym).
   - [spatialDLPFC_Visium_Sp09_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_pseudobulk):
     [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website
     showing the pseudo-bulked Sp09 domains spatial data.
@@ -157,15 +214,17 @@ We provide the following interactive websites:
   - [spatialDLPFC_Visium_Sp28_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp28_pseudobulk):
     similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp28
     domains data.
-- snRNA-seq
+  - [spatialDLPFC Visium on Loopy](https://loopybrowser.com/):
+    [`loopy`](https://github.com/chaichontat/loopy-browser) website that
+    allows to zoom in at the spot or cell level.
+- snRNA-seq (n = 19)
   - [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq):
     [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website
     showing the n = 19 snRNA-seq samples at single nucleus resolution.
-- Visium SPG
+- Visium SPG (n = 4)
   - [spatialDLPFC_Visium_SPG](https://libd.shinyapps.io/spatialDLPFC_Visium_SPG):
     [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website
-    showing the spatially-resolved data Visium SPG (n = 4) with
-    statistical results comparing the Sp09 domains.
+    showing the spatially-resolved data Visium SPG (n = 4).
   - [spatialDLPFC Visium SPG on Loopy](https://loopybrowser.com/):
     [`loopy`](https://github.com/chaichontat/loopy-browser) website that
     allows to zoom in at the spot or cell level.
@@ -325,7 +384,18 @@ p16
 
 ### Raw data
 
-You can access all the raw data through
+The source data described in this manuscript are available via the
+PsychENCODE Knowledge Portal (<https://PsychENCODE.synapse.org/>). The
+PsychENCODE Knowledge Portal is a platform for accessing data, analyses,
+and tools generated through grants funded by the National Institute of
+Mental Health (NIMH) PsychENCODE Consortium. Data is available for
+general research use according to the following requirements for data
+access and data attribution:
+(<https://PsychENCODE.synapse.org/DataAccess>). For access to content
+described in this manuscript see:
+<https://www.synapse.org/#!Synapse:syn51032055/datasets/>.
+
+You can also access all the raw data through
 [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC` and
 `jhpce#DLPFC_snRNAseq`). This includes all the input FASTQ files as well
 as the outputs from tools such as
@@ -367,21 +437,40 @@ project structure.
   - `Images`: raw images from the scanner in `.tif` format and around 3
     GB per sample.
   - `images_raw_align_json`
-  - `psychENCODE`: external data from PsychENCODE, originally retrieved
-    from
-    [here](https://www.synapse.org/#!Synapse:syn30108587.1/datasets/)
+  - `psychENCODE`: external data from PsychENCODE DOI:
+    [10.7303/syn2787333](https://doi.org/10.7303/syn2787333).
   - `sample_info`: spreadsheet with information about samples (sample
     ID, sample name, slide serial number, capture area ID)
 
 This project is organized along the [*R/Bioconductor-powered Team Data
 Science* group
 guidelines](https://lcolladotor.github.io/bioc_team_ds/organizing-your-work.html#.Yaf9fPHMIdk).
+It aims to follow the
+[LieberInstitute/template_project](https://github.com/LieberInstitute/template_project)
+structure, though most of the `code/analysis` output is saved at
+`processed-data/rdata/spe` directory unlike what’s specified in the
+template structure. This is due to historical reasons.
 
 ### Files: [`DLPFC_snRNAseq`](https://github.com/LieberInstitute/DLPFC_snRNAseq)
 
-TODO
+- `code`: R scripts for running various analyses.
+- `plots`: plots generated by RMarkdown or R analysis scripts in `.pdf`
+  or `.png` format
+- `processed-data`
+  - `cellranger`: `CellRanger` output files
+- `raw-data`
+  - `FASTQ`: FASTQ files.
+  - `sample_info`: spreadsheet with information about samples (sample
+    ID, sample name)
+
+This project is organized along the [*R/Bioconductor-powered Team Data
+Science* group
+guidelines](https://lcolladotor.github.io/bioc_team_ds/organizing-your-work.html#.Yaf9fPHMIdk).
+It aims to follow the
+[LieberInstitute/template_project](https://github.com/LieberInstitute/template_project)
+structure.
 
 ### Other related files
 
-- reference transcriptome from 10x Genomics:
+- Reference transcriptome from 10x Genomics:
   `/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A/`
