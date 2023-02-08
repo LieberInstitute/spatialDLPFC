@@ -90,7 +90,7 @@ with open(json_path, 'r') as f:
 
 m_per_px = spot_diameter_m / spaceranger_json['spot_diameter_fullres']
 
-this_sample = Sample(name = sample_id, path = out_dir)
+this_sample = Sample(name = sample_id_spot, path = out_dir)
 this_sample.add_coords(
     tissue_positions, name="coords", mPerPx=m_per_px, size=spot_diameter_m
 )
@@ -112,7 +112,7 @@ for cell_group in ("broad", "layer"):
     for cell_type in cell_types:
         for deconvo_tool in deconvo_tools:
             small_results = raw_results[
-                (raw_results['sample_id'] == sample_id) &
+                (raw_results['sample_id'] == sample_id_spot) &
                 (raw_results['deconvo_tool'] == deconvo_tool)
             ][[cell_type]]
             
@@ -134,7 +134,7 @@ for cell_group in ("broad", "layer"):
     #   Add CART results (at collapsed resolution)
     for cell_type in cell_types_cart:
         small_results = collapsed_results[
-            (collapsed_results['sample_id'] == sample_id) &
+            (collapsed_results['sample_id'] == sample_id_spot) &
             (collapsed_results['deconvo_tool'] == deconvo_tools[0]) &
             (collapsed_results['obs_type'] == 'actual')
         ][[cell_type]]
