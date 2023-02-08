@@ -22,7 +22,7 @@ Genomics
 across the anterior, middle, and posterior DLPFC (n = 30). We also
 generated single nucleus RNA-seq (**snRNA-seq**) data using [10x
 Genomics
-Chromium](https://www.10xgenomics.com/products/single-cell-gene-expression)
+**Chromium**](https://www.10xgenomics.com/products/single-cell-gene-expression)
 from 19 of these tissue blocks. We further generated data from 4
 adjacent tissue slices with [10x Genomics **Visium Spatial
 Proteogenomics**
