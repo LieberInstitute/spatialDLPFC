@@ -52,7 +52,7 @@ ggsave(vis_clust_k7, filename = here(plot_dir, "vis_clust_Br8667_mid_k7.png"))
 ggsave(vis_clust_k7, filename = here(plot_dir, "vis_clust_Br8667_mid_k7.pdf"))
 
 #### plot example genes  ####
-example_genes <- c("SNAP25", "MOBP", "PCP4")
+example_genes <- c("SNAP25", "MBP", "PCP4")
 names(example_genes) <- example_genes
 my_text_size <- 25
 
@@ -81,7 +81,7 @@ gene_plots <- map(example_genes, function(gene) {
 
 ## patchwork together
 
-patchwork_genes <- gene_plots$SNAP25 + gene_plots$MOBP + gene_plots$PCP4
+patchwork_genes <- gene_plots$SNAP25 + gene_plots$MBP + gene_plots$PCP4
 ggsave(patchwork_genes, filename = here(plot_dir, "vis_gene_Br8667_mid-ALL.png"), width = 18)
 ggsave(patchwork_genes, filename = here(plot_dir, "vis_gene_Br8667_mid-ALL.pdf"), width = 18)
 
