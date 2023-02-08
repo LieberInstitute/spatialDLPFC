@@ -43,9 +43,9 @@ and
 [LieberInstitute/DLPFC_snRNAseq](https://github.com/LieberInstitute/DLPFC_snRNAseq).
 
 If you tweet about this website, the data or the R package please use
-the <code>\#spatialLIBD</code> hashtag. You can find previous tweets
+the <code>\#spatialDLPFC</code> hashtag. You can find previous tweets
 that way as shown
-<a href="https://twitter.com/search?q=%23spatialLIBD&src=typed_query">here</a>.
+<a href="https://twitter.com/search?q=%23spatialDLPFC&src=typed_query">here</a>.
 
 Thank you for your interest in our work!
 
