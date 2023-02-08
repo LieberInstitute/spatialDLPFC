@@ -4,7 +4,7 @@
 #$ -o ../../../processed-data/spot_deconvo/07-loopy/03-nonIF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/07-loopy/03-nonIF_$TASK_ID.log
 #$ -l mf=10G,h_vmem=10G
-#$ -t 1-30
+#$ -t 1
 #$ -tc 1
 
 echo "**** Job starts ****"

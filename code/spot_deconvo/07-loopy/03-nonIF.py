@@ -14,13 +14,7 @@ deconvo_tools = ['tangram', 'cell2location']
 spot_diameter_m = 55e-6 # 55-micrometer diameter for Visium spot
 img_channels = ['Red', 'Green', 'Blue']
 
-sample_ids_path = here(
-    "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF",
-    "sample_ids.txt"
-)
-sample_info_path = here(
-    "raw-data", "sample_info", "Visium_dlpfc_mastersheet.xlsx"
-)
+sample_info_path = here("code", "spaceranger", "spaceranger_parameters.txt")
 
 cell_types_broad = [
     "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"
@@ -39,38 +33,40 @@ raw_results_path = here(
 out_dir = here('processed-data', 'spot_deconvo', '07-loopy', 'nonIF', '{}')
 
 #   Read in sample info and subset to the 30 IDs used for analysis
-sample_ids = pd.read_csv(sample_ids_path, header = None)
-sample_info = pd.read_excel(sample_info_path)
+sample_info = pd.read_csv(
+    sample_info_path,
+    names = [
+        "sample_id_long", "image_id?", "position", "img_path", "img_json_path",
+        "fastq"
+    ],
+    sep = "\t"
+)
 
-sample_info.index = sample_info['sample name']
-sample_info = sample_info.loc[sample_ids.squeeze()]
-
-sample_info['sample_id_long'] = [
-    x.split('/')[-1] for x in sample_info['spaceranger file path']
+sample_info['sample_id_short'] = [
+    x.split('_')[1] + '_' + x.split('_')[2]
+    for x in sample_info['sample_id_long']
 ]
+sample_info.index = sample_info['sample_id_short']
 
-#   Update outdated path info
-sample_info['spaceranger file path'] = here(
+#   Add spaceranger dir
+sample_info['spaceranger_dir'] = here(
     "processed-data", "rerun_spaceranger", sample_info['sample_id_long'],
     "outs", "spatial"
 )
-sample_info['image file path'] = [
-    x.replace(
-        '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
-        str(here('raw-data'))
-    )
-    for x in sample_info['image file path']
-]
 
-sample_id = sample_ids.loc[int(os.environ['SGE_TASK_ID']) - 1][0]
+sample_id = sample_info['sample_id_short'].iloc[int(os.environ['SGE_TASK_ID']) - 1]
 
 out_dir = Path(str(out_dir).format(sample_id))
+
+#   Verify all directories/ files exist for all 30 samples
+assert all(sample_info['spaceranger_dir'].apply(os.path.exists))
+assert all(sample_info['img_path'].apply(os.path.exists))
 
 #   Read in the tissue positions file to get spatial coordinates. Index by
 #   barcode, and only take spots overlapping tissue
 tissue_positions = pd.read_csv(
     os.path.join(
-        sample_info.loc[sample_id, 'spaceranger file path'],
+        sample_info.loc[sample_id, 'spaceranger_dir'],
         'tissue_positions_list.csv'
     ),
     header = None,
@@ -87,7 +83,7 @@ tissue_positions = tissue_positions.loc[
 #   Read in the spaceranger JSON, ultimately to calculate meters per pixel for
 #   the full-resolution image
 json_path = os.path.join(
-    sample_info.loc[sample_id, 'spaceranger file path'],
+    sample_info.loc[sample_id, 'spaceranger_dir'],
     'scalefactors_json.json'
 )
 with open(json_path, 'r') as f:
@@ -133,7 +129,7 @@ for cell_group in ("broad", "layer"):
 
 #   Add the H&E image for this sample
 this_sample.add_image(
-    tiff = Path(sample_info['image file path'].loc[sample_id]),
+    tiff = Path(sample_info['img_path'].loc[sample_id]),
     channels = img_channels, scale = m_per_px
 )
 
