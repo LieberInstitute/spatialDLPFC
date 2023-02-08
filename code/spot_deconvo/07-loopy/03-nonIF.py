@@ -12,13 +12,15 @@ from loopy.utils.utils import remove_dupes
 
 deconvo_tools = ['tangram', 'cell2location']
 spot_diameter_m = 55e-6 # 55-micrometer diameter for Visium spot
-img_channels = ['Lipofuscin', 'DAPI', 'GFAP', 'NeuN', 'OLIG2', 'TMEM119']
+img_channels = ['Red', 'Green', 'Blue']
 
 sample_ids_path = here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "nonIF",
     "sample_ids.txt"
 )
-sample_info_path = here("raw-data", "sample_info", "Visium_dlpfc_mastersheet.xlsx")
+sample_info_path = here(
+    "raw-data", "sample_info", "Visium_dlpfc_mastersheet.xlsx"
+)
 
 cell_types_broad = [
     "Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib"
@@ -53,32 +55,39 @@ sample_info['spaceranger file path'] = here(
     "outs", "spatial"
 )
 sample_info['image file path'] = [
-    x.replace('/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC', str(here('raw-data')))
+    x.replace(
+        '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
+        str(here('raw-data'))
+    )
     for x in sample_info['image file path']
 ]
 
-# os.environ['SGE_TASK_ID'] = '1'
 sample_id = sample_ids.loc[int(os.environ['SGE_TASK_ID']) - 1][0]
 
 out_dir = Path(str(out_dir).format(sample_id))
 
 #   Read in the tissue positions file to get spatial coordinates. Index by
-#   barcode
+#   barcode, and only take spots overlapping tissue
 tissue_positions = pd.read_csv(
     os.path.join(
-        sample_info.loc[sample_id, 'spaceranger file path'][0],
+        sample_info.loc[sample_id, 'spaceranger file path'],
         'tissue_positions_list.csv'
     ),
     header = None,
-    names = ["barcode", "in_tissue", "row", "col", "x", "y"]
+    names = ["in_tissue", "row", "col", "y", "x"], # Note the switch of x and y
+    index_col = 0
 )
-tissue_positions.index = tissue_positions['barcode']
-tissue_positions = tissue_positions[["x", "y"]]
+tissue_positions.index.name = "barcode"
+
+tissue_positions = tissue_positions.loc[
+    tissue_positions['in_tissue'] == 1, ["x", "y"]
+]
+
 
 #   Read in the spaceranger JSON, ultimately to calculate meters per pixel for
 #   the full-resolution image
 json_path = os.path.join(
-    sample_info.loc[sample_id, 'spaceranger file path'][0],
+    sample_info.loc[sample_id, 'spaceranger file path'],
     'scalefactors_json.json'
 )
 with open(json_path, 'r') as f:
@@ -107,7 +116,9 @@ for cell_group in ("broad", "layer"):
                 (raw_results['deconvo_tool'] == deconvo_tool)
             ][[cell_type]]
             
-            feature_name = '_'.join([cell_group, deconvo_tool, cell_type]).lower()
+            feature_name = '_'.join(
+                [cell_group, deconvo_tool, cell_type]
+            ).lower()
             
             small_results = small_results.merge(
                     tissue_positions, how = "left", on = "barcode"
