@@ -413,7 +413,9 @@ general research use according to the following requirements for data
 access and data attribution:
 (<https://PsychENCODE.synapse.org/DataAccess>). For access to content
 described in this manuscript see:
-<https://www.synapse.org/#!Synapse:syn51032055/datasets/>.
+<https://www.synapse.org/#!Synapse:syn51032055/datasets/>. All figure
+and table files are available from
+<https://www.synapse.org/#!Synapse:syn50908929>.
 
 You can also access all the raw data through
 [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC` and
