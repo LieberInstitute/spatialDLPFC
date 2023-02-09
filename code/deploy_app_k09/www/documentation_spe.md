@@ -48,6 +48,8 @@ Throughout the rest of this document, we'll refer to this object by the name `sp
   - `graph_based_PCA_within`: shared nearest neighbors cluster results with 10 neighbors cut at 7 after computing PCs within each sample. It is similar to `SpaceRanger_10x_graphclust` but was computed with R/Bioconductor packages.
   - `PCA_SNN_k10_k7`: shared nearest neighbors cluster results with 10 neighbors cut at 7, using the PCs computed across all samples, but without the `harmony` batch correction.
   - `Harmony_SNN_k10_k7`: shared nearest neighbors cluster results with 10 neighbors cut at 7, using `harmony` batch corrected data.
+  - `wrinkle_type`: manual annotation of spots overlapping tissue wrinkles, categorized spatially for just `Br6522_ant`, `Br6522_mid`, and `Br8667_post`.
+  - `manual_layer_label`: manual annotation of spots by histological layer of the DLPFC, for just `Br6522_ant`, `Br6522_mid`, and `Br8667_post`.
 * `Reduced dimensions`: which reduced dimension to visualize on the `clusters (interactive)` tab. Only the first two dimensions will be shown.
 * `Continuous variable to plot`: which gene or continuous variable (such as the cell count, the ratio of the mitochondrial chromosome expression) to visualize in the gene tabs as well as on the `clusters (interactive)` tab. Details:
   - `sum_umi`: sum of UMI counts across a spot.
