@@ -47,7 +47,7 @@ raw_results_path = here(
 )
 collapsed_results_path = here(
     "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
-    "results_collapsed_{}.csv"
+    "results_collapsed_broad.csv"
 )
 
 #   Different sample IDs are used for different files associated with each
@@ -99,9 +99,6 @@ for cell_group in ("broad", "layer"):
     raw_results = pd.read_csv(
         str(raw_results_path).format(cell_group), index_col = "barcode"
     )
-    collapsed_results = pd.read_csv(
-        str(collapsed_results_path).format(cell_group), index_col = "barcode"
-    )
     
     #   Add software deconvolution results at normal resolution
     if cell_group == "broad":
@@ -130,27 +127,30 @@ for cell_group in ("broad", "layer"):
                 small_results[[feature_name]],
                 name = feature_name, coordName="coords"
             )
+
+
+#   Add CART results (at collapsed resolution)
+collapsed_results = pd.read_csv(collapsed_results_path, index_col = "barcode")
+
+for cell_type in cell_types_cart:
+    small_results = collapsed_results[
+        (collapsed_results['sample_id'] == sample_id_spot) &
+        (collapsed_results['deconvo_tool'] == deconvo_tools[0]) &
+        (collapsed_results['obs_type'] == 'actual')
+    ][[cell_type]]
     
-    #   Add CART results (at collapsed resolution)
-    for cell_type in cell_types_cart:
-        small_results = collapsed_results[
-            (collapsed_results['sample_id'] == sample_id_spot) &
-            (collapsed_results['deconvo_tool'] == deconvo_tools[0]) &
-            (collapsed_results['obs_type'] == 'actual')
-        ][[cell_type]]
-        
-        feature_name = '_'.join([cell_group, 'cart', cell_type])
-        
-        small_results = small_results.merge(
-                tissue_positions, how = "left", on = "barcode"
-            ).rename(
-                {cell_type: feature_name}, axis = 1
-            )
-         
-        this_sample.add_csv_feature(
-            small_results[[feature_name]],
-            name = feature_name, coordName="coords"
+    feature_name = '_'.join(['cart', cell_type])
+    
+    small_results = small_results.merge(
+            tissue_positions, how = "left", on = "barcode"
+        ).rename(
+            {cell_type: feature_name}, axis = 1
         )
+    
+    this_sample.add_csv_feature(
+        small_results[[feature_name]],
+        name = feature_name, coordName="coords"
+    )
 
 #   Add the IF image for this sample
 this_sample.add_image(
