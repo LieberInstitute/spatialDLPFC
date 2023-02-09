@@ -12,11 +12,6 @@ library("tidyverse")
 cell_groups <- c("broad", "layer")
 deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
 
-sample_ids <- here(
-    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
-    "sample_ids.txt"
-)
-
 spe_IF_in <- here(
     "processed-data", "rdata", "spe_IF", "01_build_spe_IF", "spe.rds"
 )
@@ -37,12 +32,19 @@ collapsed_results_path <- here(
     "results_collapsed_broad.csv"
 )
 
+layer_ann_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities", "IF",
+    "annotations_{sample_id}_spots.csv"
+)
+
 ################################################################################
 #   Add spot deconvo results to the SPE object
 ################################################################################
 
 spe <- readRDS(spe_IF_in)
 
+#   This will be used throughout the script for easily joining/ aligning
+#   colData(spe) and additional information we want to add
 added_coldata <- tibble(
     "barcode" = colnames(spe), "sample_id" = spe$sample_id
 )
@@ -101,15 +103,40 @@ colnames(these_results)[-added_indices] <- paste(
 )
 
 #   Add columns to colData(spe)
-added_coldata <- added_coldata |>
+added_coldata_temp <- added_coldata |>
     left_join(these_results, by = c("barcode", "sample_id")) |>
     select(-all_of(extra_colnames))
 
-if (any(is.na(added_coldata))) {
+if (any(is.na(added_coldata_temp))) {
     stop("Some cell counts were NA after merging with SPE.")
 }
 
-colData(spe) <- cbind(colData(spe), added_coldata)
+colData(spe) <- cbind(colData(spe), added_coldata_temp)
+
+################################################################################
+#   Add manual layer annotation to SPE
+################################################################################
+
+#   Read layer annotation in for each sample and match to a barcode
+layer_ann_list <- list()
+for (sample_id in unique(spe$sample_id)) {
+    this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
+    
+    layer_ann_list[[sample_id]] <- read.csv(this_layer_path) |>
+        as_tibble() |>
+        mutate(
+            barcode = colnames(spe[, spe$sample_id == sample_id])[id + 1],
+            sample_id = sample_id
+        ) |>
+        select(- id)
+}
+
+#   Add layer label as a column in colData(spe)
+spe$manual_layer_label = do.call(rbind, layer_ann_list) |>
+    right_join(added_coldata) |>
+    pull(label)
+
+# table(is.na(spe$manual_layer_label)) # 2 spots are unlabelled (as expected)
 
 ################################################################################
 #   Add up-to-date cell counts from cellpose and clarify existing ones
