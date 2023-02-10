@@ -61,12 +61,25 @@ min_gene <- 10
 ptsd_gene_list <- map_depth(ptsd_genes, 2, ~.$gene)
 ptsd_gene_list <- map(ptsd_gene_list, ~.x[map_int(.x,length) >20])
 ptsd_gene_list <- map_depth(ptsd_gene_list,2, ~ss(.x,"\\."))
-map_depth(ptsd_gene_list,2, length)
+map(ptsd_gene_list,~map_int(.x,length))
 
-
-map_int(degs_dlpfc_list, length)
+# $gene_DLPFC
 # MDD_DLPFC      PTSD_MDD_DLPFC      MDD_Male_DLPFC PTSD_MDD_Male_DLPFC 
-# 315                 414                  34                  22
+# 315                 414                  34                  22 
+# 
+# $gene_mPFC
+# MDD_mPFC                 PTSD_mPFC             PTSD_MDD_mPFC      MDD_ChildTrauma_mPFC 
+# 1264                      1498                      2322                      1070 
+# PTSD_ChildTrauma_mPFC PTSD_MDD_ChildTrauma_mPFC          PTSD_Female_mPFC      PTSD_MDD_Female_mPFC 
+# 408                       726                       211                       105 
+# MDD_Male_mPFC        PTSD_MDD_Male_mPFC          MDD_suicide_mPFC 
+# 410                       226                       681 
+# 
+# $protein_mPFC
+# MDD_mPFC                 PTSD_mPFC             PTSD_MDD_mPFC      MDD_ChildTrauma_mPFC 
+# 56                        46                       100                        78 
+# PTSD_MDD_ChildTrauma_mPFC           MDD_Female_mPFC          PTSD_Female_mPFC             MDD_Male_mPFC 
+# 46                        36                        39                        23 
 
 ## Specify what k's we want to look at
 k_list <- c(2, 7, 9, 16, 28)
@@ -181,6 +194,73 @@ walk2(enriched, names(enriched), function(enriched, ds_name) {
   })
   dev.off()
 })
+
+#### Interesting gene sets ####
+
+colnames(bayesSpace_registration$k09$enrichment)
+
+gene_check_Sp09D01 <- bayesSpace_registration$k09$enrichment |>
+  select(ends_with("Sp09D01"), ensembl, gene) |>
+  # filter(fdr_Sp09D01 < 0.05) |>
+  mutate(MDD_DLPFC = ensembl %in% ptsd_gene_list$gene_DLPFC$MDD_DLPFC) |>
+  dplyr::count(fdr_Sp09D01 < 0.05, MDD_DLPFC)
+
+
+enrichment_check <- function(domain = "Sp09D01", 
+                             gene_list = ptsd_gene_list$gene_DLPFC$MDD_DLPFC, 
+                             enrichment = bayesSpace_registration$k09$enrichment){
+  
+  
+  enrichment2 <- enrichment |>
+    select(ends_with(domain), ensembl, gene)  |>
+    rename_all(~stringr::str_replace(.,paste0("_", domain),"")) |>
+    mutate(sig = fdr < 0.01 & t_stat > 0,
+           deg = ensembl %in% gene_list)
+  
+  gene_list <- enrichment2 |>
+    filter(deg, sig) |>
+    pull(gene)
+  
+  gene_tab <- table(enrichment2$deg, enrichment2$sig)
+  
+  
+  return(list(gl = gene_list, tab = gene_tab))
+}
+
+enriched$gene_DLPFC$k09
+#           OR         Pval         test NumSig SetSize                  ID
+# 1  3.3464902 5.373078e-08 Sp09D01 ~ L1     32     206           MDD_DLPFC
+# 5  2.3947302 4.512138e-06 Sp09D02 ~ L1     42     206           MDD_DLPFC
+
+enriched$gene_DLPFC$k09 |> filter(test == "Sp09D01 ~ L1")
+enriched$gene_DLPFC$k09 |> filter(ID == "MDD_DLPFC")
+
+enrichment_check(domain = "Sp09D01")
+enrichment_check(domain = "Sp09D02")
+enrichment_check(domain = "Sp09D01", gene_list = ptsd_gene_list$gene_DLPFC$PTSD_MDD_DLPFC)
+enrichment_check(domain = "Sp09D02", gene_list = ptsd_gene_list$gene_DLPFC$PTSD_MDD_DLPFC)
+
+
+# $gene_DLPFC
+# n
+# MDD_DLPFC           315
+# PTSD_MDD_DLPFC      414
+# MDD_Male_DLPFC       34
+# PTSD_MDD_Male_DLPFC  22
+
+gene_enrichment_count$k09
+#                 n
+# Sp09D01 ~ L1  658
+# Sp09D02 ~ L1 1203
+# Sp09D03 ~ L2 1551
+# Sp09D05 ~ L3 1632
+# Sp09D08 ~ L4 2675
+# Sp09D04 ~ L5 1921
+# Sp09D07 ~ L6  966
+# Sp09D06 ~ WM 1858
+# Sp09D09 ~ WM  777
+
+gene_list_count
 
 # sgejobs::job_single('05_enrichment_PTSD', create_shell = TRUE, memory = '10G', command = "Rscript 05_enrichment_PTSD.R")
 
