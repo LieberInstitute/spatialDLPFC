@@ -11,6 +11,8 @@ spe_path = here(
 
 sce_path <- "/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/processed-data/sce/sce_DLPFC.Rdata"
 
+plot_dir = here("plots", "spot_deconvo", "05-shared_utilities")
+
 spe = readRDS(spe_path)
 load(sce_path, verbose = TRUE)
 
@@ -41,10 +43,14 @@ prop_df = colData(spe) |>
     ungroup() |>
     right_join(prop_df, multiple = "all")
 
+pdf(file.path(plot_dir, 'prop_WM_position_scatter.pdf'))
 ggplot(
         prop_df, aes(x = cellType_broad_hc_prop, y = prop_WM, color = position)
     ) +
     facet_wrap(~ cellType_broad_hc) +
-    geom_point()
+    geom_point() +
+    labs(x = "Cell Type Prop.", y = "Prop. WM Spots", color = "Position") +
+    theme_bw(base_size = 10)
+dev.off()
 
 session_info()
