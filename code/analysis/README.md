@@ -158,6 +158,10 @@ Some exploratory down-stream analyses using spot deconvolution results to unders
 
 `01-EDA.R`, `011-EDA_Visium.R`, `012-EDA_SpotDeconv.R` explores the spot deconvoluted data, including section specific analysis, layer specific analysis of the spot deconvolued data.
 
+`02-plot_*.R` generates plots in Figure 5, including a spatial pie chart displaying top3 cell types of each spot predicted by _Cell2location_, co-localizations visualization of EFNA5 and EPHA5.
+
+`fun_coloc.R`, `fun_spatial_pie.R` are helper functions to calculate co-localization of two genes (LR pairs), create co-localization plots and create spatial pie charts.
+
 ### 16_position_differential_expression_noWM
 Repeat `09_position_differential_expression/` process but exclude all WM associated bayesSpace clusers
 
