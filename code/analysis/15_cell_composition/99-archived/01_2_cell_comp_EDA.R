@@ -1,4 +1,3 @@
-
 setwd("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/")
 
 library(tidyverse)
@@ -34,7 +33,7 @@ deconvo_res_path <- here(
 )
 
 
-deconv_res <- read.table(deconvo_res_path,sep = ",", header  = TRUE)
+deconv_res <- read.table(deconvo_res_path, sep = ",", header = TRUE)
 
 
 # Wide format data
@@ -56,22 +55,30 @@ load("/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-dat
 
 n_sample <- nrow(spe)
 
-spe_col <- colData(spe) |> data.frame(
-    check.names = FALSE
-) |>
-    mutate(sp9 = factor(bayesSpace_harmony_9, levels = 1:9, labels = paste("Sp9D", 1:9, sep="")),
-           sp16 = factor(bayesSpace_harmony_16, levels = 1:16, labels = paste("Sp16D", 1:16, sep=""))
+spe_col <- colData(spe) |>
+    data.frame(
+        check.names = FALSE
     ) |>
-    dplyr::select(key:array_col,
-                  sum_umi:col,
-                  sp9, sp16) |>
+    mutate(
+        sp9 = factor(bayesSpace_harmony_9, levels = 1:9, labels = paste("Sp9D", 1:9, sep = "")),
+        sp16 = factor(bayesSpace_harmony_16, levels = 1:16, labels = paste("Sp16D", 1:16, sep = ""))
+    ) |>
+    dplyr::select(
+        key:array_col,
+        sum_umi:col,
+        sp9, sp16
+    ) |>
     rownames_to_column("bc_tmp") |>
-    unglue_unnest(col = key,
-                  pattern = "{key_bc}_{key_sampleID}_{key_sec=ant|mid|post}{key_tail}",
-                  remove = FALSE) |>
-    unglue_unnest(col=bc_tmp,
-                  pattern = "{bc_trim}{bc_tail=\\.\\d*|$}",
-                  remove = FALSE)
+    unglue_unnest(
+        col = key,
+        pattern = "{key_bc}_{key_sampleID}_{key_sec=ant|mid|post}{key_tail}",
+        remove = FALSE
+    ) |>
+    unglue_unnest(
+        col = bc_tmp,
+        pattern = "{bc_trim}{bc_tail=\\.\\d*|$}",
+        remove = FALSE
+    )
 
 # Some sanity check
 # tmp <- unglue::unglue_data(rownames(colData(spe)),
@@ -80,12 +87,16 @@ spe_col <- colData(spe) |> data.frame(
 
 fnl_col <- spe_col |>
     # Confirming the information are matched for each spots
-    filter(bc_trim == key_bc,
-           paste(key_sampleID, key_sec, sep = "_") == sample_id) |>
+    filter(
+        bc_trim == key_bc,
+        paste(key_sampleID, key_sec, sep = "_") == sample_id
+    ) |>
     dplyr::rename(barcode = bc_trim) |>
-    dplyr::select(-starts_with("key_"),
-                  -starts_with("bc_")) |>
-    mutate(new_key = paste(barcode, sample_id, sep="_"))
+    dplyr::select(
+        -starts_with("key_"),
+        -starts_with("bc_")
+    ) |>
+    mutate(new_key = paste(barcode, sample_id, sep = "_"))
 
 # Dimensionality staill matches after data wrangling
 nrow(fnl_col) == ncol(spe)
@@ -101,15 +112,11 @@ fnl_dat <- deconv_res_wide |>
 
 nrow(fnl_dat) == ncol(spe)
 
-#NOTE: count should be the cell count from vistoseg
+# NOTE: count should be the cell count from vistoseg
 # see https://jhu-genomics.slack.com/archives/D04BRDW7Q8Y/p1669149653581219
 fnl_dat <- fnl_dat |>
     dplyr::rename(n_cell_vs = count)
 
 saveRDS(fnl_dat,
-        file = here("processed-data/15_cell_composition/cell_comp_full_dat.rds")
+    file = here("processed-data/15_cell_composition/cell_comp_full_dat.rds")
 )
-
-
-
-

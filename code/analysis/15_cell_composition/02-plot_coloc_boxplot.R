@@ -23,26 +23,28 @@ cell_type_colors_layer <- metadata(sce)$cell_type_colors_layer[levels(sce$cellTy
 cell_type_colors_broad <- metadata(sce)$cell_type_colors_broad[levels(sce$cellType_broad_hc)]
 
 
-factor_cell_type_broad <- function(vec){
+factor_cell_type_broad <- function(vec) {
     factor(vec,
-           levels = c("astro",  "endomural", "micro", "oligo", "opc", "excit", "inhib"
-           ),
-           labels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib" )
+        levels = c("astro", "endomural", "micro", "oligo", "opc", "excit", "inhib"),
+        labels = c("Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib")
     )
 }
 
-factor_cell_type_layer <- function(vec){
+factor_cell_type_layer <- function(vec) {
     factor(vec,
-           # levels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
-           #            "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4","Excit_L5",
-           #            "Excit_L5_6","Excit_L6","Inhib"),
-           levels = c("astro",  "endomural", "micro", "oligo", "opc",
-                      "excit_l2_3", "excit_l3", "excit_l3_4_5", "excit_l4","excit_l5",
-                      "excit_l5_6","excit_l6","inhib"),
-           labels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
-                      "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4","Excit_L5",
-                      "Excit_L5/6","Excit_L6","Inhib")
-
+        # levels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
+        #            "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4","Excit_L5",
+        #            "Excit_L5_6","Excit_L6","Inhib"),
+        levels = c(
+            "astro", "endomural", "micro", "oligo", "opc",
+            "excit_l2_3", "excit_l3", "excit_l3_4_5", "excit_l4", "excit_l5",
+            "excit_l5_6", "excit_l6", "inhib"
+        ),
+        labels = c(
+            "Astro", "EndoMural", "Micro", "Oligo", "OPC",
+            "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4", "Excit_L5",
+            "Excit_L5/6", "Excit_L6", "Inhib"
+        )
     )
 }
 
@@ -56,23 +58,24 @@ fnl_dat <- colData(coloc_spe) |> data.frame()
 # Calculate Total Number of Cells per spot --------------------------------
 deconv_comb <- expand_grid(
     res = c("broad", "layer"),
-    deconv = c("tangram", "cell2location","spotlight")
+    deconv = c("tangram", "cell2location", "spotlight")
 )
 
 deconv_df <- fnl_dat |>
-    select(starts_with( c("broad", "layer")))
+    select(starts_with(c("broad", "layer")))
 
 deconv_com_indx_mat <- deconv_comb |>
-    pmap_dfc(.f = function(res, deconv){
+    pmap_dfc(.f = function(res, deconv) {
         str_starts(names(deconv_df), paste(res, deconv, sep = "_")) |>
             as.integer() |>
             data.frame() |>
             set_names(paste(res, deconv, sep = "_"))
-    }) |> as.matrix()
+    }) |>
+    as.matrix()
 
 # Check if the correct number of colums are detected
 stopifnot(
-    colSums(deconv_com_indx_mat)==ifelse(deconv_comb$res == "broad", 7,13)
+    colSums(deconv_com_indx_mat) == ifelse(deconv_comb$res == "broad", 7, 13)
 )
 
 deconv_cell_counts <- (deconv_df |> as.matrix()) %*% deconv_com_indx_mat
@@ -81,11 +84,10 @@ deconv_cell_counts <- (deconv_df |> as.matrix()) %*% deconv_com_indx_mat
 
 
 cell_comp_dat <- deconv_comb |>
-    pmap_dfr(.f=function(res, deconv){
-
+    pmap_dfr(.f = function(res, deconv) {
         factor_cell_type <- factor_cell_type_layer
         cell_type_colors <- cell_type_colors_layer
-        if(res == "broad"){
+        if (res == "broad") {
             factor_cell_type <- factor_cell_type_broad
             cell_type_colors <- cell_type_colors_broad
         }
@@ -107,29 +109,38 @@ cell_comp_dat <- deconv_comb |>
         # )
 
         ret_plot <- fnl_dat |>
-            dplyr::select(sample_id, coloc,
-                          starts_with(paste(res, deconv, sep = "_"))) |>
+            dplyr::select(
+                sample_id, coloc,
+                starts_with(paste(res, deconv, sep = "_"))
+            ) |>
             cbind(deconv_count) |>
             group_by(sample_id, coloc) |>
-            summarise(n_cell_deconv = sum(deconv_count),
-                      across(starts_with(paste(res, deconv, sep = "_")), .fns = sum)) |>
+            summarise(
+                n_cell_deconv = sum(deconv_count),
+                across(starts_with(paste(res, deconv, sep = "_")), .fns = sum)
+            ) |>
             ungroup() |>
             mutate(across(starts_with(paste(res, deconv, sep = "_")),
-                          .fns = ~.x/n_cell_deconv)) |>
+                .fns = ~ .x / n_cell_deconv
+            )) |>
             pivot_longer(starts_with(paste(res, deconv, sep = "_")),
-                         names_to = "cell_type",
-                         values_to = "cell_perc") |>
-            mutate(cell_type = str_remove(cell_type,
-                                          paste0(res,"_", deconv, "_")) |>
-                       factor_cell_type(),
-                   coloc = coloc,
-                   res = res,
-                   method = deconv
+                names_to = "cell_type",
+                values_to = "cell_perc"
+            ) |>
+            mutate(
+                cell_type = str_remove(
+                    cell_type,
+                    paste0(res, "_", deconv, "_")
+                ) |>
+                    factor_cell_type(),
+                coloc = coloc,
+                res = res,
+                method = deconv
             )
     })
 
 
-group_cell_comp_dat <- cell_comp_dat|>
+group_cell_comp_dat <- cell_comp_dat |>
     filter(method == "cell2location", res == "layer")
 
 # res <- dat |> pull(res) |> head(1)
@@ -137,11 +148,13 @@ dat <- group_cell_comp_dat
 ret_plot <- dat |>
     mutate(
         cell_type = fct_relevel(cell_type,
-                                "Inhib", after = Inf),
+            "Inhib",
+            after = Inf
+        ),
         coloc = factor(coloc,
-                       levels = c("co-localize", "EFNA5", "EPHA5", "Neither"),
-                      labels = c("EFNA5 & EPHA5", "EFNA5 only", "EPHA5 only", "Neither")
-                      )
+            levels = c("co-localize", "EFNA5", "EPHA5", "Neither"),
+            labels = c("EFNA5 & EPHA5", "EFNA5 only", "EPHA5 only", "Neither")
+        )
     ) |>
     # Remove this to make full
     # dplyr::filter(cell_type %in% c("Excit_L5/6", "Excit_L6") )) |>
@@ -152,17 +165,19 @@ ret_plot <- dat |>
     #                        labels = c("Cell2location", "SPOTlight", "Tangram"))
     # ) |>
     ggplot(
-        aes( x = coloc, y = cell_perc, fill = cell_type)
+        aes(x = coloc, y = cell_perc, fill = cell_type)
     ) +
     # geom_boxplot(show.legend = FALSE) +
     geom_violin(show.legend = FALSE) +
     # geom_bar(position = "stack", stat = "identity") +
     facet_wrap(~cell_type, scale = "free_y", ncol = 3) +
-    scale_fill_manual(name = "Cell Type",
-                      # TODO: edit this
-                      limits = names(cell_type_colors_layer),
-                      values = cell_type_colors_layer) +
-    guides(x =  guide_axis(angle = 90)) +
+    scale_fill_manual(
+        name = "Cell Type",
+        # TODO: edit this
+        limits = names(cell_type_colors_layer),
+        values = cell_type_colors_layer
+    ) +
+    guides(x = guide_axis(angle = 90)) +
     labs(
         #     title = paste(method |> str_to_title(),
         #                   "at",
@@ -170,7 +185,7 @@ ret_plot <- dat |>
         y = "Predicted Proportion in Spots",
         x = "Spot Co-expression"
     ) +
-    scale_y_continuous( n.breaks = 3) +
+    scale_y_continuous(n.breaks = 3) +
     theme_set(theme_bw(base_size = 20))
 
 ggsave(
@@ -179,7 +194,7 @@ ggsave(
         # "layer_comp",
         paste0("coloc_comp_all_cells_c2l.pdf")
     ),
-    plot =ret_plot,
+    plot = ret_plot,
     height = 10,
     width = 8
 )
@@ -188,27 +203,24 @@ ggsave(
 # Tests -------------------------------------------------------------------
 dat |>
     group_split(cell_type, .keep = TRUE) |>
-    map_dfr(.f = function(cell_dat){
-
-        stopifnot(length(unique(cell_dat$cell_type))==1)
+    map_dfr(.f = function(cell_dat) {
+        stopifnot(length(unique(cell_dat$cell_type)) == 1)
 
         test_dat <- cell_dat |>
             transmute(
                 coloc_group = factor(coloc == "co-localize",
-                                     levels = c("TRUE", "FALSE")),
+                    levels = c("TRUE", "FALSE")
+                ),
                 cell_perc
-                )
+            )
         # browser()
         data.frame(
             cell_type = unique(cell_dat$cell_type),
-          wilcox = wilcox.test(cell_perc ~ coloc_group, test_dat,
-                               alternative = "greater")$p.value,
-          t_test = t.test(cell_perc ~ coloc_group, test_dat,
-                          alternative = "greater")$p.value
+            wilcox = wilcox.test(cell_perc ~ coloc_group, test_dat,
+                alternative = "greater"
+            )$p.value,
+            t_test = t.test(cell_perc ~ coloc_group, test_dat,
+                alternative = "greater"
+            )$p.value
         )
     })
-
-
-
-
-

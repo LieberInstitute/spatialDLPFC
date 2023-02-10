@@ -43,7 +43,7 @@ spd_dat <- vars_spd |>
     map_dfr(.f = function(var) {
         fnl_dat |>
             select(position, subject,
-                   spd = var, coloc
+                spd = var, coloc
             )
     }, .id = "spd_method") |>
     # group_split(spd_method, position, .keep = TRUE) |>
@@ -86,8 +86,8 @@ ret_plot_list <- spd_dat |>
     # mutate(
     #     layer_combo = as.character(layer_combo)
     # ) |>
-    group_split( Annotation, .keep = TRUE) |>
-    map(.f = function(dat){
+    group_split(Annotation, .keep = TRUE) |>
+    map(.f = function(dat) {
         # browser()
         dat |>
             mutate(
@@ -122,7 +122,7 @@ ggsave(
     plot = ggpubr::ggarrange(
         nrow = 1,
         plotlist = ret_plot_list,
-        common.legend = TRUE),
+        common.legend = TRUE
+    ),
     width = 10
 )
-

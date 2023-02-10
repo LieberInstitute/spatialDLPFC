@@ -1,22 +1,26 @@
 vis_scatter_pie <- function(spe,
-                            plot_df,
-                            sampleid,
-                            image_id,
-                            cell_names,
-                            auto_crop = TRUE,
-                            spatial = FALSE){
+    plot_df,
+    sampleid,
+    image_id,
+    cell_names,
+    auto_crop = TRUE,
+    spatial = FALSE) {
     # Proper Scale the image
     # From vis_clus_p
 
-    pxl_row_in_fullres <- spatialCoords(spe)[,"pxl_row_in_fullres"]
-    pxl_col_in_fullres <- spatialCoords(spe)[,"pxl_col_in_fullres"]
-    img <- SpatialExperiment::imgRaster(spe, sample_id = sampleid,
-                                        image_id = image_id)
+    pxl_row_in_fullres <- spatialCoords(spe)[, "pxl_row_in_fullres"]
+    pxl_col_in_fullres <- spatialCoords(spe)[, "pxl_col_in_fullres"]
+    img <- SpatialExperiment::imgRaster(spe,
+        sample_id = sampleid,
+        image_id = image_id
+    )
 
     ## Crop the image if needed
     if (auto_crop) {
-        frame_lims <- spatialLIBD::frame_limits(spe, sampleid = sampleid,
-                                                image_id = image_id)
+        frame_lims <- spatialLIBD::frame_limits(spe,
+            sampleid = sampleid,
+            image_id = image_id
+        )
         img <- img[frame_lims$y_min:frame_lims$y_max, frame_lims$x_min:frame_lims$x_max]
         adjust <- list(x = frame_lims$x_min, y = frame_lims$y_min)
     } else {
@@ -26,12 +30,12 @@ vis_scatter_pie <- function(spe,
     plot_df$scaled_x <- pxl_col_in_fullres * SpatialExperiment::scaleFactors(spe, sample_id = sampleid, image_id = image_id) - adjust$x
     plot_df$scaled_y <- pxl_row_in_fullres * SpatialExperiment::scaleFactors(spe, sample_id = sampleid, image_id = image_id) - adjust$y
 
-    ret_plot <- ggplot2::ggplot(#data = plot_df,
-                                # ggplot2::aes(
-                                #     x = scaled_x,
-                                #     y = scaled_y
-                                # )
-                                )
+    ret_plot <- ggplot2::ggplot( # data = plot_df,
+        # ggplot2::aes(
+        #     x = scaled_x,
+        #     y = scaled_y
+        # )
+    )
 
 
 
@@ -59,7 +63,7 @@ vis_scatter_pie <- function(spe,
             data = plot_df,
             ggplot2::aes(
                 x = scaled_x,
-                y = -1*scaled_y
+                y = -1 * scaled_y
             ),
             col = cell_names,
             color = NA,
@@ -71,7 +75,8 @@ vis_scatter_pie <- function(spe,
         ggplot2::scale_fill_manual(
             limits = fill_vals,
             labels = fill_labs,
-            values = cell_type_colors) +
+            values = cell_type_colors
+        ) +
         # xlim(0, ncol(img)) +
         # ylim(nrow(img), 0) +
         xlab("") + ylab("") +

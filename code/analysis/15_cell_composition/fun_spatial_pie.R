@@ -1,11 +1,12 @@
 # Helper function to generate vis_spatial_pie
-vis_scatter_pie <- function(spe,
-    plot_df,
-    sampleid,
-    image_id,
-    cell_names,
-    auto_crop = TRUE,
-    spatial = FALSE) {
+vis_scatter_pie <- function(
+        spe,
+        plot_df,
+        sampleid,
+        image_id,
+        cell_names,
+        auto_crop = TRUE,
+        spatial = FALSE) {
     pxl_row_in_fullres <- spatialCoords(spe)[, "pxl_row_in_fullres"]
     pxl_col_in_fullres <- spatialCoords(spe)[, "pxl_col_in_fullres"]
     img <- SpatialExperiment::imgRaster(spe,
@@ -94,12 +95,13 @@ vis_scatter_pie <- function(spe,
 
 
 # Function to generate spatial scatter pie plot
-vis_spatial_pie <- function(spe,
-    res, # Cell Resolution
-    deconv, # Deconvolution method
-    image_id,
-    sample_id,
-    spatial = FALSE) {
+vis_spatial_pie <- function(
+        spe,
+        res, # Cell Resolution
+        deconv, # Deconvolution method
+        image_id,
+        sample_id,
+        spatial = FALSE) {
     plot_df <- colData(spe) |>
         data.frame() |>
         dplyr::select(

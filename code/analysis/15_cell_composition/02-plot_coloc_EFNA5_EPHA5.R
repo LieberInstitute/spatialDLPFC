@@ -3,9 +3,10 @@ library(SpatialExperiment)
 library(spatialLIBD)
 library(here)
 
-spe_dat <- readRDS(here("processed-data/rdata/spe/01_build_spe",
-                        "spe_filtered_final_with_clusters_and_deconvolution_results.rds")
-)
+spe_dat <- readRDS(here(
+    "processed-data/rdata/spe/01_build_spe",
+    "spe_filtered_final_with_clusters_and_deconvolution_results.rds"
+))
 
 # Config ------------------------------------------------------------------
 
@@ -18,8 +19,10 @@ coloc_spe <- calc_coloc(spe_dat, gene_1, gene_2, sample_id = "Br8667_mid")
 
 # Spatial Colocalization Plot ---------------------------------------------
 
-vis_coloc(coloc_spe, gene_1, gene_2, sample_id = "Br8667_mid",
-          save.path = here("plots/15_cell_composition", "coloc"))
+vis_coloc(coloc_spe, gene_1, gene_2,
+    sample_id = "Br8667_mid",
+    save.path = here("plots/15_cell_composition", "coloc")
+)
 
 vars_spd <- c(
     "BayesSpace_harmony_09",
@@ -53,7 +56,7 @@ spd_dat <- vars_spd |>
     map_dfr(.f = function(var) {
         fnl_dat |>
             select(position, subject, sample_id,
-                   spd = var, coloc
+                spd = var, coloc
             )
     }, .id = "spd_method") |>
     # group_split(spd_method, position, .keep = TRUE) |>
@@ -101,49 +104,52 @@ plot_dat <- spd_dat |>
     mutate(
         layer_combo = fct_drop(layer_combo),
         Var1 = factor(Var1,
-                      levels = c("co-localize", gene_1, gene_2),
-                      labels = c(paste0(gene_1, " & ", gene_2),
-                                 paste0(gene_1, " only"),
-                                 paste0(gene_2, " only"))
+            levels = c("co-localize", gene_1, gene_2),
+            labels = c(
+                paste0(gene_1, " & ", gene_2),
+                paste0(gene_1, " only"),
+                paste0(gene_2, " only")
+            )
         )
     )
 
 
 # Tests -------------------------------------------------------------------
 
-test_dat <- plot_dat |> filter(Var1 == paste0(gene_1, " & ", gene_2)) |>
+test_dat <- plot_dat |>
+    filter(Var1 == paste0(gene_1, " & ", gene_2)) |>
     transmute(
         L6_group = factor(layer_long == "Sp09D07"),
         Freq
     )
 
-wilcox.test(Freq ~ L6_group, test_dat) #p=3.993e-09
-t.test(Freq ~ L6_group, test_dat)   # p=1.699e-05
+wilcox.test(Freq ~ L6_group, test_dat) # p=3.993e-09
+t.test(Freq ~ L6_group, test_dat) # p=1.699e-05
 
 
 # Plot --------------------------------------------------------------------
 
-limit_fun <- function(y){
-    stopifnot(max(y)<1)
-    stopifnot(max(y)>0)
+limit_fun <- function(y) {
+    stopifnot(max(y) < 1)
+    stopifnot(max(y) > 0)
 
-    if((max(y)*100)%%10>=5)
-        ul <- ceiling(max(y)*10)/10
-    else
-        ul <- floor(max(y)*10)/10 + 0.05
+    if ((max(y) * 100) %% 10 >= 5) {
+        ul <- ceiling(max(y) * 10) / 10
+    } else {
+        ul <- floor(max(y) * 10) / 10 + 0.05
+    }
 
     return(c(0, ul))
 }
 
-break_fun <- function(y){
-
+break_fun <- function(y) {
     ul <- limit_fun(y)[2]
 
-    if(ul > 0.1)
+    if (ul > 0.1) {
         return(c(0.0, 0.1, 0.2))
-    else
+    } else {
         return(c(0.00, 0.05, 0.10))
-
+    }
 }
 
 
@@ -151,21 +157,21 @@ break_fun <- function(y){
 ret_plot <- plot_dat |>
     mutate(
         Var1 = factor(Var1,
-                      labels = c(
-                          paste0(gene_1, " & ", gene_2, " (p=1.7e-05)"),
-                          paste0(gene_1, " only"),
-                          paste0(gene_2, " only")
-                      )
+            labels = c(
+                paste0(gene_1, " & ", gene_2, " (p=1.7e-05)"),
+                paste0(gene_1, " only"),
+                paste0(gene_2, " only")
+            )
         )
     ) |>
     ggplot(
         aes(x = layer_combo, y = Freq, fill = Var1)
     ) +
     geom_boxplot(show.legend = FALSE) +
-    facet_wrap(~Var1,  scale = "free_y", ncol = 1) +
+    facet_wrap(~Var1, scale = "free_y", ncol = 1) +
     scale_fill_manual(
         values = c("#d7191c", "#abd9e9", "#2c7bb6")
-        #set_names(
+        # set_names(
         # Polychrome::palette36.colors(k)[str_sub(layer_df$layer_long, -2, -1) |>
         #                                     as.integer()],
         # layer_df$layer_combo
@@ -180,7 +186,7 @@ ret_plot <- plot_dat |>
     ylab("Proportion of Spots") +
     xlab("") +
     theme_set(theme_bw(base_size = 20)) +
-    theme( panel.grid.minor.y = element_blank())
+    theme(panel.grid.minor.y = element_blank())
 
 
 # ret_plot_list <- plot_dat |>
@@ -248,26 +254,28 @@ cell_type_colors_layer <- metadata(sce)$cell_type_colors_layer[levels(sce$cellTy
 cell_type_colors_broad <- metadata(sce)$cell_type_colors_broad[levels(sce$cellType_broad_hc)]
 
 
-factor_cell_type_broad <- function(vec){
+factor_cell_type_broad <- function(vec) {
     factor(vec,
-           levels = c("astro",  "endomural", "micro", "oligo", "opc", "excit", "inhib"
-           ),
-           labels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib" )
+        levels = c("astro", "endomural", "micro", "oligo", "opc", "excit", "inhib"),
+        labels = c("Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib")
     )
 }
 
-factor_cell_type_layer <- function(vec){
+factor_cell_type_layer <- function(vec) {
     factor(vec,
-           # levels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
-           #            "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4","Excit_L5",
-           #            "Excit_L5_6","Excit_L6","Inhib"),
-           levels = c("astro",  "endomural", "micro", "oligo", "opc",
-                      "excit_l2_3", "excit_l3", "excit_l3_4_5", "excit_l4","excit_l5",
-                      "excit_l5_6","excit_l6","inhib"),
-           labels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
-                      "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4","Excit_L5",
-                      "Excit_L5/6","Excit_L6","Inhib")
-
+        # levels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
+        #            "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4","Excit_L5",
+        #            "Excit_L5_6","Excit_L6","Inhib"),
+        levels = c(
+            "astro", "endomural", "micro", "oligo", "opc",
+            "excit_l2_3", "excit_l3", "excit_l3_4_5", "excit_l4", "excit_l5",
+            "excit_l5_6", "excit_l6", "inhib"
+        ),
+        labels = c(
+            "Astro", "EndoMural", "Micro", "Oligo", "OPC",
+            "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4", "Excit_L5",
+            "Excit_L5/6", "Excit_L6", "Inhib"
+        )
     )
 }
 
@@ -276,23 +284,24 @@ fnl_dat <- colData(full_coloc_spe) |> data.frame()
 # Calculate Total Number of Cells per spot --------------------------------
 deconv_comb <- expand_grid(
     res = c("broad", "layer"),
-    deconv = c("tangram", "cell2location","spotlight")
+    deconv = c("tangram", "cell2location", "spotlight")
 )
 
 deconv_df <- fnl_dat |>
-    select(starts_with( c("broad", "layer")))
+    select(starts_with(c("broad", "layer")))
 
 deconv_com_indx_mat <- deconv_comb |>
-    pmap_dfc(.f = function(res, deconv){
+    pmap_dfc(.f = function(res, deconv) {
         str_starts(names(deconv_df), paste(res, deconv, sep = "_")) |>
             as.integer() |>
             data.frame() |>
             set_names(paste(res, deconv, sep = "_"))
-    }) |> as.matrix()
+    }) |>
+    as.matrix()
 
 # Check if the correct number of colums are detected
 stopifnot(
-    colSums(deconv_com_indx_mat)==ifelse(deconv_comb$res == "broad", 7,13)
+    colSums(deconv_com_indx_mat) == ifelse(deconv_comb$res == "broad", 7, 13)
 )
 
 deconv_cell_counts <- (deconv_df |> as.matrix()) %*% deconv_com_indx_mat
@@ -301,11 +310,10 @@ deconv_cell_counts <- (deconv_df |> as.matrix()) %*% deconv_com_indx_mat
 
 
 cell_comp_dat <- deconv_comb |>
-    pmap_dfr(.f=function(res, deconv){
-
+    pmap_dfr(.f = function(res, deconv) {
         factor_cell_type <- factor_cell_type_layer
         cell_type_colors <- cell_type_colors_layer
-        if(res == "broad"){
+        if (res == "broad") {
             factor_cell_type <- factor_cell_type_broad
             cell_type_colors <- cell_type_colors_broad
         }
@@ -327,29 +335,38 @@ cell_comp_dat <- deconv_comb |>
         # )
 
         ret_plot <- fnl_dat |>
-            dplyr::select(sample_id, coloc,
-                          starts_with(paste(res, deconv, sep = "_"))) |>
+            dplyr::select(
+                sample_id, coloc,
+                starts_with(paste(res, deconv, sep = "_"))
+            ) |>
             cbind(deconv_count) |>
             group_by(sample_id, coloc) |>
-            summarise(n_cell_deconv = sum(deconv_count),
-                      across(starts_with(paste(res, deconv, sep = "_")), .fns = sum)) |>
+            summarise(
+                n_cell_deconv = sum(deconv_count),
+                across(starts_with(paste(res, deconv, sep = "_")), .fns = sum)
+            ) |>
             ungroup() |>
             mutate(across(starts_with(paste(res, deconv, sep = "_")),
-                          .fns = ~.x/n_cell_deconv)) |>
+                .fns = ~ .x / n_cell_deconv
+            )) |>
             pivot_longer(starts_with(paste(res, deconv, sep = "_")),
-                         names_to = "cell_type",
-                         values_to = "cell_perc") |>
-            mutate(cell_type = str_remove(cell_type,
-                                          paste0(res,"_", deconv, "_")) |>
-                       factor_cell_type(),
-                   coloc = coloc,
-                   res = res,
-                   method = deconv
+                names_to = "cell_type",
+                values_to = "cell_perc"
+            ) |>
+            mutate(
+                cell_type = str_remove(
+                    cell_type,
+                    paste0(res, "_", deconv, "_")
+                ) |>
+                    factor_cell_type(),
+                coloc = coloc,
+                res = res,
+                method = deconv
             )
     })
 
 
-group_cell_comp_dat <- cell_comp_dat|>
+group_cell_comp_dat <- cell_comp_dat |>
     filter(method == "cell2location", res == "layer")
 
 # res <- dat |> pull(res) |> head(1)
@@ -357,16 +374,20 @@ dat <- group_cell_comp_dat
 ret_plot <- dat |>
     mutate(
         cell_type = fct_relevel(cell_type,
-                                "Inhib", after = Inf),
+            "Inhib",
+            after = Inf
+        ),
         coloc = factor(coloc,
-                       levels = c("co-localize", gene_1, gene_2, "Neither"),
-                       labels = c(paste0(gene_1, " & ", gene_2),
-                                  paste0(gene_1, " only"),
-                                  paste0(gene_2, " only"),
-                                  "Neither")
+            levels = c("co-localize", gene_1, gene_2, "Neither"),
+            labels = c(
+                paste0(gene_1, " & ", gene_2),
+                paste0(gene_1, " only"),
+                paste0(gene_2, " only"),
+                "Neither"
+            )
         )
     ) |>
-    dplyr::filter(cell_type %in% c( "Excit_L5/6", "Excit_L6")) |>
+    dplyr::filter(cell_type %in% c("Excit_L5/6", "Excit_L6")) |>
     mutate(cell_type = fct_drop(cell_type)) |>
     # mutate(position = str_to_sentence(position),
     #        method = factor(method,
@@ -374,18 +395,21 @@ ret_plot <- dat |>
     #                        labels = c("Cell2location", "SPOTlight", "Tangram"))
     # ) |>
     ggplot(
-        aes( x = coloc, y = cell_perc, fill = cell_type)
+        aes(x = coloc, y = cell_perc, fill = cell_type)
     ) +
     # geom_boxplot(show.legend = FALSE) +
     geom_violin(show.legend = FALSE) +
     # geom_bar(position = "stack", stat = "identity") +
-    facet_wrap(~cell_type, #scale = "free_y",
-               nrow = 1, ncol = 2) +
-    scale_fill_manual(name = "Cell Type",
-                      # TODO: edit this
-                      limits = names(cell_type_colors_layer),
-                      values = cell_type_colors_layer) +
-    guides(x =  guide_axis(angle = 90)) +
+    facet_wrap(~cell_type, # scale = "free_y",
+        nrow = 1, ncol = 2
+    ) +
+    scale_fill_manual(
+        name = "Cell Type",
+        # TODO: edit this
+        limits = names(cell_type_colors_layer),
+        values = cell_type_colors_layer
+    ) +
+    guides(x = guide_axis(angle = 90)) +
     labs(
         #     title = paste(method |> str_to_title(),
         #                   "at",
@@ -396,7 +420,7 @@ ret_plot <- dat |>
     theme_set(theme_bw(base_size = 20)) +
     theme(
         # plot.title = element_text(hjust = 0.5),
-        axis.title.x = element_blank()#,
+        axis.title.x = element_blank() # ,
         #       plot.margin = margin(0.1,0.9,0.1,0.3, "cm")
     )
 
@@ -406,7 +430,7 @@ ggsave(
         # "layer_comp",
         paste0("coloc_comp_c2l.pdf")
     ),
-    plot =ret_plot,
-    height = 7, #3.75*5,
-    width = 5 #7.5*5
+    plot = ret_plot,
+    height = 7, # 3.75*5,
+    width = 5 # 7.5*5
 )

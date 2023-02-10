@@ -49,8 +49,9 @@ calc_coloc <- function(spe, gene_name1, gene_name2, sample_id = NULL) {
 # Function to plot spatial co-localization derived from `calc_coloc` in the
 # Spatial domain context, specifically `Sp9D7 ~ L6`
 # Return a spot plot oject if `save.path=NULL`, otherwise, save pdf to `save.path`
-vis_coloc <- function(spe, gene_name1, gene_name2, sample_id,
-    save.path = NULL) {
+vis_coloc <- function(
+        spe, gene_name1, gene_name2, sample_id,
+        save.path = NULL) {
     ret_plot <- spatialLIBD::vis_clus(
         spe,
         clustervar = "coloc", point_size = 2.5,
@@ -132,8 +133,9 @@ bayes_layers <- here(
 # Function to plot spatial co-localization derived from `calc_coloc` in the
 # all spatial domains of `Sp9D7`
 # Return a spot plot object if `save.path=NULL`, otherwise, save pdf to `save.path`
-vis_coloc_spd <- function(spe, gene_name1, gene_name2, sample_id,
-    save.path = NULL) {
+vis_coloc_spd <- function(
+        spe, gene_name1, gene_name2, sample_id,
+        save.path = NULL) {
     ret_plot <- spatialLIBD::vis_clus(
         spe,
         clustervar = "coloc", point_size = 2.5,

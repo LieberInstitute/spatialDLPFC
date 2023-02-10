@@ -43,7 +43,7 @@ spd_dat <- vars_spd |>
     map_dfr(.f = function(var) {
         fnl_dat |>
             select(position, subject, sample_id,
-                   spd = var, coloc
+                spd = var, coloc
             )
     }, .id = "spd_method") |>
     # group_split(spd_method, position, .keep = TRUE) |>
@@ -82,8 +82,8 @@ ret_plot_list <- spd_dat |>
     # mutate(
     #     layer_combo = as.character(layer_combo)
     # ) |>
-    group_split( Annotation, .keep = TRUE) |>
-    map(.f = function(dat){
+    group_split(Annotation, .keep = TRUE) |>
+    map(.f = function(dat) {
         # browser()
         dat |>
             mutate(
@@ -102,7 +102,7 @@ ret_plot_list <- spd_dat |>
             #     )
             # ) +
             guides(x = guide_axis(angle = 90)) +
-            facet_wrap(~Var1,  scale = "free_y", ncol = 1)
+            facet_wrap(~Var1, scale = "free_y", ncol = 1)
         # ylab("Proportion of Spots") +
         # xlab("") +
         # theme_set(theme_bw(base_size = 20))
@@ -119,7 +119,8 @@ ggsave(
         # nrow = 2,
         ncol = 2,
         plotlist = ret_plot_list,
-        common.legend = TRUE),
+        common.legend = TRUE
+    ),
     width = 10
 )
 
@@ -135,13 +136,14 @@ ret_plot <- spd_dat |>
         Var1 = factor(
             Var1,
             levels = c("co-localize", "EFNA5", "EPHA5"),
-            labels = c("Both", "EFNA5 only", "EPHA5 only"))
+            labels = c("Both", "EFNA5 only", "EPHA5 only")
+        )
     ) |>
     ggplot(
         aes(x = layer_combo, y = Freq, fill = Var1)
     ) +
     geom_boxplot(show.legend = FALSE) +
-    facet_wrap(~Var1,  scale = "free_y", ncol = 1) +
+    facet_wrap(~Var1, scale = "free_y", ncol = 1) +
     guides(x = guide_axis(angle = 90)) +
     ylab("Proportion of Spots") +
     xlab("") +
@@ -158,5 +160,3 @@ ggsave(
     height = 7,
     width = 8
 )
-
-
