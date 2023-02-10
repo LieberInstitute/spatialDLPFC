@@ -156,8 +156,7 @@ for both the all data and Dx (by primary diagnosis, i.e. seperate for case and c
 ### 15_cell_composition
 Some exploratory down-stream analyses using spot deconvolution results to understand the cell composition in ant/mid/post controlling for spatial domains
 
-`01-data_prep.R`
-`02-eda.R`
+`01-EDA.R`, `011-EDA_Visium.R`, `012-EDA_SpotDeconv.R` explores the spot deconvoluted data, including section specific analysis, layer specific analysis of the spot deconvolued data.
 
 ### 16_position_differential_expression_noWM
 Repeat `09_position_differential_expression/` process but exclude all WM associated bayesSpace clusers
