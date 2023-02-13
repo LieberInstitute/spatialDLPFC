@@ -139,6 +139,7 @@ enriched$gene_DLPFC$k09
 ## Save for later
 save(enriched, file = here(dir_rdata, "enriched_PTSD.Rdata"))
 
+#### Prep for plotting ####
 ## source updated enrichment plot
 source(here("code", "analysis", "10_clinical_gene_set_enrichment", "gene_set_enrichment_plot_complex.R"))
 
@@ -154,28 +155,12 @@ gene_enrichment_count <- map(bayesSpace_registration, function(r) {
 gene_list_count <- map(ptsd_gene_list, get_gene_list_count)
 
 
-## Find the position for the text title on the plots
-# y_text <-
-#     map_int(enriched, ~ length(unique(.x$test))) * 15 + c(3, 12, 15, 25, 45)
-#
-
-# load(
-#   here(
-#     "processed-data",
-#     "rdata",
-#     "spe",
-#     "12_spatial_registration_sn",
-#     "05_velm_correlation_annotation",
-#     "Velmeshev_k9_annotation_details.Rdata"
-#   ),
-#   verbose = TRUE
-# )
-
+#### Plot Enrichments ####
 pdf(here(dir_plots, "Enrich_PTSD_DLPFC_genes_k09.pdf"), height = 8, width = 10)
 gene_set_enrichment_plot_complex(enriched$gene_DLPFC$k09,
                                  gene_count_col = gene_list_count[["gene_DLPFC"]],
                                  gene_count_row = gene_enrichment_count[["k09"]],
-                                 anno_title_col = "n ASD DE Genes",
+                                 anno_title_col = "n DE Genes",
                                  anno_title_row = "n Domain\nGenes"
 )
 dev.off()
@@ -194,6 +179,22 @@ walk2(enriched, names(enriched), function(enriched, ds_name) {
   })
   dev.off()
 })
+
+## Select gene set plot @ k09
+enriched_select <- rbind(enriched$gene_DLPFC$k09 |> filter(ID %in% c("MDD_DLPFC","PTSD_MDD_DLPFC")),
+                         enriched$gene_mPFC$k09 |> filter(ID %in% c("MDD_mPFC","PTSD_MDD_mPFC")))
+
+gene_list_count_select <- rbind(gene_list_count$gene_DLPFC[c("MDD_DLPFC","PTSD_MDD_DLPFC"),,drop=FALSE],
+                                gene_list_count$gene_mPFC[c("MDD_mPFC","PTSD_MDD_mPFC"),,drop=FALSE])
+
+pdf(here(dir_plots, "Enrich_PTSD_select_k09.pdf"), height = 8, width = 5)
+gene_set_enrichment_plot_complex(enriched_select,
+                                 gene_count_col = gene_list_count_select,
+                                 gene_count_row = gene_enrichment_count[["k09"]],
+                                 anno_title_col = "n DE Genes",
+                                 anno_title_row = "n Domain\nGenes"
+)
+dev.off()
 
 #### Interesting gene sets ####
 
@@ -214,14 +215,14 @@ enrichment_check <- function(domain = "Sp09D01",
   enrichment2 <- enrichment |>
     select(ends_with(domain), ensembl, gene)  |>
     rename_all(~stringr::str_replace(.,paste0("_", domain),"")) |>
-    mutate(sig = fdr < 0.01 & t_stat > 0,
+    mutate(sig = fdr < 0.1 & t_stat > 0,
            deg = ensembl %in% gene_list)
   
   gene_list <- enrichment2 |>
     filter(deg, sig) |>
     pull(gene)
   
-  gene_tab <- table(enrichment2$deg, enrichment2$sig)
+  gene_tab <- addmargins(table(enrichment2$deg, enrichment2$sig))
   
   
   return(list(gl = gene_list, tab = gene_tab))
@@ -235,11 +236,67 @@ enriched$gene_DLPFC$k09
 enriched$gene_DLPFC$k09 |> filter(test == "Sp09D01 ~ L1")
 enriched$gene_DLPFC$k09 |> filter(ID == "MDD_DLPFC")
 
-enrichment_check(domain = "Sp09D01")
-enrichment_check(domain = "Sp09D02")
-enrichment_check(domain = "Sp09D01", gene_list = ptsd_gene_list$gene_DLPFC$PTSD_MDD_DLPFC)
-enrichment_check(domain = "Sp09D02", gene_list = ptsd_gene_list$gene_DLPFC$PTSD_MDD_DLPFC)
+enrichment_check(domain = "Sp09D01", 
+                 gene_list = ptsd_gene_list$gene_DLPFC$MDD_DLPFC,
+                 enrichment = bayesSpace_registration$k09$enrichment)
 
+enrichment_check(domain = "Sp09D01", gene_list = ptsd_gene_list$gene_DLPFC$MDD_DLPFC)
+# $gl
+# [1] "TIE1"     "GBP4"     "RHOC"     "TXNIP"    "S100A6"   "RPS27"    "FCGR2A"   "SEMA3G"   "ABCG2"    "CARMN"   
+# [11] "CDKN1A"   "RPS12"    "UTRN"     "GIMAP6"   "ADGRA2"   "RPS6"     "IFITM2"   "RPL27A"   "RERGL"    "PTPRB"   
+# [21] "LRP10"    "CRISPLD2" "GADD45B"  "ISYNA1"   "LSR"      "RPS19"    "HSPA12B"  "EDN3"     "JAM2"     "TIMP1"   
+# [31] "MSN"      "RPL10"   
+# 
+# $tab
+# 
+# FALSE  TRUE   Sum
+# FALSE 11393   626 12019
+# TRUE    174    32   206
+# Sum   11567   658 12225
+enrichment_check(domain = "Sp09D02", gene_list = ptsd_gene_list$gene_DLPFC$MDD_DLPFC)
+# $gl
+# [1] "HMGN2"      "TGFBR3"     "RHOC"       "RPS27"      "GAS5"       "RGS8"       "DOCK10"     "PROS1"     
+# [9] "ALDH1L1"    "EPHB1"      "RGS12"      "TRPC3"      "PCDH18"     "HMGB2"      "RHOBTB3"    "ALDH7A1"   
+# [17] "RPS12"      "SLC29A4"    "DLX6-AS1"   "TMEM176A"   "CLU"        "CRH"        "RPS6"       "RPL7A"     
+# [25] "FZD8"       "BAG3"       "IFITM2"     "CD81"       "RPL27A"     "GIHCG"      "LRP10"      "RPL4"      
+# [33] "RLBP1"      "MT1X"       "KCNJ16"     "DLGAP1-AS1" "NCAN"       "RPS19"      "FTL"        "MSN"       
+# [41] "AFF2"       "RPL10"     
+# 
+# $tab
+# 
+# FALSE  TRUE   Sum
+# FALSE 10858  1161 12019
+# TRUE    164    42   206
+# Sum   11022  1203 12225
+enrichment_check(domain = "Sp09D01", gene_list = ptsd_gene_list$gene_DLPFC$PTSD_MDD_DLPFC)
+# $gl
+# [1] "TNFRSF1B" "TIE1"     "GBP4"     "RHOC"     "TXNIP"    "S100A6"   "SEMA3G"   "TNFSF10"  "ABCG2"    "FKBP5"   
+# [11] "CDKN1A"   "PNRC1"    "UTRN"     "GIMAP7"   "GIMAP6"   "ADGRA2"   "RPS6"     "MARVELD1" "IFITM2"   "TNFRSF1A"
+# [21] "A2M"      "RERGL"    "PTPRB"    "LRP10"    "MT2A"     "CRISPLD2" "RAB34"    "STAT3"    "TUBB6"    "LSR"     
+# [31] "EMP3"     "HSPA12B"  "EDN3"     "JAM2"     "TIMP1"    "MSN"     
+# 
+# $tab
+# 
+# FALSE  TRUE   Sum
+# FALSE 11333   622 11955
+# TRUE    234    36   270
+# Sum   11567   658 12225
+enrichment_check(domain = "Sp09D02", gene_list = ptsd_gene_list$gene_DLPFC$PTSD_MDD_DLPFC)
+# $gl
+# [1] "CAMK2N1"    "HMGN2"      "TGFBR3"     "RHOC"       "GAS5"       "RGS8"       "DOCK10"     "SLC6A11"   
+# [9] "PROS1"      "ALDH1L1"    "EPHB1"      "RGS12"      "KIT"        "PPM1K"      "TRPC3"      "SMAD1"     
+# [17] "HMGB2"      "MYO10"      "RHOBTB3"    "ALDH7A1"    "DDR1"       "PNRC1"      "TNS3"       "DLX6-AS1"  
+# [25] "GAL3ST4"    "TMEM176B"   "TMEM176A"   "CLU"        "CRH"        "RPS6"       "RPL7A"      "FZD8"      
+# [33] "BAG3"       "IFITM2"     "CD81"       "GSTP1"      "TNFRSF1A"   "GIHCG"      "ACSS3"      "LRP10"     
+# [41] "ALDH6A1"    "RPL4"       "RLBP1"      "CHD2"       "IQCK"       "MT2A"       "MT1M"       "MT1X"      
+# [49] "TPPP3"      "RAB34"      "STAT3"      "KCNJ16"     "DLGAP1-AS1" "FTL"        "MSN"       
+# 
+# $tab
+# 
+# FALSE  TRUE   Sum
+# FALSE 10807  1148 11955
+# TRUE    215    55   270
+# Sum   11022  1203 12225
 
 # $gene_DLPFC
 # n
@@ -248,19 +305,6 @@ enrichment_check(domain = "Sp09D02", gene_list = ptsd_gene_list$gene_DLPFC$PTSD_
 # MDD_Male_DLPFC       34
 # PTSD_MDD_Male_DLPFC  22
 
-gene_enrichment_count$k09
-#                 n
-# Sp09D01 ~ L1  658
-# Sp09D02 ~ L1 1203
-# Sp09D03 ~ L2 1551
-# Sp09D05 ~ L3 1632
-# Sp09D08 ~ L4 2675
-# Sp09D04 ~ L5 1921
-# Sp09D07 ~ L6  966
-# Sp09D06 ~ WM 1858
-# Sp09D09 ~ WM  777
-
-gene_list_count
 
 # sgejobs::job_single('05_enrichment_PTSD', create_shell = TRUE, memory = '10G', command = "Rscript 05_enrichment_PTSD.R")
 
