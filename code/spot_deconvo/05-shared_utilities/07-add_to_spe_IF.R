@@ -127,7 +127,8 @@ for (sample_id in unique(spe$sample_id)) {
         as_tibble() |>
         mutate(
             barcode = colnames(spe[, spe$sample_id == sample_id])[id + 1],
-            sample_id = sample_id
+            sample_id = sample_id,
+            label = sub("^[Ll]ayer", "L", label)
         ) |>
         select(- id)
 }
@@ -142,9 +143,7 @@ spe$manual_layer_label = added_coldata |>
 # vis_clus(
 #         spe, sampleid = unique(spe$sample_id)[1],
 #         clustervar = "manual_layer_label"
-#     ) +
-#     scale_color_discrete() +
-#     scale_fill_discrete()
+#     )
 
 ################################################################################
 #   Add up-to-date cell counts from cellpose and clarify existing ones
