@@ -26,8 +26,11 @@ You might also be interested in this video demonstration of `spatialLIBD` for th
 Before the documentation, this tab displays the [SingleCellExperiment](https://bioconductor.org/packages/SingleCellExperiment) object that contains the spatial domain-level data (layer-level in other `spatialLIBD` apps). It's basically useful to know that the data has been loaded and that you can start navigating the app. If you wish to download this data, use the following command.
 
 ```{r}
+## Check that you have a recent version of spatialLIBD installed
+stopifnot(packageVersion("spatialLIBD") >= "1.11.6")
+
 ## Download sce data
-sce_pseudo <- spatialLIBD::fetch_data(type = "spatialDLPFC_Visium_Sp09_pseudo")
+sce_pseudo <- spatialLIBD::fetch_data(type = "spatialDLPFC_Visium_pseudobulk")
 ```
 
 Throughout the rest of this document, we'll refer to this object by the name `sce_pseudo`.
@@ -36,7 +39,7 @@ This tab also shows the statistical modeling results, described below, that you 
 
 ```{r}
 ## Reproduce locally with
-modeling_results <- fetch_data("spatialDLPFC_Visium_Sp09_model_results")
+modeling_results <- fetch_data("spatialDLPFC_Visium_modeling_results"")
 sig_genes <-
         spatialLIBD::sig_genes_extract_all(
             n = nrow(sce_pseudo),

@@ -140,11 +140,20 @@ publicly available datasets provided by 10x
 Genomics](http://bioconductor.org/packages/release/data/experiment/vignettes/spatialLIBD/inst/doc/TenX_data_download.html).
 
 ``` r
-## Run this web application locally
+## Run this web application locally with:
 spatialLIBD::run_app()
-## You will have more control about the length of the
-## session and memory usage.
-## You could also use this function to visualize your
+
+## You will have more control about the length of the session and memory usage.
+## See http://research.libd.org/spatialLIBD/reference/run_app.html#examples
+## for the full R code to run https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09
+## locally. See also:
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k09
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k09_position
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k09_position_noWM
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k16
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/analysis_IF/03_spatialLIBD_app
+
+## You could also use spatialLIBD::run_app() to visualize your
 ## own data given some requirements described
 ## in detail in the package vignette documentation
 ## at http://research.libd.org/spatialLIBD/.
@@ -346,21 +355,22 @@ the help file for `fetch_data()`.
 
 ``` r
 ## Check that you have a recent version of spatialLIBD installed
-stopifnot(packageVersion("spatialLIBD") >= "1.11.2")
+stopifnot(packageVersion("spatialLIBD") >= "1.11.6")
 
 ## Download the spot-level data
 spe <- spatialLIBD::fetch_data(type = "spatialDLPFC_Visium")
 
 ## This is a SpatialExperiment object
 spe
-#> class: SpatialExperiment
-#> dim: 28916 113927
+#> class: SpatialExperiment 
+#> dim: 28916 113927 
 #> metadata(1): BayesSpace.data
 #> assays(2): counts logcounts
 #> rownames(28916): ENSG00000243485 ENSG00000238009 ... ENSG00000278817 ENSG00000277196
 #> rowData names(7): source type ... gene_type gene_search
-#> colnames(113927): AAACAACGAATAGTTC-1 AAACAAGTATCTCCCA-1 ... TTGTTTGTATTACACG-1 TTGTTTGTGTAAATTC-1
-#> colData names(153): age array_col ... VistoSeg_count VistoSeg_proportion
+#> colnames(113927): AAACAACGAATAGTTC-1 AAACAAGTATCTCCCA-1 ... TTGTTTGTATTACACG-1
+#>   TTGTTTGTGTAAATTC-1
+#> colData names(156): age array_col ... BayesSpace_harmony_09_colors BayesSpace_colors
 #> reducedDimNames(8): 10x_pca 10x_tsne ... HARMONY UMAP.HARMONY
 #> mainExpName: NULL
 #> altExpNames(0):
@@ -369,7 +379,7 @@ spe
 
 ## Note the memory size
 lobstr::obj_size(spe)
-#> 6.96 GB
+#> 6.97 GB
 
 ## Set the cluster colors
 colors_BayesSpace <- Polychrome::palette36.colors(28)

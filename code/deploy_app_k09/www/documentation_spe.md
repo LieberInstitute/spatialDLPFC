@@ -27,7 +27,7 @@ Before the documentation, this tab displays the [SpatialExperiment](https://bioc
 
 ```{r}
 ## Check that you have a recent version of spatialLIBD installed
-stopifnot(packageVersion("spatialLIBD") >= "1.11.2")
+stopifnot(packageVersion("spatialLIBD") >= "1.11.6")
 
 ## Download spe data
 spe <- spatialLIBD::fetch_data(type = "spatialDLPFC_Visium")
@@ -148,7 +148,16 @@ We also recommend saving your work often in case you lose connection to `spatial
 ## Reproduce locally with
 spatialLIBD::run_app()
 
-## Note that the original spe object shown here uses 6.96 GB
+## For the full R code, please check the spatialLIBD::run_app() documentation
+## at http://research.libd.org/spatialLIBD/reference/run_app.html#examples for
+## running https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09 locally. See also:
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k09
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k09_position
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k09_position_noWM
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/deploy_app_k16
+## * https://github.com/LieberInstitute/spatialDLPFC/tree/main/code/analysis_IF/03_spatialLIBD_app
+
+## Note that the original spe object shown here uses 6.97 GB
 ## You can follow the steps at 
 ## https://github.com/LieberInstitute/spatialDLPFC/blob/main/code/analysis/01_build_spe/03_add_deconvolution.R
 ## to further subset this object. Basically, this involves dropping the
