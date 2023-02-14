@@ -13,7 +13,7 @@ echo "Job id: ${JOB_ID}"
 echo "Job name: ${JOB_NAME}"
 echo "Hostname: ${HOSTNAME}"
 
-module load conda_R/devel
+module load conda_R/4.2.x
 Rscript 02-write_biospecimen.R
 
 echo "**** Job ends ****"
