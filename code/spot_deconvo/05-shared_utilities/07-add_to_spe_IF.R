@@ -8,6 +8,7 @@ library("jaffelab")
 library("SpatialExperiment")
 library("sessioninfo")
 library("tidyverse")
+library("spatialLIBD")
 
 cell_groups <- c("broad", "layer")
 deconvo_tools <- c("tangram", "cell2location", "SPOTlight")
@@ -132,11 +133,18 @@ for (sample_id in unique(spe$sample_id)) {
 }
 
 #   Add layer label as a column in colData(spe)
-spe$manual_layer_label = do.call(rbind, layer_ann_list) |>
-    right_join(added_coldata) |>
+spe$manual_layer_label = added_coldata |>
+    left_join(do.call(rbind, layer_ann_list)) |>
     pull(label)
 
 # table(is.na(spe$manual_layer_label)) # 2 spots are unlabelled (as expected)
+
+# vis_clus(
+#         spe, sampleid = unique(spe$sample_id)[1],
+#         clustervar = "manual_layer_label"
+#     ) +
+#     scale_color_discrete() +
+#     scale_fill_discrete()
 
 ################################################################################
 #   Add up-to-date cell counts from cellpose and clarify existing ones
