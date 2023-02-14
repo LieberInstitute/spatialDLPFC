@@ -27,6 +27,7 @@ spatialLIBD::run_app(
     title = "spatialDLPFC, Visium SPG",
     spe_discrete_vars = c(
         vars[grep("^10x_", vars)],
+        "manual_layer_label",
         "ManualAnnotation"
     ),
     spe_continuous_vars = c(
