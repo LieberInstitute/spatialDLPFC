@@ -40,7 +40,7 @@ prop_df = colData(spe) |>
     filter(sample_id %in% unique(prop_df$sample_id)) |>
     group_by(sample_id) |>
     summarize(
-        prop_WM = sum(!(BayesSpace_harmony_28 %in% c(6, 16, 17, 20, 28))) / n()
+        prop_WM = sum(BayesSpace_harmony_28 %in% c(6, 16, 17, 20, 28)) / n()
     ) |>
     ungroup() |>
     right_join(prop_df, multiple = "all")
