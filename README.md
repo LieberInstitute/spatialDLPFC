@@ -368,9 +368,8 @@ spe
 #> assays(2): counts logcounts
 #> rownames(28916): ENSG00000243485 ENSG00000238009 ... ENSG00000278817 ENSG00000277196
 #> rowData names(7): source type ... gene_type gene_search
-#> colnames(113927): AAACAACGAATAGTTC-1 AAACAAGTATCTCCCA-1 ... TTGTTTGTATTACACG-1
-#>   TTGTTTGTGTAAATTC-1
-#> colData names(156): age array_col ... BayesSpace_harmony_09_colors BayesSpace_colors
+#> colnames(113927): AAACAACGAATAGTTC-1 AAACAAGTATCTCCCA-1 ... TTGTTTGTATTACACG-1 TTGTTTGTGTAAATTC-1
+#> colData names(155): age array_col ... VistoSeg_proportion wrinkle_type
 #> reducedDimNames(8): 10x_pca 10x_tsne ... HARMONY UMAP.HARMONY
 #> mainExpName: NULL
 #> altExpNames(0):
