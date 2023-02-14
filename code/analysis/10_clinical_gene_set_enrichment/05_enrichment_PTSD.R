@@ -196,6 +196,21 @@ gene_set_enrichment_plot_complex(enriched_select,
 )
 dev.off()
 
+# independent color scale
+pal <- c(
+  "white",
+         grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(5)
+)
+
+lgd2 = Legend(col_fun = circlize::colorRamp2(seq(0, 15, by = 1.6),
+                                             c("white", RColorBrewer::brewer.pal(9, "YlOrRd"))),
+              title = "-log10(p-val)",
+              direction = "horizontal")
+
+pdf("enrich_legend.pdf", height = 1, width = 2)
+draw(lgd2)
+dev.off()
+
 #### Interesting gene sets ####
 
 colnames(bayesSpace_registration$k09$enrichment)
