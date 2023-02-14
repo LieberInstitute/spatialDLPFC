@@ -39,7 +39,9 @@ prop_df = colData(spe) |>
     #   Grab only the spatial samples with matching snRNA-seq data
     filter(sample_id %in% unique(prop_df$sample_id)) |>
     group_by(sample_id) |>
-    summarize(prop_WM = sum(BayesSpace_harmony_02 == 1) / n()) |>
+    summarize(
+        prop_WM = sum(!(BayesSpace_harmony_28 %in% c(6, 16, 17, 20, 28))) / n()
+    ) |>
     ungroup() |>
     right_join(prop_df, multiple = "all")
 
