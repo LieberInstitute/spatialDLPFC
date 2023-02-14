@@ -129,6 +129,12 @@ We provide the following interactive websites:
     [`loopy`](https://github.com/chaichontat/loopy-browser) website that
     allows to zoom in at the spot or cell level.
 
+All of these websites are powered by open source software, namely:
+
+- [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w)
+- [`loopy`](https://github.com/chaichontat/loopy-browser)
+- [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1)
+
 ### Local `spatialLIBD` apps
 
 If you are interested in running the
@@ -158,12 +164,6 @@ spatialLIBD::run_app()
 ## in detail in the package vignette documentation
 ## at http://research.libd.org/spatialLIBD/.
 ```
-
-All of these websites are powered by open source software, namely:
-
-- [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w)
-- [`loopy`](https://github.com/chaichontat/loopy-browser)
-- [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1)
 
 ## Contact
 
