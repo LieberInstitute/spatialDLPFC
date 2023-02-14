@@ -47,7 +47,7 @@ meta_df <- data.frame(
     "species" = "Human",
     "reportedGender" = pd$sex,
     "sexChromosome" = NA,
-    "race" = NA,
+    "race" = "Not reported",
     "ethnicity" = NA,
     "genotypeInferredAncestry" = NA,
     "familialRelationship" = NA,
@@ -55,8 +55,8 @@ meta_df <- data.frame(
     "BMI" = NA,
     "primaryDiagnosis" = pd$diagnosis,
     "primaryDiagnosisDetail" = NA,
-    "otherDiagnosis" = NA,
-    "otherDiagnosisDetail" = NA,
+    "otherDiagnosis" = "Not reported",
+    "otherDiagnosisDetail" = "Not reported",
     "familyHistory" = NA,
     "familyHistoryDetails" = NA,
     "ageOnset" = NA,
@@ -68,21 +68,26 @@ meta_df <- data.frame(
     "otherMedicalDetail" = NA,
     "ageDeath" = pd$age,
     "ageDeathUnits" = "years",
-    "causeDeath" = NA,
-    "mannerDeath" = NA,
-    "postmortemTox" = NA,
-    "postmortemToxDetails" = NA,
-    "postmortemToxSource" = NA,
-    "medRecordTox" = NA,
-    "PMICertain" = NA,
-    "PMI" = NA,
-    "pH" = NA
+    "causeDeath" = "Not reported",
+    "mannerDeath" = "Not reported",
+    "postmortemTox" = "Not reported",
+    "postmortemToxDetails" = "Not reported",
+    "postmortemToxSource" = "Not reported",
+    "medRecordTox" = "Not reported",
+    "PMICertain" = "Not reported",
+    "PMI" = "Not reported",
+    "pH" = "Not reported"
 )
 
 #  Ensure we included all the required columns
 template_names <- colnames(read_excel(template_path))
 stopifnot(all(template_names %in% colnames(meta_df)))
 stopifnot(all(colnames(meta_df) %in% template_names))
+
+#   We were manually requested to add these 2 columns, which were not in the
+#   up-to-date template
+meta_df$psychiatricMedications = "Not reported"
+meta_df$psychiatricMedicationsNotes = "Not reported"
 
 write.csv(meta_df, write_path_synapse, row.names = FALSE)
 
