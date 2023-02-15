@@ -97,7 +97,6 @@ dx_colors <- c(
 ## colors
 load(here(data_dir, "pec_dataset_colors.Rdata"), verbose = TRUE)
 
-
 #### Plot layer annotation ####
 ## prep cell type annotation
 spatial_layer_anno_long <- spatial_layer_anno |>
@@ -151,9 +150,25 @@ control_anno_long <- do.call("rbind", map2(
     ~ .x |>
         mutate(Dataset = .y) |>
         filter(PrimaryDx == "Control")
-))
+)) |>
+  mutate(Dataset = factor(Dataset),
+         psychENCODE = factor(paste0("study_", as.numeric(Dataset))))
 
-dotplot_control_datasets <- registration_dot_plot2(control_anno_long, color_by = "Dataset", ct_anno = cell_type_anno) +
+control_anno_long |> distinct(Dataset, psychENCODE)
+# Dataset             psychENCODE
+# <fct>               <chr>
+# 1 CMC               study_1
+# 2 DevBrain-snRNAseq   study_2
+# 3 IsoHuB              study_3
+# 4 LIBD                study_4
+# 5 MultiomeBrain-DLPFC study_5
+# 6 PTSDBrainomics      study_6
+# 7 SZBDMulti-Seq       study_7
+# 8 UCLA-ASD            study_8
+
+names(pec_dataset_colors) <- levels(control_anno_long$psychENCODE)
+
+dotplot_control_datasets <- registration_dot_plot2(control_anno_long, color_by = "psychENCODE", ct_anno = cell_type_anno) +
     # theme(legend.position = "bottom")+
     scale_color_manual(values = pec_dataset_colors) +
     labs(x = "PsychENCODE DLPFC Cell Types", y = "Spatial Domains")
