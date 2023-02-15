@@ -196,20 +196,42 @@ gene_set_enrichment_plot_complex(enriched_select,
 )
 dev.off()
 
-# independent color scale
-pal <- c(
-  "white",
-         grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(5)
+## select gene sets for PTSD team
+# Sp09 resolution, RNA and Protein for mPFC for the MDD, PTSD, PTSD_MDD 
+
+enriched_select_ptsd <- list(gene = enriched$gene_mPFC$k09 |> filter(ID %in% c("MDD_mPFC","PTSD_mPFC","PTSD_MDD_mPFC")),
+                         protein = enriched$protein_mPFC$k09 |> filter(ID %in% c("MDD_mPFC","PTSD_mPFC","PTSD_MDD_mPFC")))
+
+gene_list_count_select_ptsd <- list(gene = gene_list_count$gene_mPFC[c("MDD_mPFC","PTSD_mPFC","PTSD_MDD_mPFC"),,drop=FALSE],
+                                    protein = gene_list_count$protein_mPFC[c("MDD_mPFC","PTSD_mPFC","PTSD_MDD_mPFC"),,drop=FALSE])
+
+
+pdf(here(dir_plots, "Enrich_PTSD_select_mPFC_k09.pdf"), height = 8, width = 5)
+map2(enriched_select_ptsd, gene_list_count_select_ptsd
+~gene_set_enrichment_plot_complex(.x,
+                                 gene_count_col = .y,
+                                 gene_count_row = gene_enrichment_count[["k09"]],
+                                 anno_title_col = "n DE Genes",
+                                 anno_title_row = "n Domain\nGenes"
 )
-
-lgd2 = Legend(col_fun = circlize::colorRamp2(seq(0, 15, by = 1.6),
-                                             c("white", RColorBrewer::brewer.pal(9, "YlOrRd"))),
-              title = "-log10(p-val)",
-              direction = "horizontal")
-
-pdf("enrich_legend.pdf", height = 1, width = 2)
-draw(lgd2)
+)
 dev.off()
+
+
+# independent color scale
+# pal <- c(
+#   "white",
+#          grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(5)
+# )
+# 
+# lgd2 = Legend(col_fun = circlize::colorRamp2(seq(0, 15, by = 1.6),
+#                                              c("white", RColorBrewer::brewer.pal(9, "YlOrRd"))),
+#               title = "-log10(p-val)",
+#               direction = "horizontal")
+# 
+# pdf("enrich_legend.pdf", height = 1, width = 2)
+# draw(lgd2)
+# dev.off()
 
 #### Interesting gene sets ####
 
