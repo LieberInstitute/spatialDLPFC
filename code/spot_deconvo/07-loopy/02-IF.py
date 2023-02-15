@@ -13,7 +13,7 @@ from loopy.utils.utils import remove_dupes
 deconvo_tools = ['tangram', 'cell2location']
 spot_diameter_m = 55e-6 # 55-micrometer diameter for Visium spot
 img_channels = ['Lipofuscin', 'DAPI', 'GFAP', 'NeuN', 'OLIG2', 'TMEM119']
-default_channels = ['blue': 'DAPI', 'red': 'NeuN']
+default_channels = {'blue': 'DAPI', 'red': 'NeuN'}
 
 sample_info_path = here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
@@ -96,62 +96,57 @@ this_sample.add_coords(
     tissue_positions, name="coords", mPerPx=m_per_px, size=spot_diameter_m
 )
 
+#   Add software deconvolution results (at broad and layer resolution)
+results_list = []
 for cell_group in ("broad", "layer"):
     raw_results = pd.read_csv(
         str(raw_results_path).format(cell_group), index_col = "barcode"
     )
     
-    #   Add software deconvolution results at normal resolution
     if cell_group == "broad":
         cell_types = cell_types_broad
     else:
         cell_types = cell_types_layer
-    
-    for cell_type in cell_types:
-        for deconvo_tool in deconvo_tools:
-            small_results = raw_results[
-                (raw_results['sample_id'] == sample_id_spot) &
-                (raw_results['deconvo_tool'] == deconvo_tool)
-            ][[cell_type]]
-            
-            feature_name = '_'.join(
-                [cell_group, deconvo_tool, cell_type]
-            ).lower()
-            
-            small_results = small_results.merge(
-                    tissue_positions, how = "left", on = "barcode"
-                ).rename(
-                    {cell_type: feature_name}, axis = 1
-                )
-            
-            this_sample.add_csv_feature(
-                small_results[[feature_name]],
-                name = feature_name, coordName="coords"
-            )
 
+    small_results = raw_results[
+            (raw_results['sample_id'] == sample_id_spot) &
+            raw_results['deconvo_tool'].isin(deconvo_tools)
+        ].melt(
+            id_vars = 'deconvo_tool', value_vars = cell_types,
+            ignore_index = False, var_name = 'cell_type', value_name = 'count'
+        ).pivot(
+            columns = ["deconvo_tool", "cell_type"], values = "count"
+        )
+    
+    small_results.columns = [
+        '_'.join([cell_group, x[0], x[1]]).lower()
+        for x in small_results.columns.values
+    ]
+    
+    results_list.append(small_results)
 
 #   Add CART results (at collapsed resolution)
 collapsed_results = pd.read_csv(collapsed_results_path, index_col = "barcode")
 
-for cell_type in cell_types_cart:
-    small_results = collapsed_results[
+small_results = collapsed_results[
         (collapsed_results['sample_id'] == sample_id_spot) &
         (collapsed_results['deconvo_tool'] == deconvo_tools[0]) &
         (collapsed_results['obs_type'] == 'actual')
-    ][[cell_type]]
-    
-    feature_name = '_'.join(['cart', cell_type])
-    
-    small_results = small_results.merge(
-            tissue_positions, how = "left", on = "barcode"
-        ).rename(
-            {cell_type: feature_name}, axis = 1
-        )
-    
-    this_sample.add_csv_feature(
-        small_results[[feature_name]],
-        name = feature_name, coordName="coords"
-    )
+    ].drop(['sample_id', 'deconvo_tool', 'obs_type'], axis = 1)
+
+small_results.columns = ['_'.join(['cart', x]) for x in small_results.columns]
+
+results_list.append(small_results)
+
+#   Combine software and CART results, lining up with coordinates from earlier
+all_results = tissue_positions.merge(
+        pd.concat(results_list, axis = 1), how = "left", on = "barcode"
+    ).drop(['x', 'y'], axis = 1)
+
+#   Add as a single feature with multiple columns
+this_sample.add_csv_feature(
+    all_results, name = "Spot deconvolution", coordName = "coords"
+)
 
 #   Add the IF image for this sample
 this_sample.add_image(
