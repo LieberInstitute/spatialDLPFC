@@ -115,8 +115,8 @@ We provide the following interactive websites:
     similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp28
     domains data.
   - [spatialDLPFC Visium on
-    Loopy](https://loopybrowser.com/from?url=libd-spatial-dlpfc.s3.amazonaws.com/Visium/&=Br2720_ant&s=Br2720_mid&s=Br2720_post&s=Br2743_ant&s=Br2743_mid&s=Br2743_post&s=Br3942_ant&s=Br3942_mid&s=Br3942_post&s=Br6423_ant&s=Br6423_mid&s=Br6423_post&s=Br6432_ant&s=Br6432_mid&s=Br6432_post&s=Br6471_ant&s=Br6471_mid&s=Br6471_post&s=Br6522_ant&s=Br6522_mid&s=Br6522_post&s=Br8325_ant&s=Br8325_mid&s=Br8325_post&s=Br8492_ant&s=Br8492_mid&s=Br8492_post&s=Br8667_ant&s=Br8667_mid&s=Br8667_post):
-    [`loopy`](https://github.com/chaichontat/loopy-browser) website that
+    Samui](https://samuibrowser.com/from?url=libd-spatial-dlpfc.s3.amazonaws.com/Visium/&=Br2720_ant&s=Br2720_mid&s=Br2720_post&s=Br2743_ant&s=Br2743_mid&s=Br2743_post&s=Br3942_ant&s=Br3942_mid&s=Br3942_post&s=Br6423_ant&s=Br6423_mid&s=Br6423_post&s=Br6432_ant&s=Br6432_mid&s=Br6432_post&s=Br6471_ant&s=Br6471_mid&s=Br6471_post&s=Br6522_ant&s=Br6522_mid&s=Br6522_post&s=Br8325_ant&s=Br8325_mid&s=Br8325_post&s=Br8492_ant&s=Br8492_mid&s=Br8492_post&s=Br8667_ant&s=Br8667_mid&s=Br8667_post):
+    [`samui`](https://github.com/chaichontat/loopy-browser) website that
     allows to zoom in at the spot or cell level.
 - snRNA-seq (n = 19)
   - [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq):
@@ -127,14 +127,14 @@ We provide the following interactive websites:
     [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website
     showing the spatially-resolved data Visium SPG (n = 4).
   - [spatialDLPFC Visium SPG on
-    Loopy](https://loopybrowser.com/from?url=libd-spatial-dlpfc.s3.amazonaws.com/Visium/&s=Br2720_Ant_IF&s=Br6432_Ant_IF&s=Br6522_Ant_IF&s=Br8667_Post_IF):
-    [`loopy`](https://github.com/chaichontat/loopy-browser) website that
+    Samui](https://samuibrowser.com/from?url=libd-spatial-dlpfc.s3.amazonaws.com/Visium/&s=Br2720_Ant_IF&s=Br6432_Ant_IF&s=Br6522_Ant_IF&s=Br8667_Post_IF):
+    [`samui`](https://github.com/chaichontat/loopy-browser) website that
     allows to zoom in at the spot or cell level.
 
 All of these websites are powered by open source software, namely:
 
 - [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w)
-- [`loopy`](https://github.com/chaichontat/loopy-browser)
+- [`samui`](https://github.com/chaichontat/loopy-browser)
 - [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1)
 
 ### Local `spatialLIBD` apps
@@ -239,9 +239,9 @@ Please note that the `spatialLIBD` was only made possible thanks to many
 other R and bioinformatics software authors, which are cited either in
 the vignettes and/or the paper(s) describing the package.
 
-### Cite `Loopy`
+### Cite `Samui`
 
-To cite [`loopy`](https://github.com/chaichontat/loopy-browser) please
+To cite [`samui`](https://github.com/chaichontat/loopy-browser) please
 use:
 
 > Performant web-based interactive visualization tool for
