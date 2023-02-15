@@ -13,6 +13,7 @@ from loopy.utils.utils import remove_dupes
 deconvo_tools = ['tangram', 'cell2location']
 spot_diameter_m = 55e-6 # 55-micrometer diameter for Visium spot
 img_channels = ['Lipofuscin', 'DAPI', 'GFAP', 'NeuN', 'OLIG2', 'TMEM119']
+default_channels = ['blue': 'DAPI', 'red': 'NeuN']
 
 sample_info_path = here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
@@ -154,7 +155,8 @@ for cell_type in cell_types_cart:
 
 #   Add the IF image for this sample
 this_sample.add_image(
-    tiff = img_path, channels = img_channels, scale = m_per_px
+    tiff = img_path, channels = img_channels, scale = m_per_px,
+    defaultChannels = default_channels
 )
 
 this_sample.write()
