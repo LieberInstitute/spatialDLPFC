@@ -12,7 +12,6 @@ from loopy.utils.utils import remove_dupes
 
 deconvo_tools = ['tangram', 'cell2location']
 spot_diameter_m = 55e-6 # 55-micrometer diameter for Visium spot
-img_channels = ['Red', 'Green', 'Blue']
 
 sample_info_path = here("code", "spaceranger", "spaceranger_parameters.txt")
 
@@ -96,41 +95,49 @@ this_sample.add_coords(
     tissue_positions, name="coords", mPerPx=m_per_px, size=spot_diameter_m
 )
 
+#   Add software deconvolution results (at broad and layer resolution)
+results_list = []
 for cell_group in ("broad", "layer"):
     raw_results = pd.read_csv(
         str(raw_results_path).format(cell_group), index_col = "barcode"
     )
+    
     if cell_group == "broad":
         cell_types = cell_types_broad
     else:
         cell_types = cell_types_layer
+    #
+    small_results = raw_results[
+            (raw_results['sample_id'] == sample_id) &
+            raw_results['deconvo_tool'].isin(deconvo_tools)
+        ].melt(
+            id_vars = 'deconvo_tool', value_vars = cell_types,
+            ignore_index = False, var_name = 'cell_type', value_name = 'count'
+        ).pivot(
+            columns = ["deconvo_tool", "cell_type"], values = "count"
+        )
     
-    for cell_type in cell_types:
-        for deconvo_tool in deconvo_tools:
-            small_results = raw_results[
-                (raw_results['sample_id'] == sample_id) &
-                (raw_results['deconvo_tool'] == deconvo_tool)
-            ][[cell_type]]
-            
-            feature_name = '_'.join(
-                [cell_group, deconvo_tool, cell_type]
-            ).lower()
-            
-            small_results = small_results.merge(
-                    tissue_positions, how = "left", on = "barcode"
-                ).rename(
-                    {cell_type: feature_name}, axis = 1
-                )
-            
-            this_sample.add_csv_feature(
-                small_results[[feature_name]],
-                name = feature_name, coordName="coords"
-            )
+    small_results.columns = [
+        '_'.join([cell_group, x[0], x[1]]).lower()
+        for x in small_results.columns.values
+    ]
+    
+    results_list.append(small_results)
+
+#   Combine software results, lining up with coordinates from earlier
+all_results = tissue_positions.merge(
+        pd.concat(results_list, axis = 1), how = "left", on = "barcode"
+    ).drop(['x', 'y'], axis = 1)
+
+#   Add as a single feature with multiple columns
+this_sample.add_csv_feature(
+    all_results, name = "Spot deconvolution", coordName = "coords"
+)
 
 #   Add the H&E image for this sample
 this_sample.add_image(
     tiff = Path(sample_info['img_path'].loc[sample_id]),
-    channels = img_channels, scale = m_per_px
+    channels = 'rgb', scale = m_per_px
 )
 
 this_sample.write()
