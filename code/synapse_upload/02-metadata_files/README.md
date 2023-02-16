@@ -1,0 +1,4 @@
+This directory contains scripts to prepare metadata and upload data to Synapse for the n=30 Visium samples, n=4 Visium-SPG samples, and n=19 snRNA-seq data for the same donors. Due to some initial confusion, scripts for upload were originally written in both the `DLPFC_snRNAseq` and `spatialDLPFC` repositories; it was later clarified that the data for both would be uploaded together as a single Synapse project.
+
+- `01-write_assay.*`: prepare the `assay_TODO.csv` file, the imaging-related metadata file. The assay files for the snRNA-seq and genotype data were produced in the `DLPFC_snRNAseq` repo.
+- `02-write_biospecimen.*`: prepare the `biospecimen.csv` file for the n
