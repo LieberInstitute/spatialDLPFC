@@ -4,8 +4,8 @@
 #$ -o ../../../processed-data/spot_deconvo/07-loopy/02-IF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/07-loopy/02-IF_$TASK_ID.log
 #$ -l mf=10G,h_vmem=10G
-#$ -t 2-4
-#$ -tc 3
+#$ -t 1-4
+#$ -tc 4
 
 echo "**** Job starts ****"
 date

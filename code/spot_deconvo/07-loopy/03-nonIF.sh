@@ -3,8 +3,8 @@
 #$ -N "nonIF"
 #$ -o ../../../processed-data/spot_deconvo/07-loopy/03-nonIF_$TASK_ID.log
 #$ -e ../../../processed-data/spot_deconvo/07-loopy/03-nonIF_$TASK_ID.log
-#$ -l mf=10G,h_vmem=10G
-#$ -t 2-30
+#$ -l mf=20G,h_vmem=20G
+#$ -t 21
 #$ -tc 4
 
 echo "**** Job starts ****"
