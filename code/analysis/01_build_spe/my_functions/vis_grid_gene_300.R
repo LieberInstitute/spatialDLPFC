@@ -1,21 +1,20 @@
 vis_grid_gene_300 <-
-    function(
-        spe,
-        geneid = "SCGB2A2; ENSG00000110484",
-        pdf_file,
-        assayname = "logcounts",
-        minCount = 0,
-        return_plots = FALSE,
-        spatial = TRUE,
-        viridis = TRUE,
-        height = 24,
-        width = 36,
-        image_id = "lowres",
-        alpha = 1,
-        cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
-        sample_order = unique(spe$sample_id),
-        point_size = 1.25,
-        ...) {
+    function(spe,
+    geneid = "SCGB2A2; ENSG00000110484",
+    pdf_file,
+    assayname = "logcounts",
+    minCount = 0,
+    return_plots = FALSE,
+    spatial = TRUE,
+    viridis = TRUE,
+    height = 24,
+    width = 36,
+    image_id = "lowres",
+    alpha = 1,
+    cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
+    sample_order = unique(spe$sample_id),
+    point_size = 1.25,
+    ...) {
         stopifnot(all(sample_order %in% unique(spe$sample_id)))
 
         plots <- lapply(sample_order, function(sampleid) {

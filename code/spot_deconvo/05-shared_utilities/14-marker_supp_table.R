@@ -25,52 +25,52 @@ cell_types_layer <- c(
     "Inhib"
 )
 
-out_path = here(
-    "processed-data", "spot_deconvo", "05-shared_utilities", 
+out_path <- here(
+    "processed-data", "spot_deconvo", "05-shared_utilities",
     "marker_stats_supp_table.csv"
 )
 
-marker_stats_list = list()
+marker_stats_list <- list()
 
 for (cell_group in c("broad", "layer")) {
-    sce = readRDS(sub('\\{cell_group\\}', cell_group, sce_in))
-    marker_stats = readRDS(
-        sub('\\{cell_group\\}', cell_group, marker_object_in)
+    sce <- readRDS(sub("\\{cell_group\\}", cell_group, sce_in))
+    marker_stats <- readRDS(
+        sub("\\{cell_group\\}", cell_group, marker_object_in)
     )
-    
+
     if (cell_group == "broad") {
-        cell_types = cell_types_broad
+        cell_types <- cell_types_broad
     } else {
-        cell_types = cell_types_layer
+        cell_types <- cell_types_layer
     }
-    
+
     #---------------------------------------------------------------------------
     #   Filter out mitochondrial genes and re-rank 'rank_ratio' values. Add gene
     #   symbols to 'marker_stats' object
     #---------------------------------------------------------------------------
-    
+
     #   Add gene symbol
     marker_stats$symbol <- rowData(sce)$gene_name[
         match(marker_stats$gene, rownames(sce))
     ]
-    
+
     #   Filter out mitochondrial genes
     marker_stats <- marker_stats[!grepl("^MT-", marker_stats$symbol), ]
-    
+
     stopifnot(
         identical(
             sort(as.character(unique(marker_stats$cellType.target))),
             sort(cell_types)
         )
     )
-    
+
     #   "Re-rank" rank_ratio, since there may be missing ranks now
     for (ct in cell_types) {
         old_ranks <- marker_stats |>
             filter(cellType.target == ct) |>
             pull(rank_ratio) |>
             sort()
-        
+
         for (i in 1:length(which((marker_stats$cellType.target == ct)))) {
             index <- which(
                 (marker_stats$cellType.target == ct) &
@@ -80,7 +80,7 @@ for (cell_group in c("broad", "layer")) {
             marker_stats[index, "rank_ratio"] <- i
         }
     }
-    
+
     marker_stats <- marker_stats |>
         #   Take top N marker genes for each cell type
         filter(
@@ -89,13 +89,13 @@ for (cell_group in c("broad", "layer")) {
         ) |>
         #   Label with cell-type resolution
         mutate(cellTypeResolution = cell_group)
-    
+
     #   Warn if less than the intended number of markers is used for any cell
     #   type
     num_markers_table <- marker_stats |>
         group_by(cellType.target) |>
         summarize(num_markers = n())
-    
+
     if (any(num_markers_table$num_markers < n_markers_per_type)) {
         warning(
             paste(
@@ -106,10 +106,10 @@ for (cell_group in c("broad", "layer")) {
         print("Number of markers per cell type:")
         print(num_markers_table)
     }
-    
+
     stopifnot(all(num_markers_table$num_markers > 0))
-    
-    marker_stats_list[[cell_group]] = marker_stats
+
+    marker_stats_list[[cell_group]] <- marker_stats
 }
 
 #   Combine tables for both cell-type resolutions and write to CSV

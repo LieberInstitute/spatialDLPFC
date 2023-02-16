@@ -1,18 +1,19 @@
 vis_gene_crop <-
-    function(spe,
-    sampleid,
-    geneid = "SCGB2A2; ENSG00000110484",
-    spatial = TRUE,
-    assayname = "logcounts",
-    minCount = 0,
-    color_scale = "plasma",
-    frame_lim_df,
-    image_id = "lowres",
-    alpha = NA,
-    cont_colors = c("aquamarine4", "springgreen", "goldenrod", "red"),
-    point_size = 2,
-    legend_overlap = FALSE,
-    ...) {
+    function(
+        spe,
+        sampleid,
+        geneid = "SCGB2A2; ENSG00000110484",
+        spatial = TRUE,
+        assayname = "logcounts",
+        minCount = 0,
+        color_scale = "plasma",
+        frame_lim_df,
+        image_id = "lowres",
+        alpha = NA,
+        cont_colors = c("aquamarine4", "springgreen", "goldenrod", "red"),
+        point_size = 2,
+        legend_overlap = FALSE,
+        ...) {
         if (color_scale == "viridis") {
             cont_colors <- viridisLite::viridis(21)
         } else if (color_scale == "plasma") {
@@ -67,19 +68,20 @@ vis_gene_crop <-
     }
 
 vis_gene_p_crop <-
-    function(spe,
-    d,
-    sampleid,
-    spatial,
-    title,
-    viridis = TRUE,
-    image_id = "lowres",
-    frame_lim_df,
-    legend_title = "Test",
-    alpha = NA,
-    cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
-    point_size = 2,
-    legend_overlap = FALSE) {
+    function(
+        spe,
+        d,
+        sampleid,
+        spatial,
+        title,
+        viridis = TRUE,
+        image_id = "lowres",
+        frame_lim_df,
+        legend_title = "Test",
+        alpha = NA,
+        cont_colors = if (viridis) viridisLite::viridis(21) else c("aquamarine4", "springgreen", "goldenrod", "red"),
+        point_size = 2,
+        legend_overlap = FALSE) {
         ## Some variables
         pxl_row_in_fullres <- pxl_col_in_fullres <- key <- COUNT <- NULL
         # stopifnot(all(c("pxl_col_in_fullres", "pxl_row_in_fullres", "COUNT", "key") %in% colnames(d)))

@@ -1,19 +1,23 @@
 library("here")
 library("sessioninfo")
 
-dir_rdata <- here::here("processed-data", "rdata", "spe",
-    "09_position_differential_expression")
+dir_rdata <- here::here(
+    "processed-data", "rdata", "spe",
+    "09_position_differential_expression"
+)
 stopifnot(file.exists(dir_rdata))
 
 ## Load Sp09 DE results
 load(here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"),
-    verbose = TRUE)
+    verbose = TRUE
+)
 sig_domain_09 <- sig_genes
 rm(sig_genes)
 
 ## Load Sp16 DE results
 load(here("code", "deploy_app_k16", "sig_genes_subset_k16.Rdata"),
-    verbose = TRUE)
+    verbose = TRUE
+)
 sig_domain_16 <- sig_genes
 rm(sig_genes)
 

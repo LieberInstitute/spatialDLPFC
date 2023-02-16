@@ -160,9 +160,8 @@ write_markers <- function(n_markers, out_path) {
     writeLines(marker_stats_temp$gene, con = out_path)
 }
 
-my_plotExpression <- function(
-        sce, genes, assay = "logcounts", ct = "cellType", fill_colors = NULL,
-        title = NULL, marker_stats) {
+my_plotExpression <- function(sce, genes, assay = "logcounts", ct = "cellType", fill_colors = NULL,
+    title = NULL, marker_stats) {
     cat_df <- as.data.frame(colData(sce))[, ct, drop = FALSE]
     expression_long <- reshape2::melt(as.matrix(assays(sce)[[assay]][genes, ]))
 

@@ -261,9 +261,8 @@ across_spots <- function(count_df, plot_name, x_angle = 0) {
 #   in the plot given the SpatialExperiment, long-format
 #   tibble of cell-type counts, the target sample ID, deconvo tool, and cell
 #   type, column name of 'full_df' ('observed' or 'actual'), and a plot title
-spatial_counts_plot <- function(
-        spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
-        title) {
+spatial_counts_plot <- function(spe_small, full_df, sample_id1, deconvo_tool1, cell_type1, c_name,
+    title) {
     #   Grab counts for just this sample, deconvo tool, and cell type
     counts_df <- full_df |>
         filter(

@@ -38,12 +38,13 @@
 #' registration_dot_plot(test_anno)
 #' registration_dot_plot(test_anno, ct_anno = ct_anno)
 #'
-registration_dot_plot <- function(annotation_df,
-    color_by = "Dataset",
-    cluster_by = "cluster",
-    layer_by = "layer_label",
-    grid_fill = list(`TRUE` = "grey80", `FALSE` = "white"),
-    ct_anno = NULL) {
+registration_dot_plot <- function(
+        annotation_df,
+        color_by = "Dataset",
+        cluster_by = "cluster",
+        layer_by = "layer_label",
+        grid_fill = list(`TRUE` = "grey80", `FALSE` = "white"),
+        ct_anno = NULL) {
     if (is.factor(annotation_df[[layer_by]])) {
         layer_lable_levels <- levels(annotation_df[[layer_by]])
     } else {
@@ -77,13 +78,14 @@ registration_dot_plot <- function(annotation_df,
     return(ex_dotplot)
 }
 
-registration_dot_plot2 <- function(annotation_df,
-    color_by = "PrimaryDx",
-    cluster_by = "cell_type",
-    layer_by = "layer_combo",
-    conf_only = FALSE,
-    grid_fill = list(`TRUE` = "grey80", `FALSE` = "white"),
-    ct_anno = NULL) {
+registration_dot_plot2 <- function(
+        annotation_df,
+        color_by = "PrimaryDx",
+        cluster_by = "cell_type",
+        layer_by = "layer_combo",
+        conf_only = FALSE,
+        grid_fill = list(`TRUE` = "grey80", `FALSE` = "white"),
+        ct_anno = NULL) {
     layer_df <- annotation_df |>
         select(any_of(c(layer_by, "Annotation"))) |>
         dplyr::distinct()

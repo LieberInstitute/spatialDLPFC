@@ -122,7 +122,7 @@ colData(spe) <- cbind(colData(spe), added_coldata_temp)
 layer_ann_list <- list()
 for (sample_id in unique(spe$sample_id)) {
     this_layer_path <- sub("\\{sample_id\\}", sample_id, layer_ann_path)
-    
+
     layer_ann_list[[sample_id]] <- read.csv(this_layer_path) |>
         as_tibble() |>
         mutate(
@@ -130,11 +130,11 @@ for (sample_id in unique(spe$sample_id)) {
             sample_id = sample_id,
             label = sub("^[Ll]ayer", "L", label)
         ) |>
-        select(- id)
+        select(-id)
 }
 
 #   Add layer label as a column in colData(spe)
-spe$manual_layer_label = added_coldata |>
+spe$manual_layer_label <- added_coldata |>
     left_join(do.call(rbind, layer_ann_list)) |>
     pull(label)
 

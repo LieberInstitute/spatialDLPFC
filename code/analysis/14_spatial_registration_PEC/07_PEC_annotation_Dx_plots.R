@@ -151,8 +151,10 @@ control_anno_long <- do.call("rbind", map2(
         mutate(Dataset = .y) |>
         filter(PrimaryDx == "Control")
 )) |>
-  mutate(Dataset = factor(Dataset),
-         psychENCODE = factor(paste0("study_", as.numeric(Dataset))))
+    mutate(
+        Dataset = factor(Dataset),
+        psychENCODE = factor(paste0("study_", as.numeric(Dataset)))
+    )
 
 control_anno_long |> distinct(Dataset, psychENCODE)
 # Dataset             psychENCODE

@@ -6,8 +6,10 @@ library("ggplot2")
 library("Polychrome")
 
 ## Plot directory
-dir_plots <- here::here("plots",
-    "09_position_differential_expression")
+dir_plots <- here::here(
+    "plots",
+    "09_position_differential_expression"
+)
 dir.create(dir_plots, showWarnings = FALSE, recursive = TRUE)
 stopifnot(file.exists(dir_plots))
 
@@ -24,17 +26,20 @@ sce_pseudo <-
     )
 
 ## Define variables to use
-vars <- c("age",
+vars <- c(
+    "age",
     "sample_id",
     "BayesSpace",
     "subject",
     "sex",
-    "position")
+    "position"
+)
 
 ## Obtain percent of variance explained at the gene level
 ## using scater::getVarianceExplained()
 vars <- getVarianceExplained(sce_pseudo,
-    variables = vars)
+    variables = vars
+)
 
 ## Now visualize the percent of variance explained across all genes
 pdf(
@@ -49,13 +54,15 @@ dev.off()
 
 ## Load Sp09 DE results
 load(here("code", "deploy_app_k09", "sig_genes_subset_k09.Rdata"),
-    verbose = TRUE)
+    verbose = TRUE
+)
 sig_domain <- sig_genes
 rm(sig_genes)
 
 ## Load Sp16 DE results
 load(here("code", "deploy_app_k16", "sig_genes_subset_k16.Rdata"),
-    verbose = TRUE)
+    verbose = TRUE
+)
 sig_domain_16 <- sig_genes
 rm(sig_genes)
 
@@ -92,7 +99,7 @@ pdf(
 ## Plot densities of t-statistics
 ggplot(enriched, aes(x = stat, fill = test)) +
     geom_density() +
-    facet_grid( ~ Analysis + test, margins = "test") +
+    facet_grid(~ Analysis + test, margins = "test") +
     xlab("Enrichment t-statistic") +
     scale_color_manual(values = colors, name = "Test") +
     scale_fill_manual(values = colors, name = "Test") +
@@ -103,7 +110,7 @@ ggplot(enriched, aes(x = stat, fill = test)) +
 ## Plot histogram of t-statistics with FDR < 5%
 ggplot(subset(enriched, fdr < 0.05), aes(x = stat, fill = test)) +
     geom_histogram() +
-    facet_grid( ~ Analysis + test, margins = "test") +
+    facet_grid(~ Analysis + test, margins = "test") +
     xlab("Enrichment t-statistic (FDR <5%)") +
     scale_color_manual(values = colors, name = "Test") +
     scale_fill_manual(values = colors, name = "Test") +

@@ -151,19 +151,19 @@ for (sample_id in anno_samples) {
         "\\{sample_id\\}", sample_id, anno_wrinkle_path
     )
     this_anno_layers_path <- sub("\\{sample_id\\}", sample_id, anno_layers_path)
-    
+
     #   Read in wrinkle annotation and use unique and informative colnames
     anno_wrinkle <- this_anno_wrinkle_path |>
         read.csv() |>
         as_tibble() |>
         rename(wrinkle_type = ManualAnnotation, barcode = spot_name)
-    
+
     #   Read in layer annotation and use unique and informative colnames
     anno_layers <- this_anno_layers_path |>
         read.csv() |>
         as_tibble() |>
         rename(manual_layer_label = ManualAnnotation, barcode = spot_name)
-    
+
     anno_list[[sample_id]] <- anno_layers |>
         full_join(anno_wrinkle, by = c("sample_id", "barcode"))
 }
@@ -191,11 +191,11 @@ colData(spe) <- colData(spe)[, sort(colnames(colData(spe)))]
 #   Interactively double-check that the annotations merged as expected
 
 # table(is.na(spe$manual_layer_label))
-# FALSE   TRUE 
+# FALSE   TRUE
 # 11991 101936
 
 # table(is.na(spe$wrinkle_type))
-# FALSE   TRUE 
+# FALSE   TRUE
 # 2094 111833
 
 # vis_clus(spe, sampleid = anno_samples[1], clustervar = "wrinkle_type") +
@@ -271,7 +271,7 @@ session_info()
 # tz       US/Eastern
 # date     2023-02-09
 # pandoc   2.19.2 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.2.x/bin/pandoc
-# 
+#
 # ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────
 # package                * version   date (UTC) lib source
 # AnnotationDbi            1.60.0    2022-11-01 [2] Bioconductor

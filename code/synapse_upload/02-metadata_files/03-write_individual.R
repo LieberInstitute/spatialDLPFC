@@ -86,8 +86,8 @@ stopifnot(all(colnames(meta_df) %in% template_names))
 
 #   We were manually requested to add these 2 columns, which were not in the
 #   up-to-date template
-meta_df$psychiatricMedications = "Not reported"
-meta_df$psychiatricMedicationsNotes = "Not reported"
+meta_df$psychiatricMedications <- "Not reported"
+meta_df$psychiatricMedicationsNotes <- "Not reported"
 
 write.csv(meta_df, write_path_synapse, row.names = FALSE)
 

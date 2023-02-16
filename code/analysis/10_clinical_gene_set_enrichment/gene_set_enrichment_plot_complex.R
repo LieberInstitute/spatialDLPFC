@@ -87,21 +87,20 @@
 #'     gene_count_row = layer_gene_count
 #' )
 gene_set_enrichment_plot_complex <-
-    function(
-        enrichment,
-        PThresh = 12,
-        ORcut = 3,
-        enrichOnly = FALSE,
-        gene_count_col = NULL,
-        gene_count_row = NULL,
-        anno_title_col = NULL,
-        anno_title_row = NULL,
-        column_order = NULL,
-        anno_add = NULL,
-        mypal = c(
-            "white",
-            grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
-        )) {
+    function(enrichment,
+    PThresh = 12,
+    ORcut = 3,
+    enrichOnly = FALSE,
+    gene_count_col = NULL,
+    gene_count_row = NULL,
+    anno_title_col = NULL,
+    anno_title_row = NULL,
+    column_order = NULL,
+    anno_add = NULL,
+    mypal = c(
+        "white",
+        grDevices::colorRampPalette(RColorBrewer::brewer.pal(9, "YlOrRd"))(50)
+    )) {
         ## Re-order and shorten names if they match our data
         # if (all(unique(enrichment$test) %in% c("WM", paste0("Layer", seq_len(6))))) {
         #     enrichment$test <-
@@ -201,10 +200,11 @@ get_gene_list_count <- function(gene_list) {
 }
 
 
-get_gene_enrichment_count <- function(model_results = fetch_data(type = "modeling_results"),
-    model_type = "enrichment",
-    fdr_cut = 0.1,
-    bayes_anno = bayes_anno) {
+get_gene_enrichment_count <- function(
+        model_results = fetch_data(type = "modeling_results"),
+        model_type = "enrichment",
+        fdr_cut = 0.1,
+        bayes_anno = bayes_anno) {
     model_results <- model_results[[model_type]]
 
     tstats <-

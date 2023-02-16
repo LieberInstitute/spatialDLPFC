@@ -18,9 +18,8 @@
 #   minCount:       passed to 'minCount' for 'vis_gene' if not [is_discrete]
 #
 #   Returns a ggplot object
-spot_plot <- function(
-        spe, sample_id, title, var_name, include_legend, is_discrete,
-        colors = NULL, assayname = "logcounts", minCount = 0.5) {
+spot_plot <- function(spe, sample_id, title, var_name, include_legend, is_discrete,
+    colors = NULL, assayname = "logcounts", minCount = 0.5) {
     POINT_SIZE <- 2.3
 
     #   If the quantity to plot is discrete, use 'vis_clus'. Otherwise use
