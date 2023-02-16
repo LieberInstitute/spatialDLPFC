@@ -228,4 +228,6 @@ this_sample.add_image(
     defaultChannels = default_channels
 )
 
+this_sample.set_default_feature(group = "Genes", feature = "SNAP25")
+
 this_sample.write()
