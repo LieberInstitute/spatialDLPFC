@@ -53,7 +53,7 @@ de_protein2 <- split_region(flatten(de_protein))
 names(de_protein2) <- paste0("protein_", names(de_protein2))
 
 ptsd_genes <- c(de_gene2, de_protein2)
-names(ptsd_gene_list)
+names(ptsd_genes)
 
 ## convert to list and filter
 min_gene <- 10
@@ -116,7 +116,7 @@ bayes_anno <-
         Annotation = bayesSpace
     )
 
-## Takes 2-3 min to run
+#### Run Enrichment ####
 enriched <-
     map(ptsd_gene_list, function(gl) {
         map(
@@ -214,16 +214,15 @@ gene_list_count_select_ptsd <- list(
 )
 
 
-pdf(here(dir_plots, "Enrich_PTSD_select_mPFC_k09.pdf"), height = 8, width = 5)
-map2(enriched_select_ptsd, gene_list_count_select_ptsd
+pdf(here(dir_plots, "Enrich_PTSD_select_mPFC_k09.pdf"), height = 8, width = 8)
+map2(enriched_select_ptsd, names(enriched_select_ptsd),
 ~ gene_set_enrichment_plot_complex(.x,
-        gene_count_col = .y,
+        gene_count_col = gene_list_count_select_ptsd[[.y]],
         gene_count_row = gene_enrichment_count[["k09"]],
-        anno_title_col = "n DE Genes",
+        anno_title_col = paste("n DE", .y),
         anno_title_row = "n Domain\nGenes"
     ))
 dev.off()
-
 
 # independent color scale
 # pal <- c(
@@ -239,6 +238,21 @@ dev.off()
 # pdf("enrich_legend.pdf", height = 1, width = 2)
 # draw(lgd2)
 # dev.off()
+
+
+#### Export Enrich Data ####
+
+enriched$gene_mPFC$k09
+
+## Clear file and write key
+export_xlsx <- here(dir_rdata, "enrichment_k09_PTSD.xlsx")
+# write.xlsx(key, file = export_xlsx, sheetName = "Key", append = FALSE, row.names = FALSE)
+
+## write correlations
+walk2(
+  enriched_t$k09, names(enriched_t$k09),
+  ~ write.xlsx(.x, file = export_xlsx, sheetName = .y, append = TRUE, row.names = FALSE)
+)
 
 #### Interesting gene sets ####
 
