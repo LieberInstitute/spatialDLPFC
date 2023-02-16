@@ -177,13 +177,34 @@ work!
 
 ## Citing our work
 
-Please cite this [manuscript](TODO) if you use data from this project.
+Please cite this [manuscript](https://doi.org/10.1101/2023.02.15.528722)
+if you use data from this project.
 
-> TODO
+> Integrated single cell and unsupervised spatial transcriptomic
+> analysis defines molecular anatomy of the human dorsolateral
+> prefrontal cortex Louise A. Huuki-Myers, Abby Spangler, Nicholas J.
+> Eagles, Kelsey D. Montgomery, Sang Ho Kwon, Boyi Guo, Melissa
+> Grant-Peters, Heena R. Divecha, Madhavi Tippani, Chaichontat
+> Sriworarat, Annie B. Nguyen, Prashanthi Ravichandran, Matthew N. Tran,
+> Arta Seyedian, PsychENCODE Consortium, Thomas M. Hyde, Joel E.
+> Kleinman, Alexis Battle, Stephanie C. Page, Mina Ryten, Stephanie C.
+> Hicks, Keri Martinowich, Leonardo Collado-Torres, Kristen R. Maynard
+> bioRxiv 2023.02.15.528722; doi:
+> <https://doi.org/10.1101/2023.02.15.528722>
 
 Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
 
-    TODO
+    @article {Huuki-Myers2023.02.15.528722,
+        author = {Huuki-Myers, Louise A. and Spangler, Abby and Eagles, Nicholas J. and Montgomery, Kelsey D. and Kwon, Sang Ho and Guo, Boyi and Grant-Peters, Melissa and Divecha, Heena R. and Tippani, Madhavi and Sriworarat, Chaichontat and Nguyen, Annie B. and Ravichandran, Prashanthi and Tran, Matthew N. and Seyedian, Arta and , and Hyde, Thomas M. and Kleinman, Joel E. and Battle, Alexis and Page, Stephanie C. and Ryten, Mina and Hicks, Stephanie C. and Martinowich, Keri and Collado-Torres, Leonardo and Maynard, Kristen R.},
+        title = {Integrated single cell and unsupervised spatial transcriptomic analysis defines molecular anatomy of the human dorsolateral prefrontal cortex},
+        elocation-id = {2023.02.15.528722},
+        year = {2023},
+        doi = {10.1101/2023.02.15.528722},
+        publisher = {Cold Spring Harbor Laboratory},
+        URL = {https://www.biorxiv.org/content/early/2023/02/15/2023.02.15.528722},
+        eprint = {https://www.biorxiv.org/content/early/2023/02/15/2023.02.15.528722.full.pdf},
+        journal = {bioRxiv}
+    }
 
 ### Cite `spatialLIBD`
 
