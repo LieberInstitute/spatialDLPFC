@@ -194,10 +194,6 @@ spe = spe[spe.obs['sample_id'] == sample_id_spot, spe.var['gene_id'].isin(marker
 assert spe.shape == (all_results.shape[0], len(markers))
 assert all(spe.obs.index ==  all_results.index)
 
-#   For now, log-scale counts, which helps reduce the impact of a Samui bug
-#   affecting feature colors
-sc.pp.log1p(spe)
-
 #   Convert the sparse gene-expression matrix to pandas DataFrame, with the
 #   gene symbols as column names
 marker_df = pd.DataFrame(
