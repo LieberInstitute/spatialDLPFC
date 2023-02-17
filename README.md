@@ -88,54 +88,65 @@ marked with an “X”.
 
 ## Interactive Websites
 
-We provide the following interactive websites:
+All of these interactive websites are powered by open source software,
+namely:
+
+- 🔭 [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w)
+- 🔍 [`samui`](https://github.com/chaichontat/samui)
+- 👀 [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1)
+
+We provide the following interactive websites, organized by dataset with
+software labeled by emojis:
 
 - Visium (n = 30)
-  - [spatialDLPFC_Visium_Sp09](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09):
+  - 🔭
+    [spatialDLPFC_Visium_Sp09](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09):
     [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website
     showing the spatially-resolved Visium data (n = 30) with statistical
     results comparing the Sp09 domains.
-  - [spatialDLPFC_Visium_Sp16](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16):
+  - 🔭
+    [spatialDLPFC_Visium_Sp16](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16):
     similar but with the Sp16 domains.
-  - [spatialDLPFC_Visium_Sp09_position](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position):
+  - 🔭
+    [spatialDLPFC_Visium_Sp09_position](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position):
     similar to *spatialDLPFC_Visium_Sp09* but with statistical results
     across the *position* (anterior, middle, posterior) adjusting for
     the Sp09 domains.
-  - [spatialDLPFC_Visium_Sp09_position_noWM](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position_noWM):
+  - 🔭
+    [spatialDLPFC_Visium_Sp09_position_noWM](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_position_noWM):
     similar to *spatialDLPFC_Visium_Sp09_position* but after dropping
     the `SP28D06`, `SP28D16`, `SP28D17`, `SP28D20` and `SP28D28` spots
     which correspond to white matter (hence the `noWM` acronym).
-  - [spatialDLPFC_Visium_Sp09_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_pseudobulk):
+  - 👀
+    [spatialDLPFC_Visium_Sp09_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp09_pseudobulk):
     [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website
     showing the pseudo-bulked Sp09 domains spatial data.
-  - [spatialDLPFC_Visium_Sp16_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16_pseudobulk):
+  - 👀
+    [spatialDLPFC_Visium_Sp16_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp16_pseudobulk):
     similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp16
     domains data.
-  - [spatialDLPFC_Visium_Sp28_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp28_pseudobulk):
+  - 👀
+    [spatialDLPFC_Visium_Sp28_pseudobulk](https://libd.shinyapps.io/spatialDLPFC_Visium_Sp28_pseudobulk):
     similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp28
     domains data.
-  - [spatialDLPFC Visium on
-    Samui](https://samuibrowser.com/from?url=libd-spatial-dlpfc.s3.amazonaws.com/Visium/&=Br2720_ant&s=Br2720_mid&s=Br2720_post&s=Br2743_ant&s=Br2743_mid&s=Br2743_post&s=Br3942_ant&s=Br3942_mid&s=Br3942_post&s=Br6423_ant&s=Br6423_mid&s=Br6423_post&s=Br6432_ant&s=Br6432_mid&s=Br6432_post&s=Br6471_ant&s=Br6471_mid&s=Br6471_post&s=Br6522_ant&s=Br6522_mid&s=Br6522_post&s=Br8325_ant&s=Br8325_mid&s=Br8325_post&s=Br8492_ant&s=Br8492_mid&s=Br8492_post&s=Br8667_ant&s=Br8667_mid&s=Br8667_post):
+  - 🔍 [spatialDLPFC Visium on
+    Samui](https://samuibrowser.com/from?url=data2.loopybrowser.com/spatialDLPFC/&s=Br2720_ant&s=Br2720_mid&s=Br2720_post&s=Br2743_ant&s=Br2743_mid&s=Br2743_post&s=Br3942_ant&s=Br3942_mid&s=Br3942_post&s=Br6423_ant&s=Br6423_mid&s=Br6423_post&s=Br6432_ant&s=Br6432_mid&s=Br6432_post&s=Br6471_ant&s=Br6471_mid&s=Br6471_post&s=Br6522_ant&s=Br6522_mid&s=Br6522_post&s=Br8325_ant&s=Br8325_mid&s=Br8325_post&s=Br8492_ant&s=Br8492_mid&s=Br8492_post&s=Br8667_ant&s=Br8667_mid&s=Br8667_post):
     [`samui`](https://github.com/chaichontat/samui) website that allows
     to zoom in at the spot or cell level.
 - snRNA-seq (n = 19)
-  - [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq):
+  - 👀
+    [spatialDLPFC_snRNA-seq](https://libd.shinyapps.io/spatialDLPFC_snRNA-seq):
     [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1) website
     showing the n = 19 snRNA-seq samples at single nucleus resolution.
 - Visium SPG (n = 4)
-  - [spatialDLPFC_Visium_SPG](https://libd.shinyapps.io/spatialDLPFC_Visium_SPG):
+  - 🔭
+    [spatialDLPFC_Visium_SPG](https://libd.shinyapps.io/spatialDLPFC_Visium_SPG):
     [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website
     showing the spatially-resolved data Visium SPG (n = 4).
-  - [spatialDLPFC Visium SPG on
-    Samui](https://samuibrowser.com/from?url=libd-spatial-dlpfc.s3.amazonaws.com/Visium/&s=Br2720_Ant_IF&s=Br6432_Ant_IF&s=Br6522_Ant_IF&s=Br8667_Post_IF):
+  - 🔍 [spatialDLPFC Visium SPG on
+    Samui](https://samuibrowser.com/from?url=data2.loopybrowser.com/VisiumIF/&s=Br2720_Ant_IF&s=Br6432_Ant_IF&s=Br6522_Ant_IF&s=Br8667_Post_IF):
     [`samui`](https://github.com/chaichontat/samui) website that allows
     to zoom in at the spot or cell level.
-
-All of these websites are powered by open source software, namely:
-
-- [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w)
-- [`samui`](https://github.com/chaichontat/samui)
-- [`iSEE`](https://doi.org/10.12688%2Ff1000research.14966.1)
 
 ### Local `spatialLIBD` apps
 
