@@ -21,6 +21,7 @@ load(sce_path, verbose = TRUE)
 prop_df <- colData(sce) |>
     as_tibble() |>
     rename(sample_id = Sample) |>
+    filter(cellType_broad_hc != "Ambiguous") |>
     #   For each sample, sum up counts of each cell type
     group_by(sample_id, cellType_broad_hc) |>
     summarize(n = n()) |>
@@ -45,7 +46,7 @@ prop_df <- colData(spe) |>
     ungroup() |>
     right_join(prop_df, multiple = "all")
 
-pdf(file.path(plot_dir, "prop_WM_position_scatter.pdf"))
+pdf(file.path(plot_dir, "prop_WM_position_scatter_no_ambig.pdf"))
 ggplot(
     prop_df, aes(x = cellType_broad_hc_prop, y = prop_WM, color = position)
 ) +
