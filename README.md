@@ -433,6 +433,7 @@ general research use according to the following requirements for data
 access and data attribution:
 (<https://PsychENCODE.synapse.org/DataAccess>). For access to content
 described in this manuscript see:
+<https://doi.org/10.7303/syn51032055.1> or
 <https://www.synapse.org/#!Synapse:syn51032055/datasets/>. All figure
 and table files are available from
 <https://www.synapse.org/#!Synapse:syn50908929>.
