@@ -224,16 +224,14 @@ Please run this yourself to check for any updates on how to cite
 **spatialLIBD**.
 
 ``` r
-print(citation("spatialLIBD"), bibtex = TRUE)
+print(citation("spatialLIBD")[1], bibtex = TRUE)
 #> 
-#> To cite package 'spatialLIBD' in publications use:
-#> 
-#>   Pardo B, Spangler A, Weber LM, Hicks SC, Jaffe AE, Martinowich K,
-#>   Maynard KR, Collado-Torres L (2022). "spatialLIBD: an R/Bioconductor
-#>   package to visualize spatially-resolved transcriptomics data." _BMC
-#>   Genomics_. doi:10.1186/s12864-022-08601-w
-#>   <https://doi.org/10.1186/s12864-022-08601-w>,
-#>   <https://doi.org/10.1186/s12864-022-08601-w>.
+#> Pardo B, Spangler A, Weber LM, Hicks SC, Jaffe AE, Martinowich K,
+#> Maynard KR, Collado-Torres L (2022). "spatialLIBD: an R/Bioconductor
+#> package to visualize spatially-resolved transcriptomics data." _BMC
+#> Genomics_. doi:10.1186/s12864-022-08601-w
+#> <https://doi.org/10.1186/s12864-022-08601-w>,
+#> <https://doi.org/10.1186/s12864-022-08601-w>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -244,26 +242,6 @@ print(citation("spatialLIBD"), bibtex = TRUE)
 #>     journal = {BMC Genomics},
 #>     doi = {10.1186/s12864-022-08601-w},
 #>     url = {https://doi.org/10.1186/s12864-022-08601-w},
-#>   }
-#> 
-#>   Maynard KR, Collado-Torres L, Weber LM, Uytingco C, Barry BK,
-#>   Williams SR, II JLC, Tran MN, Besich Z, Tippani M, Chew J, Yin Y,
-#>   Kleinman JE, Hyde TM, Rao N, Hicks SC, Martinowich K, Jaffe AE
-#>   (2021). "Transcriptome-scale spatial gene expression in the human
-#>   dorsolateral prefrontal cortex." _Nature Neuroscience_.
-#>   doi:10.1038/s41593-020-00787-0
-#>   <https://doi.org/10.1038/s41593-020-00787-0>,
-#>   <https://www.nature.com/articles/s41593-020-00787-0>.
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Article{,
-#>     title = {Transcriptome-scale spatial gene expression in the human dorsolateral prefrontal cortex},
-#>     author = {Kristen R. Maynard and Leonardo Collado-Torres and Lukas M. Weber and Cedric Uytingco and Brianna K. Barry and Stephen R. Williams and Joseph L. Catallini II and Matthew N. Tran and Zachary Besich and Madhavi Tippani and Jennifer Chew and Yifeng Yin and Joel E. Kleinman and Thomas M. Hyde and Nikhil Rao and Stephanie C. Hicks and Keri Martinowich and Andrew E. Jaffe},
-#>     year = {2021},
-#>     journal = {Nature Neuroscience},
-#>     doi = {10.1038/s41593-020-00787-0},
-#>     url = {https://www.nature.com/articles/s41593-020-00787-0},
 #>   }
 ```
 
