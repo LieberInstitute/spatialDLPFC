@@ -1,7 +1,7 @@
 Spatial domain-level documentation
 ==================================
 
-This document describes the layer-level portion of the shiny web application made by the  [`spatialLIBD`](https://bioconductor.org/packages/spatialLIBD) Bioconductor package. You can either find the documentation about this package through [Bioconductor](https://bioconductor.org/packages/spatialLIBD) or at the [`spatialLIBD` documentation website](http://lieberinstitute.github.io/spatialLIBD). Below we explain the options common across tabs and each of the tabs at the layer-level data. As explained in the documentation, the layer-level data is the result of pseudo-bulking the spot-level data to compress it, reduce sparsity and power more analyses.
+This document describes the layer-level portion of the shiny web application made by the  [`spatialLIBD`](https://bioconductor.org/packages/spatialLIBD) Bioconductor package. You can either find the documentation about this package through [Bioconductor](https://bioconductor.org/packages/spatialLIBD) or at the [`spatialLIBD` documentation website](http://lieberinstitute.github.io/spatialLIBD). Below we explain the options common across tabs and each of the tabs at the layer-level data. As explained in the documentation, the layer-level data is the result of pseudo-bulking the spot-level data to compress it, reduce sparsity, and power more analyses.
 
 ## Slides and videos
 
@@ -39,7 +39,7 @@ This tab also shows the statistical modeling results, described below, that you 
 
 ```{r}
 ## Reproduce locally with
-modeling_results <- fetch_data("spatialDLPFC_Visium_modeling_results"")
+modeling_results <- fetch_data("spatialDLPFC_Visium_modeling_results")
 sig_genes <-
         spatialLIBD::sig_genes_extract_all(
             n = nrow(sce_pseudo),
