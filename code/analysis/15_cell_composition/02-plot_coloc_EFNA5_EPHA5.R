@@ -20,8 +20,8 @@ coloc_spe <- calc_coloc(spe_dat, gene_1, gene_2, sample_id = "Br8667_mid")
 # Spatial Colocalization Plot ---------------------------------------------
 
 vis_coloc(coloc_spe, gene_1, gene_2,
-    sample_id = "Br8667_mid",
-    save.path = here("plots/15_cell_composition", "coloc")
+          sample_id = "Br8667_mid",
+          save.path = here("plots/15_cell_composition", "coloc")
 )
 
 vars_spd <- c(
@@ -56,7 +56,7 @@ spd_dat <- vars_spd |>
     map_dfr(.f = function(var) {
         fnl_dat |>
             select(position, subject, sample_id,
-                spd = var, coloc
+                   spd = var, coloc
             )
     }, .id = "spd_method") |>
     # group_split(spd_method, position, .keep = TRUE) |>
@@ -104,14 +104,45 @@ plot_dat <- spd_dat |>
     mutate(
         layer_combo = fct_drop(layer_combo),
         Var1 = factor(Var1,
-            levels = c("co-localize", gene_1, gene_2),
-            labels = c(
-                paste0(gene_1, " & ", gene_2),
-                paste0(gene_1, " only"),
-                paste0(gene_2, " only")
-            )
+                      levels = c("co-localize", gene_1, gene_2),
+                      labels = c(
+                          paste0(gene_1, " & ", gene_2),
+                          paste0(gene_1, " only"),
+                          paste0(gene_2, " only")
+                      )
         )
     )
+
+
+
+
+
+
+# Range Statistics --------------------------------------------------------
+
+plot_dat |>
+    filter(Var1 ==  paste0(gene_1, " & ", gene_2)) |>
+    group_by(layer_combo) |>
+    summarize(
+        across(
+            Freq,
+            list("mean" = mean, "sd" = sd, "median" = median, "IQR" = IQR),
+            .names = "{.fn}")
+    )
+
+# A tibble: 9 × 5
+# layer_combo      mean       sd  median     IQR
+# <fct>           <dbl>    <dbl>   <dbl>   <dbl>
+# 1 Sp09D01 ~ L1 0.00256  0.0140   0       0
+# 2 Sp09D02 ~ L1 0.000234 0.000924 0       0
+# 3 Sp09D03 ~ L2 0.00725  0.00711  0.00522 0.00775
+# 4 Sp09D05 ~ L3 0.0118   0.0101   0.00911 0.0102
+# 5 Sp09D08 ~ L4 0.0134   0.0121   0.00770 0.0123
+# 6 Sp09D04 ~ L5 0.0168   0.0131   0.0140  0.0142
+# 7 Sp09D07 ~ L6 0.0206   0.0139   0.0196  0.0137
+# 8 Sp09D06 ~ WM 0.00166  0.00317  0       0.00155
+# 9 Sp09D09 ~ WM 0.00515  0.00701  0.00159 0.0104
+
 
 
 # Tests -------------------------------------------------------------------
@@ -157,11 +188,11 @@ break_fun <- function(y) {
 ret_plot <- plot_dat |>
     mutate(
         Var1 = factor(Var1,
-            labels = c(
-                paste0(gene_1, " & ", gene_2, " (p=1.7e-05)"),
-                paste0(gene_1, " only"),
-                paste0(gene_2, " only")
-            )
+                      labels = c(
+                          paste0(gene_1, " & ", gene_2, " (p=1.7e-05)"),
+                          paste0(gene_1, " only"),
+                          paste0(gene_2, " only")
+                      )
         )
     ) |>
     ggplot(
@@ -256,26 +287,26 @@ cell_type_colors_broad <- metadata(sce)$cell_type_colors_broad[levels(sce$cellTy
 
 factor_cell_type_broad <- function(vec) {
     factor(vec,
-        levels = c("astro", "endomural", "micro", "oligo", "opc", "excit", "inhib"),
-        labels = c("Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib")
+           levels = c("astro", "endomural", "micro", "oligo", "opc", "excit", "inhib"),
+           labels = c("Astro", "EndoMural", "Micro", "Oligo", "OPC", "Excit", "Inhib")
     )
 }
 
 factor_cell_type_layer <- function(vec) {
     factor(vec,
-        # levels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
-        #            "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4","Excit_L5",
-        #            "Excit_L5_6","Excit_L6","Inhib"),
-        levels = c(
-            "astro", "endomural", "micro", "oligo", "opc",
-            "excit_l2_3", "excit_l3", "excit_l3_4_5", "excit_l4", "excit_l5",
-            "excit_l5_6", "excit_l6", "inhib"
-        ),
-        labels = c(
-            "Astro", "EndoMural", "Micro", "Oligo", "OPC",
-            "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4", "Excit_L5",
-            "Excit_L5/6", "Excit_L6", "Inhib"
-        )
+           # levels = c("Astro",  "EndoMural", "Micro", "Oligo", "OPC",
+           #            "Excit_L2_3", "Excit_L3", "Excit_L3_4_5", "Excit_L4","Excit_L5",
+           #            "Excit_L5_6","Excit_L6","Inhib"),
+           levels = c(
+               "astro", "endomural", "micro", "oligo", "opc",
+               "excit_l2_3", "excit_l3", "excit_l3_4_5", "excit_l4", "excit_l5",
+               "excit_l5_6", "excit_l6", "inhib"
+           ),
+           labels = c(
+               "Astro", "EndoMural", "Micro", "Oligo", "OPC",
+               "Excit_L2/3", "Excit_L3", "Excit_L3/4/5", "Excit_L4", "Excit_L5",
+               "Excit_L5/6", "Excit_L6", "Inhib"
+           )
     )
 }
 
@@ -347,11 +378,11 @@ cell_comp_dat <- deconv_comb |>
             ) |>
             ungroup() |>
             mutate(across(starts_with(paste(res, deconv, sep = "_")),
-                .fns = ~ .x / n_cell_deconv
+                          .fns = ~ .x / n_cell_deconv
             )) |>
             pivot_longer(starts_with(paste(res, deconv, sep = "_")),
-                names_to = "cell_type",
-                values_to = "cell_perc"
+                         names_to = "cell_type",
+                         values_to = "cell_perc"
             ) |>
             mutate(
                 cell_type = str_remove(
@@ -374,17 +405,17 @@ dat <- group_cell_comp_dat
 ret_plot <- dat |>
     mutate(
         cell_type = fct_relevel(cell_type,
-            "Inhib",
-            after = Inf
+                                "Inhib",
+                                after = Inf
         ),
         coloc = factor(coloc,
-            levels = c("co-localize", gene_1, gene_2, "Neither"),
-            labels = c(
-                paste0(gene_1, " & ", gene_2),
-                paste0(gene_1, " only"),
-                paste0(gene_2, " only"),
-                "Neither"
-            )
+                       levels = c("co-localize", gene_1, gene_2, "Neither"),
+                       labels = c(
+                           paste0(gene_1, " & ", gene_2),
+                           paste0(gene_1, " only"),
+                           paste0(gene_2, " only"),
+                           "Neither"
+                       )
         )
     ) |>
     dplyr::filter(cell_type %in% c("Excit_L5/6", "Excit_L6")) |>
@@ -401,7 +432,7 @@ ret_plot <- dat |>
     geom_violin(show.legend = FALSE) +
     # geom_bar(position = "stack", stat = "identity") +
     facet_wrap(~cell_type, # scale = "free_y",
-        nrow = 1, ncol = 2
+               nrow = 1, ncol = 2
     ) +
     scale_fill_manual(
         name = "Cell Type",
