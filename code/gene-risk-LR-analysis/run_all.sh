@@ -7,7 +7,7 @@
 #
 # In order to run this full analysis
 # 1) load a python environment with requirements.txt
-# 2) make sure that scripts accessing data (analyses in 03, 04 and 05) are consistent with the user's hierarchy
+# 2) make sure that scripts accessing data (analyses in 02, 03, 04 and 05) are consistent with the user's hierarchy
 # 3) run script with: bash run_all.sh
 # 4) Generated files will be stored in processed-data or plots directories
 
@@ -26,6 +26,7 @@ python3 01-LR_occurence_bootstrapped.py
 echo "Determining risk ligand-receptor interactions for Schizophrenia..."
 cd ../02-SCZ_LRs
 python3 02-SCZ_LRs.py
+python3 02a-SCZ_LorRs.py
 
 echo "Calculating cell type neighborhood of interactions..."
 cd ../03-colocalisation_analysis
