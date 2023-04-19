@@ -15,7 +15,7 @@ dir_input <- here::here(
 )
 
 ## Set up plotting
-plot_dir <- here("plots", "08_spatial_registration")
+plot_dir <- here("plots", "08_spatial_registration","cor_all_gene")
 data_dir <-
     here("processed-data", "rdata", "spe", "08_spatial_registration")
 
@@ -58,28 +58,28 @@ map(registration_t_stats, jaffelab::corner)
 layer_modeling_results <- fetch_data(type = "modeling_results")
 
 #### Correlate with modeling results ####
-cor_top100 <- map(
+## layer stat cor with ALL genes
+cor_ALL <- map(
     registration_t_stats,
     ~ layer_stat_cor(
         .x,
         layer_modeling_results,
         model_type = "enrichment",
-        reverse = FALSE,
-        top_n = 100
+        reverse = FALSE
     )
 )
 
-save(cor_top100,
-    file = here(data_dir, "bayesSpacce_layer_cor_top100.Rdata")
+save(cor_ALL,
+    file = here(data_dir, "bayesSpacce_layer_cor_ALL.Rdata")
 )
 
 ## Plot all for portability
-pdf(here(plot_dir, "cor_top100_spatial_registration.pdf"))
-map(cor_top100, layer_stat_cor_plot, max = 1)
-dev.off()
+# pdf(here(plot_dir, "cor_ALL_spatial_registration.pdf"))
+# map(cor_ALL, layer_stat_cor_plot, max = 1)
+# dev.off()
 
 ## Plot separately for illustrator
-# map2(cor_top100, names(cor_top100), function(data, name){
+# map2(cor_ALL, names(cor_ALL), function(data, name){
 #
 #   pdf(here(plot_dir, paste0("spatial_registration_plot_sn-",name,".pdf")))
 #   layer_stat_cor_plot(data)
@@ -89,7 +89,7 @@ dev.off()
 
 #### Annotate Layers ####
 layer_anno_easy <-
-    map2(cor_top100, names(cor_top100), function(cor, name) {
+    map2(cor_ALL, names(cor_ALL), function(cor, name) {
         anno <- annotate_registered_clusters(
             cor_stats_layer = cor,
             confidence_threshold = 0.25,
@@ -99,7 +99,7 @@ layer_anno_easy <-
     })
 
 layer_anno_strict <-
-    map2(cor_top100, names(cor_top100), function(cor, name) {
+    map2(cor_ALL, names(cor_ALL), function(cor, name) {
         anno <- annotate_registered_clusters(
             cor_stats_layer = cor,
             confidence_threshold = 0.25,
@@ -121,7 +121,7 @@ anno_abby <-
 layer_anno_strict$k09 |>
     arrange(cluster) |>
     left_join(anno_abby)
-#   cluster layer_confidence layer_label layer_abby
+# cluster layer_confidence layer_label layer_abby
 # 1 Sp09D01             good          L1        Vas
 # 2 Sp09D02             good          L1         L1
 # 3 Sp09D03             good          L2       L2/3
@@ -170,77 +170,77 @@ levels(layer_anno_all$layer_combo)
 rownames(layer_anno_all) <- layer_anno_all$cluster
 
 layer_anno_all |> count(layer_annotation)
-#    layer_annotation  n
+# layer_annotation  n
 # 1                L1 12
 # 2                L2  3
-# 3              L2/3  2
-# 4                L3  7
+# 3              L2/3  1
+# 4                L3  8
 # 5              L3/4  4
-# 6                L4  5
-# 7                L5  6
-# 8              L5/6  1
-# 9                L6  6
-# 10            L6/WM  1
-# 11               WM 13
+# 6                L4  4
+# 7              L4/5  1
+# 8                L5  7
+# 9              L5/6  2
+# 10               L6  4
+# 11               WM 14
 
 ## Save for reference
 write.csv(
     layer_anno_all,
-    file = here(data_dir, "bayesSpace_layer_annotations.csv"),
+    file = here(data_dir, "bayesSpace_layer_annotations_ALLgene.csv"),
     row.names = FALSE
 )
 save(layer_anno_all,
-    file = here(data_dir, "bayesSpace_layer_annotations.Rdata")
+    file = here(data_dir, "bayesSpace_layer_annotations_ALLgene.Rdata")
 ) ## save to preserve factors
 # layer_anno_all <- read_csv(here(data_dir, "cellType_layer_annotations.csv"))
 
 
 #### Save Output to XLSX sheet ####
-key <- data.frame(
-    data = c("annotation", paste0("cor_", names(
-        registration_t_stats
-    ))),
-    description = c(
-        "Annotations of baySpace Domains",
-        paste0(
-            "Correlation values vs. manual annotation for ",
-            names(registration_t_stats)
-        )
-    )
-)
-
-## Clear file and write key
-annotation_xlsx <-
-    here(data_dir, "bayesSpace_layer_cor_annotations.xlsx")
-write.xlsx(
-    key,
-    file = annotation_xlsx,
-    sheetName = "Key",
-    append = FALSE,
-    row.names = FALSE
-)
-
-## write annotations
-write.xlsx(
-    layer_anno_all,
-    file = annotation_xlsx,
-    sheetName = paste0("annotation"),
-    append = TRUE,
-    row.names = FALSE
-)
-
-## write correlations
-walk2(
-    cor_top100,
-    names(cor_top100),
-    ~ write.xlsx(
-        t(.x),
-        file = annotation_xlsx,
-        sheetName = paste0("cor_", .y),
-        append = TRUE,
-        row.names = TRUE
-    )
-)
+# key <- data.frame(
+#     data = c("annotation", paste0("cor_", names(
+#         registration_t_stats
+#     ))),
+#     description = c(
+#         "Annotations of baySpace Domains",
+#         paste0(
+#             "Correlation values vs. manual annotation for ",
+#             names(registration_t_stats)
+#         )
+#     )
+# )
+# 
+# ## Clear file and write key
+# annotation_xlsx <-
+#     here(data_dir, "bayesSpace_layer_cor_annotations.xlsx")
+# write.xlsx(
+#     key,
+#     file = annotation_xlsx,
+#     sheetName = "Key",
+#     append = FALSE,
+#     row.names = FALSE
+# )
+# 
+# ## write annotations
+# write.xlsx(
+#     layer_anno_all,
+#     file = annotation_xlsx,
+#     sheetName = paste0("annotation"),
+#     append = TRUE,
+#     row.names = FALSE
+# )
+# 
+# ## write correlations
+# walk2(
+#     cor_ALL,
+#     names(cor_ALL),
+#     ~ write.xlsx(
+#         t(.x),
+#         file = annotation_xlsx,
+#         sheetName = paste0("cor_", .y),
+#         append = TRUE,
+#         row.names = TRUE
+#     )
+# )
 
 #### Explore Annotations ####
 layer_anno_long <- layer_anno_all |>
@@ -278,29 +278,29 @@ layer_anno_long |> count(confidence)
 #   <lgl>      <int>
 # 1 TRUE          68
 
-## Spot_plots
-bayes_layer_anno_plot <- layer_anno_long |>
-    ggplot(aes(x = layer_short, y = layer_combo, color = layer_long)) +
-    geom_point() +
-    facet_grid(bayesSpace ~ ., scales = "free_y", space = "free") +
-    # facet_wrap(bayesSpace, scales = "free_y", ncol = 1) +
-    scale_color_manual(values = libd_layer_colors) +
-    scale_y_discrete(limits = rev) ## WM on bottom
-
-ggsave(bayes_layer_anno_plot,
-    filename = here(plot_dir, "bayesSpace_layer_anno.png")
-)
+# ## Spot_plots
+# bayes_layer_anno_plot <- layer_anno_long |>
+#     ggplot(aes(x = layer_short, y = layer_combo, color = layer_long)) +
+#     geom_point() +
+#     facet_grid(bayesSpace ~ ., scales = "free_y", space = "free") +
+#     # facet_wrap(bayesSpace, scales = "free_y", ncol = 1) +
+#     scale_color_manual(values = libd_layer_colors) +
+#     scale_y_discrete(limits = rev) ## WM on bottom
+# 
+# ggsave(bayes_layer_anno_plot,
+#     filename = here(plot_dir, "bayesSpace_layer_anno.png")
+# )
 
 ## To switch the order in order to have L1 to L6, then WM on the x-axis
 layer_order <- c(paste0("Layer", 1:6), "WM")
-cor_top100 <- lapply(cor_top100, function(x) {
+cor_ALL <- lapply(cor_ALL, function(x) {
     x[, layer_order]
 })
 
 #### bayesSpace Spatial Registration heatmaps ####
 ## color set up
 ## match spatialLIBD color scale
-cor_kplus <- do.call("rbind", cor_top100[c("k09", "k16", "k28")])
+cor_kplus <- do.call("rbind", cor_ALL[c("k09", "k16", "k28")])
 max(cor_kplus)
 # [1] 0.9452202
 theSeq <- seq(min(cor_kplus), max(cor_kplus), by = 0.01)
@@ -357,7 +357,7 @@ layer_anno_colors <- layer_anno_all |>
     )
 
 layer_color_bar <- columnAnnotation(
-    " " = colnames(cor_top100$k07),
+    " " = colnames(cor_ALL$k07),
     col = list(" " = spatialLIBD::libd_layer_colors),
     show_legend = FALSE
 )
@@ -368,7 +368,7 @@ registration_one_k <- function(k) {
     layer_anno_subset <-
         layer_anno_colors |> filter(bayesSpace == k_long)
 
-    cor_subset <- cor_top100[[k_long]][layer_anno_subset$cluster, ]
+    cor_subset <- cor_ALL[[k_long]][layer_anno_subset$cluster, ]
     rownames(cor_subset) <- layer_anno_subset$layer_combo
 
     anno_matrix_subset <-
@@ -399,7 +399,7 @@ registration_one_k <- function(k) {
             paste0(
                 "bayesSpace_",
                 k_long,
-                "_spatial_registration_heatmap_color.pdf"
+                "_spatial_registration_heatmap_color_ALLgene.pdf"
             )
         ),
         height = 4,
@@ -454,7 +454,7 @@ kplus_color_bar <- rowAnnotation(
 pdf(
     here(
         plot_dir,
-        "bayesSpace_kplus_spatial_registration_heatmap_color.pdf"
+        "bayesSpace_kplus_spatial_registration_heatmap_color_ALLgene.pdf"
     ),
     height = 10
 )
@@ -493,7 +493,7 @@ hm_color_long <- Heatmap(
 pdf(
     here(
         plot_dir,
-        "bayesSpace_kplus_spatial_registration_heatmap_color_long.pdf"
+        "bayesSpace_kplus_spatial_registration_heatmap_color_long_ALLgene.pdf"
     ),
     height = 10, width = 5
     # height = 9.5, width = 5
@@ -514,7 +514,7 @@ dev.off()
 # dev.off()
 
 
-# sgejobs::job_single('01_layer_correlation_annotation', create_shell = TRUE, memory = '5G', command = "Rscript 01_layer_correlation_annotation.R")
+# sgejobs::job_single('04_layer_correlation_annotation_revision', create_shell = TRUE, memory = '5G', command = "Rscript 04_layer_correlation_annotation_revision.R")
 
 ## Reproducibility information
 print("Reproducibility information:")
