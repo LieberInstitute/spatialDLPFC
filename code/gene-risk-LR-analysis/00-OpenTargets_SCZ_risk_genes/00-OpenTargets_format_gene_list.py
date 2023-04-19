@@ -3,6 +3,7 @@
 ###--------------------------------------------LOAD LIBRARIES
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
 
 ###--------------------------------------------LOAD DATA
 #Gene list from OpenTargets platform, downloaded on 12-08-2022

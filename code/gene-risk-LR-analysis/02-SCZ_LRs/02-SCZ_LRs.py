@@ -171,7 +171,10 @@ top_pairs.sort_values(by='Combined_association', ascending = False)
 subset = top_pairs[['genesymbol_intercell_source','genesymbol_intercell_target']]
 sn.sankey(subset['genesymbol_intercell_source'], subset['genesymbol_intercell_target'], fontsize = 10)
 plt.title("Interactions with two SCZ risk targets" )
-plt.savefig("../../../plots/gene-risk-LR-analysis/02-SCZ_LRs/interactions_SCZ_tgts.pdf", dpi=300, bbox = 'tight')
+plt.savefig("../../../plots/gene-risk-LR-analysis/02-SCZ_LRs/interactions_SCZ_tgts.pdf", dpi=300, bbox_inches = 'tight')
 plt.show()
 
 subset.to_csv('../../../processed-data/gene-risk-LR-analysis/02-SCZ_LRs/SCZ_top_interactions.csv', index = False)
+
+secondary = db[['genesymbol_intercell_source','genesymbol_intercell_target']][(db['genesymbol_intercell_source'].isin(list(summol.gene))) | (db['genesymbol_intercell_target'].isin(list(summol.gene)))]
+secondary.to_csv('../../../processed-data/gene-risk-LR-analysis/02-SCZ_LRs/SCZ_LorR_interactions.csv', index = False)
