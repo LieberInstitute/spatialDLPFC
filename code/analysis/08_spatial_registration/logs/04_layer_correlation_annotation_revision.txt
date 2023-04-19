@@ -1,0 +1,304 @@
+Adding LIBD modules
+Loading git
+Loading LIBD module for git-status-size/github
+Loading LIBD module for git-lfs/2.8.0
+Loading LIBD module for rmate/1.5.9
+Loading LIBD module for ruby/2.6.4p104
+Loading conda_R/4.3
+**** Job starts ****
+Wed Apr 19 12:06:46 EDT 2023
+**** JHPCE info ****
+User: lhuuki
+Job id: 3129100
+Job name: layer_correlation_annotation_revision
+Hostname: compute-122.cm.cluster
+Task id: undefined
+Unloading conda_R/4.3
+Loading conda_R/4.2.x
+
+The following have been reloaded with a version change:
+  1) conda_R/4.3 => conda_R/4.2.x
+
+
+Currently Loaded Modules:
+  1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
+  2) stata/17          7) JHPCE_CENTOS7_DEFAULT_ENV      12) rmate/1.5.9
+  3) JHPCE_tools/1.0   8) git-status-size/github         13) conda/3-4.11.0
+  4) sge/8.1.9         9) git/2.28.0                     14) conda_R/4.2.x
+  5) gcc/4.4.7        10) git-lfs/2.8.0
+
+ 
+
+Loading required package: SpatialExperiment
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
+    match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
+    table, tapply, union, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.1     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Loading required package: rafalib
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.14.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+$k02
+                  Sp02D01  Sp02D02
+ENSG00000237491 -1.023457 1.023457
+ENSG00000228794 -3.536138 3.536138
+ENSG00000188976 -2.159858 2.159858
+ENSG00000187961 -3.276875 3.276875
+ENSG00000188290 -4.093876 4.093876
+ENSG00000187608 -1.129186 1.129186
+
+$k07
+                  Sp07D01   Sp07D02  Sp07D03    Sp07D04    Sp07D05    Sp07D06
+ENSG00000237491 -2.327270 2.6956251 1.512644  1.4265940  0.6268180  0.8820517
+ENSG00000228794 -1.172673 2.4138598 2.521893  2.0857724 -3.1722122  2.4891281
+ENSG00000188976 -3.624565 1.0056233 1.727466  1.6597807  0.3748586  1.8649531
+ENSG00000187961 -2.601838 2.5060835 2.370181  2.0156721 -0.1877426  2.1305837
+ENSG00000188290  2.946213 2.0276457 1.110377  1.2912877 -3.2459669 -0.7179326
+ENSG00000187608  3.494265 0.1436516 3.055365 -0.5956951  0.6160400 -1.9896895
+
+$k09
+                  Sp09D01   Sp09D02   Sp09D03    Sp09D04   Sp09D05     Sp09D06
+ENSG00000237491 -5.683249 -1.592857  2.695610  1.5569168 1.3352650 -1.91060561
+ENSG00000228794 -8.227898 -0.336100  2.156830  2.0035707 2.4894750 -3.61607196
+ENSG00000188976 -5.464019 -4.189809  0.909507  1.9152632 1.8595393  0.01984357
+ENSG00000187961 -7.643391 -2.323352  2.195490  2.1176496 2.0449522 -0.90563892
+ENSG00000188290  6.541200  1.832584  1.138951  0.4337303 0.8710892 -6.15801629
+ENSG00000187608  2.213854  2.065798 -1.345697 -1.5676017 1.4126586 -0.49757373
+
+$k16
+                  Sp16D01    Sp16D02  Sp16D03    Sp16D04    Sp16D05    Sp16D06
+ENSG00000228794 -5.278123 -0.3400075 2.780562  2.3367865 2.27266236 -5.1838438
+ENSG00000188976 -3.259529 -0.8702588 1.643083  2.0055282 1.53292850 -5.5398097
+ENSG00000188290  5.653713  2.3099194 1.316982  0.8726243 0.03559905 -5.1836073
+ENSG00000187608  3.489669  2.4489797 1.628964 -0.9314217 2.36574277 -0.7463618
+ENSG00000188157 -3.194281  0.1043479 2.089457  1.5636269 1.93767673  0.3027435
+ENSG00000131591 -3.344616 -2.3029285 1.040413  1.4301234 0.76427520 -0.9520200
+
+$k28
+                   Sp28D01     Sp28D02   Sp28D03    Sp28D04   Sp28D05
+ENSG00000228794 -0.6453651  1.93788622 2.3481166  2.2961203 2.1215753
+ENSG00000188976  0.9391346  1.49749549 1.4187580  2.1190569 1.6727954
+ENSG00000188290 -1.9771211 -0.05317001 1.1571859  1.0142654 0.4293796
+ENSG00000187608 -2.4051919  0.56923106 2.1214303 -0.6113597 2.6939843
+ENSG00000188157 -0.6470931  1.73765195 2.2642578  1.9483886 2.3751878
+ENSG00000078808 -0.6414705  1.16506963 0.5521013  0.3083298 1.0445658
+                   Sp28D06
+ENSG00000228794 -0.1859678
+ENSG00000188976  0.5677890
+ENSG00000188290 -1.6081217
+ENSG00000187608  1.0896171
+ENSG00000188157  1.8681183
+ENSG00000078808  1.4507622
+
+snapshotDate(): 2022-10-31
+2023-04-19 12:07:35 loading file /users/lhuuki/.cache/R/BiocFileCache/6b24121203e_Human_DLPFC_Visium_modeling_results.Rdata%3Fdl%3D1
+Joining with `by = join_by(cluster)`
+  cluster layer_confidence layer_label layer_abby
+1 Sp09D01             good          L1        Vas
+2 Sp09D02             good          L1         L1
+3 Sp09D03             good          L2       L2/3
+4 Sp09D04             good          L5         L5
+5 Sp09D05             good          L3         L3
+6 Sp09D06             good          WM         WM
+7 Sp09D07             good          L6        L6A
+8 Sp09D08             good          L4         L4
+9 Sp09D09             good          WM         WM
+Joining with `by = join_by(cluster)`
+  cluster layer_confidence layer_label layer_abby
+1 Sp09D01             good          L1        Vas
+2 Sp09D02             good          L1         L1
+3 Sp09D03             good        L2/3       L2/3
+4 Sp09D04             good          L5         L5
+5 Sp09D05             good          L3         L3
+6 Sp09D06             good          WM         WM
+7 Sp09D07             good          L6        L6A
+8 Sp09D08             good          L4         L4
+9 Sp09D09             good          WM         WM
+
+> fix_layer_order <- function(l) {
++     star <- ifelse(grepl("\\*", l), "*", "")
++     l <- gsub("L|\\*", "", l)
++     l <- sort(unlist(strsplit(l, "/")))
++     if (all(l == "WM")) {
++         return(paste0("WM", star))
++     }
++     l[[1]] <- paste0("L", l[[1]])
++     fix <- paste0(paste0(l, collapse = "/"), star)
++     return(fix)
++ }
+
+> fix_layer_order2 <- Vectorize(fix_layer_order)
+ [1] "Sp07D01 ~ L1"   "Sp09D01 ~ L1"   "Sp09D02 ~ L1"   "Sp16D01 ~ L1"  
+ [5] "Sp16D02 ~ L1"   "Sp16D14 ~ L1"   "Sp28D11 ~ L1"   "Sp28D12 ~ L1"  
+ [9] "Sp28D15 ~ L1"   "Sp28D23 ~ L1"   "Sp28D26 ~ L1"   "Sp28D27 ~ L1"  
+[13] "Sp09D03 ~ L2"   "Sp16D08 ~ L2"   "Sp28D09 ~ L2"   "Sp07D02 ~ L2/3"
+[17] "Sp02D02 ~ L3"   "Sp09D05 ~ L3"   "Sp16D03 ~ L3"   "Sp16D10 ~ L3"  
+[21] "Sp28D01 ~ L3"   "Sp28D02 ~ L3"   "Sp28D03 ~ L3"   "Sp28D08 ~ L3"  
+[25] "Sp07D03 ~ L3/4" "Sp16D09 ~ L3/4" "Sp28D10 ~ L3/4" "Sp28D24 ~ L3/4"
+[29] "Sp09D08 ~ L4"   "Sp16D05 ~ L4"   "Sp28D05 ~ L4"   "Sp28D25 ~ L4"  
+[33] "Sp28D22 ~ L4/5" "Sp07D04 ~ L5"   "Sp09D04 ~ L5"   "Sp16D04 ~ L5"  
+[37] "Sp16D16 ~ L5"   "Sp28D04 ~ L5"   "Sp28D13 ~ L5"   "Sp28D19 ~ L5"  
+[41] "Sp16D12 ~ L5/6" "Sp28D07 ~ L5/6" "Sp07D06 ~ L6"   "Sp09D07 ~ L6"  
+[45] "Sp16D07 ~ L6"   "Sp28D14 ~ L6"   "Sp02D01 ~ WM"   "Sp07D05 ~ WM"  
+[49] "Sp07D07 ~ WM"   "Sp09D06 ~ WM"   "Sp09D09 ~ WM"   "Sp16D06 ~ WM"  
+[53] "Sp16D11 ~ WM"   "Sp16D13 ~ WM"   "Sp16D15 ~ WM"   "Sp28D06 ~ WM"  
+[57] "Sp28D16 ~ WM"   "Sp28D17 ~ WM"   "Sp28D20 ~ WM"   "Sp28D28 ~ WM"  
+   layer_annotation  n
+1                L1 12
+2                L2  3
+3              L2/3  1
+4                L3  8
+5              L3/4  4
+6                L4  4
+7              L4/5  1
+8                L5  7
+9              L5/6  2
+10               L6  4
+11               WM 14
+# A tibble: 7 × 3
+  layer_long layer_short     n
+  <chr>      <chr>       <int>
+1 Layer1     L1             12
+2 Layer2     L2              4
+3 Layer3     L3             13
+4 Layer4     L4              9
+5 Layer5     L5             10
+6 Layer6     L6              6
+7 WM         WM             14
+# A tibble: 1 × 2
+  confidence     n
+  <lgl>      <int>
+1 TRUE          68
+[1] 0.8647788
+
+> libd_intermediate_layer_colors <- c(`L1/2` = "#BF3889", 
++     `L2/3` = "#50DDAC", `L3/4` = "#8278B0", `L4/5` = "#BD8339", 
++     `L5/6` = "#FFB300", `L6/WM` = "#7A3D00")
+           L1            L2            L3            L4            L5 
+    "#F0027F"     "#377EB8"     "#4DAF4A"     "#984EA3"     "#FFD700" 
+           L6            WM            NA           WM2          L1/2 
+    "#FF7F00"     "#1A1A1A" "transparent"     "#666666"     "#BF3889" 
+         L2/3          L3/4          L4/5          L5/6         L6/WM 
+    "#50DDAC"     "#8278B0"     "#BD8339"     "#FFB300"     "#7A3D00" 
+null device 
+          1 
+null device 
+          1 
+[1] "Reproducibility information:"
+[1] "2023-04-19 12:07:48 EDT"
+   user  system elapsed 
+ 35.238   2.096  60.321 
+Error in La_library() : LAPACK routines cannot be loaded
+Calls: session_info ... as_platform_info -> stopifnot -> drop_null -> os_name
+Execution halted
+**** Job ends ****
+Wed Apr 19 12:07:49 EDT 2023
