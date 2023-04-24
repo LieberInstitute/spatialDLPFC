@@ -42,6 +42,8 @@ donor_info <- data.frame(
 ## Combine sample info with the donor info
 sample_info <- merge(sample_info, donor_info)
 
+## save out sample_info
+write.csv(sample_info, file = here::here(dir_rdata, "spe_IF_sample_info.csv"), row.names = FALSE)
 
 ## Build basic SPE
 Sys.time()
