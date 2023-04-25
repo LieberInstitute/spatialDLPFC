@@ -47,8 +47,9 @@ spe_n_samp <- spe_sample_info |>
 spe_IF_sample_info <- read.csv(here("processed-data", "rdata","spe_IF", "01_build_spe_IF", "spe_IF_sample_info.csv"))
 
 spe_IF_n_samp <- spe_IF_sample_info |>
-    separate(subject, into = c("BrNum", "pos", "data_type"), sep = "_") |>
-    mutate(Sample = paste0(BrNum,"_", tolower(pos))) |>
+    separate(subject, into = c("BrNum", "pos", NA), sep = "_") |>
+    mutate(Sample = paste0(BrNum,"_", tolower(pos)),
+           data_type = "Visium-SPG") |>
     left_join(pos_df) |>
     count(Sample, BrNum , Position, data_type)
 
@@ -62,9 +63,19 @@ all_dlpfc <- spe_n_samp |>
 ## Do we have matched assays for each sample?
 matched <- all_dlpfc |> count(Sample)|> mutate(Matched = n >= 2)
 
+sn_pair <- sn_n_samp |>
+    left_join(pos_df) |>
+    group_by(BrNum) |>
+    summarize(pos_pair = paste(pos, collapse = ",")) |>
+    mutate(BrNum_order = fct_reorder(BrNum, pos_pair)) |>
+    arrange(BrNum_order)
+
+
 all_dlpfc_detail <- all_dlpfc |>
     left_join(matched |> select(-n)) |>
-    left_join(pos_df)
+    left_join(pos_df) |>
+    left_join(sn_pair) |>
+    mutate(data_type = factor(data_type, levels = c("Visium", "snRNA-seq", "Visium-SPG")))
 
 experiment_tile <- all_dlpfc_detail |>
     mutate(n = as.factor(n)) |>
@@ -80,14 +91,15 @@ ggsave(experiment_tile, filename = here(plot_dir, "spatialDLPFC_experiment_tile.
 
 experiment_tile2 <- all_dlpfc_detail |>
     mutate(n = as.factor(n)) |>
-    ggplot(aes(pos, BrNum, fill = data_type))+
+    ggplot(aes(pos, BrNum_order, fill = data_type))+
     geom_tile(color = "grey50")+
-    # geom_text(aes(label = n, color = Matched))+
-    geom_text(aes(label = n), color = "black")+
-    # scale_color_manual(values =c(`FALSE` = "red", `TRUE` = "black")) +
+    geom_text(aes(label = n, color = Matched))+
+    # geom_text(aes(label = n), color = "black")+
+    scale_color_manual(values =c(`TRUE` = "black", `FALSE` = "grey75"), name ="Additional Assay") +
     facet_wrap(~data_type, nrow = 1) +
     theme_bw() +
-    labs(x = "Position")
+    labs(x = "Position", y = "BrNum") +
+    guides(fill = FALSE)
 
 ggsave(experiment_tile2, filename = here(plot_dir, "spatialDLPFC_experiment_tile2.png"))
 
