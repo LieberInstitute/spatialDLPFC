@@ -103,6 +103,7 @@ experiment_tile2 <- all_dlpfc_detail |>
     guides(fill = FALSE)
 
 ggsave(experiment_tile2, filename = here(plot_dir, "spatialDLPFC_experiment_tile2.png"))
+ggsave(experiment_tile2, filename = here(plot_dir, "spatialDLPFC_experiment_tile2.pdf"))
 
 
 ## add more detail with color
