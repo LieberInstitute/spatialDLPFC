@@ -66,8 +66,9 @@ matched <- all_dlpfc |> count(Sample)|> mutate(Matched = n >= 2)
 sn_pair <- sn_n_samp |>
     left_join(pos_df) |>
     group_by(BrNum) |>
-    summarize(pos_pair = paste(pos, collapse = ",")) |>
-    mutate(BrNum_order = fct_reorder(BrNum, pos_pair)) |>
+    summarize(pos_pair = factor(paste(pos, collapse = ","),
+                                levels = c("Ant", "Ant,Post","Ant,Mid", "Mid,Post"))) |>
+    mutate(BrNum_order = fct_reorder(BrNum, -as.integer(pos_pair))) |>
     arrange(BrNum_order)
 
 
