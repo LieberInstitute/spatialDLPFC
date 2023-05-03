@@ -287,5 +287,51 @@ samp <- as.character(unique(pb_sce$sampleID))
 
 gsub("-(\\d\\d\\d\\d)", "\\1", samp)
 
-
 cat(as.character(unique(pb_sce$sampleID)), sep = "\n")
+
+#### Check Brodmann Areas ####
+
+sample_metadata_fn <- list.files(here("raw-data", "psychENCODE", "sample_metadata_v5"), pattern = "metadata.csv", full.names = TRUE)
+names(sample_metadata_fn) <- gsub("_metadata.csv","",basename(sample_metadata_fn))
+
+sample_metadata <- map(sample_metadata_fn, read.csv)
+
+head(sample_metadata[[1]])
+
+map(sample_metadata, ~.x |> count(BrodmannArea))
+map(sample_metadata, ~.x |> count(BrodmannArea))
+
+# $CMC
+# BrodmannArea   n
+# 1           NA 202
+# 
+# $`DevBrain-snRNAseq`
+# BrodmannArea  n
+# 1 Not reported 16
+# 
+# $IsoHuB
+# BrodmannArea n
+# 1          BA9 4
+# 2      unknown 1
+# 
+# $LIBD
+# BrodmannArea  n
+# 1 Not reported 19
+# 
+# $`MultiomeBrain-DLPFC`
+# BrodmannArea  n
+# 1 Not reported 21
+# 
+# $PTSDBrainiomics
+# BrodmannArea  n
+# 1 Not reported 40
+# 
+# $`SZBDMulti-Seq`
+# BrodmannArea  n
+# 1           10 72
+# 
+# $`UCLA-ASD`
+# BrodmannArea  n
+# 1        BA4/6 25
+# 2      BA44/45  1
+# 3          BA9 42
