@@ -222,7 +222,7 @@ ggsave(
 
 # * Compositional Plot ----------------------------------------------------
 
-comp_plot <- dat |>
+comp_df <- dat |>
     mutate(
         cell_type = fct_relevel(cell_type,
                                 "Inhib",
@@ -237,7 +237,19 @@ comp_plot <- dat |>
     # dplyr::filter(cell_type %in% c("Excit_L5/6", "Excit_L6") )) |>
     mutate(cell_type = fct_drop(cell_type)) |>
     group_by(coloc, cell_type) |>
-    summarize(cell_perc = median(cell_perc)) |>
+    summarize(cell_perc = median(cell_perc))
+
+# comp_df |> filter(cell_type == "Excit_L5")
+# coloc         cell_type cell_perc
+# <fct>         <fct>         <dbl>
+# 1 EFNA5 & EPHA5 Excit_L5      0.211
+# 2 EFNA5 only    Excit_L5      0.201
+# 3 EPHA5 only    Excit_L5      0.204
+# 4 Neither       Excit_L5      0.188
+
+
+
+comp_plot <- comp_df |>
     ggplot(
         aes(x = coloc, y = cell_perc, fill = cell_type)
     ) +
@@ -273,6 +285,68 @@ comp_plot <- dat |>
 # )
 
 
+
+# * Dominant Cell Type per Spot ---------------------------------------------
+# dom_cell_type_per_spot <- fnl_dat |>
+#     select(starts_with("layer_cell2location")) |>
+#     purrr::transpose() |>
+#     map_chr(.f = function(cell_type_vec){
+#         which.max(cell_type_vec) |> names()
+#     }) |>
+#     str_remove("layer_cell2location_")
+#
+# # Making sure the dimensions are correct
+# stopifnot(length(dom_cell_type_per_spot) == nrow(fnl_dat))
+#
+# tmp <- data.frame(
+#     coloc = fnl_dat$coloc |> factor(
+#         levels = c("co-localize", "EFNA5", "EPHA5", "Neither"),
+#         labels = c("EFNA5 & EPHA5", "EFNA5 only", "EPHA5 only", "Neither")
+#     ),
+#     dom_type = dom_cell_type_per_spot |> factor_cell_type_layer(),
+#     freq = 1
+# )
+#
+# tbl <- xtabs(freq ~ coloc + dom_type, tmp)
+#
+# prop_tbl <- proportions(tbl, margin = "coloc") |> data.frame()
+#
+# dom_type_plot <- prop_tbl |>
+#     ggplot(aes(x = coloc, y = Freq, fill = dom_type)) +
+#     geom_bar(position = "stack", stat = "identity") +
+#     scale_fill_manual(
+#         name = "Cell Type",
+#         # TODO: edit this
+#         limits = names(cell_type_colors_layer),
+#         values = cell_type_colors_layer,
+#         guide = "none"
+#     ) +
+#     guides(x = guide_axis(angle = 90)) +
+#     labs(
+#         #     title = paste(method |> str_to_title(),
+#         #                   "at",
+#         #                   paste(res, "Resolution") |> str_to_title()),
+#         y = "Proportion",
+#         x = ""
+#         # x = "Spot Co-expression"
+#     ) +
+#     # scale_y_continuous(n.breaks = 3) +
+#     theme_set(theme_bw(base_size = 20))
+
+# ggsave(
+#     filename = here(
+#         "plots/15_cell_composition",
+#         # "layer_comp",
+#         paste0("coloc_dom_cell_type_c2l.pdf")
+#     ),
+#     plot = dom_type_plot,
+#     height = 10,
+#     width = 8
+# )
+
+
+
+
 ggsave(
     filename = here(
         "plots/15_cell_composition",
@@ -280,6 +354,7 @@ ggsave(
     ),
     plot = ggpubr::ggarrange(
         viol_plot, comp_plot,
+        # viol_plot, dom_type_plot,
         nrow = 1,
         labels = "AUTO",
         font.label = list(size = 20,
