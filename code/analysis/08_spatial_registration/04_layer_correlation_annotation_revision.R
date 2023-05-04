@@ -513,6 +513,92 @@ dev.off()
 # draw(lgd2)
 # dev.off()
 
+#### Compare correlations ####
+# load(here(data_dir, "bayesSpacce_layer_cor_ALL.Rdata"), verbose = TRUE)
+# load(here(data_dir, "bayesSpace_layer_annotations_ALLgene.Rdata"))
+
+## load top100 data
+load(here(data_dir, "bayesSpacce_layer_cor_top100.Rdata"), verbose = TRUE)
+# load(here(data_dir, "bayesSpace_layer_annotations.Rdata"), verbose = TRUE)
+layer_anno_top100 <- read.csv(here(data_dir, "bayesSpace_layer_annotations.csv"))
+
+cor_ALL_long <- do.call("rbind", map2(cor_ALL, names(cor_ALL), ~.x |> 
+                               as.data.frame() |>
+                               rownames_to_column("cluster") |>
+                               pivot_longer(!cluster, names_to = "layer_long", values_to = "cor_ALL") |>
+                               mutate(k = .y)
+)) |> left_join(layer_anno_long |> select(cluster, layer_long, anno_ALL = confidence)) |>
+  replace_na(list(anno_ALL = FALSE))
+
+## top 100
+layer_anno_top100_long <- layer_anno_top100 |>
+  select(bayesSpace, layer_combo, cluster, layer_label) |>
+  pivot_longer(!c(bayesSpace, layer_combo, cluster),
+               names_to = "Annotation",
+               values_to = "label"
+  ) |>
+  mutate(
+    confidence = !grepl("\\*", label),
+    layers = str_split(gsub("\\*", "", label), "/"),
+    Annotation = gsub("_label", "", Annotation)
+  ) |>
+  unnest_longer("layers") |>
+  mutate(
+    layer_short = ifelse(grepl("^[0-9]", layers), paste0("L", layers), layers),
+    layer_long = gsub("L", "Layer", layer_short)
+  ) |>
+  select(cluster, layer_long, anno_top100 = confidence)
+
+cor_top100_long <- do.call("rbind", map2(cor_top100, names(cor_top100), ~.x |> 
+                                        as.data.frame() |>
+                                        rownames_to_column("cluster") |>
+                                        pivot_longer(!cluster, names_to = "layer_long", values_to = "cor_top100") |>
+                                        mutate(k = .y)
+)) |> left_join(layer_anno_top100_long)|>
+  replace_na(list(anno_top100 = FALSE))
+
+
+cor_compare <- cor_top100_long |> 
+  left_join(cor_ALL_long) |>
+  mutate(anno_match = case_when(anno_ALL & anno_top100 ~ "match",
+                                anno_ALL ~ "only ALL",
+                                anno_top100 ~ "only top100",
+                                TRUE ~ "none"))
+
+cor_compare |> count(anno_match)
+cor_compare |> filter(anno_match %in% c("ALL","top100"))
+
+cor_compare |> filter(anno_match != "none")|> count(k, anno_match)
+
+cor_compare |> 
+  mutate(diff = cor_ALL - cor_top100)  |>
+  group_by(k) |>
+  summarize(mean_d = mean(diff),
+            max_d = max(abs(diff)))
+
+## plot scatter plot
+
+cor_compare_scatter <- cor_compare |>
+  ggplot(aes(x = cor_top100, y = cor_ALL, color = anno_match)) +
+  geom_point() +
+  facet_wrap(~k) +
+  geom_abline() +
+  coord_equal() +
+  theme_bw()
+
+ggsave(cor_compare_scatter, filename = here(plot_dir, "cor_compare_scatter.png"), width = 10)
+
+cor_diff_scatter <- cor_compare |> 
+  mutate(diff = cor_ALL - cor_top100) |>
+  ggplot(aes(x = cor_top100, y = diff, color = anno_match)) +
+  geom_point() +
+  facet_wrap(~k) +
+  geom_hline(yintercept = 0) +
+  theme_bw() +
+  labs(y = "cor_ALL - cor_top100")
+
+ggsave(cor_diff_scatter , filename = here(plot_dir, "cor_diff_scatter.png"))
+
 
 # sgejobs::job_single('04_layer_correlation_annotation_revision', create_shell = TRUE, memory = '5G', command = "Rscript 04_layer_correlation_annotation_revision.R")
 
