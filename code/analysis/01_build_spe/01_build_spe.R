@@ -94,6 +94,8 @@ stopifnot(all(file.exists(sample_info$sample_path)))
 # clean up sample_id
 sample_info$sample_id <- gsub("_all|_extra_reads|DLPFC_|_manual_alignment", "", basename(sample_info$sample_id))
 
+## save out sample_info
+write.csv(sample_info, file = here::here("processed-data", "rdata", "spe", "01_build_spe", "spe_sample_info.csv"), row.names = FALSE)
 
 ## Build SPE object
 Sys.time()
