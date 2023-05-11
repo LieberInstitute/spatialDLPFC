@@ -52,16 +52,15 @@ calc_coloc <- function(spe, gene_name1, gene_name2, sample_id = NULL) {
 vis_coloc <- function(
         spe, gene_name1, gene_name2, sample_id,
         save.path = NULL) {
-    ret_plot <- spatialLIBD::vis_clus(
-        spe,
-        clustervar = "coloc", point_size = 2.5,
-        sampleid = sample_id, spatial = FALSE,
-        colors = c("#d7191c", "#abd9e9", "#2c7bb6", "#CCCCCC40") |>
-            set_names(c("co-localize", gene_name1, gene_name2, "Neither"))
-    ) + labs(title = "") +
+
+    spe$spd7 <- factor(spe$BayesSpace_harmony_09 == 7,
+                       levels = c(TRUE),
+                       labels = c("Sp09D07~L6"))
+
+    tmp_plot <- make_escheR(spe) |>
+            add_fill(var = "coloc", point_size = 2.5)|>
+        add_ground(var = "spd7", point_size = 2.5, stroke = 0.15) +
         scale_fill_manual(
-            # breaks = c(TRUE),
-            # labels = c("Sp09D07~L6"),
             breaks = c("co-localize", gene_name1, gene_name2),
             values = c("#d7191c", "#abd9e9", "#2c7bb6") |>
                 set_names(c("co-localize", gene_name1, gene_name2)),
@@ -71,26 +70,16 @@ vis_coloc <- function(
                 paste0(gene_2, " only")
             ),
             na.value = "#CCCCCC40"
-        )
-
-    tmp <- ret_plot +
-        geom_point(aes(color = spe$BayesSpace_harmony_09 == 7),
-            shape = 21,
-            fill = "transparent",
-            size = 2.5,
-            stroke = 0.15
         ) +
         scale_color_manual(
-            breaks = c(TRUE),
-            labels = c("Sp09D07~L6"),
-            values = c("#757575", "transparent"),
+            breaks = c("Sp09D07~L6"),
+            values = c("#757575"),
             na.value = "transparent"
         ) +
         labs(
             color = NULL,
             fill = NULL
         )
-
 
     if (!is.null(save.path)) {
         ggsave(
@@ -146,23 +135,23 @@ vis_coloc_spd <- function(
 
     layer_df <- bayes_layers |> filter(Annotation == "k09")
     SpD_fct <- factor(spe$BayesSpace_harmony_09,
-        levels = str_sub(layer_df$layer_long, -2, -1) |>
-            as.integer(),
-        labels = layer_df$layer_combo
+                      levels = str_sub(layer_df$layer_long, -2, -1) |>
+                          as.integer(),
+                      labels = layer_df$layer_combo
     )
 
     tmp <- ret_plot +
         geom_point(aes(shape = spe$coloc), size = 1) +
         geom_point(aes(color = SpD_fct),
-            shape = 21,
-            fill = "transparent",
-            size = 2.5,
-            stroke = 0.1
+                   shape = 21,
+                   fill = "transparent",
+                   size = 2.5,
+                   stroke = 0.1
         ) +
         scale_color_manual(
             values = set_names(
                 Polychrome::palette36.colors(9)[str_sub(layer_df$layer_long, -2, -1) |>
-                    as.integer()],
+                                                    as.integer()],
                 layer_df$layer_combo
             ),
             na.value = "transparent"
