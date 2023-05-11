@@ -2,6 +2,7 @@ library(tidyverse)
 library(SpatialExperiment)
 library(spatialLIBD)
 library(here)
+library(escheR)
 
 spe_dat <- readRDS(here(
     "processed-data/rdata/spe/01_build_spe",
