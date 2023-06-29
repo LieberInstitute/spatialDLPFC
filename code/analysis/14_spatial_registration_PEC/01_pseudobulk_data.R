@@ -7,9 +7,10 @@ library("sessioninfo")
 
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
-version <- args[[1]]
-input_file <- args[[2]]
-message("input = ",version, " ", input_file,)
+# print(args)
+version <- args[1]
+input_file <- args[2]
+message("input = ",version, " ", input_file)
 
 dataset <- ss(input_file, "_")
 message("\n#### Running: ", dataset, " ####")

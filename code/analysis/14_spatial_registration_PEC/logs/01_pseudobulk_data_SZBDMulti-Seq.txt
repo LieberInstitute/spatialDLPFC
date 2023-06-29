@@ -4,17 +4,21 @@ Loading LIBD module for git-status-size/github
 Loading LIBD module for git-lfs/2.8.0
 Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
-Loading conda_R/4.2.x
+Loading conda_R/4.3
 **** Job starts ****
-Wed Feb  1 11:53:46 EST 2023
+Thu Jun 29 11:52:43 EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 2877513
+Job id: 3596211
 Job name: pseudobulk_data_SZBDMulti-Seq
 Hostname: compute-126.cm.cluster
 Task id: undefined
-Unloading conda_R/4.2.x
+Unloading conda_R/4.3
 Loading conda_R/4.2.x
+
+The following have been reloaded with a version change:
+  1) conda_R/4.3 => conda_R/4.2.x
+
 
 Currently Loaded Modules:
   1) matlab/R2019a     6) COMMUNITY_CENTOS7_DEFAULT_ENV  11) ruby/2.6.4p104
@@ -102,13 +106,14 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-input = SZBDMulti-Seq_annotated.h5ad
+input = version6 SZBDMulti-Seq_annotated.h5ad
 
 #### Running: SZBDMulti-Seq ####
-2023-02-01 11:53:59 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version5/SZBDMulti-Seq_annotated.h5ad
-Warning messages:
-1: The names of these selected uns$uns_dict items have been modified to match R
-conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
+2023-06-29 11:52:55 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_annotated.h5ad
+Error: numpy.core._exceptions._ArrayMemoryError: Unable to allocate 8.14 GiB for an array with shape (2186131247,) and data type float32
+In addition: Warning messages:
+1: The names of these selected uns$uns_dict$a$uns_dict items have been modified to
+match R conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
 'D19-4295_BD2-CCGTACCT' -> 'D19.4295_BD2.CCGTACCT', 'D19-4295_BD3-TGGTGTCA' ->
 'D19.4295_BD3.TGGTGTCA', 'D19-4295_CON1-CTTATCAC' -> 'D19.4295_CON1.CTTATCAC',
 'D19-4295_CON2-TGACGCCG' -> 'D19.4295_CON2.TGACGCCG', 'D19-4295_CON3-GCCTAGTA'
@@ -120,9 +125,9 @@ conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
 'D19.4296_CON1.CTTATCAC', 'D19-4296_CON2-TGACGCCG' -> 'D19.4296_CON2.TGACGCCG',
 'D19-4296_CON3-GCCTAGTA' -> 'D19.4296_CON3.GCCTAGTA', 'D19-4296_SZ1-GGTAGATG'
 -> 'D19.4296_SZ1.GGTAGATG', 'D19-4296_SZ2-ATGATGAA' -> 'D19.4296_SZ2.ATGATGAA',
-'D19-4296_SZ3- [... truncated] 
-2: The names of these selected uns$var_dict items have been modified to match R
-conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
+'D1 [... truncated] 
+2: The names of these selected uns$uns_dict$a$var_dict items have been modified to
+match R conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
 'D19-4295_BD2-CCGTACCT' -> 'D19.4295_BD2.CCGTACCT', 'D19-4295_BD3-TGGTGTCA' ->
 'D19.4295_BD3.TGGTGTCA', 'D19-4295_CON1-CTTATCAC' -> 'D19.4295_CON1.CTTATCAC',
 'D19-4295_CON2-TGACGCCG' -> 'D19.4295_CON2.TGACGCCG', 'D19-4295_CON3-GCCTAGTA'
@@ -134,28 +139,38 @@ conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
 'D19.4296_CON1.CTTATCAC', 'D19-4296_CON2-TGACGCCG' -> 'D19.4296_CON2.TGACGCCG',
 'D19-4296_CON3-GCCTAGTA' -> 'D19.4296_CON3.GCCTAGTA', 'D19-4296_SZ1-GGTAGATG'
 -> 'D19.4296_SZ1.GGTAGATG', 'D19-4296_SZ2-ATGATGAA' -> 'D19.4296_SZ2.ATGATGAA',
-'D19-4296_SZ3- [... truncated] 
-3: The names of these selected uns items have been modified to match R
+'D1 [... truncated] 
+3: The names of these selected uns$uns_dict$b$uns_dict items have been modified to
+match R conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
+'D19-4295_BD2-CCGTACCT' -> 'D19.4295_BD2.CCGTACCT', 'D19-4295_BD3-TGGTGTCA' ->
+'D19.4295_BD3.TGGTGTCA', 'D19-4295_CON1-CTTATCAC' -> 'D19.4295_CON1.CTTATCAC',
+'D19-4295_CON2-TGACGCCG' -> 'D19.4295_CON2.TGACGCCG', 'D19-4295_CON3-GCCTAGTA'
+-> 'D19.4295_CON3.GCCTAGTA', 'D19-4295_SZ1-GGTAGATG' ->
+'D19.4295_SZ1.GGTAGATG', 'D19-4295_SZ2-ATGATGAA' -> 'D19.4295_SZ2.ATGATGAA',
+'D19-4295_SZ3-CTCGAACG' -> 'D19.4295_SZ3.CTCGAACG', 'D19-4296_BD1-TTCCTGCC' ->
+'D19.4296_BD1.TTCCTGCC', 'D19-4296_BD2-CCGTACCT' -> 'D19.4296_BD2.CCGTACCT',
+'D19-4296_BD3-TGGTGTCA' -> 'D19.4296_BD3.TGGTGTCA', 'D19-4296_CON1-CTTATCAC' ->
+'D19.4296_CON1.CTTATCAC', 'D19-4296_CON2-TGACGCCG' -> 'D19.4296_CON2.TGACGCCG',
+'D19-4296_CON3-GCCTAGTA' -> 'D19.4296_CON3.GCCTAGTA', 'D19-4296_SZ1-GGTAGATG'
+-> 'D19.4296_SZ1.GGTAGATG', 'D19-4296_SZ2-ATGATGAA' -> 'D19.4296_SZ2.ATGATGAA',
+'D1 [... truncated] 
+4: The names of these selected uns$uns_dict$b$var_dict items have been modified to
+match R conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
+'D19-4295_BD2-CCGTACCT' -> 'D19.4295_BD2.CCGTACCT', 'D19-4295_BD3-TGGTGTCA' ->
+'D19.4295_BD3.TGGTGTCA', 'D19-4295_CON1-CTTATCAC' -> 'D19.4295_CON1.CTTATCAC',
+'D19-4295_CON2-TGACGCCG' -> 'D19.4295_CON2.TGACGCCG', 'D19-4295_CON3-GCCTAGTA'
+-> 'D19.4295_CON3.GCCTAGTA', 'D19-4295_SZ1-GGTAGATG' ->
+'D19.4295_SZ1.GGTAGATG', 'D19-4295_SZ2-ATGATGAA' -> 'D19.4295_SZ2.ATGATGAA',
+'D19-4295_SZ3-CTCGAACG' -> 'D19.4295_SZ3.CTCGAACG', 'D19-4296_BD1-TTCCTGCC' ->
+'D19.4296_BD1.TTCCTGCC', 'D19-4296_BD2-CCGTACCT' -> 'D19.4296_BD2.CCGTACCT',
+'D19-4296_BD3-TGGTGTCA' -> 'D19.4296_BD3.TGGTGTCA', 'D19-4296_CON1-CTTATCAC' ->
+'D19.4296_CON1.CTTATCAC', 'D19-4296_CON2-TGACGCCG' -> 'D19.4296_CON2.TGACGCCG',
+'D19-4296_CON3-GCCTAGTA' -> 'D19.4296_CON3.GCCTAGTA', 'D19-4296_SZ1-GGTAGATG'
+-> 'D19.4296_SZ1.GGTAGATG', 'D19-4296_SZ2-ATGATGAA' -> 'D19.4296_SZ2.ATGATGAA',
+'D1 [... truncated] 
+5: The names of these selected uns items have been modified to match R
 conventions: '_attr2type' -> 'X_attr2type' 
-
-SCE Dimesions:
-[1]  34291 484136
-[1] "n_genes"      "n_counts"     "Channel"      "demux_type"   "assignment"  
-[6] "anno"         "subclass"     "azimuth"      "individualID"
-Cell Types:
-
-     Astro Chandelier       Endo     Immune    L2.3.IT      L4.IT    L5.6.NP 
-     20757       2720        660        784     144189      36137       5731 
-     L5.ET      L5.IT      L6.CT      L6.IT L6.IT.Car3        L6b      Lamp5 
-      2459      56142       9014      38545       5656      11198       8461 
-Lamp5.Lhx6      Micro      Oligo        OPC       Pax6         PC      Pvalb 
-      4756       4663      52653      11177       1913        499      26391 
-       SMC       Sncg        Sst  Sst.Chodl        Vip       VLMC 
-       379       3555      16899        408      18152        238 
-2023-02-01 12:00:50 revert to counts
-2023-02-01 12:02:40 Pseudobulk
-2023-02-01 12:02:40 make pseudobulk object
-Error: cannot allocate vector of size 365.7 Mb
+6: 'X' matrix does not support transposition and has been skipped 
 Execution halted
 **** Job ends ****
-Wed Feb  1 13:05:02 EST 2023
+Thu Jun 29 11:58:58 EDT 2023
