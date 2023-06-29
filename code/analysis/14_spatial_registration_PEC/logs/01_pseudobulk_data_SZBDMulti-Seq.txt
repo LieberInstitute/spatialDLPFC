@@ -6,10 +6,10 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.3
 **** Job starts ****
-Thu Jun 29 11:52:43 EDT 2023
+Thu Jun 29 12:06:20 EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 3596211
+Job id: 3596224
 Job name: pseudobulk_data_SZBDMulti-Seq
 Hostname: compute-126.cm.cluster
 Task id: undefined
@@ -109,8 +109,9 @@ here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
 input = version6 SZBDMulti-Seq_annotated.h5ad
 
 #### Running: SZBDMulti-Seq ####
-2023-06-29 11:52:55 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_annotated.h5ad
-Error: numpy.core._exceptions._ArrayMemoryError: Unable to allocate 8.14 GiB for an array with shape (2186131247,) and data type float32
+2023-06-29 12:06:32 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_annotated.h5ad
+Error in py_ref_to_r(x) : negative length vectors are not allowed
+Calls: readH5AD ... py_to_r.numpy.ndarray -> NextMethod -> py_to_r.default -> py_ref_to_r
 In addition: Warning messages:
 1: The names of these selected uns$uns_dict$a$uns_dict items have been modified to
 match R conventions: 'D19-4295_BD1-TTCCTGCC' -> 'D19.4295_BD1.TTCCTGCC',
@@ -173,4 +174,4 @@ conventions: '_attr2type' -> 'X_attr2type'
 6: 'X' matrix does not support transposition and has been skipped 
 Execution halted
 **** Job ends ****
-Thu Jun 29 11:58:58 EDT 2023
+Thu Jun 29 12:12:36 EDT 2023

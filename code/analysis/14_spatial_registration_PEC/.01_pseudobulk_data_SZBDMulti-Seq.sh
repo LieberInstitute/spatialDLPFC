@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=100G,h_vmem=100G,h_fsize=100G
+#$ -l caracol,mem_free=200G,h_vmem=200G,h_fsize=100G
 #$ -N pseudobulk_data_SZBDMulti-Seq
 #$ -o logs/01_pseudobulk_data_SZBDMulti-Seq.txt
 #$ -e logs/01_pseudobulk_data_SZBDMulti-Seq.txt
