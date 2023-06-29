@@ -130,7 +130,7 @@ software labeled by emojis:
     similar to *spatialDLPFC_Visium_Sp09_pseudobulk* but with the Sp28
     domains data.
   - 🔍 [spatialDLPFC Visium on
-    Samui](https://samuibrowser.com/from?url=data2.loopybrowser.com/spatialDLPFC/&s=Br2720_ant&s=Br2720_mid&s=Br2720_post&s=Br2743_ant&s=Br2743_mid&s=Br2743_post&s=Br3942_ant&s=Br3942_mid&s=Br3942_post&s=Br6423_ant&s=Br6423_mid&s=Br6423_post&s=Br6432_ant&s=Br6432_mid&s=Br6432_post&s=Br6471_ant&s=Br6471_mid&s=Br6471_post&s=Br6522_ant&s=Br6522_mid&s=Br6522_post&s=Br8325_ant&s=Br8325_mid&s=Br8325_post&s=Br8492_ant&s=Br8492_mid&s=Br8492_post&s=Br8667_ant&s=Br8667_mid&s=Br8667_post):
+    Samui](https://samuibrowser.com/from?url=data.samuibrowser.com/spatialDLPFC/&s=Br2720_ant&s=Br2720_mid&s=Br2720_post&s=Br2743_ant&s=Br2743_mid&s=Br2743_post&s=Br3942_ant&s=Br3942_mid&s=Br3942_post&s=Br6423_ant&s=Br6423_mid&s=Br6423_post&s=Br6432_ant&s=Br6432_mid&s=Br6432_post&s=Br6471_ant&s=Br6471_mid&s=Br6471_post&s=Br6522_ant&s=Br6522_mid&s=Br6522_post&s=Br8325_ant&s=Br8325_mid&s=Br8325_post&s=Br8492_ant&s=Br8492_mid&s=Br8492_post&s=Br8667_ant&s=Br8667_mid&s=Br8667_post):
     [`samui`](https://github.com/chaichontat/samui) website that allows
     to zoom in at the spot or cell level.
 - snRNA-seq (n = 19)
@@ -144,7 +144,7 @@ software labeled by emojis:
     [`spatialLIBD`](https://doi.org/10.1186/s12864-022-08601-w) website
     showing the spatially-resolved data Visium SPG (n = 4).
   - 🔍 [spatialDLPFC Visium SPG on
-    Samui](https://samuibrowser.com/from?url=data2.loopybrowser.com/VisiumIF/&s=Br2720_Ant_IF&s=Br6432_Ant_IF&s=Br6522_Ant_IF&s=Br8667_Post_IF):
+    Samui](https://samuibrowser.com/from?url=data.samuibrowser.com/VisiumIF/&s=Br2720_Ant_IF&s=Br6432_Ant_IF&s=Br6522_Ant_IF&s=Br8667_Post_IF):
     [`samui`](https://github.com/chaichontat/samui) website that allows
     to zoom in at the spot or cell level.
 
@@ -225,7 +225,6 @@ Please run this yourself to check for any updates on how to cite
 
 ``` r
 print(citation("spatialLIBD")[1], bibtex = TRUE)
-#> 
 #> Pardo B, Spangler A, Weber LM, Hicks SC, Jaffe AE, Martinowich K,
 #> Maynard KR, Collado-Torres L (2022). "spatialLIBD: an R/Bioconductor
 #> package to visualize spatially-resolved transcriptomics data." _BMC
