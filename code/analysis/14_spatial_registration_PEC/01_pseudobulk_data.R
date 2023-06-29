@@ -7,14 +7,15 @@ library("sessioninfo")
 
 #### load dataset  ####
 args <- commandArgs(trailingOnly = TRUE)
-input_file <- args[1]
-message("input = ", input_file)
+version <- args[[1]]
+input_file <- args[[2]]
+message("input = ",version, " ", input_file,)
 
 dataset <- ss(input_file, "_")
 message("\n#### Running: ", dataset, " ####")
 
 ## for V5 data
-filepath <- here("raw-data", "psychENCODE", "version5", input_file)
+filepath <- here("raw-data", "psychENCODE", version, input_file)
 
 stopifnot(file.exists(filepath))
 

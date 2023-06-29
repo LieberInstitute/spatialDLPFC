@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -cwd
-#$ -l caracol,mem_free=100G,h_vmem=100G,h_fsize=500G
+#$ -l caracol,mem_free=100G,h_vmem=100G,h_fsize=100G
 #$ -N pseudobulk_data_SZBDMulti-Seq
 #$ -o logs/01_pseudobulk_data_SZBDMulti-Seq.txt
 #$ -e logs/01_pseudobulk_data_SZBDMulti-Seq.txt
@@ -37,7 +37,7 @@ fi
 export CUDA_VISIBLE_DEVICES=$(echo "$avail_gpus" | head -n $NUM_GPUS | paste -sd ",")
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R SZBDMulti-Seq_annotated.h5ad
+Rscript 01_pseudobulk_data.R version6 SZBDMulti-Seq_annotated.h5ad
 
 echo "**** Job ends ****"
 date

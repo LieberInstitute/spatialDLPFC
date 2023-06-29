@@ -37,7 +37,7 @@ fi
 export CUDA_VISIBLE_DEVICES=$(echo "$avail_gpus" | head -n $NUM_GPUS | paste -sd ",")
 
 ## Edit with your job command
-Rscript 01_pseudobulk_data.R UCLA-ASD_annotated_mismatches_removed.h5ad
+Rscript 01_pseudobulk_data.R version5 UCLA-ASD_annotated.h5ad
 
 echo "**** Job ends ****"
 date
