@@ -13,12 +13,14 @@ sce_pseudo_list <- purrr::map(subset_filepaths, function(filepath){
   
   message(Sys.time(), " - Reading data from: ", filepath)
   sce <- readH5AD(file = filepath)
-  sce <- readH5AD(file = subset_filepaths[[1]])
   
   message("\nSCE Dimesions:")
-  dim(sce)
+  print(nrow(sce))
+  print(ncol(sce))
   
   print(colnames(colData(sce)))
+  print(unique(sce$individualID))
+  
   message("Cell Types:")
   ## must be syntactically valid
   colData(sce)$cellType <- as.factor(make.names(colData(sce)$subclass))
@@ -53,13 +55,25 @@ sce_pseudo_list <- purrr::map(subset_filepaths, function(filepath){
   return(sce_pseudo)
 })
 
-## Save results
 saveRDS(sce_pseudo_list,
-    file = here(
-        "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
-        paste0("pseudobulk_list_SZBDMulti.rds")
-    )
+        file = here(
+          "processed-data", "rdata", "spe", "14_spatial_registration_PEC","pseudobulk_list_SZBDMulti-seq.rds"
+        )
 )
+
+
+# message(Sys.time(), "- combine sce objects")
+# sce_pseudo <- do.call("cbind", sce_pseudo_list)
+# 
+# message("\nSCE Dimesions:")
+# print(nrow(sce_pseudo))
+# print(ncol(sce_pseudo))
+# 
+# ## Save results
+# saveRDS(sce_pseudo,
+#     file = here("processed-data", "rdata", "spe", "14_spatial_registration_PEC","pseudobulk_SZBDMulti-seq.rds")
+#     )
+# )
 
 # sgejobs::job_single('01_pseudobulk_data_SZBDMulti', create_shell = TRUE, memory = '200G', command = "Rscript 01_pseudobulk_data_SZBDMulti.R")
 
