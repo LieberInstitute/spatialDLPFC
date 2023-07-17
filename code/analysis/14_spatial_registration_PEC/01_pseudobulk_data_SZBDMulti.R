@@ -63,25 +63,60 @@ sce_pseudo_list <- purrr::map(subset_filepaths, function(filepath){
   return(sce_pseudo)
 })
 
-saveRDS(sce_pseudo_list,
+# saveRDS(sce_pseudo_list,
+#         file = here(
+#           "processed-data", "rdata", "spe", "14_spatial_registration_PEC","pseudobulk_list_SZBDMulti-seq.rds"
+#         )
+# )
+
+sce_pseudo <- do.call("cbind", sce_pseudo_list)     
+dim(sce_pseudo)
+# [1] 34361  1870
+
+## complete the rest of registration_pseudobulk
+min_ncells = 10
+message(
+  Sys.time(),
+  " dropping ",
+  sum(sce_pseudo$ncells < min_ncells),
+  " pseudo-bulked samples that are below 'min_ncells'."
+)
+
+# 2023-07-17 14:56:21.081636 dropping 307 pseudo-bulked samples that are below 'min_ncells'.
+
+sce_pseudo <- sce_pseudo[, sce_pseudo$ncells >= min_ncells]
+dim(sce_pseudo)
+# [1] 34361  1563
+
+if (is.factor(sce_pseudo$registration_variable)) {
+  ## Drop unused var_registration levels if we had to drop some due
+  ## to min_ncells
+  sce_pseudo$registration_variable <- droplevels(sce_pseudo$registration_variable)
+}
+
+## Drop lowly-expressed genes
+message(Sys.time(), " drop lowly expressed genes")
+keep_expr <-
+  edgeR::filterByExpr(sce_pseudo, group = sce_pseudo$registration_variable)
+sce_pseudo <- sce_pseudo[which(keep_expr), ]
+
+## Compute the logcounts
+message(Sys.time(), " normalize expression")
+logcounts(sce_pseudo) <-
+  edgeR::cpm(edgeR::calcNormFactors(sce_pseudo),
+             log = TRUE,
+             prior.count = 1
+  )
+
+
+## Save results
+saveRDS(sce_pseudo,
         file = here(
-          "processed-data", "rdata", "spe", "14_spatial_registration_PEC","pseudobulk_list_SZBDMulti-seq.rds"
+          "processed-data", "rdata", "spe", "14_spatial_registration_PEC",
+          paste0("pseudobulk_", "SZBDMulti-Seq", ".rds")
         )
 )
 
-
-# message(Sys.time(), "- combine sce objects")
-# sce_pseudo <- do.call("cbind", sce_pseudo_list)
-# 
-# message("\nSCE Dimesions:")
-# print(nrow(sce_pseudo))
-# print(ncol(sce_pseudo))
-# 
-# ## Save results
-# saveRDS(sce_pseudo,
-#     file = here("processed-data", "rdata", "spe", "14_spatial_registration_PEC","pseudobulk_SZBDMulti-seq.rds")
-#     )
-# )
 
 # sgejobs::job_single('01_pseudobulk_data_SZBDMulti', create_shell = TRUE, memory = '200G', command = "Rscript 01_pseudobulk_data_SZBDMulti.R")
 

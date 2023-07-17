@@ -6,10 +6,10 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.3
 **** Job starts ****
-Thu Jul  6 13:51:39 EDT 2023
+Mon Jul 17 15:01:35 EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 3611708
+Job id: 3631744
 Job name: pseudobulk_data_SZBDMulti
 Hostname: compute-126.cm.cluster
 Task id: undefined
@@ -106,7 +106,7 @@ The following objects are masked from ‘package:matrixStats’:
 Loading required package: SpatialExperiment
 Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-2023-07-06 13:51:53 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_BD.h5ad
+2023-07-17 15:01:48 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_BD.h5ad
 
 SCE Dimesions:
 [1] 34361
@@ -119,15 +119,11 @@ SCE Dimesions:
 [16] BD10 BD13 BD14 BD16 BD17 BD19 BD20 BD22 BD24
 24 Levels: BD1 BD2 BD3 BD4 BD5 BD6 BD7 BD8 BD9 BD10 BD11 BD12 BD13 ... BD24
 Cell Types:
-2023-07-06 13:54:33 revert to counts
-2023-07-06 13:55:06 Pseudobulk
-2023-07-06 13:55:06 make pseudobulk object
-2023-07-06 14:01:30 dropping 111 pseudo-bulked samples that are below 'min_ncells'.
-2023-07-06 14:01:30 drop lowly expressed genes
-2023-07-06 14:01:31 normalize expression
+2023-07-17 15:05:34 revert to counts
+2023-07-17 15:06:10 Pseudobulk
 
 SCE Pseudobulk Dimesions:
-2023-07-06 14:01:40 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_CON.h5ad
+2023-07-17 15:13:16 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_CON.h5ad
 
 SCE Dimesions:
 [1] 34361
@@ -140,15 +136,11 @@ SCE Dimesions:
 [13] CON20 CON1  CON2  CON6  CON11 CON16 CON18 CON19 CON21 CON22 CON23 CON24
 24 Levels: CON1 CON2 CON3 CON4 CON5 CON6 CON7 CON8 CON9 CON10 CON11 ... CON24
 Cell Types:
-2023-07-06 14:05:17 revert to counts
-2023-07-06 14:06:08 Pseudobulk
-2023-07-06 14:06:08 make pseudobulk object
-2023-07-06 14:16:00 dropping 88 pseudo-bulked samples that are below 'min_ncells'.
-2023-07-06 14:16:00 drop lowly expressed genes
-2023-07-06 14:16:01 normalize expression
+2023-07-17 15:18:46 revert to counts
+2023-07-17 15:19:40 Pseudobulk
 
 SCE Pseudobulk Dimesions:
-2023-07-06 14:16:11 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_SZ.h5ad
+2023-07-17 15:30:05 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_SZ.h5ad
 
 SCE Dimesions:
 [1] 34361
@@ -161,19 +153,20 @@ SCE Dimesions:
 [16] SZ10 SZ11 SZ12 SZ13 SZ14 SZ15 SZ17 SZ23 SZ24
 24 Levels: SZ1 SZ2 SZ3 SZ4 SZ5 SZ6 SZ7 SZ8 SZ9 SZ10 SZ11 SZ12 SZ13 ... SZ24
 Cell Types:
-2023-07-06 14:19:46 revert to counts
-2023-07-06 14:20:27 Pseudobulk
-2023-07-06 14:20:27 make pseudobulk object
-2023-07-06 14:28:34 dropping 108 pseudo-bulked samples that are below 'min_ncells'.
-2023-07-06 14:28:34 drop lowly expressed genes
-2023-07-06 14:28:35 normalize expression
+2023-07-17 15:34:47 revert to counts
+2023-07-17 15:35:30 Pseudobulk
 
 SCE Pseudobulk Dimesions:
 There were 15 warnings (use warnings() to see them)
+[1] 34361  1870
+2023-07-17 15:43:39 dropping 307 pseudo-bulked samples that are below 'min_ncells'.
+[1] 34361  1563
+2023-07-17 15:43:39 drop lowly expressed genes
+2023-07-17 15:43:42 normalize expression
 [1] "Reproducibility information:"
-[1] "2023-07-06 14:36:11 EDT"
+[1] "2023-07-17 15:51:31 EDT"
     user   system  elapsed 
-2472.553  181.543 2671.473 
+2645.990  334.012 2995.025 
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.2.3 Patched (2023-04-07 r84211)
@@ -184,7 +177,7 @@ There were 15 warnings (use warnings() to see them)
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2023-07-06
+ date     2023-07-17
  pandoc   3.1.1 @ /jhpce/shared/jhpce/core/conda/miniconda3-4.11.0/envs/svnR-4.3/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -366,4 +359,4 @@ There were 15 warnings (use warnings() to see them)
 
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Jul  6 14:36:18 EDT 2023
+Mon Jul 17 15:51:49 EDT 2023
