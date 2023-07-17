@@ -43,12 +43,20 @@ sce_pseudo_list <- purrr::map(subset_filepaths, function(filepath){
   
   #### Pseudobulk ####
   message(Sys.time(), " Pseudobulk")
-  sce_pseudo <- registration_pseudobulk(sce,
-                                        var_registration = "cellType",
-                                        # var_sample_id = "sampleID",
-                                        var_sample_id = "individualID", ## for SZDBMulti-Seq
-                                        covars = NULL
+
+  sce_pseudo <- scuttle::aggregateAcrossCells(
+    sce,
+    DataFrame(
+      registration_variable = sce[["cellType"]],
+      registration_sample_id = sce[["individualID"]]
+    )
   )
+  colnames(sce_pseudo) <-
+    paste0(
+      sce_pseudo$registration_sample_id,
+      "_",
+      sce_pseudo$registration_variable
+    )
   
   message("\nSCE Pseudobulk Dimesions:")
   dim(sce_pseudo)
