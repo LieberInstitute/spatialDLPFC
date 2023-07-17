@@ -6,12 +6,12 @@ Loading LIBD module for rmate/1.5.9
 Loading LIBD module for ruby/2.6.4p104
 Loading conda_R/4.3
 **** Job starts ****
-Thu Jun 29 11:59:20 EDT 2023
+Sun Jul 16 19:08:36 EDT 2023
 **** JHPCE info ****
 User: lhuuki
-Job id: 3596216
-Job name: compute_registration_stats_SZBDMulti-Seq
-Hostname: compute-124.cm.cluster
+Job id: 3613494
+Job name: pseudobulk_data_SZBDMulti
+Hostname: compute-126.cm.cluster
 Task id: undefined
 Unloading conda_R/4.3
 Loading conda_R/4.2.x
@@ -29,6 +29,9 @@ Currently Loaded Modules:
 
  
 
+Registered S3 method overwritten by 'zellkonverter':
+  method                from      
+  py_to_r.numpy.ndarray reticulate
 Loading required package: SummarizedExperiment
 Loading required package: MatrixGenerics
 Loading required package: matrixStats
@@ -101,9 +104,48 @@ The following objects are masked from ‘package:matrixStats’:
     anyMissing, rowMedians
 
 Loading required package: SpatialExperiment
+Loading required package: rafalib
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-Running - SZBDMulti-Seq
+2023-07-16 19:09:03 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_BD.h5ad
 
 SCE Dimesions:
-[1] 26908  1489
-2023-06-29 11:59:59 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+[1] 34361
+[1] 182306
+ [1] "n_genes"       "n_counts"      "Channel"       "demux_type"   
+ [5] "assignment"    "anno"          "subclass"      "individualID" 
+ [9] "azimuth"       "scale"         "leiden_labels" "libraryID"    
+[13] "batch"         "specimenID"   
+ [1] BD4  BD5  BD6  BD7  BD11 BD12 BD15 BD18 BD21 BD23 BD1  BD2  BD3  BD8  BD9 
+[16] BD10 BD13 BD14 BD16 BD17 BD19 BD20 BD22 BD24
+24 Levels: BD1 BD2 BD3 BD4 BD5 BD6 BD7 BD8 BD9 BD10 BD11 BD12 BD13 ... BD24
+2023-07-16 19:13:16 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_CON.h5ad
+
+SCE Dimesions:
+[1] 34361
+[1] 218999
+ [1] "n_genes"       "n_counts"      "Channel"       "demux_type"   
+ [5] "assignment"    "anno"          "subclass"      "individualID" 
+ [9] "azimuth"       "scale"         "leiden_labels" "libraryID"    
+[13] "batch"         "specimenID"   
+ [1] CON3  CON4  CON5  CON7  CON8  CON9  CON10 CON12 CON13 CON14 CON15 CON17
+[13] CON20 CON1  CON2  CON6  CON11 CON16 CON18 CON19 CON21 CON22 CON23 CON24
+24 Levels: CON1 CON2 CON3 CON4 CON5 CON6 CON7 CON8 CON9 CON10 CON11 ... CON24
+2023-07-16 19:18:14 - Reading data from: /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/psychENCODE/version6/SZBDMulti-Seq_subset/SZBDMulti-Seq_annotated_SZ.h5ad
+
+SCE Dimesions:
+[1] 34361
+[1] 201904
+ [1] "n_genes"       "n_counts"      "Channel"       "demux_type"   
+ [5] "assignment"    "anno"          "subclass"      "individualID" 
+ [9] "azimuth"       "scale"         "leiden_labels" "libraryID"    
+[13] "batch"         "specimenID"   
+ [1] SZ1  SZ2  SZ3  SZ4  SZ6  SZ7  SZ8  SZ16 SZ18 SZ19 SZ20 SZ21 SZ22 SZ5  SZ9 
+[16] SZ10 SZ11 SZ12 SZ13 SZ14 SZ15 SZ17 SZ23 SZ24
+24 Levels: SZ1 SZ2 SZ3 SZ4 SZ5 SZ6 SZ7 SZ8 SZ9 SZ10 SZ11 SZ12 SZ13 ... SZ24
+There were 15 warnings (use warnings() to see them)
+Error in .cbind2Csp(x, y) : 
+  Cholmod error 'problem too large' at file ../Core/cholmod_sparse.c, line 89
+Calls: do.call ... cbind -> cbind2 -> cbind2 -> cbind2sparse -> .cbind2Csp
+Execution halted
+**** Job ends ****
+Sun Jul 16 19:23:34 EDT 2023
