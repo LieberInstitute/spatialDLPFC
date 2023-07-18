@@ -7,9 +7,12 @@ library(sessioninfo)
 visium_info_path = here('raw-data', 'sample_info','Visium_dlpfc_mastersheet.xlsx')
 visium_dir_new = here('raw-data', 'FASTQ_Globus', 'Visium')
 visium_spg_dir_new = here('raw-data', 'FASTQ_Globus', 'Visium_SPG')
+sn_dir_new = here('raw-data', 'FASTQ_Globus', 'snRNA-seq')
+sn_dir_old = '/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq/raw-data/FASTQ_renamed'
 
 dir.create(visium_dir_new, recursive = TRUE, showWarnings = FALSE)
 dir.create(visium_spg_dir_new, recursive = FALSE, showWarnings = FALSE)
+dir.create(sn_dir_new, recursive = FALSE, showWarnings = FALSE)
 
 ################################################################################
 #   Visium
@@ -96,5 +99,45 @@ stopifnot(length(unique(fastq_new)) == length(fastq_new))
 
 message('Copying over Visium-SPG FASTQs to new location...')
 file.copy(fastq_old, fastq_new)
+
+################################################################################
+#   snRNA-seq
+################################################################################
+
+message('Determining paths of old vs. new FASTQs for snRNA-seq...')
+
+fastq_df = tibble(
+    fastq_old = list.files(
+        sn_dir_old, pattern = '\\.fastq\\.gz$', full.names = TRUE
+    )
+)
+fastq_df$sample_id_old = basename(fastq_df$fastq_old) |>
+    str_extract('Br[0-9]{4}_(ant|mid|post)')
+
+stopifnot(all(fastq_df$sample_id_old %in% visium_info$sample_id_old))
+
+fastq_df = fastq_df |>
+    #   Add sample info columns (notably 'sample_id_new') to fastq_df
+    left_join(visium_info, by = 'sample_id_old') |>
+    #   Determine a filepath for the new FASTQ files using sample_id_new
+    mutate(
+        fastq_new = file.path(
+            sn_dir_new,
+            paste0(
+                sample_id_new,
+                basename(fastq_old) |> str_extract('_R[12]_[0-9]*'),
+                '.fastq.gz'
+            )
+        )
+    ) |>
+    #   Only interested in FASTQ file paths: old and new
+    select(c(fastq_old, fastq_new))
+
+#   Final sanity checks before copying
+stopifnot(all(file.exists(fastq_df$fastq_old)))
+stopifnot(length(unique(fastq_df$fastq_new)) == length(fastq_df$fastq_new))
+
+message('Copying over snRNA-seq FASTQs to new location...')
+file.copy(fastq_df$fastq_old, fastq_df$fastq_new)
 
 session_info()
