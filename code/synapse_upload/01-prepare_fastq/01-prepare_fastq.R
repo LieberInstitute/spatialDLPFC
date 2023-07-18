@@ -7,6 +7,7 @@
 library("here")
 library("jaffelab")
 library("sessioninfo")
+library("tidyverse")
 
 sr_table_path <- here("code", "spaceranger", "spaceranger_parameters.txt")
 dest_dir <- here("raw-data", "FASTQ_renamed")
@@ -65,10 +66,22 @@ file_df <- data.frame(
     "new_path" = unlist(fastq_new)
 )
 
-write.csv(file_df, file = df_out_path, quote = FALSE, row.names = FALSE)
+# write.csv(file_df, file = df_out_path, quote = FALSE, row.names = FALSE)
 
 #   Now symbolically link the old FASTQs to the new destination with the new
 #   naming scheme
-all(file.symlink(unlist(fastq_old), unlist(fastq_new)))
+# all(file.symlink(unlist(fastq_old), unlist(fastq_new)))
+
+#   The column of directories containing FASTQ files also accepts a
+#   comma-separated list of FASTQ files. We'll overwrite the column with the
+#   new FASTQs in the latter format
+sr_table[,6] = fastq_new |>
+    sapply(function(x) do.call(paste, as.list(x))) |>
+    str_replace_all(' ', ',')
+
+write.table(
+    sr_table, file = sr_table_path, quote = FALSE, row.names = FALSE,
+    col.names = FALSE
+)
 
 session_info()
