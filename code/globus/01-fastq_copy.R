@@ -88,7 +88,8 @@ fastq_df = tibble(
         recursive = TRUE, full.names = TRUE
     )
 )
-fastq_df$sample_id_old = fastq_old |> str_extract('Br[0-9]{4}_(Ant|Post)_IF')
+fastq_df$sample_id_old = fastq_df$fastq_old |>
+    str_extract('Br[0-9]{4}_(Ant|Post)_IF')
 
 fastq_df = fastq_df |>
     #   Add sample info columns (notably 'sample_id_new') to fastq_df
