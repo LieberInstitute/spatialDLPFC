@@ -74,7 +74,6 @@ anno_diff_all <- anno_compare_all |>
   select(-starts_with("confidence")) |>
   arrange(Dataset, Annotation) 
 
-
 write.csv(anno_diff_all, file = here(data_dir, "PEC_correlation_annotation_V5_diff.csv"), row.names = FALSE)
 
 ## Dx
@@ -86,6 +85,14 @@ anno_long_dx <- create_anno_long(pe_correlation_annotation_dx)
 anno_compare_dx <- anno_long_dx_v5 |>
   left_join(anno_long_dx) |>
   mutate(match_v5 = label == label_v5)
-  
+
 anno_compare_dx |> count(Dataset, match_v5)
 
+anno_compare_dx |> filter(!match_v5) |> count(Dataset, Annotation)
+
+anno_diff_dx <- anno_compare_dx |> 
+  filter(!match_v5) |> 
+  select(-starts_with("confidence")) |>
+  arrange(Dataset, Annotation) 
+
+write.csv(anno_diff_dx, file = here(data_dir, "PEC_correlation_annotation_V5_diff_dx.csv"), row.names = FALSE)
