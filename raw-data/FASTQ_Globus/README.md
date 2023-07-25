@@ -53,4 +53,5 @@ Related files:
     * `fastq_globus`: FASTQ filepath in this directory, shared through Globus
     * `fastq_sequencing`: FASTQ filepath output from sequencer (prior to any sample-identity swaps)
     * `assay`: Which type of experiment this FASTQ was associated with ("Visium", "Visium-SPG", or "snRNA-seq")
+
 For example, if we have the FASTQ file `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/raw-data/FASTQ_Globus/snRNA-seq/Br3942_ant_R1_1.fastq.gz` as shared through Globus, one can find this file in the `fastq_globus` column, and match it to the original sequencer file `/dcs04/lieber/lcolladotor/rawDataTDSC_LIBD001/raw-data/2021-11-22_KMay110521/11c_k_L001_ds.b485101e8841432892fb04b1c1d9a3a6/11c-k_S8_L001_R1_001.fastq.gz` (found in the `fastq_sequencing` column). Note that paths in the `fastq_synapse` and `fastq_sequencing` columns are not shared through Globus, and exist simply to provide a record of filenames at different stages of the project.
