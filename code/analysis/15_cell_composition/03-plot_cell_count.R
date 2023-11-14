@@ -96,7 +96,9 @@ layer_plots <- layer_dat |>
             facet_wrap(~position) +
             ylab("Proportion of Spots") +
             xlab("") +
-            theme_set(theme_bw(base_size = 20))
+            theme_bw(base_size = 20)
+
+    	return(ret_plot)
     })
 
 # * Create Plot Grid --------------------------------------------------------
