@@ -2,6 +2,7 @@ library(tidyverse)
 library(SpatialExperiment)
 library(here)
 library("Polychrome")
+library(ggpubr)
 data(palette36)
 
 method_colors = palette36[6:8]
@@ -15,16 +16,100 @@ spe_dat <- readRDS(
     )
 )
 
-fnl_dat |>
-    group_by(region) |>
-    summarize(
-        n_sample = n_distinct(subject),
-        n_spots = n(),
-        n_sp9_miss = sum(is.na(sp9)),
-        n_sp16_miss = sum(is.na(sp16))
-    )
+fnl_dat <- colData(spe_dat) |> data.frame()
 
-# (Vis) - Per-spot cell count estimation ------------------------------------------
+# Create Panel A ----------------------------------------------------------
+vars_spd <- c(
+    "BayesSpace_harmony_09",
+    "BayesSpace_harmony_16"
+) |>
+    set_names()
+
+
+# Factor the Spd Labels
+bayes_layers <- here(
+    "processed-data", "rdata", "spe",
+    "08_spatial_registration",
+    "bayesSpace_layer_annotations.Rdata"
+) |>
+    load() |>
+    get() |>
+    select(Annotation = bayesSpace, layer_long = cluster, layer_combo) |>
+    filter(Annotation %in% c("k09", "k16"))
+
+# * Curate Data -------------------------------------------------------------
+layer_dat <- vars_spd |>
+    map_dfr(.f = function(var) {
+        fnl_dat |>
+            select(position, subject,
+                   spd = var
+            )
+    }, .id = "spd_method") |>
+    group_split(spd_method, position, .keep = TRUE) |>
+    map_dfr(.f = function(dat) {
+        # browser()
+        dat |>
+            group_by(subject, spd) |>
+            summarize(n_spots = n()) |>
+            mutate(
+                tot_spots = sum(n_spots),
+                layer_perc = n_spots / tot_spots,
+                spd_method = unique(dat$spd_method),
+                position = unique(dat$position)
+            ) |>
+            ungroup()
+    })
+
+
+# * Generate a List of ggplots --------------------------------------------------------
+layer_plots <- layer_dat |>
+    group_split(spd_method, .keep = TRUE) |>
+    map(.f = function(sum_dat) {
+        k <- sum_dat$spd_method |>
+            unique() |>
+            str_sub(start = -2, end = -1) |>
+            as.integer()
+
+        layer_df <- bayes_layers |>
+            filter(Annotation == sprintf("k%02d", k))
+
+        ret_plot <- sum_dat |>
+            mutate(
+                spd = factor(spd,
+                             levels = str_sub(layer_df$layer_long, -2, -1) |>
+                                 as.integer(),
+                             labels = layer_df$layer_combo
+                ),
+                position = str_to_sentence(position)
+            ) |>
+            ggplot(aes(x = subject, y = layer_perc, fill = spd)) +
+            geom_bar(position = "fill", stat = "identity") +
+            scale_fill_manual(
+                name = "BayesSpace Domain",
+                values = set_names(
+                    Polychrome::palette36.colors(k)[str_sub(layer_df$layer_long, -2, -1) |>
+                                                        as.integer()],
+                    layer_df$layer_combo
+                )
+            ) +
+            guides(x = guide_axis(angle = -45)) +
+            facet_wrap(~position) +
+            ylab("Proportion of Spots") +
+            xlab("") +
+            theme_set(theme_bw(base_size = 20))
+    })
+
+# * Create Plot Grid --------------------------------------------------------
+layer_grid_plot <- ggarrange(
+    plotlist = layer_plots,
+    ncol = 2, nrow = 1
+)
+
+
+
+
+
+# Create Panel B ----------------------------------------------------------
 
 deconv_comb <- expand_grid(
     res = c("broad", "layer"),
@@ -51,7 +136,7 @@ stopifnot(
 deconv_cell_counts <- (deconv_df |> as.matrix()) %*% deconv_com_indx_mat
 
 
-#* (Vis) Per-sample # of Cell ------------------------------------------
+#* Curate Data ------------------------------------------
 
 cell_count_dat <- deconv_comb |>
     pmap_dfr(.f = function(res, deconv) {
@@ -128,12 +213,7 @@ cell_count_plots <- cell_count_dat |>
     })
 
 
-# Create Individual Plots -------------------------------------------------
-
-
-
-
-# Create Plot Grid --------------------------------------------------------
+# * Create Plot Grid --------------------------------------------------------
 cell_count_grid_plot <- ggarrange(
     plotlist = cell_count_plots,
     ncol = 2, nrow = 1 # ,
