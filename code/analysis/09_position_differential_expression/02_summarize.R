@@ -4,6 +4,7 @@ library("here")
 library("sessioninfo")
 library("ggplot2")
 library("Polychrome")
+library("paletteer")
 
 ## Plot directory
 dir_plots <- here::here(
@@ -47,9 +48,14 @@ pdf(
     width = 18,
     height = 5
 )
-plotExplanatoryVariables(vars) + theme_classic(base_size = 30)
+fig <- plotExplanatoryVariables(vars) +
+    paletteer::scale_colour_paletteer_d("colorblindr::OkabeIto_black") +
+    theme_classic(base_size = 30)
+fig
 dev.off()
 
+# library(colorblindr)
+# cvd_grid(fig)
 
 
 ## Load Sp09 DE results
