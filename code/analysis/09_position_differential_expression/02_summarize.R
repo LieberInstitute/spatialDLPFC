@@ -50,7 +50,8 @@ pdf(
 )
 fig <- plotExplanatoryVariables(vars) +
     paletteer::scale_colour_paletteer_d("colorblindr::OkabeIto_black") +
-    theme_classic(base_size = 30)
+    theme_classic(base_size = 30) +
+    theme(legend.title=element_blank())
 fig
 dev.off()
 
