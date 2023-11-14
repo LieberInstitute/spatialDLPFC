@@ -1,6 +1,11 @@
 library(tidyverse)
 library(SpatialExperiment)
 library(here)
+library("Polychrome")
+data(palette36)
+
+method_colors = palette36[6:8]
+names(method_colors) = c('Tangram', 'Cell2location', 'SPOTlight')
 
 spe_dat <- readRDS(
     here(
@@ -114,7 +119,7 @@ cell_count_plots <- cell_count_dat |>
                 breaks = (0:5) * 10000,
                 labels = c("0", paste0((1:5) * 10, "K"))
             ) +
-            scale_fill_manual(values = c("#fc8d62", "#66c2a5", "#8da0cb")) +
+            scale_fill_manual(values = method_colors) +
             theme_set(theme_bw(base_size = 20)) +
             theme(
                 plot.title = element_text(hjust = 0.5),
