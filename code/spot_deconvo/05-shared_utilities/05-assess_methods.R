@@ -6,6 +6,8 @@ library("reshape2")
 library("spatialLIBD")
 library("cowplot")
 library("sessioninfo")
+library("Polychrome")
+data(palette36)
 
 #   Adds the 'spot_plot' function, a wrapper for 'vis_gene' or 'vis_clus' with
 #   consistent manuscript-appropriate settings
@@ -85,6 +87,9 @@ names(libd_layer_colors)[
 
 cell_type_labels <- c("#3BB273", "#663894", "#E49AB0", "#E07000", "#768282")
 names(cell_type_labels) <- cell_types_actual
+
+software_colors = palette36[6:8]
+names(software_colors) = c('Tangram', 'Cell2location', 'SPOTlight')
 
 set.seed(11282022)
 
@@ -1139,7 +1144,8 @@ for (cell_type in cell_types) {
         theme_bw(base_size = 23) +
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
         coord_cartesian(ylim = c(0, y_max)) +
-        scale_y_continuous(expand = c(0, 0, 0, 0.05))
+        scale_y_continuous(expand = c(0, 0, 0, 0.05)) +
+        scale_color_manual(values = software_colors)
 }
 
 pdf(

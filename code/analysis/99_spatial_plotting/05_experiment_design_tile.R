@@ -1,4 +1,4 @@
-# library("spatialLIBD")
+library("spatialLIBD")
 library("tidyverse")
 library("here")
 library("sessioninfo")
@@ -20,17 +20,26 @@ pos_df <- tibble(Position = c("anterior", "middle", "posterior"),
 
 #### single nuc data ####
 ## no local access
-# load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn" ,"sce_DLPFC.Rdata"), verbose = TRUE)
+load(here("processed-data", "rdata", "spe", "12_spatial_registration_sn" ,"sce_DLPFC.Rdata"), verbose = TRUE)
 
-## temp until JHPCE access
-load("/Users/louisehuuki/LIBD_code/Human_DLPFC_Deconvolution/processed-data/sce/sce_pd.Rdata")
-sce_pd
+# Load full data
+load(
+  here(
+    "processed-data",
+    "rdata",
+    "spe",
+    "01_build_spe",
+    "spe_filtered_final_with_clusters.Rdata"
+  )
+)
+
+sce_pd <- as.data.frame(colData(sce))
 
 sn_samples <- sce_pd |>
-    count(Sample, SAMPLE_ID, Position, pos, round, BrNum, age, sex)
+    dplyr::count(Sample, SAMPLE_ID, Position, pos, round, BrNum, age, sex)
 
 sn_n_samp <- sn_samples |>
-    count(Sample, Position, BrNum) |>
+    dplyr::count(Sample, Position, BrNum) |>
     mutate(data_type = "snRNA-seq",
            Position = tolower(Position))
 
@@ -40,7 +49,7 @@ spe_sample_info <- read.csv(here("processed-data", "rdata","spe", "01_build_spe"
 
 spe_n_samp <- spe_sample_info |>
     mutate(Sample = gsub("_2","",sample_id)) |>
-    count(Sample, BrNum = subjects, Position = regions, data_type = "Visium")
+    dplyr::count(Sample, BrNum = subjects, Position = regions, data_type = "Visium")
 
 
 #### Visium IF data ####
@@ -51,7 +60,7 @@ spe_IF_n_samp <- spe_IF_sample_info |>
     mutate(Sample = paste0(BrNum,"_", tolower(pos)),
            data_type = "Visium-SPG") |>
     left_join(pos_df) |>
-    count(Sample, BrNum , Position, data_type)
+    dplyr::count(Sample, BrNum , Position, data_type)
 
 
 #### ALL data ####
@@ -61,7 +70,7 @@ all_dlpfc <- spe_n_samp |>
     bind_rows(spe_IF_n_samp)
 
 ## Do we have matched assays for each sample?
-matched <- all_dlpfc |> count(Sample)|> mutate(Matched = n >= 2)
+matched <- all_dlpfc |> dplyr::count(Sample)|> mutate(Matched = n >= 2)
 
 sn_pair <- sn_n_samp |>
     left_join(pos_df) |>
@@ -93,10 +102,11 @@ ggsave(experiment_tile, filename = here(plot_dir, "spatialDLPFC_experiment_tile.
 experiment_tile2 <- all_dlpfc_detail |>
     mutate(n = as.factor(n)) |>
     ggplot(aes(pos, BrNum_order, fill = data_type))+
-    geom_tile(color = "grey50")+
+    geom_tile(color = "grey25")+
     geom_text(aes(label = n, color = Matched))+
     # geom_text(aes(label = n), color = "black")+
     scale_color_manual(values =c(`TRUE` = "black", `FALSE` = "grey75"), name ="Additional Assay") +
+    scale_fill_manual(values =c( Visium = "#E16365", `snRNA-seq` = "#A967A9", `Visium-SPG` = "#66A7DB"), name ="Additional Assay") +
     facet_wrap(~data_type, nrow = 1) +
     theme_bw() +
     labs(x = "Position", y = "BrNum") +
