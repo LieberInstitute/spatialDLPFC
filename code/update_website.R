@@ -3,10 +3,18 @@ library("withr")
 
 with_dir(here(), {
     rmarkdown::render("README.Rmd", "html_document")
-    system("mv README.html ~/Dropbox/Code/spatialDLPFC_website/index.html")
+    system(paste0(
+        "mv README.html ",
+        file.path(
+            dirname(here::here()),
+            paste0(basename(here::here()), "_website"),
+            "index.html"
+        )
+    ))
 })
 
-with_dir(
-    "~/Dropbox/Code/spatialDLPFC_website",
-    system("git ci -am -'Updated website with code/update_website.R'; git push origin gh-pages")
-)
+with_dir(file.path(dirname(here::here()), paste0(basename(here::here()), "_website")), {
+    system("git pull")
+    system("git commit -am -'Updated website with code/update_website.R'")
+    system("git push origin gh-pages")
+})
