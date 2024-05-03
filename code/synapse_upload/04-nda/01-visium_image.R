@@ -1,30 +1,30 @@
 library(tidyverse)
 library(here)
+library(readxl)
 
-sample_info_path = here(
+he_sample_info_path = here(
     'processed-data', 'rdata', 'spe', '01_build_spe', 'spe_sample_info.csv'
 )
-if_info_path = here(
-    'processed-data', 'rdata', 'spe_IF', '01_build_spe_IF',
-    'spe_IF_sample_info.csv'
+he_sample_info_2_path = here(
+    'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
 )
+if_sample_info_path = here(
+    'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
+)
+
 if_ids = sprintf('V10B01-087_%s1', c('A', 'B', 'C', 'D'))
 if_image_paths = here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '%s.tif')
 
 col_names = c(
     "subjectkey", "src_subject_id", "interview_date", "interview_age", "sex",
     "comments_misc", "image_file", "image_description", "scan_type",
-    "scan_object", "image_file_format", "data_file2", "data_file2_type",
-    "image_modality", "transformation_performed", "transformation_type",
-    "image_history", "image_num_dimensions", "image_extent1", "image_extent2",
-    "image_unit1", "image_unit2", "image_resolution1", "image_resolution2",
-    "manifest", "emission_wavelength", "objective_magnification",
-    "objective_na", "immersion", "exposure_time", "stain", "stain_details",
-    "pipeline_stage", "deconvolved", "decon_software", "decon_method",
-    "psf_type", "psf_file", "decon_snr", "decon_iterations",
-    "micro_temmplate_name", "in_stack", "decon_template_name", "stack",
-    "slices", "slice_number", "slice_thickness", "type_of_microscopy",
-    "excitation_wavelength"
+    "scan_object", "image_file_format", "image_modality",
+    "transformation_performed", "transformation_type", "image_history",
+    "image_num_dimensions", "image_extent1", "image_extent2", "image_unit1",
+    "image_unit2", "image_resolution1", "image_resolution2",
+    "emission_wavelength", "objective_magnification", "objective_na",
+    "immersion", "exposure_time", "stain", "stain_details",
+    "pipeline_stage", "deconvolved", "type_of_microscopy"
 )
 
 guids = c(
@@ -34,10 +34,46 @@ guids = c(
     "NDAR_INVTG948WW3"
 )
 
-sample_info = read_csv(sample_info_path, show_col_types = FALSE) |>
-    rename(src_subject_id = sample_id, interview_age = age) |>
-    select(src_subject_id, sex, interview_age) |>
-    mutate(donor = str_extract(src_subject_id, '^Br[0-9]{4}'))
+################################################################################
+#   Read in and preprocess sample info: gather age, sex, ID, and image path
+#   for all H&E and IF samples
+################################################################################
+
+#-------------------------------------------------------------------------------
+#   H&E images
+#-------------------------------------------------------------------------------
+
+sample_info = read_csv(he_sample_info_path, show_col_types = FALSE) |>
+    rename(interview_age = age) |>
+    select(sample_id, sex, interview_age) |>
+    mutate(donor = str_extract(sample_id, '^Br[0-9]{4}'))
+
+sample_info_2 = read_excel(he_sample_info_2_path) |>
+    head(n = 30) |>
+    rename(sample_id = `sample name`) |>
+    mutate(
+        src_subject_id = sprintf('%s_%s', `slide#`, `array number`),
+        image_file = str_replace(
+            `image file path`,
+            '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
+            here('raw-data')
+        )
+    ) |>
+    select(sample_id, src_subject_id, image_file_path)
+
+sample_info = left_join(sample_info, sample_info_2, by = 'sample_id')
+
+#-------------------------------------------------------------------------------
+#   IF images
+#-------------------------------------------------------------------------------
+
+read_excel(if_sample_info_path) |>
+    head(n = 4) |>
+    mutate(
+        src_subject_id = sprintf('%s_%s', `Slide SN #`, `Array #`),
+        donor = paste0('Br', BrNumbr),
+        image_file = sprintf(if_image_paths, src_subject_id)
+    )
 
 meta_if = tibble(
         donor = if_ids,
@@ -46,5 +82,25 @@ meta_if = tibble(
         scan_type = "microscopy",
         scan_object = "Post-mortem",
         image_file_format = "TIFF",
-    ) |>
-    left_join(sample_info, by = 'donor')
+        image_modality = "microscopy",
+        transformation_performed = "No",
+        transformation_type = NA,
+        image_history = NA,
+        image_num_dimensions = 2,
+        emission_wavelength = "300-700",
+        objective_magnification = "40x",
+        objective_na = 0.75,
+        immersion = 0,
+        exposure_time = NA,
+        stain = "H&E",
+        pipeline_stage = 1,
+        deconvolved = 0,
+        type_of_microscopy = "BF",
+        #   image_extent1, image_extent2, "image_unit1", "image_unit2",
+        #   "image_resolution1", "image_resolution2", stain_details
+    )
+
+meta = rbind(meta_if, meta_he) |>
+    left_join(sample_info, by = 'donor') |>
+    select(-donor)
+    
