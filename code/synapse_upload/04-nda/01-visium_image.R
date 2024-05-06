@@ -35,8 +35,21 @@ guids = c(
 )
 
 ################################################################################
-#   Read in and preprocess sample info: gather age, sex, ID, and image path
-#   for all H&E and IF samples
+#   Functions
+################################################################################
+
+get_image_metadata = function(image_paths) {
+    for (image_path in image_paths) {
+        readTIFF(image_path, payload = FALSE) |>
+            as_tibble() |>
+            rename(image_extent1 = width, image_extent2 = length) |>
+
+    }
+}
+
+################################################################################
+#   Read in and preprocess sample info: gather age, sex, ID, image path, and
+#   spaceranger JSON for all H&E and IF samples
 ################################################################################
 
 #-------------------------------------------------------------------------------
@@ -57,12 +70,17 @@ sample_info_2 = read_excel(he_sample_info_2_path) |>
             `image file path`,
             '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
             here('raw-data')
+        ),
+        spaceranger_json = file.path(
+            `spaceranger file path`, 'outs', 'spatial', 'scalefactors_json.json'
         )
     ) |>
-    select(sample_id, src_subject_id, image_file)
+    select(sample_id, src_subject_id, image_file, spaceranger_json)
 
 sample_info = left_join(sample_info, sample_info_2, by = 'sample_id') |>
-    select(src_subject_id, donor, sex, interview_age, image_file) |>
+    select(
+        src_subject_id, donor, sex, interview_age, image_file, spaceranger_json
+    ) |>
     #   For internally distinguishing between IF and H&E samples
     mutate(interview_date = '06/25/2020', image_type = "H&E")
 
@@ -83,10 +101,19 @@ sample_info_if = read_excel(if_sample_info_path) |>
     mutate(
         src_subject_id = sprintf('%s_%s', `Slide SN #`, `Array #`),
         donor = paste0('Br', BrNumbr),
-        image_file = sprintf(if_image_paths, src_subject_id)
+        image_file = sprintf(if_image_paths, src_subject_id),
+        sample_id = sprintf(
+            '%s_%s_IF', donor, str_extract(Br_Region, '(Ant|Post)')
+        ),
+        spaceranger_json = here(
+            'processed-data', '01_spaceranger_IF', sample_id, 'outs', 'spatial',
+            'scalefactors_json.json'
+        )
     ) |>
     left_join(pd, by = 'donor') |>
-    select(src_subject_id, donor, sex, interview_age, image_file) |>
+    select(
+        src_subject_id, donor, sex, interview_age, image_file, spaceranger_json
+    ) |>
     #   For internally distinguishing between IF and H&E samples
     mutate(interview_date = '06/25/2022', image_type = "IF")
 
