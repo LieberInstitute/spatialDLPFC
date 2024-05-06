@@ -59,21 +59,32 @@ sample_info_2 = read_excel(he_sample_info_2_path) |>
             here('raw-data')
         )
     ) |>
-    select(sample_id, src_subject_id, image_file_path)
+    select(sample_id, src_subject_id, image_file)
 
-sample_info = left_join(sample_info, sample_info_2, by = 'sample_id')
+sample_info = left_join(sample_info, sample_info_2, by = 'sample_id') |>
+    select(src_subject_id, donor, sex, interview_age, image_file)
+
+#   Create a version with just one donor per row and immediate phenotype data
+#   only
+pd = sample_info |>
+    group_by(donor) |>
+    slice_head(n = 1) |>
+    ungroup() |>
+    select(donor, sex, interview_age)
 
 #-------------------------------------------------------------------------------
 #   IF images
 #-------------------------------------------------------------------------------
 
-read_excel(if_sample_info_path) |>
+sample_info_if = read_excel(if_sample_info_path) |>
     head(n = 4) |>
     mutate(
         src_subject_id = sprintf('%s_%s', `Slide SN #`, `Array #`),
         donor = paste0('Br', BrNumbr),
         image_file = sprintf(if_image_paths, src_subject_id)
-    )
+    ) |>
+    left_join(pd, by = 'donor') |>
+    select(src_subject_id, donor, sex, interview_age, image_file)
 
 meta_if = tibble(
         donor = if_ids,
