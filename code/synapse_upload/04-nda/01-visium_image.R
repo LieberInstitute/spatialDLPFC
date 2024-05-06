@@ -1,6 +1,7 @@
 library(tidyverse)
 library(here)
 library(readxl)
+library(rjson)
 
 he_sample_info_path = here(
     'processed-data', 'rdata', 'spe', '01_build_spe', 'spe_sample_info.csv'
@@ -38,13 +39,28 @@ guids = c(
 #   Functions
 ################################################################################
 
-get_image_metadata = function(image_paths) {
-    for (image_path in image_paths) {
-        readTIFF(image_path, payload = FALSE) |>
-            as_tibble() |>
-            rename(image_extent1 = width, image_extent2 = length) |>
+get_image_metadata = function(sample_info) {
+    meta_list = list()
+    for (i in 1:nrow(sample_info)) {
+        #   From: https://www.10xgenomics.com/support/software/space-ranger/latest/analysis/outputs/spatial-outputs
+        #   "The number of pixels that span the diameter of a theoretical 65µm
+        #   spot in the original, full-resolution image."
+        #   Here, we're computing the image density in micrometers per pixel
+        um_per_px = 65 / fromJSON(file = sample_info$spaceranger_json[i])[['spot_diameter_fullres']]
 
+        #   Grab image dimensions from the TIFF's metadata and compute um extent
+        meta_list[[i]] = readTIFF(sample_info$image_file[i], payload = FALSE) |>
+            as_tibble() |>
+            #   Dimension size in pixels
+            rename(image_resolution1 = width, image_resolution2 = length) |>
+            #   Dimension size in um
+            mutate(
+                image_extent1 = image_resolution1 * um_per_px,
+                image_extent2 = image_resolution2 * um_per_px
+            ) |>
+            select(matches('^image_'))
     }
+    return(cbind(sample_info, do.call(rbind, meta_list)))
 }
 
 ################################################################################
@@ -59,7 +75,10 @@ get_image_metadata = function(image_paths) {
 sample_info = read_csv(he_sample_info_path, show_col_types = FALSE) |>
     rename(interview_age = age) |>
     select(sample_id, sex, interview_age) |>
-    mutate(donor = str_extract(sample_id, '^Br[0-9]{4}'))
+    mutate(
+        sample_id = str_replace(sample_id, '_2$', ''),
+        donor = str_extract(sample_id, '^Br[0-9]{4}')
+    )
 
 sample_info_2 = read_excel(he_sample_info_2_path) |>
     head(n = 30) |>
@@ -71,8 +90,13 @@ sample_info_2 = read_excel(he_sample_info_2_path) |>
             '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
             here('raw-data')
         ),
-        spaceranger_json = file.path(
-            `spaceranger file path`, 'outs', 'spatial', 'scalefactors_json.json'
+        spaceranger_json = str_replace(
+            file.path(
+                `spaceranger file path`, 'outs', 'spatial',
+                'scalefactors_json.json'
+            ),
+            '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
+            here('processed-data')
         )
     ) |>
     select(sample_id, src_subject_id, image_file, spaceranger_json)
@@ -91,6 +115,30 @@ pd = sample_info |>
     slice_head(n = 1) |>
     ungroup() |>
     select(donor, sex, interview_age)
+
+#-------------------------------------------------------------------------------
+#   Fix bad spaceranger JSON paths
+#-------------------------------------------------------------------------------
+
+#   Fix misnamed sample IDs
+temp = str_replace(sample_info$spaceranger_json, 'manual_alignment', 'extra_reads')
+sample_info$spaceranger_json = ifelse(
+    !file.exists(sample_info$spaceranger_json) & file.exists(temp),
+    temp, sample_info$spaceranger_json
+)
+
+#   Fix misplaced spaceranger outputs
+temp = str_replace(
+    sample_info$spaceranger_json,
+    'NextSeq(/Round[234])?',
+    'NextSeq_not_used'
+)
+sample_info$spaceranger_json = ifelse(
+    !file.exists(sample_info$spaceranger_json) & file.exists(temp),
+    temp, sample_info$spaceranger_json
+)
+
+stopifnot(all(file.exists(sample_info$spaceranger_json)))
 
 #-------------------------------------------------------------------------------
 #   IF images
@@ -130,7 +178,7 @@ sample_info = rbind(sample_info, sample_info_if) |>
 #   Fill in main metadata expected for the data structure
 ################################################################################
 
-meta_if = tibble(
+meta = tibble(
         image_file = sample_info$image_file,
         image_description = ifelse(
             sample_info$image_type == "H&E",
@@ -179,8 +227,4 @@ meta_if = tibble(
         #   image_extent1, image_extent2, "image_unit1", "image_unit2",
         #   "image_resolution1", "image_resolution2"
     )
-
-meta = rbind(meta_if, meta_he) |>
-    left_join(sample_info, by = 'donor') |>
-    select(-donor)
     
