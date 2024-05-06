@@ -62,7 +62,9 @@ sample_info_2 = read_excel(he_sample_info_2_path) |>
     select(sample_id, src_subject_id, image_file)
 
 sample_info = left_join(sample_info, sample_info_2, by = 'sample_id') |>
-    select(src_subject_id, donor, sex, interview_age, image_file)
+    select(src_subject_id, donor, sex, interview_age, image_file) |>
+    #   For internally distinguishing between IF and H&E samples
+    mutate(interview_date = '06/25/2020', image_type = "H&E")
 
 #   Create a version with just one donor per row and immediate phenotype data
 #   only
@@ -84,31 +86,71 @@ sample_info_if = read_excel(if_sample_info_path) |>
         image_file = sprintf(if_image_paths, src_subject_id)
     ) |>
     left_join(pd, by = 'donor') |>
-    select(src_subject_id, donor, sex, interview_age, image_file)
+    select(src_subject_id, donor, sex, interview_age, image_file) |>
+    #   For internally distinguishing between IF and H&E samples
+    mutate(interview_date = '06/25/2022', image_type = "IF")
+
+#-------------------------------------------------------------------------------
+#   Combine and add guids
+#-------------------------------------------------------------------------------
+
+sample_info = rbind(sample_info, sample_info_if) |>
+    #   Add in guid associated with each donor
+    left_join(tibble(donor = pd$donor, subjectkey = guids), by = 'donor') |>
+    select(-donor)
+
+################################################################################
+#   Fill in main metadata expected for the data structure
+################################################################################
 
 meta_if = tibble(
-        donor = if_ids,
-        image_file = sprintf(if_image_paths, if_ids),
-        image_description = "Leica CS2",
+        image_file = sample_info$image_file,
+        image_description = ifelse(
+            sample_info$image_type == "H&E",
+            "Leica CS2", "Vectra Polaris + inForm unmixing"
+        ),
         scan_type = "microscopy",
         scan_object = "Post-mortem",
         image_file_format = "TIFF",
         image_modality = "microscopy",
-        transformation_performed = "No",
-        transformation_type = NA,
-        image_history = NA,
+        transformation_performed = ifelse(
+            sample_info$image_type == "H&E", "No", "Yes"
+        ),
+        transformation_type = ifelse(
+            sample_info$image_type == "H&E", NA, "spectral unmixing"
+        ),
+        image_history = ifelse(
+            sample_info$image_type == "H&E",
+            NA, "single channel selected after spectral unmixing"
+        ),
         image_num_dimensions = 2,
-        emission_wavelength = "300-700",
-        objective_magnification = "40x",
+        emission_wavelength = ifelse(
+            sample_info$image_type == "H&E", "300-700", "600"
+        ),
+        objective_magnification = ifelse(
+            sample_info$image_type == "H&E", "40x", "20x"
+        ),
         objective_na = 0.75,
         immersion = 0,
-        exposure_time = NA,
-        stain = "H&E",
-        pipeline_stage = 1,
+        exposure_time = ifelse(
+            sample_info$image_type == "H&E",
+            NA, 0.0021 # "DAPI: 0.0021; Opal 520: 0.143; Opal 570: 0.330; Opal 620: 0.2; Opal 690: 1.07; Autofluorescence: 0.1"
+        ),
+        stain = sample_info$image_type,
+        stain_details = ifelse(
+            sample_info$image_type == "H&E",
+            TODO,
+            "Immunofluorescence (IF) staining was conducted according to the manufacturer’s instruction (catalog no.CG000312 Rev C, 10x Genomics). In brief, tissue blocks were cryosectioned at 10μm thickness and tissue sections were collected on a Visium Spatial Gene Expression Slide (catalog no. 2000233, 10x Genomics). Tissue was then fixed in pre-chilled methanol, treated with BSA-containing blocking buffer, and incubated for 30 minutes at room temperature with primary antibodies against the four cell-type marker proteins, NeuN for neurons, TMEM119 for microglia, GFAP for astrocytes, and OLIG2 for oligodendrocytes. For primary antibodies we used mouse anti-NeuN antibody conjugated to Alexa 488 (Sigma Aldrich, Cat# MAB377X, 1:100), rabbit anti-TMEM119 antibody (Sigma Aldrich, Cat# HPA051870, 1:20), rat anti-GFAP antibody (Thermofisher, Cat# 13-0300, 1:100), and goat anti-OLIG2 antibody (R&D systems, Cat# AF2418, 1:20). Following a total of 5 washes, secondary antibodies were applied for 30 minutes at room temperature. Detailed product information of the secondary antibodies is provided as follows: donkey anti-rabbit IgG conjugated to Alexa 555 (Thermofisher, Cat# A-31572, 1:300), donkey anti-rat IgG conjugated to Alexa 594 (Thermofisher, Cat# A-21209, 1:600), and donkey anti-goat IgG conjugated to Alexa 647 (Thermofisher, Cat# A-21447, 1:400). DAPI (Thermofisher, Cat# D1306, 1:3000, Final 1.67 μg/ml) was used for nuclear counterstaining."
+        ),
+        pipeline_stage = ifelse(
+            sample_info$image_type == "H&E", 1, 2
+        ),
         deconvolved = 0,
-        type_of_microscopy = "BF",
+        type_of_microscopy = ifelse(
+            sample_info$image_type == "H&E", "BF", "WFF"
+        )
         #   image_extent1, image_extent2, "image_unit1", "image_unit2",
-        #   "image_resolution1", "image_resolution2", stain_details
+        #   "image_resolution1", "image_resolution2"
     )
 
 meta = rbind(meta_if, meta_he) |>
