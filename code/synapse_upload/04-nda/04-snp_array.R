@@ -5,6 +5,7 @@ library(sessioninfo)
 
 geno_dir = '/dcs05/lieber/liebercentral/libdGenotype_LIBD001/BrainGenotyping/subsets/sc_n10_Nick'
 pd_path <- here("processed-data", "synapse_upload", "04-nda", "pheno_data.csv")
+out_dir = here('processed-data', 'synapse_upload', '04-nda')
 
 #   The set of columns we have information for in the SNP Array data structure
 col_names <- c(
