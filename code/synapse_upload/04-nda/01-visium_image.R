@@ -113,16 +113,22 @@ sample_info = left_join(sample_info, sample_info_2, by = 'sample_id') |>
     #   For internally distinguishing between IF and H&E samples
     mutate(interview_date = '06/25/2020', stain = "H&E")
 
-#   Create a version with just one donor per row and immediate phenotype data
-#   only
-pd = sample_info |>
-    group_by(donor) |>
-    slice_head(n = 1) |>
-    ungroup() |>
-    select(donor, sex, interview_age)
+#-------------------------------------------------------------------------------
+#   Phenotype data that applies to many NDA data structures
+#-------------------------------------------------------------------------------
+
+#   Just one row per donor
+pd = tibble(
+        donor = unique(sample_info$donor),
+        subjectkey = guids
+    ) |>
+    left_join(sample_info, by = 'donor', multiple = "any") |>
+    select(donor, subjectkey, interview_date, interview_age, sex)
+
+write_csv(pd, file.path(out_dir, "pheno_data.csv"))
 
 #-------------------------------------------------------------------------------
-#   Fix bad spaceranger JSON paths
+#   H&E: fix bad spaceranger JSON paths
 #-------------------------------------------------------------------------------
 
 #   Fix misnamed sample IDs
@@ -176,7 +182,7 @@ sample_info_if = read_excel(if_sample_info_path) |>
 
 sample_info = rbind(sample_info, sample_info_if) |>
     #   Add in guid associated with each donor
-    left_join(tibble(donor = pd$donor, subjectkey = guids), by = 'donor')
+    left_join(pd |> select(donor, subjectkey), by = 'donor')
 
 sample_info = add_image_metadata(sample_info)
 
