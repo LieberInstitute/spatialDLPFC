@@ -101,7 +101,7 @@ sample_info |>
         hcdi_organ = 6, # brain
         submission_file_name = data_file1,
         file_status = 1, # raw data
-        visium_protocol_version = ifelse(assay_internal == "snRNA-seq", NA, "V2")
+        visium_protocol_version = ifelse(assay_internal == "snRNA-seq", NA, "V1")
     ) |>
     select(any_of(col_names)) |>
     write_csv(file.path(out_dir, 'rna_seq.csv'))
