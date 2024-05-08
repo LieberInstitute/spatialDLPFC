@@ -14,6 +14,9 @@ he_sample_info_2_path = here(
 if_sample_info_path = here(
     'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
 )
+image_map_path = here(
+    "processed-data", 'synapse_upload', '04-nda', 'image_mapping.csv'
+)
 if_image_paths = here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '%s.tif')
 out_dir = here('processed-data', 'synapse_upload', '04-nda')
 
@@ -90,11 +93,13 @@ sample_info_2 = read_excel(he_sample_info_2_path) |>
     rename(sample_id = `sample name`) |>
     mutate(
         src_subject_id = sprintf('%s_%s', `slide#`, `array number`),
-        image_file = str_replace(
-            `image file path`,
-            '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
-            here('raw-data')
-        ),
+        #   Before compressing images in 05-compress_images.R, the uncompressed
+        #   paths were used
+        # image_file = str_replace(
+        #     `image file path`,
+        #     '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
+        #     here('raw-data')
+        # ),
         spaceranger_json = str_replace(
             file.path(
                 `spaceranger file path`, 'outs', 'spatial',
@@ -104,12 +109,19 @@ sample_info_2 = read_excel(he_sample_info_2_path) |>
             here('processed-data')
         )
     ) |>
-    select(sample_id, src_subject_id, image_file, spaceranger_json)
+    select(sample_id, src_subject_id, spaceranger_json)
 
 sample_info = left_join(sample_info, sample_info_2, by = 'sample_id') |>
     select(
-        src_subject_id, donor, sex, interview_age, image_file, spaceranger_json
+        src_subject_id, donor, sex, interview_age, spaceranger_json
     ) |>
+    #   Add path to compressed images
+    left_join(
+        read_csv(image_map_path, show_col_types = FALSE) |>
+            select(-original_path),
+        by = 'src_subject_id'
+    ) |>
+    rename(image_file = compressed_path) |>
     #   For internally distinguishing between IF and H&E samples
     mutate(interview_date = '06/25/2020', stain = "H&E")
 
