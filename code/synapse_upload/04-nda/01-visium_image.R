@@ -81,9 +81,10 @@ add_image_metadata = function(sample_info) {
 #-------------------------------------------------------------------------------
 
 sample_info = read_csv(he_sample_info_path, show_col_types = FALSE) |>
-    rename(interview_age = age) |>
-    select(sample_id, sex, interview_age) |>
+    select(sample_id, sex, age) |>
     mutate(
+        #   Age must be number of months as an integer
+        interview_age = as.integer(round(age * 12, 0)),
         sample_id = str_replace(sample_id, '_2$', ''),
         donor = str_extract(sample_id, '^Br[0-9]{4}')
     )
