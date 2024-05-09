@@ -1,14 +1,11 @@
-#   Confusingly, this script was run after executing a version of 01-visium.R
-#   that used paths to uncompressed images. After running this script,
-#   01-visium.R was rewritten to point to the newly created compressed image
-#   paths, thus making this script in a sense obsolete
+#   In the final workflow, this script is actually run before 01-visium_image.R
 
 library(tidyverse)
 library(here)
 library(sessioninfo)
 
 image_meta_path = here(
-    "processed-data", 'synapse_upload', '04-nda', 'VisiumImage.csv'
+   'processed-data', 'synapse_upload', '04-nda', "imaging_sample_info.csv"
 )
 image_out_dir = here(
     "processed-data", 'synapse_upload', '04-nda', 'compressed_images'
