@@ -2,7 +2,7 @@
 #
 #   - One with 34 rows (all H&E and IF samples) and columns for sample ID,
 #     GUID, donor, sex, age, interveiw_date, image file, alignment file, fastq
-#     files, and loupe version
+#     files, spaceranger JSON, and loupe version
 #   - One with 10 rows (one per donor) with sample ID, GUID, donor, sex, age,
 #     and interview_date
 #
@@ -42,6 +42,15 @@ he_info = read_csv(he_sample_info_path, show_col_types = FALSE) |>
     ) |>
     select(sample_id, donor, sex, interview_age)
 
+all_json_paths = file.path(
+    list.files(
+        here("processed-data", "rerun_spaceranger"), full.names = TRUE,
+        pattern = '^DLPFC'
+    ),
+    "outs", "spatial", "scalefactors_json.json"
+)
+stopifnot(all(file.exists(all_json_paths)))
+
 he_info = read_delim(
         he_sr_params_path, col_names = FALSE, delim = " ",
         show_col_types = FALSE
@@ -52,12 +61,15 @@ he_info = read_delim(
         loupe_version = "5.1.0",
         fastq_files = str_replace_all(X6, ',', ';'),
         interview_date = '06/25/2020',
-        stain = "H&E"
+        stain = "H&E",
+        spaceranger_json = sapply(
+            sample_id, function(x) all_json_paths[grep(x, all_json_paths)]
+        )
     ) |>
     rename(image_file = X4, alignment_file = X5) |>
     select(
         sample_id, src_subject_id, loupe_version, fastq_files, image_file,
-        alignment_file, interview_date, stain
+        alignment_file, interview_date, stain, spaceranger_json
     ) |>
     #   Add phenotype data
     left_join(he_info, by = 'sample_id') |>
@@ -92,6 +104,7 @@ if_info = read_tsv(
         if_sr_params_path, col_names = FALSE, show_col_types = FALSE
     ) |>
     mutate(
+        sample_id = X1, # Don't really need this, but including it to match with H&E
         donor = str_extract(X1, '^Br[0-9]{4}'),
         src_subject_id = sprintf('%s_%s', X2, X3),
         loupe_version = "6.0.0",
@@ -100,12 +113,16 @@ if_info = read_tsv(
             function(x) paste(list.files(x, full.names = TRUE), collapse = ';')
         ),
         interview_date = '06/25/2022',
-        stain = "IF"
+        stain = "IF",
+        spaceranger_json = here(
+            "processed-data", "01_spaceranger_IF", X1, "outs", "spatial",
+            "scalefactors_json.json"
+        )
     ) |>
     rename(image_file = X4, alignment_file = X5) |>
     select(
         donor, src_subject_id, loupe_version, fastq_files, image_file,
-        alignment_file, interview_date, stain
+        alignment_file, interview_date, stain, spaceranger_json
     ) |>
     left_join(pd, by = 'donor')
 
@@ -121,6 +138,11 @@ stopifnot(identical(sort(colnames(if_info)), sort(colnames(he_info))))
 
 if_info = if_info[,colnames(he_info)]
 sample_info = rbind(he_info, if_info)
+
+#   All file paths should exist
+stopifnot(all(file.exists(sample_info$spaceranger_json)))
+stopifnot(all(file.exists(sample_info$image_file)))
+stopifnot(all(file.exists(sample_info$alignment_file)))
 
 write_csv(sample_info, file.path(out_dir, "imaging_sample_info.csv"))
 
