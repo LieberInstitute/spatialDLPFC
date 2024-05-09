@@ -9,13 +9,13 @@ library(here)
 library(readxl)
 library(sessioninfo)
 
-he_sample_info_path <- here(
-    "raw-data", "sample_info", "Visium_dlpfc_mastersheet.xlsx"
+sample_info_path = here(
+   'processed-data', 'synapse_upload', '04-nda', "imaging_sample_info.csv"
 )
+pd_path <- here("processed-data", "synapse_upload", "04-nda", "pheno_data.csv")
 fastq_mapping_path <- here(
     "raw-data", "FASTQ_Globus", "fastq_mapping.csv"
 )
-pd_path <- here("processed-data", "synapse_upload", "04-nda", "pheno_data.csv")
 out_dir = here('processed-data', 'synapse_upload', '04-nda')
 
 #   All columns in the data structure (even those we have no info for)
@@ -56,22 +56,65 @@ col_names <- c(
 )
 
 ################################################################################
-#   Gather basic sample info: one row per FASTQ
+#   Load in and clean snRNA-seq sample info
 ################################################################################
 
-sample_info <- read_csv(fastq_mapping_path, show_col_types = FALSE) |>
+sn_sample_info <- read_csv(fastq_mapping_path, show_col_types = FALSE) |>
+    filter(assay == "snRNA-seq") |>
     select(sample_id, donor, fastq_globus, assay) |>
     rename(
         data_file1 = fastq_globus,
         src_subject_id = sample_id,
         assay_internal = assay
     ) |>
-    mutate(data_file1_type = "FASTQ") |>
+    mutate(
+        data_file1_type = "snRNA-seq FASTQ file", interview_date = "06/25/2020",
+        loupe_version = NA
+    ) |>
     left_join(
         read_csv(pd_path, show_col_types = FALSE),
         by = "donor"
     ) |>
     select(-donor)
+
+################################################################################
+#   Load in and "unravel" imaging-related sample_info such that each row
+#   contains a unique file (image, FASTQ, or alignment file)
+################################################################################
+
+sample_info = read_csv(sample_info_path, show_col_types = FALSE)
+
+fastq_map = sample_info |>
+    mutate(data_file1 = strsplit(fastq_files, ';')) |>
+    unnest(data_file1) |>
+    select(src_subject_id, data_file1) |>
+    mutate(data_file1_type = "Visium FASTQ file")
+
+others_map = sample_info |>
+    pivot_longer(
+        cols = c(image_file, alignment_file),
+        values_to = "data_file1", names_to = "data_file1_type"
+    ) |>
+    mutate(
+        data_file1_type = case_when(
+            data_file1_type == "image_file" ~ "TIFF image",
+            data_file1_type == "alignment_file" ~ "Loupe alignment JSON"
+        )
+    ) |>
+    select(src_subject_id, data_file1, data_file1_type)
+
+sample_info = rbind(fastq_map, others_map) |>
+    left_join(
+        sample_info |>
+            select(-c(image_file, fastq_files, alignment_file)),
+        by = 'src_subject_id'
+    ) |>
+    mutate(assay_internal = ifelse(stain == "H&E", "Visium", "Visium-SPG")) |>
+    select(-c(donor, spaceranger_json, stain))
+    
+stopifnot(identical(sort(colnames(sample_info)), sort(colnames(sn_sample_info))))
+sn_sample_info = sn_sample_info[, colnames(sample_info)]
+sample_info = rbind(sample_info, sn_sample_info)
 
 ################################################################################
 #   Add additional fields as appropriate for the assay: Visium, Visium-SPG, or
