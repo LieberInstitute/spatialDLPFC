@@ -5,19 +5,12 @@ library(rjson)
 library(sessioninfo)
 library(tiff)
 
-he_sample_info_path = here(
-    'processed-data', 'rdata', 'spe', '01_build_spe', 'spe_sample_info.csv'
-)
-he_sample_info_2_path = here(
-    'raw-data', 'sample_info', 'Visium_dlpfc_mastersheet.xlsx'
-)
-if_sample_info_path = here(
-    'raw-data', 'sample_info', 'Visium_IF_DLPFC_MasterExcel_01262022.xlsx'
+sample_info_path = here(
+   'processed-data', 'synapse_upload', '04-nda', "imaging_sample_info.csv"
 )
 image_map_path = here(
     "processed-data", 'synapse_upload', '04-nda', 'image_mapping.csv'
 )
-if_image_paths = here('raw-data', 'Images', 'VisiumIF', 'VistoSeg', '%s.tif')
 out_dir = here('processed-data', 'synapse_upload', '04-nda')
 
 col_names = c(
@@ -30,13 +23,6 @@ col_names = c(
     "emission_wavelength", "objective_magnification", "objective_na",
     "immersion", "exposure_time", "stain", "stain_details",
     "pipeline_stage", "deconvolved", "type_of_microscopy"
-)
-
-guids = c(
-    "NDAR_INVBM879VT6", "NDAR_INVZN585KGQ", "NDAR_INVEJ479WEA",
-    "NDAR_INVCH371AU1", "NDAR_INVGP756DP1", "NDAR_INVCE963WP1",
-    "NDAR_INVPY786FH2", "NDAR_INVRD044HHV", "NDAR_INVUM090ZYX",
-    "NDAR_INVTG948WW3"
 )
 
 ################################################################################
@@ -54,7 +40,8 @@ add_image_metadata = function(sample_info) {
         #   "The number of pixels that span the diameter of a theoretical 65µm
         #   spot in the original, full-resolution image."
         #   Here, we're computing the image density in micrometers per pixel
-        um_per_px = 65 / fromJSON(file = sample_info$spaceranger_json[i])[['spot_diameter_fullres']]
+        um_per_px = 65 /
+            fromJSON(file = sample_info$spaceranger_json[i])[['spot_diameter_fullres']]
 
         #   Grab image dimensions from the TIFF's metadata and compute um extent
         meta_list[[i]] = readTIFF(sample_info$image_file[i], payload = FALSE) |>
@@ -68,136 +55,23 @@ add_image_metadata = function(sample_info) {
             ) |>
             select(matches('^image_'))
     }
-    return(cbind(sample_info, do.call(rbind, meta_list)))
+    return(as_tibble(cbind(sample_info, do.call(rbind, meta_list))))
 }
 
 ################################################################################
-#   Read in and preprocess sample info: gather age, sex, ID, image path, and
-#   spaceranger JSON for all H&E and IF samples
+#   Read in sample info and add image dimension info
 ################################################################################
 
-#-------------------------------------------------------------------------------
-#   H&E images
-#-------------------------------------------------------------------------------
-
-sample_info = read_csv(he_sample_info_path, show_col_types = FALSE) |>
-    select(sample_id, sex, age) |>
-    mutate(
-        #   Age must be number of months as an integer
-        interview_age = as.integer(round(age * 12, 0)),
-        sample_id = str_replace(sample_id, '_2$', ''),
-        donor = str_extract(sample_id, '^Br[0-9]{4}')
-    )
-
-sample_info_2 = read_excel(he_sample_info_2_path) |>
-    head(n = 30) |>
-    rename(sample_id = `sample name`) |>
-    mutate(
-        src_subject_id = sprintf('%s_%s', `slide#`, `array number`),
-        #   Before compressing images in 05-compress_images.R, the uncompressed
-        #   paths were used
-        # image_file = str_replace(
-        #     `image file path`,
-        #     '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
-        #     here('raw-data')
-        # ),
-        spaceranger_json = str_replace(
-            file.path(
-                `spaceranger file path`, 'outs', 'spatial',
-                'scalefactors_json.json'
-            ),
-            '/dcl02/lieber/ajaffe/SpatialTranscriptomics/LIBD/spatialDLPFC',
-            here('processed-data')
-        )
-    ) |>
-    select(sample_id, src_subject_id, spaceranger_json)
-
-sample_info = left_join(sample_info, sample_info_2, by = 'sample_id') |>
-    select(
-        src_subject_id, donor, sex, interview_age, spaceranger_json
-    ) |>
-    #   Add path to compressed images
+sample_info = read_csv(sample_info_path, show_col_types = FALSE) |>
+    add_image_metadata() |>
+    #   Replace image path with the compressed version
+    select(-image_file) |>
     left_join(
         read_csv(image_map_path, show_col_types = FALSE) |>
             select(-original_path),
         by = 'src_subject_id'
     ) |>
-    rename(image_file = compressed_path) |>
-    #   For internally distinguishing between IF and H&E samples
-    mutate(interview_date = '06/25/2020', stain = "H&E")
-
-#-------------------------------------------------------------------------------
-#   Phenotype data that applies to many NDA data structures
-#-------------------------------------------------------------------------------
-
-#   Just one row per donor
-pd = tibble(
-        donor = unique(sample_info$donor),
-        subjectkey = guids
-    ) |>
-    left_join(sample_info, by = 'donor', multiple = "any") |>
-    select(donor, subjectkey, interview_date, interview_age, sex)
-
-write_csv(pd, file.path(out_dir, "pheno_data.csv"))
-
-#-------------------------------------------------------------------------------
-#   H&E: fix bad spaceranger JSON paths
-#-------------------------------------------------------------------------------
-
-#   Fix misnamed sample IDs
-temp = str_replace(sample_info$spaceranger_json, 'manual_alignment', 'extra_reads')
-sample_info$spaceranger_json = ifelse(
-    !file.exists(sample_info$spaceranger_json) & file.exists(temp),
-    temp, sample_info$spaceranger_json
-)
-
-#   Fix misplaced spaceranger outputs
-temp = str_replace(
-    sample_info$spaceranger_json,
-    'NextSeq(/Round[234])?',
-    'NextSeq_not_used'
-)
-sample_info$spaceranger_json = ifelse(
-    !file.exists(sample_info$spaceranger_json) & file.exists(temp),
-    temp, sample_info$spaceranger_json
-)
-
-stopifnot(all(file.exists(sample_info$spaceranger_json)))
-
-#-------------------------------------------------------------------------------
-#   IF images
-#-------------------------------------------------------------------------------
-
-sample_info_if = read_excel(if_sample_info_path) |>
-    head(n = 4) |>
-    mutate(
-        src_subject_id = sprintf('%s_%s', `Slide SN #`, `Array #`),
-        donor = paste0('Br', BrNumbr),
-        image_file = sprintf(if_image_paths, src_subject_id),
-        sample_id = sprintf(
-            '%s_%s_IF', donor, str_extract(Br_Region, '(Ant|Post)')
-        ),
-        spaceranger_json = here(
-            'processed-data', '01_spaceranger_IF', sample_id, 'outs', 'spatial',
-            'scalefactors_json.json'
-        )
-    ) |>
-    left_join(pd, by = 'donor') |>
-    select(
-        src_subject_id, donor, sex, interview_age, image_file, spaceranger_json
-    ) |>
-    #   For internally distinguishing between IF and H&E samples
-    mutate(interview_date = '06/25/2022', stain = "IF")
-
-#-------------------------------------------------------------------------------
-#   Combine, add guids, and add image dimension info
-#-------------------------------------------------------------------------------
-
-sample_info = rbind(sample_info, sample_info_if) |>
-    #   Add in guid associated with each donor
-    left_join(pd |> select(donor, subjectkey), by = 'donor')
-
-sample_info = add_image_metadata(sample_info)
+    rename(image_file = compressed_path)
 
 ################################################################################
 #   Fill in main metadata expected for the data structure
@@ -205,6 +79,7 @@ sample_info = add_image_metadata(sample_info)
 
 sample_info = sample_info |>
     mutate(
+        interview_date = ifelse(stain == "H&E", '06/25/2020', '06/25/2022'),
         image_description = ifelse(
             stain == "H&E", "Leica CS2", "Vectra Polaris + inForm unmixing"
         ),
@@ -251,6 +126,6 @@ sample_info = sample_info |>
     ) |>
     select(all_of(col_names))
 
-write_csv(sample_info, file.path(out_dir, 'VisiumImage.csv'))
+write_csv(sample_info, file.path(out_dir, 'visium_image.csv'))
 
 session_info()
