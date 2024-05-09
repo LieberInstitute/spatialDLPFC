@@ -50,8 +50,8 @@ add_image_metadata = function(sample_info) {
             rename(image_resolution1 = width, image_resolution2 = length) |>
             #   Dimension size in um
             mutate(
-                image_extent1 = image_resolution1 * um_per_px,
-                image_extent2 = image_resolution2 * um_per_px
+                image_extent1 = as.integer(round(image_resolution1 * um_per_px, 0)),
+                image_extent2 = as.integer(round(image_resolution2 * um_per_px))
             ) |>
             select(matches('^image_'))
     }
@@ -111,7 +111,7 @@ sample_info = sample_info |>
             stain == "H&E", "300-700", "600"
         ),
         objective_magnification = ifelse(
-            stain == "H&E", "40x", "20x"
+            stain == "H&E", "40", "20"
         ),
         objective_na = 0.75,
         immersion = 0,
