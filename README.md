@@ -188,11 +188,10 @@ work!
 
 ## Citing our work
 
-Please cite this [manuscript](https://doi.org/10.1101/2023.02.15.528722)
+Please cite this [manuscript](https://doi.org/10.1126/science.adh1938)
 if you use data from this project.
 
-> Integrated single cell and unsupervised spatial transcriptomic
-> analysis defines molecular anatomy of the human dorsolateral
+> A data-driven single-cell and spatial transcriptomic map of the human
 > prefrontal cortex Louise A. Huuki-Myers, Abby Spangler, Nicholas J.
 > Eagles, Kelsey D. Montgomery, Sang Ho Kwon, Boyi Guo, Melissa
 > Grant-Peters, Heena R. Divecha, Madhavi Tippani, Chaichontat
@@ -200,21 +199,19 @@ if you use data from this project.
 > Arta Seyedian, PsychENCODE Consortium, Thomas M. Hyde, Joel E.
 > Kleinman, Alexis Battle, Stephanie C. Page, Mina Ryten, Stephanie C.
 > Hicks, Keri Martinowich, Leonardo Collado-Torres, Kristen R. Maynard
-> bioRxiv 2023.02.15.528722; doi:
-> <https://doi.org/10.1101/2023.02.15.528722>
+> *Science* 384, eadh1938 (2024).; doi:
+> <https://doi.org/10.1126/science.adh1938>
 
 Below is the citation in [`BibTeX`](http://www.bibtex.org/) format.
 
-    @article {Huuki-Myers2023.02.15.528722,
+    @article {Huuki-Myers2024.eadh1938,
         author = {Huuki-Myers, Louise A. and Spangler, Abby and Eagles, Nicholas J. and Montgomery, Kelsey D. and Kwon, Sang Ho and Guo, Boyi and Grant-Peters, Melissa and Divecha, Heena R. and Tippani, Madhavi and Sriworarat, Chaichontat and Nguyen, Annie B. and Ravichandran, Prashanthi and Tran, Matthew N. and Seyedian, Arta and , and Hyde, Thomas M. and Kleinman, Joel E. and Battle, Alexis and Page, Stephanie C. and Ryten, Mina and Hicks, Stephanie C. and Martinowich, Keri and Collado-Torres, Leonardo and Maynard, Kristen R.},
-        title = {Integrated single cell and unsupervised spatial transcriptomic analysis defines molecular anatomy of the human dorsolateral prefrontal cortex},
-        elocation-id = {2023.02.15.528722},
-        year = {2023},
-        doi = {10.1101/2023.02.15.528722},
-        publisher = {Cold Spring Harbor Laboratory},
-        URL = {https://www.biorxiv.org/content/early/2023/02/15/2023.02.15.528722},
-        eprint = {https://www.biorxiv.org/content/early/2023/02/15/2023.02.15.528722.full.pdf},
-        journal = {bioRxiv}
+        title = {A data-driven single-cell and spatial transcriptomic map of the human prefrontal cortex},
+        year = {2024},
+        doi = {10.1126/science.adh1938},
+        publisher = {American Association for the Advancement of Science (AAAS)},
+        URL = {https://doi.org/10.1126/science.adh1938},
+        journal = {Science}
     }
 
 ### Cite `spatialLIBD`
@@ -433,19 +430,10 @@ p16
 
 ### Raw data
 
-The source data described in this manuscript are available via the
-PsychENCODE Knowledge Portal (<https://PsychENCODE.synapse.org/>). The
-PsychENCODE Knowledge Portal is a platform for accessing data, analyses,
-and tools generated through grants funded by the National Institute of
-Mental Health (NIMH) PsychENCODE Consortium. Data is available for
-general research use according to the following requirements for data
-access and data attribution:
-(<https://PsychENCODE.synapse.org/DataAccess>). For access to content
-described in this manuscript see:
-<https://doi.org/10.7303/syn51032055.1> or
-<https://www.synapse.org/#!Synapse:syn51032055/datasets/>. All figure
-and table files are available from
-<https://www.synapse.org/#!Synapse:syn50908929>.
+The source data described in this manuscript are available from the
+[National Institute of Mental Health (NIMH) Data
+Archive](https://nda.nih.gov/) at doi:
+[10.15154/7893-6778](https://doi.org/10.15154/7893-6778).
 
 You can also access all the raw data through
 [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC` and
