@@ -21,7 +21,7 @@ col_names = c(
     "image_num_dimensions", "image_extent1", "image_extent2", "image_unit1",
     "image_unit2", "image_resolution1", "image_resolution2",
     "emission_wavelength", "objective_magnification", "objective_na",
-    "immersion", "exposure_time", "stain", "stain_details",
+    "immersion", "stain", "stain_details",
     "pipeline_stage", "deconvolved", "type_of_microscopy"
 )
 
@@ -115,9 +115,9 @@ sample_info = sample_info |>
         ),
         objective_na = 0.75,
         immersion = 0,
-        exposure_time = ifelse(
-            stain == "H&E", NA, 0.0021 # "DAPI: 0.0021; Opal 520: 0.143; Opal 570: 0.330; Opal 620: 0.2; Opal 690: 1.07; Autofluorescence: 0.1"
-        ),
+        # exposure_time = ifelse(
+        #     stain == "H&E", NA, 0.0021 # "DAPI: 0.0021; Opal 520: 0.143; Opal 570: 0.330; Opal 620: 0.2; Opal 690: 1.07; Autofluorescence: 0.1"
+        # ),
         stain_details = ifelse(
             stain == "H&E",
             "H&E staining was conducted according to the manufacturer's instructions (protocol CG000160, Rev B, 10x Genomics)",
