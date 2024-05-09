@@ -10,6 +10,7 @@
 
 library(here)
 library(tidyverse)
+library(sessioninfo)
 
 he_sample_info_path = here(
     "processed-data", "rdata", "spe", "01_build_spe", "spe_sample_info.csv"
