@@ -126,7 +126,8 @@ sample_info = sample_info |> mutate(data_file1 = basename(data_file1))
 #   snRNA-seq
 ################################################################################
 
-sample_info |>
+out_path = file.path(out_dir, 'rna_seq.csv')
+sample_info = sample_info |>
     mutate(
         experiment_id = 2605,
         samplesubtype = ifelse(assay_internal == "snRNA-seq", 2, 3),
@@ -151,7 +152,15 @@ sample_info |>
         file_status = 1, # raw data
         visium_protocol_version = ifelse(assay_internal == "snRNA-seq", NA, "V1")
     ) |>
-    select(any_of(col_names)) |>
-    write_csv(file.path(out_dir, 'rna_seq.csv'))
+    select(any_of(col_names))
+
+#   Mimic the submission template from NDA, so this "CSV" can be directly
+#   validated with the validator without any reformatting
+write_csv(sample_info, out_path)
+formatted_info = c(
+    paste0('rna_seq,01', paste(rep(',', ncol(sample_info) - 2), collapse = "")),
+    readLines(out_path)
+)
+writeLines(formatted_info, out_path)
 
 session_info()

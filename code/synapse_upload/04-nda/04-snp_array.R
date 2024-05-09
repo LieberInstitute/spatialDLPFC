@@ -56,8 +56,18 @@ meta_df = tibble(
 
 writeLines(meta_df$data_file1, file.path(out_dir, 'snp_array_upload_list.txt'))
 
-meta_df |>
-    mutate(data_file1 = basename(data_file1)) |>
-    write_csv(file.path(out_dir, 'snp_array.csv'))
+meta_df = meta_df |>
+    mutate(data_file1 = basename(data_file1))
+
+out_path = file.path(out_dir, 'snp_array.csv')
+
+#   Mimic the submission template from NDA, so this "CSV" can be directly
+#   validated with the validator without any reformatting
+write_csv(meta_df, out_path)
+formatted_info = c(
+    paste0('snp_array,01', paste(rep(',', ncol(meta_df) - 2), collapse = "")),
+    readLines(out_path)
+)
+writeLines(formatted_info, out_path)
 
 session_info()

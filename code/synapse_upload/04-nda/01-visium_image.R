@@ -133,6 +133,14 @@ sample_info = sample_info |>
     ) |>
     select(all_of(col_names))
 
-write_csv(sample_info, file.path(out_dir, 'visium_image.csv'))
+#   Mimic the submission template from NDA, so this "CSV" can be directly
+#   validated with the validator without any reformatting
+out_path = file.path(out_dir, 'visium_image.csv')
+write_csv(sample_info, out_path)
+formatted_info = c(
+    paste0('visiumimage,01', paste(rep(',', ncol(sample_info) - 2), collapse = "")),
+    readLines(out_path)
+)
+writeLines(formatted_info, out_path)
 
 session_info()
