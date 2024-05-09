@@ -38,6 +38,7 @@ tibble(
     left_join(id_map, by = 'src_subject_id') |>
     left_join(pd, by = 'donor') |>
     mutate(
+        interview_date = '06/25/2020', # Use H&E date
         experiment_id = "LIBD spatial DLPFC",
         referenceset = 3, # GRCh37
         genotyping_chip_type = ifelse(
