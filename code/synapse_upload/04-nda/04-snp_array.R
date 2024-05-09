@@ -26,7 +26,7 @@ id_map = read_tsv(
 pd = read_csv(pd_path, show_col_types = FALSE)
 
 #   Gather, define, and export the necessary metadata to CSV
-tibble(
+meta_df = tibble(
         data_file1 = list.files(
             file.path(geno_dir, 'idats'), full.names = TRUE
         ),
@@ -39,20 +39,25 @@ tibble(
     left_join(pd, by = 'donor') |>
     mutate(
         interview_date = '06/25/2020', # Use H&E date
-        experiment_id = "LIBD spatial DLPFC",
+        experiment_id = 2605,
         referenceset = 3, # GRCh37
         genotyping_chip_type = ifelse(
             donor == "Br8325",
             "Infinium Omni2.5-8 v1.4",
             "Infinium Omni2.5-8 v1.5"
         ),
-        study = experiment_id,
+        study = "LIBD spatial DLPFC",
         psych_enc_exclude = 0, # not excluded
         psych_enc_exclude_reason = "Not excluded",
         platform = "Illumina genotyping microarray kit",
         assay = 14 # snpArray
     ) |>
-    select(all_of(col_names)) |>
+    select(all_of(col_names))
+
+writeLines(meta_df$data_file1, file.path(out_dir, 'snp_array_upload_list.txt'))
+
+meta_df |>
+    mutate(data_file1 = basename(data_file1)) |>
     write_csv(file.path(out_dir, 'snp_array.csv'))
 
 session_info()

@@ -73,6 +73,13 @@ sample_info = read_csv(sample_info_path, show_col_types = FALSE) |>
     ) |>
     rename(image_file = compressed_path)
 
+writeLines(
+    sample_info$image_dile, file.path(out_dir, "visium_image_upload_list.txt")
+)
+
+#   NDA validator expects short filename
+sample_info = sample_info |> mutate(image_file = basename(image_file))
+
 ################################################################################
 #   Fill in main metadata expected for the data structure
 ################################################################################

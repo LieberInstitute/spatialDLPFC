@@ -116,6 +116,11 @@ stopifnot(identical(sort(colnames(sample_info)), sort(colnames(sn_sample_info)))
 sn_sample_info = sn_sample_info[, colnames(sample_info)]
 sample_info = rbind(sample_info, sn_sample_info)
 
+writeLines(sample_info$data_file1, file.path(out_dir, "rna_seq_upload_list.txt"))
+
+#   NDA validator expects short filename
+sample_info = sample_info |> mutate(data_file1 = basename(data_file1))
+
 ################################################################################
 #   Add additional fields as appropriate for the assay: Visium, Visium-SPG, or
 #   snRNA-seq
@@ -123,7 +128,7 @@ sample_info = rbind(sample_info, sn_sample_info)
 
 sample_info |>
     mutate(
-        experiment_id = "LIBD spatial DLPFC",
+        experiment_id = 2605,
         samplesubtype = ifelse(assay_internal == "snRNA-seq", 2, 3),
         referenceset = 2, # GrCh38
         libraryconstructionprotocol = 31, # Visium, which we added
