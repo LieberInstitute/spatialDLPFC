@@ -74,7 +74,7 @@ sample_info = read_csv(sample_info_path, show_col_types = FALSE) |>
     rename(image_file = compressed_path)
 
 writeLines(
-    sample_info$image_dile, file.path(out_dir, "visium_image_upload_list.txt")
+    sample_info$image_file, file.path(out_dir, "visium_image_upload_list.txt")
 )
 
 #   NDA validator expects short filename
