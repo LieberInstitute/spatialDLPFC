@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p shared
 #SBATCH --mem=3G
-#SBATCH --job-name=06-research_subject
+#SBATCH --job-name=06-genomics_subject
 #SBATCH -c 1
 #SBATCH -t 1:00:00
-#SBATCH -o ../../../processed-data/synapse_upload/04-nda/logs/06-research_subject.txt
-#SBATCH -e ../../../processed-data/synapse_upload/04-nda/logs/06-research_subject.txt
+#SBATCH -o ../../../processed-data/synapse_upload/04-nda/logs/06-genomics_subject.txt
+#SBATCH -e ../../../processed-data/synapse_upload/04-nda/logs/06-genomics_subject.txt
 
 set -e
 
@@ -25,7 +25,7 @@ module load conda_R/4.3.x
 ## List current modules for reproducibility
 module list
 
-Rscript 06-research_subject.R
+Rscript 06-genomics_subject.R
 
 echo "**** Job ends ****"
 date

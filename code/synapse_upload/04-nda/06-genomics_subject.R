@@ -28,13 +28,13 @@ meta_df = read_csv(rna_seq_path, show_col_types = FALSE, skip = 1) |>
     ) |>
     select(all_of(col_names))
 
-out_path = file.path(out_dir, 'research_subject.csv')
+out_path = file.path(out_dir, 'genomics_subject.csv')
 
 #   Mimic the submission template from NDA, so this "CSV" can be directly
 #   validated with the validator without any reformatting
 write_csv(meta_df, out_path)
 formatted_info = c(
-    paste0('ndar_subject,01', paste(rep(',', ncol(meta_df) - 2), collapse = "")),
+    paste0('genomics_subject,02', paste(rep(',', ncol(meta_df) - 2), collapse = "")),
     readLines(out_path)
 )
 writeLines(formatted_info, out_path)

@@ -32,6 +32,7 @@ meta_dir=$repo_dir/processed-data/synapse_upload/04-nda
 vtcmd $meta_dir/rna_seq.csv
 vtcmd $meta_dir/snp_array.csv
 vtcmd $meta_dir/visium_image.csv
+vtcmd $meta_dir/genomics_subject.csv
 
 echo "**** Job ends ****"
 date
