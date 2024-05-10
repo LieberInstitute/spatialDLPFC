@@ -8,7 +8,8 @@ rna_seq_path = here('processed-data', 'synapse_upload', '04-nda', 'rna_seq.csv')
 col_names <- c(
     "subjectkey", "src_subject_id", "interview_date", "interview_age", "sex",
     "race", 'phenotype', 'phenotype_description','twins_study', 'sibling_study',
-    'family_study', 'sample_taken', 'sample_id_original', 'sample_description'
+    'family_study', 'sample_taken', 'sample_id_original', 'sample_description',
+    'biorepository', 'patient_id_biorepository', 'sample_id_biorepository'
 )
 
 meta_df = read_csv(rna_seq_path, show_col_types = FALSE, skip = 1) |>
@@ -24,7 +25,10 @@ meta_df = read_csv(rna_seq_path, show_col_types = FALSE, skip = 1) |>
         family_study = "No",
         sample_taken = "Yes",
         sample_id_original = src_subject_id,
-        sample_description = "brain"
+        sample_description = "brain",
+        biorepository = NA,
+        patient_id_biorepository = NA,
+        sample_id_biorepository = NA
     ) |>
     select(all_of(col_names))
 
