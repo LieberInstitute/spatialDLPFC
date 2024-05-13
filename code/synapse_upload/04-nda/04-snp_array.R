@@ -39,7 +39,7 @@ meta_df = tibble(
     left_join(pd, by = 'donor') |>
     mutate(
         interview_date = '06/25/2020', # Use H&E date
-        experiment_id = 2605,
+        experiment_id = 2607,
         referenceset = 3, # GRCh37
         genotyping_chip_type = ifelse(
             donor == "Br8325",

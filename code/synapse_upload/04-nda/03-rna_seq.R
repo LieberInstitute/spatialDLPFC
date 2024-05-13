@@ -129,7 +129,7 @@ sample_info = sample_info |> mutate(data_file1 = basename(data_file1))
 out_path = file.path(out_dir, 'rna_seq.csv')
 sample_info = sample_info |>
     mutate(
-        experiment_id = 2605,
+        experiment_id = ifelse(assay_internal == "snRNA-seq", 2605, 2606),
         samplesubtype = ifelse(assay_internal == "snRNA-seq", 2, 3),
         referenceset = 2, # GrCh38
         libraryconstructionprotocol = 31, # Visium, which we added
