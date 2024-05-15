@@ -120,8 +120,8 @@ sample_info = sample_info |>
         # ),
         stain_details = ifelse(
             stain == "H&E",
-            "H&E staining was conducted according to the manufacturer's instructions (protocol CG000160, Rev B, 10x Genomics)",
-            "Immunofluorescence (IF) staining was conducted according to the manufacturer’s instruction (catalog no.CG000312 Rev C, 10x Genomics)"
+            "H&E staining was conducted according to the manufacturer instructions (protocol CG000160; Rev B; 10x Genomics)",
+            "Immunofluorescence (IF) staining was conducted according to the manufacturer instructions (catalog no.CG000312 Rev C; 10x Genomics)"
         ),
         pipeline_stage = ifelse(
             stain == "H&E", 1, 2
@@ -136,7 +136,7 @@ sample_info = sample_info |>
 #   Mimic the submission template from NDA, so this "CSV" can be directly
 #   validated with the validator without any reformatting
 out_path = file.path(out_dir, 'visium_image.csv')
-write_csv(sample_info, out_path)
+write_csv(sample_info, out_path, quote = "none")
 formatted_info = c(
     paste0('visiumimage,01', paste(rep(',', ncol(sample_info) - 2), collapse = "")),
     readLines(out_path)
