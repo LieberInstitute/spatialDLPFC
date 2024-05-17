@@ -86,6 +86,14 @@ the relationship between BayesSpace SpDs and classic histological
 layers. Higher confidence annotations (⍴ \> 0.25, merge ratio = 0.1) are
 marked with an “X”.
 
+## Journal club videos
+
+If you prefer to watch a video overview of this project, check this
+journal club presentation of the main results:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/EhP5-mhw29w?si=4voRLMPS4JS1RmS0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen data-external="1">
+</iframe>
+
 ## Interactive Websites
 
 All of these interactive websites are powered by open source software,
