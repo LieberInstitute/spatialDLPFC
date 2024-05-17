@@ -432,7 +432,8 @@ p16
 
 The source data described in this manuscript are available from the
 [National Institute of Mental Health (NIMH) Data
-Archive](https://nda.nih.gov/) at doi:
+Archive](https://nda.nih.gov/) under [NDA Study
+2619](https://nda.nih.gov/study.html?id=2619); doi:
 [10.15154/7893-6778](https://doi.org/10.15154/7893-6778).
 
 You can also access all the raw data through
