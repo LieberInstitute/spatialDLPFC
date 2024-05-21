@@ -3,9 +3,10 @@
 #SBATCH --mem=3G
 #SBATCH --job-name=05-compress_images
 #SBATCH -c 1
-#SBATCH -t 2-00:00:00
+#SBATCH -t 1:00:00
 #SBATCH -o ../../../processed-data/synapse_upload/04-nda/logs/05-compress_images.txt
 #SBATCH -e ../../../processed-data/synapse_upload/04-nda/logs/05-compress_images.txt
+#SBATCH --open-mode=append
 
 set -e
 
