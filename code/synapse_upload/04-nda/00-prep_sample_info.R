@@ -35,12 +35,12 @@ guids = c(
 ################################################################################
 
 he_info = read_csv(he_sample_info_path, show_col_types = FALSE) |>
-    rename(donor = subjects) |>
+    rename(src_subject_id = subjects) |>
     mutate(
         interview_age = as.integer(round(age * 12, 0)),
-        sample_id = str_replace(sample_id, '_2$', '')
+        sample_id_old = str_replace(sample_id, '_2$', '')
     ) |>
-    select(sample_id, donor, sex, interview_age)
+    select(sample_id_old, src_subject_id, sex, interview_age)
 
 all_json_paths = file.path(
     list.files(
@@ -56,31 +56,32 @@ he_info = read_delim(
         show_col_types = FALSE
     ) |>
     mutate(
-        sample_id = str_extract(X1, 'Br[0-9]{4}_(ant|mid|post)'),
-        src_subject_id = sprintf('%s_%s', X2, X3),
+        sample_id_old = str_extract(X1, 'Br[0-9]{4}_(ant|mid|post)'),
+        sample_id = sprintf('%s_%s', X2, X3),
         loupe_version = "5.1.0",
         fastq_files = str_replace_all(X6, ',', ';'),
+        #   Date of Visium sequencing
         interview_date = '06/25/2020',
         stain = "H&E",
         spaceranger_json = sapply(
-            sample_id, function(x) all_json_paths[grep(x, all_json_paths)]
+            sample_id_old, function(x) all_json_paths[grep(x, all_json_paths)]
         )
     ) |>
     rename(image_file = X4, alignment_file = X5) |>
     select(
-        sample_id, src_subject_id, loupe_version, fastq_files, image_file,
+        sample_id_old, sample_id, loupe_version, fastq_files, image_file,
         alignment_file, interview_date, stain, spaceranger_json
     ) |>
     #   Add phenotype data
-    left_join(he_info, by = 'sample_id') |>
-    select(-sample_id) |>
+    left_join(he_info, by = 'sample_id_old') |>
+    select(-sample_id_old) |>
     #   Add GUIDs
     left_join(
         tibble(
-            donor = unique(he_info$donor),
+            src_subject_id = unique(he_info$src_subject_id),
             subjectkey = guids
         ),
-        by = 'donor'
+        by = 'src_subject_id'
     )
 
 ################################################################################
@@ -89,10 +90,10 @@ he_info = read_delim(
 
 #   Just one row per donor
 pd = he_info |>
-    group_by(donor) |>
+    group_by(src_subject_id) |>
     slice_head(n = 1) |>
     ungroup() |>
-    select(donor, subjectkey, interview_age, sex)
+    select(src_subject_id, subjectkey, interview_age, interview_date, sex)
 
 write_csv(pd, file.path(out_dir, "pheno_data.csv"))
 
@@ -104,15 +105,13 @@ if_info = read_tsv(
         if_sr_params_path, col_names = FALSE, show_col_types = FALSE
     ) |>
     mutate(
-        sample_id = X1, # Don't really need this, but including it to match with H&E
-        donor = str_extract(X1, '^Br[0-9]{4}'),
-        src_subject_id = sprintf('%s_%s', X2, X3),
+        src_subject_id = str_extract(X1, '^Br[0-9]{4}'),
+        sample_id = sprintf('%s_%s', X2, X3),
         loupe_version = "6.0.0",
         fastq_files = sapply(
             X6,
             function(x) paste(list.files(x, full.names = TRUE), collapse = ';')
         ),
-        interview_date = '06/25/2022',
         stain = "IF",
         spaceranger_json = here(
             "processed-data", "01_spaceranger_IF", X1, "outs", "spatial",
@@ -121,10 +120,10 @@ if_info = read_tsv(
     ) |>
     rename(image_file = X4, alignment_file = X5) |>
     select(
-        donor, src_subject_id, loupe_version, fastq_files, image_file,
-        alignment_file, interview_date, stain, spaceranger_json
+        src_subject_id, sample_id, loupe_version, fastq_files, image_file,
+        alignment_file, stain, spaceranger_json
     ) |>
-    left_join(pd, by = 'donor')
+    left_join(pd, by = 'src_subject_id')
 
 ################################################################################
 #   Combine and export
