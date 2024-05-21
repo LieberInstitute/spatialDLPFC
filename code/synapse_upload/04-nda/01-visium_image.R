@@ -69,7 +69,7 @@ sample_info = read_csv(sample_info_path, show_col_types = FALSE) |>
     left_join(
         read_csv(image_map_path, show_col_types = FALSE) |>
             select(-original_path),
-        by = 'src_subject_id'
+        by = 'sample_id'
     ) |>
     rename(image_file = compressed_path)
 
@@ -86,7 +86,6 @@ sample_info = sample_info |> mutate(image_file = basename(image_file))
 
 sample_info = sample_info |>
     mutate(
-        interview_date = ifelse(stain == "H&E", '06/25/2020', '06/25/2022'),
         image_description = ifelse(
             stain == "H&E", "Leica CS2", "Vectra Polaris + inForm unmixing"
         ),

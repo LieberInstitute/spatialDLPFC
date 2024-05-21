@@ -61,21 +61,17 @@ col_names <- c(
 
 sn_sample_info <- read_csv(fastq_mapping_path, show_col_types = FALSE) |>
     filter(assay == "snRNA-seq") |>
-    select(sample_id, donor, fastq_globus, assay) |>
+    select(donor, fastq_globus, assay) |>
     rename(
         data_file1 = fastq_globus,
-        src_subject_id = sample_id,
+        src_subject_id = donor,
         assay_internal = assay
     ) |>
-    mutate(
-        data_file1_type = "snRNA-seq FASTQ file", interview_date = "06/25/2020",
-        loupe_version = NA
-    ) |>
+    mutate(data_file1_type = "snRNA-seq FASTQ file", loupe_version = NA) |>
     left_join(
         read_csv(pd_path, show_col_types = FALSE),
-        by = "donor"
-    ) |>
-    select(-donor)
+        by = "src_subject_id"
+    )
 
 ################################################################################
 #   Load in and "unravel" imaging-related sample_info such that each row
@@ -87,7 +83,7 @@ sample_info = read_csv(sample_info_path, show_col_types = FALSE)
 fastq_map = sample_info |>
     mutate(data_file1 = strsplit(fastq_files, ';')) |>
     unnest(data_file1) |>
-    select(src_subject_id, data_file1) |>
+    select(sample_id, src_subject_id, data_file1) |>
     mutate(data_file1_type = "Visium FASTQ file")
 
 others_map = sample_info |>
@@ -101,16 +97,18 @@ others_map = sample_info |>
             data_file1_type == "alignment_file" ~ "Loupe alignment JSON"
         )
     ) |>
-    select(src_subject_id, data_file1, data_file1_type)
+    select(sample_id, src_subject_id, data_file1, data_file1_type)
 
 sample_info = rbind(fastq_map, others_map) |>
     left_join(
         sample_info |>
-            select(-c(image_file, fastq_files, alignment_file)),
-        by = 'src_subject_id'
+            select(
+                -c(image_file, fastq_files, alignment_file, src_subject_id)
+            ),
+        by = 'sample_id'
     ) |>
     mutate(assay_internal = ifelse(stain == "H&E", "Visium", "Visium-SPG")) |>
-    select(-c(donor, spaceranger_json, stain))
+    select(-c(sample_id, spaceranger_json, stain))
     
 stopifnot(identical(sort(colnames(sample_info)), sort(colnames(sn_sample_info))))
 sn_sample_info = sn_sample_info[, colnames(sample_info)]

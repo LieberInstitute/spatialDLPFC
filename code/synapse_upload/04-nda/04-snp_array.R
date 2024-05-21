@@ -20,7 +20,7 @@ id_map = read_tsv(
         file.path(geno_dir, 'sc_n10.brnum2genoID.tab'), show_col_types = FALSE,
         col_names = FALSE
     ) |>
-    rename(donor = X1, src_subject_id = X2)
+    rename(src_subject_id = X1, sample_id = X2)
 
 #   General donor-level fields we need
 pd = read_csv(pd_path, show_col_types = FALSE)
@@ -32,17 +32,14 @@ meta_df = tibble(
         ),
         data_file1_type = "Intensity data file"
     ) |>
+    mutate(sample_id = str_extract(data_file1, '[0-9]{12}_R[0-9]{2}C01')) |>
+    left_join(id_map, by = 'sample_id') |>
+    left_join(pd, by = 'src_subject_id') |>
     mutate(
-        src_subject_id = str_extract(data_file1, '[0-9]{12}_R[0-9]{2}C01')
-    ) |>
-    left_join(id_map, by = 'src_subject_id') |>
-    left_join(pd, by = 'donor') |>
-    mutate(
-        interview_date = '06/25/2020', # Use H&E date
         experiment_id = 2607,
         referenceset = 3, # GRCh37
         genotyping_chip_type = ifelse(
-            donor == "Br8325",
+            src_subject_id == "Br8325",
             "Infinium Omni2.5-8 v1.4",
             "Infinium Omni2.5-8 v1.5"
         ),
