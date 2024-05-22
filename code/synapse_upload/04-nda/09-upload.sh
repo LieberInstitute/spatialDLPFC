@@ -3,9 +3,9 @@
 #SBATCH --mem=5G
 #SBATCH --job-name=09-upload
 #SBATCH -c 1
-#SBATCH -t 2-00:00:00
-#SBATCH -o ../../../processed-data/synapse_upload/04-nda/logs/09-upload_part2.txt
-#SBATCH -e ../../../processed-data/synapse_upload/04-nda/logs/09-upload_part2.txt
+#SBATCH -t 1-00:00:00
+#SBATCH -o ../../../processed-data/synapse_upload/04-nda/logs/09-upload_resubmit.txt
+#SBATCH -e ../../../processed-data/synapse_upload/04-nda/logs/09-upload_resubmit.txt
 
 set -e
 
@@ -38,12 +38,26 @@ data_dir=$repo_dir/processed-data/synapse_upload/04-nda/to_upload
 #     $meta_dir/rna_seq.csv $meta_dir/snp_array.csv $meta_dir/genomics_subject.csv
 
 #   Upload imaging data later, after fixing the validation issues
+# vtcmd \
+#     -l $data_dir \
+#     -b \
+#     -c 5229 \
+#     -t "LIBD spatial DLPFC imaging submission" \
+#     -d "All H&E and IF images for the spatialDLPFC project" \
+#     -u nickeagles77 \
+#     $meta_dir/visium_image.csv
+
+#   Resubmit metadata files after QA issues and fixes. Had to be done
+#   interactively because of yes/no prompts
 vtcmd \
-    -l $data_dir \
     -b \
-    -c 5229 \
-    -t "LIBD spatial DLPFC imaging submission" \
-    -d "All H&E and IF images for the spatialDLPFC project" \
+    -rs 65813 \
+    -u nickeagles77 \
+    $meta_dir/rna_seq.csv $meta_dir/snp_array.csv $meta_dir/genomics_subject.csv
+
+vtcmd \
+    -b \
+    -rs 65841 \
     -u nickeagles77 \
     $meta_dir/visium_image.csv
 
