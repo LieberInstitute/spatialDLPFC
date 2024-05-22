@@ -48,11 +48,15 @@ Thank you for your interest in our work!
 
 **Study design to generate paired single nucleus RNA-sequencing (snRNA-seq) and spatially-resolved transcriptomic data across DLPFC**. (**A**) DLPFC tissue blocks were dissected across the rostral-caudal axis from 10 adult neurotypical control postmortem human brains, including anterior (Ant), middle (Mid), and posterior (Post) positions (n=3 blocks per donor, n=30 blocks total). The same tissue blocks were used for snRNA-seq (10x Genomics 3’ gene expression assay, n=1-2 blocks per donor, n=19 samples) and spatial transcriptomics (10x Genomics Visium spatial gene expression assay, n=3 blocks per donor, n=30 samples). (**B**) Paired snRNA-seq and Visium data were used to identify data-driven spatial domains (SpDs) and cell types, perform spot deconvolution, conduct cell-cell communication analyses, and spatially register companion PsychENCODE snRNA-seq DLPFC data. (**C**) _t_-distributed stochastic neighbor embedding (t-SNE) summarizing layer resolution cell types identified by snRNA-seq. (**D**) Tissue block orientation and morphology was confirmed by hematoxylin and eosin (H&E) staining and single molecule fluorescent in situ hybridization (smFISH) with RNAscope (_SLC17A7_ marking excitatory neurons in pink, _MBP_ marking white matter (WM) in green, _RELN_ marking layer (L)1 in yellow, and _NR4A2_ marking L6 in orange). Scale bar is 2mm. Spotplots depicting log transformed normalized expression (logcounts) of _SNAP25_, _MBP_, and _PCP4_ in the Visium data confirm the presence of gray matter, WM, and cortical layers, respectively. (**E**) Schematic of unsupervised SpD identification and registration using _BayesSpace_ SpDs at _k_=7. Enrichment _t_-statistics computed on _BayesSpace_ SpDs were correlated with manual histological layer annotations from ([Maynard, Collado-Torres et al., 2021, _Nat Neuro_](https://doi.org/10.1038/s41593-020-00787-0)) to map SpDs to known histological layers. The heatmap of correlation values summarizes the relationship between BayesSpace SpDs and classic histological layers. Higher confidence annotations (⍴ > 0.25, merge ratio = 0.1) are marked with an “X”.
 
-## Journal club videos
+## Introductory material
 
-If you prefer to watch a video overview of this project, check this journal club presentation of the main results:
+If you prefer to watch a video overview of this project, check the following journal club presentations of the main and supplementary results, respectively.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/EhP5-mhw29w?si=4voRLMPS4JS1RmS0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen data-external="1"></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vSjXCni8Ndc?si=ku8_3IgnG2nHvv21" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen data-external="1"></iframe>
+
+L. A. Huuki-Myers also wrote an [overview blog post](https://lahuuki.github.io/posts/2024-05-23-spatialDLPFC/) summarizing some of the key results from this `spatialDLPFC` project.
 
 ## Interactive Websites
 

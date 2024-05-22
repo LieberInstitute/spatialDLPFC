@@ -86,13 +86,20 @@ the relationship between BayesSpace SpDs and classic histological
 layers. Higher confidence annotations (⍴ \> 0.25, merge ratio = 0.1) are
 marked with an “X”.
 
-## Journal club videos
+## Introductory material
 
-If you prefer to watch a video overview of this project, check this
-journal club presentation of the main results:
+If you prefer to watch a video overview of this project, check the
+following journal club presentations of the main and supplementary
+results, respectively.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/EhP5-mhw29w?si=4voRLMPS4JS1RmS0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen data-external="1">
 </iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vSjXCni8Ndc?si=ku8_3IgnG2nHvv21" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen data-external="1">
+</iframe>
+
+L. A. Huuki-Myers also wrote an [overview blog
+post](https://lahuuki.github.io/posts/2024-05-23-spatialDLPFC/)
+summarizing some of the key results from this `spatialDLPFC` project.
 
 ## Interactive Websites
 
