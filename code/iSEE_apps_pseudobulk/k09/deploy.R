@@ -19,3 +19,8 @@ rsconnect::deployApp(
     account = "libd",
     server = "shinyapps.io"
 )
+
+rsconnect::writeManifest(
+    appDir = here::here("code", "iSEE_apps_pseudobulk", "k09"),
+    appFiles = c("app.R", "sce_pseudo_BayesSpace_k09.rds", "initial.R")
+)
