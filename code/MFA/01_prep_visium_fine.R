@@ -6,14 +6,25 @@ library(HDF5Array)
 library(here)
 library(sessioninfo)
 
-pseudo_sn_path = here('processed-data', 'MFA', 'sn_fine_pb.rds')
-pseudo_visium_path = here('processed-data', 'MFA', 'visium_pb.rds')
+pseudo_sn_path = here(
+    'processed-data', 'MFA', 'pseudobulk_rds', 'sn_fine_pb.rds'
+)
+pseudo_visium_path = here(
+    'processed-data', 'MFA', 'pseudobulk_rds', 'visium_pb.rds'
+)
+
+dir.create(dirname(pseudo_sn_path), showWarnings = FALSE)
 
 message(Sys.time(), ' | Loading and prepping datasets')
 sce_path = unzip(fetch_data("spatialDLPFC_snRNAseq"), exdir = tempdir())
 sce = loadHDF5SummarizedExperiment(file.path(tempdir(), "sce_DLPFC_annotated"))
 
+#   Drop ambiguous cells
+sce = sce[, sce$cellType_broad_hc != "Ambiguous"]
+stopifnot(!any(is.na(sce$cellType_layer)))
+
 spe = fetch_data('spatialDLPFC_Visium')
+spe = as(spe, "SingleCellExperiment") # throws cryptic error otherwise
 stopifnot(setequal(spe$subject, sce$BrNum))
 
 #   Use same notation as paper
@@ -30,6 +41,14 @@ spe_pb = registration_pseudobulk(
     var_registration = 'BayesSpace_harmony_09',
     var_sample_id = 'subject',
     pseudobulk_rds_file = pseudo_visium_path
+)
+
+message(Sys.time(), ' | Pseudobulking snRNA-seq data')
+sce_pb = registration_pseudobulk(
+    sce,
+    var_registration = 'cellType_layer',
+    var_sample_id = 'BrNum',
+    pseudobulk_rds_file = pseudo_sn_path
 )
 
 session_info()
