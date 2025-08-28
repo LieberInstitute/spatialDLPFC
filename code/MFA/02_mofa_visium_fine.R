@@ -20,12 +20,9 @@ set.seed(1)
 #   Combine Visium and snRNA-seq objects
 ################################################################################
 
-#   Load objects as SingleCellExperiments
-spe = as(readRDS(spe_path), "SingleCellExperiment")
-int_colData(spe)$spatialCoords = NULL
+#   Load objects
+spe = readRDS(spe_path)
 sce = readRDS(sce_path)
-
-spe$cluster = spe$BayesSpace_harmony_09
 
 #   Ensure genes match
 shared_genes = intersect(rownames(spe), rownames(sce))
@@ -34,24 +31,25 @@ sce = sce[shared_genes, ]
 rowRanges(sce) = rowRanges(spe)
 
 #   Simplify SPE object in preparation for combining with SCE
+temp_colnames = colnames(spe)
 colData(spe) = colData(spe) |>
     as_tibble() |>
     dplyr::rename(donor = subject, cluster = BayesSpace_harmony_09) |>
     select(donor, cluster, age, sex, ncells) |>
-    mutate(sample_id = paste(donor, cluster, sep = '_')) |>
     DataFrame()
-colnames(spe) = spe$sample_id
+colnames(spe) = temp_colnames
 reducedDims(spe) = list()
 metadata(spe) = list()
+int_colData(spe)$spatialCoords = NULL
 
 #   Simplify SCE object in preparation for combining with SPE
+temp_colnames = colnames(sce)
 colData(sce) = colData(sce) |>
     as_tibble() |>
     dplyr::rename(donor = BrNum, cluster = cellType_layer) |>
     select(donor, cluster, age, sex, ncells) |>
-    mutate(sample_id = paste(donor, cluster, sep = '_')) |>
     DataFrame()
-colnames(sce) = sce$sample_id
+colnames(sce) = temp_colnames
 reducedDims(sce) = list()
 metadata(sce) = list()
 
