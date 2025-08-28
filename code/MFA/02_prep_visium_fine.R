@@ -9,47 +9,70 @@ out_path = here('processed-data', 'MFA', 'combined_rds', 'DLPFC.rds')
 
 dir.create(dirname(out_path), showWarnings = FALSE)
 
-#   Load objects
-spe = readRDS(spe_path)
-sce = readRDS(sce_path)
+################################################################################
+#   Functions
+################################################################################
 
-#   Ensure genes match
-shared_genes = intersect(rownames(spe), rownames(sce))
-spe = spe[shared_genes, ]
-sce = sce[shared_genes, ]
-rowRanges(sce) = rowRanges(spe)
+#   Reduce a SingleCellExperiment object into a smaller version that may be
+#   combined with a similar reduced object
+simplify_sce = function(sce, donor_var, cluster_var, shared_cols) {
+    temp_colnames = colnames(sce)
+    colData(sce) = colData(sce) |>
+        as_tibble() |>
+        dplyr::rename(donor = {{ donor_var }}, cluster = {{ cluster_var }}) |>
+        select(donor, cluster, ncells, all_of(shared_cols)) |>
+        DataFrame()
+    colnames(sce) = temp_colnames
+    reducedDims(sce) = list()
+    metadata(sce) = list()
+    int_colData(sce)$spatialCoords = NULL
 
-#   Simplify SPE object in preparation for combining with SCE
-temp_colnames = colnames(spe)
-colData(spe) = colData(spe) |>
-    as_tibble() |>
-    dplyr::rename(donor = subject, cluster = BayesSpace_harmony_09) |>
-    select(donor, cluster, age, sex, ncells) |>
-    DataFrame()
-colnames(spe) = temp_colnames
-reducedDims(spe) = list()
-metadata(spe) = list()
-int_colData(spe)$spatialCoords = NULL
+    return(sce)
+}
 
-#   Simplify SCE object in preparation for combining with SPE
-temp_colnames = colnames(sce)
-colData(sce) = colData(sce) |>
-    as_tibble() |>
-    dplyr::rename(donor = BrNum, cluster = cellType_layer) |>
-    select(donor, cluster, age, sex, ncells) |>
-    DataFrame()
-colnames(sce) = temp_colnames
-reducedDims(sce) = list()
-metadata(sce) = list()
+#   Harmonize and combine (cbind) two SingleCellExperiment objects that were
+#   previously pseudobulked by donor and cluster, but may have different column
+#   names for these colData variables. Return a list of inputs for MOFA
+combine_sce = function(
+        sce_path1, sce_path2, donor_var1, donor_var2, cluster_var1, cluster_var2,
+        shared_cols
+    ) {
+    #   Load objects
+    sce1 = readRDS(sce_path1)
+    sce2 = readRDS(sce_path2)
 
-#   Gather some donor-level info for later
-pd = spe[, match(unique(spe$donor), spe$donor)] |>
-    colData() |>
-    as_tibble() |>
-    select(donor, age, sex)
+    #   Ensure genes match
+    shared_genes = intersect(rownames(sce1), rownames(sce2))
+    sce1 = sce1[shared_genes, ]
+    sce2 = sce2[shared_genes, ]
+    rowRanges(sce1) = rowRanges(sce2)
 
-#   Merge Visium and snRNA-seq objects and save
-sce = cbind(spe, sce)
-saveRDS(sce, out_path)
+    sce1 = simplify_sce(sce1, donor_var1, cluster_var1, shared_cols)
+    sce2 = simplify_sce(sce2, donor_var2, cluster_var2, shared_cols)
+
+    #   Gather some donor-level info for later
+    pd = sce1[, match(unique(sce1$donor), sce1$donor)] |>
+        colData() |>
+        as_tibble() |>
+        select(donor, all_of(shared_cols))
+
+    return(list(sce = cbind(sce1, sce2), pd = pd))
+}
+
+################################################################################
+#   Main
+################################################################################
+
+#   Combine spatialDLPFC Visium and fine snRNA-seq objects
+mofa_list = combine_sce(
+    sce_path1 = sce_path,
+    sce_path2 = spe_path,
+    donor_var1 = 'BrNum',
+    donor_var2 = 'subject',
+    cluster_var1 = 'cellType_layer',
+    cluster_var2 = 'BayesSpace_harmony_09',
+    shared_cols = c('age', 'sex')
+)
+saveRDS(mofa_list, out_path)
 
 session_info()
