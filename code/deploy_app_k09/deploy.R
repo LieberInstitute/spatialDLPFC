@@ -15,16 +15,34 @@ options(repos = BiocManager::repositories())
 
 ## Deploy the app, that is, upload it to shinyapps.io
 rsconnect::deployApp(
-    appDir = here("code", "deploy_app_k09"),
-    appFiles = c(
-        "app.R",
-        "spe_subset_for_spatialLIBD.rds",
-        "sce_pseudo_BayesSpace_k09.rds",
-        "modeling_results_BayesSpace_k09.Rdata",
-        "sig_genes_subset_k09.Rdata",
-        withr::with_dir(here("code", "deploy_app_k09"), dir("www", full.names = TRUE))
-    ),
-    appName = "spatialDLPFC_Visium_Sp09",
-    account = "libd",
-    server = "shinyapps.io"
+  appDir = here("code", "deploy_app_k09"),
+  appFiles = c(
+    "app.R",
+    "spe_subset_for_spatialLIBD.rds",
+    "sce_pseudo_BayesSpace_k09.rds",
+    "modeling_results_BayesSpace_k09.Rdata",
+    "sig_genes_subset_k09.Rdata",
+    withr::with_dir(
+      here("code", "deploy_app_k09"),
+      dir("www", full.names = TRUE)
+    )
+  ),
+  appName = "spatialDLPFC_Visium_Sp09",
+  account = "libd",
+  server = "shinyapps.io"
+)
+
+rsconnect::writeManifest(
+  appDir = here("code", "deploy_app_k09"),
+  appFiles = c(
+    "app.R",
+    "spe_subset_for_spatialLIBD.rds",
+    "sce_pseudo_BayesSpace_k09.rds",
+    "modeling_results_BayesSpace_k09.Rdata",
+    "sig_genes_subset_k09.Rdata",
+    withr::with_dir(
+      here("code", "deploy_app_k09"),
+      dir("www", full.names = TRUE)
+    )
+  )
 )
