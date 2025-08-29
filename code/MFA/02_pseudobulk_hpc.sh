@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p katun
 #SBATCH --mem=48G
-#SBATCH --job-name=04_pseudobulk_hpc
+#SBATCH --job-name=02_pseudobulk_hpc
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/MFA/logs/04_pseudobulk_hpc.txt
-#SBATCH -e ../../processed-data/MFA/logs/04_pseudobulk_hpc.txt
+#SBATCH -o ../../processed-data/MFA/logs/02_pseudobulk_hpc.txt
+#SBATCH -e ../../processed-data/MFA/logs/02_pseudobulk_hpc.txt
 
 set -e
 
@@ -25,7 +25,7 @@ module load conda_R/4.5
 ## List current modules for reproducibility
 module list
 
-Rscript 04_pseudobulk_hpc.R
+Rscript 02_pseudobulk_hpc.R
 
 echo "**** Job ends ****"
 date

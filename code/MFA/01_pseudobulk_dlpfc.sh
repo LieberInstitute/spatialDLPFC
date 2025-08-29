@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p katun
 #SBATCH --mem=48G
-#SBATCH --job-name=01_pseudobulk_visium_fine
+#SBATCH --job-name=01_pseudobulk_dlpfc
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/MFA/logs/01_pseudobulk_visium_fine.txt
-#SBATCH -e ../../processed-data/MFA/logs/01_pseudobulk_visium_fine.txt
+#SBATCH -o ../../processed-data/MFA/logs/01_pseudobulk_dlpfc.txt
+#SBATCH -e ../../processed-data/MFA/logs/01_pseudobulk_dlpfc.txt
 
 set -e
 
@@ -25,7 +25,7 @@ module load conda_R/4.5
 ## List current modules for reproducibility
 module list
 
-Rscript 01_pseudobulk_visium_fine.R
+Rscript 01_pseudobulk_dlpfc.R
 
 echo "**** Job ends ****"
 date

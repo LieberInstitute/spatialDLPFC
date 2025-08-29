@@ -19,7 +19,10 @@ set.seed(1)
 #   Preprocess expression and create a MOFA object
 ################################################################################
 
-sce = readRDS(in_path)
+temp = readRDS(in_path)
+sce = temp$sce
+pd = temp$pd
+
 mofa = create_init_exp(
         counts = assays(sce)$counts, coldata = as.data.frame(colData(sce))
     ) |>
