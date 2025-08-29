@@ -37,6 +37,7 @@ simplify_sce = function(sce, donor_var, cluster_var, shared_cols) {
     reducedDims(sce) = list()
     metadata(sce) = list()
     int_colData(sce)$spatialCoords = NULL
+    int_metadata(sce)$imgData = NULL
 
     return(sce)
 }
