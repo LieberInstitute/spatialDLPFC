@@ -5,13 +5,37 @@ library(MOFA2)
 library(here)
 library(tidyverse)
 library(GGally)
+library(getopt)
 
-in_path = here('processed-data', 'MFA', 'combined_rds', 'DLPFC.rds')
-out_path = here('processed-data', 'MFA', 'models', 'DLPFC.rds')
-plot_path = here('plots', 'MFA', 'DLPFC_heatmap.pdf')
-num_factors = 5
+# Import command-line parameters
+spec <- matrix(
+    c(
+        c("dataset", "num_factors"),
+        c("d", "n"),
+        rep("1", 2),
+        c("character", "integer"),
+        c("Input data", "Number of factors to learn for MFA")
+    ),
+    ncol = 5
+)
+opt <- getopt(spec)
 
-dir.create(dirname(plot_path), showWarnings = FALSE)
+message("Using the following parameters:")
+print(opt)
+
+in_path = here(
+    'processed-data', 'MFA', 'combined_rds', sprintf('%s.rds', opt$dataset)
+)
+out_path = here(
+    'processed-data', 'MFA', 'models',
+    sprintf('%s_%d.rds', opt$dataset, opt$num_factors)
+)
+plot_path = here(
+    'plots', 'MFA', 'heatmap',
+    sprintf('%s_%d.pdf', opt$dataset, opt$num_factors)
+)
+
+dir.create(dirname(plot_path), recursive = TRUE, showWarnings = FALSE)
 dir.create(dirname(out_path), showWarnings = FALSE)
 set.seed(1)
 
@@ -65,7 +89,7 @@ data_opts = get_default_data_options(mofa)
 train_opts = get_default_training_options(mofa)
 model_opts = get_default_model_options(mofa)
 model_opts$spikeslab_weights = FALSE 
-model_opts$num_factors = num_factors
+model_opts$num_factors = opt$num_factors
 
 mofa = prepare_mofa(
     object = mofa,
