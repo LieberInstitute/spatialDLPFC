@@ -6,14 +6,14 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
-#SBATCH --array=1-12%20
+#SBATCH --array=1-18%20
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_dataset=(DLPFC combined)
-dataset=${all_dataset[$(( $SLURM_ARRAY_TASK_ID / 6 % 2 ))]}
+dataset=${all_dataset[$(( $SLURM_ARRAY_TASK_ID / 9 % 2 ))]}
 
-all_num_factors=(5 6 7 8 9 10)
-num_factors=${all_num_factors[$(( $SLURM_ARRAY_TASK_ID / 1 % 6 ))]}
+all_num_factors=(2 3 4 5 6 7 8 9 10)
+num_factors=${all_num_factors[$(( $SLURM_ARRAY_TASK_ID / 1 % 9 ))]}
 
 ## Explicitly pipe script output to a log
 log_path=../../processed-data/MFA/logs/04_mofa_dlpfc_${dataset}_${num_factors}_${SLURM_ARRAY_TASK_ID}.txt
