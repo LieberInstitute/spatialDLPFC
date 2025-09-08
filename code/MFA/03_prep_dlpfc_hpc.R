@@ -108,6 +108,9 @@ combined_mofa_list = combine_sce(
     cluster_var2 = 'cluster',
     shared_cols = c()
 )
+colnames(combined_mofa_list$sce) = paste0(
+    combined_mofa_list$sce$donor, '_', combined_mofa_list$sce$cluster
+)
 combined_mofa_list$pd = dlpfc_mofa_list$pd
 saveRDS(dlpfc_mofa_list, dlpfc_out_path)
 saveRDS(combined_mofa_list, combined_out_path)
