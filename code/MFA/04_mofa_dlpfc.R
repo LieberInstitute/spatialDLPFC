@@ -47,9 +47,7 @@ temp = readRDS(in_path)
 sce = temp$sce
 pd = temp$pd
 
-mofa = create_init_exp(
-        counts = assays(sce)$counts, coldata = as.data.frame(colData(sce))
-    ) |>
+mofa = create_init_exp(counts = assays(sce)$counts, coldata = colData(sce)) |>
     filt_profiles(
         #   Retain all clusters initially
         cts = unique(sce$cluster),
@@ -134,7 +132,7 @@ p = plot_MOFA_hmap(
 )
 pdf(
     plot_path,
-    width = as.integer(round(num_factors / 3) + 5),
+    width = as.integer(round(opt$num_factors / 3) + 5),
     height = as.integer(round(length(unique(sce$cluster)) / 4) + 4)
 )
 print(p)

@@ -1,0 +1,880 @@
+**** Job starts ****
+Mon Sep  8 04:31:06 PM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 22137009
+Job name: 04_mofa_dlpfc
+Node name: compute-093
+Task id: 8
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: MOFA2
+
+Attaching package: ‘MOFA2’
+
+The following object is masked from ‘package:stats’:
+
+    predict
+
+Loading required package: ComplexHeatmap
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading required package: circlize
+========================================
+circlize version 0.4.16
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================
+
+Loading required package: uwot
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: ggplot2
+There were 23 warnings (use warnings() to see them)
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ lubridate 1.9.4     ✔ tibble    3.3.0
+✔ purrr     1.1.0     ✔ tidyr     1.3.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks Matrix::expand(), S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ tidyr::pack()         masks Matrix::pack()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ tidyr::unpack()       masks Matrix::unpack()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Using the following parameters:
+$ARGS
+character(0)
+
+$dataset
+[1] "DLPFC"
+
+$num_factors
+[1] 10
+
+Creating MOFA object from a data.frame...
+There were 22 warnings (use warnings() to see them)
+Checking data options...
+Checking training options...
+Checking model options...
+Warning message:
+In prepare_mofa(object = mofa, data_options = data_opts, model_options = model_opts,  :
+  The total number of samples is very small for learning 10 factors.  
+    Try to reduce the number of factors to obtain meaningful results. It should not exceed ~2.
+Warning: Output file /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/models/DLPFC_10.rds already exists, it will be replaced
+Connecting to the mofapy2 package using basilisk. 
+    Set 'use_basilisk' to FALSE if you prefer to manually set the python binary using 'reticulate'.
+
+        #########################################################
+        ###           __  __  ____  ______                    ### 
+        ###          |  \/  |/ __ \|  ____/\    _             ### 
+        ###          | \  / | |  | | |__ /  \ _| |_           ### 
+        ###          | |\/| | |  | |  __/ /\ \_   _|          ###
+        ###          | |  | | |__| | | / ____ \|_|            ###
+        ###          |_|  |_|\____/|_|/_/    \_\              ###
+        ###                                                   ### 
+        ######################################################### 
+       
+ 
+        
+use_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...
+
+Successfully loaded view='DLPFC_Astro' group='single_group' with N=10 samples and D=4758 features...
+Successfully loaded view='DLPFC_EndoMural' group='single_group' with N=10 samples and D=4595 features...
+Successfully loaded view='DLPFC_Excit_ambig' group='single_group' with N=10 samples and D=3330 features...
+Successfully loaded view='DLPFC_Excit_L3' group='single_group' with N=10 samples and D=6027 features...
+Successfully loaded view='DLPFC_Excit_L3.4.5' group='single_group' with N=10 samples and D=3850 features...
+Successfully loaded view='DLPFC_Excit_L4' group='single_group' with N=10 samples and D=6079 features...
+Successfully loaded view='DLPFC_Excit_L5' group='single_group' with N=10 samples and D=6138 features...
+Successfully loaded view='DLPFC_Excit_L5.6' group='single_group' with N=10 samples and D=5962 features...
+Successfully loaded view='DLPFC_Excit_L6' group='single_group' with N=10 samples and D=6031 features...
+Successfully loaded view='DLPFC_Inhib' group='single_group' with N=10 samples and D=6178 features...
+Successfully loaded view='DLPFC_Micro' group='single_group' with N=10 samples and D=3221 features...
+Successfully loaded view='DLPFC_Oligo' group='single_group' with N=10 samples and D=5721 features...
+Successfully loaded view='DLPFC_OPC' group='single_group' with N=10 samples and D=4640 features...
+Successfully loaded view='DLPFC_Sp09D01' group='single_group' with N=10 samples and D=2022 features...
+Successfully loaded view='DLPFC_Sp09D02' group='single_group' with N=10 samples and D=4379 features...
+Successfully loaded view='DLPFC_Sp09D03' group='single_group' with N=10 samples and D=6155 features...
+Successfully loaded view='DLPFC_Sp09D04' group='single_group' with N=10 samples and D=6955 features...
+Successfully loaded view='DLPFC_Sp09D05' group='single_group' with N=10 samples and D=6497 features...
+Successfully loaded view='DLPFC_Sp09D06' group='single_group' with N=10 samples and D=4845 features...
+Successfully loaded view='DLPFC_Sp09D07' group='single_group' with N=10 samples and D=6862 features...
+Successfully loaded view='DLPFC_Sp09D08' group='single_group' with N=10 samples and D=6865 features...
+Successfully loaded view='DLPFC_Sp09D09' group='single_group' with N=10 samples and D=5622 features...
+
+
+Model options:
+- Automatic Relevance Determination prior on the factors: False
+- Automatic Relevance Determination prior on the weights: True
+- Spike-and-slab prior on the factors: False
+- Spike-and-slab prior on the weights: False
+Likelihoods:
+- View 0 (DLPFC_Astro): gaussian
+- View 1 (DLPFC_EndoMural): gaussian
+- View 2 (DLPFC_Excit_ambig): gaussian
+- View 3 (DLPFC_Excit_L3): gaussian
+- View 4 (DLPFC_Excit_L3.4.5): gaussian
+- View 5 (DLPFC_Excit_L4): gaussian
+- View 6 (DLPFC_Excit_L5): gaussian
+- View 7 (DLPFC_Excit_L5.6): gaussian
+- View 8 (DLPFC_Excit_L6): gaussian
+- View 9 (DLPFC_Inhib): gaussian
+- View 10 (DLPFC_Micro): gaussian
+- View 11 (DLPFC_Oligo): gaussian
+- View 12 (DLPFC_OPC): gaussian
+- View 13 (DLPFC_Sp09D01): gaussian
+- View 14 (DLPFC_Sp09D02): gaussian
+- View 15 (DLPFC_Sp09D03): gaussian
+- View 16 (DLPFC_Sp09D04): gaussian
+- View 17 (DLPFC_Sp09D05): gaussian
+- View 18 (DLPFC_Sp09D06): gaussian
+- View 19 (DLPFC_Sp09D07): gaussian
+- View 20 (DLPFC_Sp09D08): gaussian
+- View 21 (DLPFC_Sp09D09): gaussian
+
+
+
+Warning: some group(s) have less than 15 samples, MOFA won't be able to learn meaningful factors for these group(s)...
+
+
+
+######################################
+## Training the model with seed 42 ##
+######################################
+
+
+ELBO before training: -10498633.73 
+
+Iteration 1: time=0.30, ELBO=-1044652.69, deltaELBO=9453981.033 (90.04963197%), Factors=10
+Iteration 2: time=0.26, Factors=10
+Iteration 3: time=0.26, Factors=10
+Iteration 4: time=0.27, Factors=10
+Iteration 5: time=0.26, Factors=10
+Iteration 6: time=0.30, ELBO=-886950.86, deltaELBO=157701.830 (1.50211765%), Factors=10
+Iteration 7: time=0.26, Factors=10
+Iteration 8: time=0.26, Factors=10
+Iteration 9: time=0.26, Factors=10
+Iteration 10: time=0.26, Factors=10
+Iteration 11: time=0.30, ELBO=-856385.60, deltaELBO=30565.260 (0.29113559%), Factors=10
+Iteration 12: time=0.26, Factors=10
+Iteration 13: time=0.26, Factors=10
+Iteration 14: time=0.27, Factors=10
+Iteration 15: time=0.26, Factors=10
+Iteration 16: time=0.30, ELBO=-842894.06, deltaELBO=13491.540 (0.12850758%), Factors=10
+Iteration 17: time=0.26, Factors=10
+Iteration 18: time=0.26, Factors=10
+Iteration 19: time=0.26, Factors=10
+Iteration 20: time=0.26, Factors=10
+Iteration 21: time=0.30, ELBO=-827205.56, deltaELBO=15688.502 (0.14943375%), Factors=10
+Iteration 22: time=0.26, Factors=10
+Iteration 23: time=0.26, Factors=10
+Iteration 24: time=0.26, Factors=10
+Iteration 25: time=0.26, Factors=10
+Iteration 26: time=0.30, ELBO=-816263.27, deltaELBO=10942.287 (0.10422582%), Factors=10
+Iteration 27: time=0.26, Factors=10
+Iteration 28: time=0.27, Factors=10
+Iteration 29: time=0.26, Factors=10
+Iteration 30: time=0.26, Factors=10
+Iteration 31: time=0.30, ELBO=-809406.25, deltaELBO=6857.022 (0.06531347%), Factors=10
+Iteration 32: time=0.26, Factors=10
+Iteration 33: time=0.27, Factors=10
+Iteration 34: time=0.26, Factors=10
+Iteration 35: time=0.27, Factors=10
+Iteration 36: time=0.30, ELBO=-804329.44, deltaELBO=5076.809 (0.04835685%), Factors=10
+Iteration 37: time=0.26, Factors=10
+Iteration 38: time=0.26, Factors=10
+Iteration 39: time=0.26, Factors=10
+Iteration 40: time=0.26, Factors=10
+Iteration 41: time=0.30, ELBO=-800887.78, deltaELBO=3441.660 (0.03278198%), Factors=10
+Iteration 42: time=0.27, Factors=10
+Iteration 43: time=0.26, Factors=10
+Iteration 44: time=0.26, Factors=10
+Iteration 45: time=0.26, Factors=10
+Iteration 46: time=0.30, ELBO=-798692.33, deltaELBO=2195.449 (0.02091176%), Factors=10
+Iteration 47: time=0.26, Factors=10
+Iteration 48: time=0.26, Factors=10
+Iteration 49: time=0.26, Factors=10
+Iteration 50: time=0.26, Factors=10
+Iteration 51: time=0.30, ELBO=-797212.04, deltaELBO=1480.294 (0.01409987%), Factors=10
+Iteration 52: time=0.26, Factors=10
+Iteration 53: time=0.26, Factors=10
+Iteration 54: time=0.26, Factors=10
+Iteration 55: time=0.26, Factors=10
+Iteration 56: time=0.30, ELBO=-796130.25, deltaELBO=1081.788 (0.01030409%), Factors=10
+Iteration 57: time=0.28, Factors=10
+Iteration 58: time=0.26, Factors=10
+Iteration 59: time=0.26, Factors=10
+Iteration 60: time=0.26, Factors=10
+Iteration 61: time=0.30, ELBO=-795259.65, deltaELBO=870.601 (0.00829252%), Factors=10
+Iteration 62: time=0.26, Factors=10
+Iteration 63: time=0.26, Factors=10
+Iteration 64: time=0.26, Factors=10
+Iteration 65: time=0.26, Factors=10
+Iteration 66: time=0.30, ELBO=-794465.16, deltaELBO=794.492 (0.00756758%), Factors=10
+Iteration 67: time=0.26, Factors=10
+Iteration 68: time=0.26, Factors=10
+Iteration 69: time=0.26, Factors=10
+Iteration 70: time=0.27, Factors=10
+Iteration 71: time=0.30, ELBO=-793705.01, deltaELBO=760.150 (0.00724046%), Factors=10
+Iteration 72: time=0.26, Factors=10
+Iteration 73: time=0.26, Factors=10
+Iteration 74: time=0.26, Factors=10
+Iteration 75: time=0.26, Factors=10
+Iteration 76: time=0.30, ELBO=-793022.30, deltaELBO=682.705 (0.00650280%), Factors=10
+Iteration 77: time=0.26, Factors=10
+Iteration 78: time=0.26, Factors=10
+Iteration 79: time=0.26, Factors=10
+Iteration 80: time=0.26, Factors=10
+Iteration 81: time=0.30, ELBO=-792417.22, deltaELBO=605.082 (0.00576344%), Factors=10
+Iteration 82: time=0.26, Factors=10
+Iteration 83: time=0.26, Factors=10
+Iteration 84: time=0.26, Factors=10
+Iteration 85: time=0.26, Factors=10
+Iteration 86: time=0.30, ELBO=-791874.12, deltaELBO=543.101 (0.00517306%), Factors=10
+Iteration 87: time=0.26, Factors=10
+Iteration 88: time=0.26, Factors=10
+Iteration 89: time=0.26, Factors=10
+Iteration 90: time=0.26, Factors=10
+Iteration 91: time=0.30, ELBO=-791380.58, deltaELBO=493.538 (0.00470097%), Factors=10
+Iteration 92: time=0.26, Factors=10
+Iteration 93: time=0.26, Factors=10
+Iteration 94: time=0.26, Factors=10
+Iteration 95: time=0.26, Factors=10
+Iteration 96: time=0.30, ELBO=-790922.57, deltaELBO=458.011 (0.00436258%), Factors=10
+Iteration 97: time=0.26, Factors=10
+Iteration 98: time=0.26, Factors=10
+Iteration 99: time=0.26, Factors=10
+Iteration 100: time=0.26, Factors=10
+Iteration 101: time=0.30, ELBO=-790481.86, deltaELBO=440.713 (0.00419781%), Factors=10
+Iteration 102: time=0.26, Factors=10
+Iteration 103: time=0.26, Factors=10
+Iteration 104: time=0.26, Factors=10
+Iteration 105: time=0.26, Factors=10
+Iteration 106: time=0.30, ELBO=-790032.33, deltaELBO=449.530 (0.00428180%), Factors=10
+Iteration 107: time=0.26, Factors=10
+Iteration 108: time=0.26, Factors=10
+Iteration 109: time=0.26, Factors=10
+Iteration 110: time=0.26, Factors=10
+Iteration 111: time=0.30, ELBO=-789510.54, deltaELBO=521.785 (0.00497003%), Factors=10
+Iteration 112: time=0.26, Factors=10
+Iteration 113: time=0.26, Factors=10
+Iteration 114: time=0.26, Factors=10
+Iteration 115: time=0.26, Factors=10
+Iteration 116: time=0.30, ELBO=-788810.30, deltaELBO=700.245 (0.00666986%), Factors=10
+Iteration 117: time=0.26, Factors=10
+Iteration 118: time=0.26, Factors=10
+Iteration 119: time=0.26, Factors=10
+Iteration 120: time=0.26, Factors=10
+Iteration 121: time=0.30, ELBO=-787813.84, deltaELBO=996.462 (0.00949135%), Factors=10
+Iteration 122: time=0.26, Factors=10
+Iteration 123: time=0.27, Factors=10
+Iteration 124: time=0.26, Factors=10
+Iteration 125: time=0.27, Factors=10
+Iteration 126: time=0.30, ELBO=-786470.16, deltaELBO=1343.681 (0.01279863%), Factors=10
+Iteration 127: time=0.26, Factors=10
+Iteration 128: time=0.26, Factors=10
+Iteration 129: time=0.26, Factors=10
+Iteration 130: time=0.26, Factors=10
+Iteration 131: time=0.30, ELBO=-784725.73, deltaELBO=1744.423 (0.01661572%), Factors=10
+Iteration 132: time=0.26, Factors=10
+Iteration 133: time=0.26, Factors=10
+Iteration 134: time=0.26, Factors=10
+Iteration 135: time=0.26, Factors=10
+Iteration 136: time=0.30, ELBO=-781939.92, deltaELBO=2785.818 (0.02653505%), Factors=10
+Iteration 137: time=0.26, Factors=10
+Iteration 138: time=0.26, Factors=10
+Iteration 139: time=0.26, Factors=10
+Iteration 140: time=0.26, Factors=10
+Iteration 141: time=0.30, ELBO=-778951.93, deltaELBO=2987.983 (0.02846068%), Factors=10
+Iteration 142: time=0.26, Factors=10
+Iteration 143: time=0.26, Factors=10
+Iteration 144: time=0.26, Factors=10
+Iteration 145: time=0.26, Factors=10
+Iteration 146: time=0.30, ELBO=-776716.93, deltaELBO=2235.002 (0.02128850%), Factors=10
+Iteration 147: time=0.26, Factors=10
+Iteration 148: time=0.26, Factors=10
+Iteration 149: time=0.26, Factors=10
+Iteration 150: time=0.26, Factors=10
+Iteration 151: time=0.30, ELBO=-774541.69, deltaELBO=2175.236 (0.02071923%), Factors=10
+Iteration 152: time=0.26, Factors=10
+Iteration 153: time=0.27, Factors=10
+Iteration 154: time=0.26, Factors=10
+Iteration 155: time=0.27, Factors=10
+Iteration 156: time=0.30, ELBO=-773045.60, deltaELBO=1496.093 (0.01425036%), Factors=10
+Iteration 157: time=0.26, Factors=10
+Iteration 158: time=0.26, Factors=10
+Iteration 159: time=0.27, Factors=10
+Iteration 160: time=0.27, Factors=10
+Iteration 161: time=0.32, ELBO=-772039.82, deltaELBO=1005.784 (0.00958014%), Factors=10
+Iteration 162: time=0.27, Factors=10
+Iteration 163: time=0.27, Factors=10
+Iteration 164: time=0.27, Factors=10
+Iteration 165: time=0.26, Factors=10
+Iteration 166: time=0.30, ELBO=-771316.57, deltaELBO=723.248 (0.00688897%), Factors=10
+Iteration 167: time=0.26, Factors=10
+Iteration 168: time=0.26, Factors=10
+Iteration 169: time=0.26, Factors=10
+Iteration 170: time=0.26, Factors=10
+Iteration 171: time=0.30, ELBO=-770768.22, deltaELBO=548.353 (0.00522309%), Factors=10
+Iteration 172: time=0.26, Factors=10
+Iteration 173: time=0.26, Factors=10
+Iteration 174: time=0.26, Factors=10
+Iteration 175: time=0.26, Factors=10
+Iteration 176: time=0.30, ELBO=-770334.42, deltaELBO=433.794 (0.00413191%), Factors=10
+Iteration 177: time=0.26, Factors=10
+Iteration 178: time=0.26, Factors=10
+Iteration 179: time=0.27, Factors=10
+Iteration 180: time=0.26, Factors=10
+Iteration 181: time=0.30, ELBO=-769977.58, deltaELBO=356.840 (0.00339892%), Factors=10
+Iteration 182: time=0.26, Factors=10
+Iteration 183: time=0.26, Factors=10
+Iteration 184: time=0.26, Factors=10
+Iteration 185: time=0.26, Factors=10
+Iteration 186: time=0.30, ELBO=-769673.52, deltaELBO=304.064 (0.00289622%), Factors=10
+Iteration 187: time=0.26, Factors=10
+Iteration 188: time=0.26, Factors=10
+Iteration 189: time=0.27, Factors=10
+Iteration 190: time=0.27, Factors=10
+Iteration 191: time=0.30, ELBO=-769406.18, deltaELBO=267.340 (0.00254643%), Factors=10
+Iteration 192: time=0.26, Factors=10
+Iteration 193: time=0.26, Factors=10
+Iteration 194: time=0.26, Factors=10
+Iteration 195: time=0.26, Factors=10
+Iteration 196: time=0.30, ELBO=-769166.14, deltaELBO=240.042 (0.00228641%), Factors=10
+Iteration 197: time=0.26, Factors=10
+Iteration 198: time=0.26, Factors=10
+Iteration 199: time=0.27, Factors=10
+Iteration 200: time=0.26, Factors=10
+Iteration 201: time=0.30, ELBO=-768947.08, deltaELBO=219.056 (0.00208652%), Factors=10
+Iteration 202: time=0.26, Factors=10
+Iteration 203: time=0.26, Factors=10
+Iteration 204: time=0.26, Factors=10
+Iteration 205: time=0.26, Factors=10
+Iteration 206: time=0.30, ELBO=-768744.70, deltaELBO=202.375 (0.00192763%), Factors=10
+Iteration 207: time=0.27, Factors=10
+Iteration 208: time=0.27, Factors=10
+Iteration 209: time=0.27, Factors=10
+Iteration 210: time=0.26, Factors=10
+Iteration 211: time=0.30, ELBO=-768556.32, deltaELBO=188.385 (0.00179438%), Factors=10
+Iteration 212: time=0.27, Factors=10
+Iteration 213: time=0.26, Factors=10
+Iteration 214: time=0.26, Factors=10
+Iteration 215: time=0.27, Factors=10
+Iteration 216: time=0.30, ELBO=-768380.67, deltaELBO=175.654 (0.00167311%), Factors=10
+Iteration 217: time=0.26, Factors=10
+Iteration 218: time=0.26, Factors=10
+Iteration 219: time=0.27, Factors=10
+Iteration 220: time=0.26, Factors=10
+Iteration 221: time=0.30, ELBO=-768216.95, deltaELBO=163.715 (0.00155940%), Factors=10
+Iteration 222: time=0.26, Factors=10
+Iteration 223: time=0.26, Factors=10
+Iteration 224: time=0.26, Factors=10
+Iteration 225: time=0.27, Factors=10
+Iteration 226: time=0.30, ELBO=-768063.78, deltaELBO=153.169 (0.00145895%), Factors=10
+Iteration 227: time=0.26, Factors=10
+Iteration 228: time=0.26, Factors=10
+Iteration 229: time=0.26, Factors=10
+Iteration 230: time=0.26, Factors=10
+Iteration 231: time=0.30, ELBO=-767920.19, deltaELBO=143.596 (0.00136776%), Factors=10
+Iteration 232: time=0.26, Factors=10
+Iteration 233: time=0.26, Factors=10
+Iteration 234: time=0.27, Factors=10
+Iteration 235: time=0.26, Factors=10
+Iteration 236: time=0.30, ELBO=-767784.86, deltaELBO=135.327 (0.00128900%), Factors=10
+Iteration 237: time=0.26, Factors=10
+Iteration 238: time=0.26, Factors=10
+Iteration 239: time=0.26, Factors=10
+Iteration 240: time=0.26, Factors=10
+Iteration 241: time=0.30, ELBO=-767656.58, deltaELBO=128.277 (0.00122184%), Factors=10
+Iteration 242: time=0.26, Factors=10
+Iteration 243: time=0.26, Factors=10
+Iteration 244: time=0.26, Factors=10
+Iteration 245: time=0.27, Factors=10
+Iteration 246: time=0.30, ELBO=-767534.05, deltaELBO=122.530 (0.00116710%), Factors=10
+Iteration 247: time=0.27, Factors=10
+Iteration 248: time=0.27, Factors=10
+Iteration 249: time=0.27, Factors=10
+Iteration 250: time=0.26, Factors=10
+Iteration 251: time=0.30, ELBO=-767416.04, deltaELBO=118.009 (0.00112404%), Factors=10
+Iteration 252: time=0.26, Factors=10
+Iteration 253: time=0.26, Factors=10
+Iteration 254: time=0.26, Factors=10
+Iteration 255: time=0.26, Factors=10
+Iteration 256: time=0.30, ELBO=-767300.73, deltaELBO=115.307 (0.00109831%), Factors=10
+Iteration 257: time=0.26, Factors=10
+Iteration 258: time=0.26, Factors=10
+Iteration 259: time=0.26, Factors=10
+Iteration 260: time=0.26, Factors=10
+Iteration 261: time=0.30, ELBO=-767186.58, deltaELBO=114.151 (0.00108729%), Factors=10
+Iteration 262: time=0.26, Factors=10
+Iteration 263: time=0.26, Factors=10
+Iteration 264: time=0.26, Factors=10
+Iteration 265: time=0.26, Factors=10
+Iteration 266: time=0.30, ELBO=-767071.54, deltaELBO=115.046 (0.00109582%), Factors=10
+Iteration 267: time=0.26, Factors=10
+Iteration 268: time=0.26, Factors=10
+Iteration 269: time=0.26, Factors=10
+Iteration 270: time=0.26, Factors=10
+Iteration 271: time=0.30, ELBO=-766955.87, deltaELBO=115.663 (0.00110169%), Factors=10
+Iteration 272: time=0.26, Factors=10
+Iteration 273: time=0.26, Factors=10
+Iteration 274: time=0.26, Factors=10
+Iteration 275: time=0.27, Factors=10
+Iteration 276: time=0.30, ELBO=-766839.85, deltaELBO=116.029 (0.00110518%), Factors=10
+Iteration 277: time=0.26, Factors=10
+Iteration 278: time=0.26, Factors=10
+Iteration 279: time=0.26, Factors=10
+Iteration 280: time=0.26, Factors=10
+Iteration 281: time=0.30, ELBO=-766723.27, deltaELBO=116.574 (0.00111037%), Factors=10
+Iteration 282: time=0.26, Factors=10
+Iteration 283: time=0.27, Factors=10
+Iteration 284: time=0.27, Factors=10
+Iteration 285: time=0.27, Factors=10
+Iteration 286: time=0.30, ELBO=-766606.57, deltaELBO=116.706 (0.00111163%), Factors=10
+Iteration 287: time=0.26, Factors=10
+Iteration 288: time=0.26, Factors=10
+Iteration 289: time=0.26, Factors=10
+Iteration 290: time=0.26, Factors=10
+Iteration 291: time=0.30, ELBO=-766489.07, deltaELBO=117.492 (0.00111911%), Factors=10
+Iteration 292: time=0.27, Factors=10
+Iteration 293: time=0.27, Factors=10
+Iteration 294: time=0.27, Factors=10
+Iteration 295: time=0.28, Factors=10
+Iteration 296: time=0.31, ELBO=-766371.33, deltaELBO=117.747 (0.00112155%), Factors=10
+Iteration 297: time=0.27, Factors=10
+Iteration 298: time=0.27, Factors=10
+Iteration 299: time=0.27, Factors=10
+Iteration 300: time=0.27, Factors=10
+Iteration 301: time=0.31, ELBO=-766255.32, deltaELBO=116.003 (0.00110493%), Factors=10
+Iteration 302: time=0.27, Factors=10
+Iteration 303: time=0.27, Factors=10
+Iteration 304: time=0.28, Factors=10
+Iteration 305: time=0.28, Factors=10
+Iteration 306: time=0.31, ELBO=-766141.62, deltaELBO=113.709 (0.00108308%), Factors=10
+Iteration 307: time=0.28, Factors=10
+Iteration 308: time=0.28, Factors=10
+Iteration 309: time=0.28, Factors=10
+Iteration 310: time=0.28, Factors=10
+Iteration 311: time=0.32, ELBO=-766029.34, deltaELBO=112.276 (0.00106944%), Factors=10
+Iteration 312: time=0.28, Factors=10
+Iteration 313: time=0.28, Factors=10
+Iteration 314: time=0.28, Factors=10
+Iteration 315: time=0.28, Factors=10
+Iteration 316: time=0.32, ELBO=-765918.24, deltaELBO=111.102 (0.00105825%), Factors=10
+Iteration 317: time=0.29, Factors=10
+Iteration 318: time=0.29, Factors=10
+Iteration 319: time=0.29, Factors=10
+Iteration 320: time=0.29, Factors=10
+Iteration 321: time=0.32, ELBO=-765808.84, deltaELBO=109.392 (0.00104197%), Factors=10
+Iteration 322: time=0.29, Factors=10
+Iteration 323: time=0.29, Factors=10
+Iteration 324: time=0.29, Factors=10
+Iteration 325: time=0.29, Factors=10
+Iteration 326: time=0.33, ELBO=-765701.68, deltaELBO=107.164 (0.00102074%), Factors=10
+Iteration 327: time=0.29, Factors=10
+Iteration 328: time=0.29, Factors=10
+Iteration 329: time=0.30, Factors=10
+Iteration 330: time=0.30, Factors=10
+Iteration 331: time=0.33, ELBO=-765596.73, deltaELBO=104.953 (0.00099968%), Factors=10
+Iteration 332: time=0.30, Factors=10
+Iteration 333: time=0.30, Factors=10
+Iteration 334: time=0.30, Factors=10
+Iteration 335: time=0.30, Factors=10
+Iteration 336: time=0.33, ELBO=-765493.18, deltaELBO=103.545 (0.00098628%), Factors=10
+Iteration 337: time=0.30, Factors=10
+Iteration 338: time=0.30, Factors=10
+Iteration 339: time=0.30, Factors=10
+Iteration 340: time=0.30, Factors=10
+Iteration 341: time=0.34, ELBO=-765390.84, deltaELBO=102.343 (0.00097482%), Factors=10
+Iteration 342: time=0.30, Factors=10
+Iteration 343: time=0.30, Factors=10
+Iteration 344: time=0.30, Factors=10
+Iteration 345: time=0.30, Factors=10
+Iteration 346: time=0.34, ELBO=-765289.56, deltaELBO=101.283 (0.00096472%), Factors=10
+Iteration 347: time=0.30, Factors=10
+Iteration 348: time=0.30, Factors=10
+Iteration 349: time=0.31, Factors=10
+Iteration 350: time=0.31, Factors=10
+Iteration 351: time=0.34, ELBO=-765191.27, deltaELBO=98.289 (0.00093621%), Factors=10
+Iteration 352: time=0.30, Factors=10
+Iteration 353: time=0.30, Factors=10
+Iteration 354: time=0.30, Factors=10
+Iteration 355: time=0.30, Factors=10
+Iteration 356: time=0.33, ELBO=-765096.48, deltaELBO=94.790 (0.00090288%), Factors=10
+Iteration 357: time=0.30, Factors=10
+Iteration 358: time=0.30, Factors=10
+Iteration 359: time=0.30, Factors=10
+Iteration 360: time=0.30, Factors=10
+Iteration 361: time=0.33, ELBO=-765005.05, deltaELBO=91.428 (0.00087086%), Factors=10
+Iteration 362: time=0.30, Factors=10
+Iteration 363: time=0.30, Factors=10
+Iteration 364: time=0.30, Factors=10
+Iteration 365: time=0.30, Factors=10
+Iteration 366: time=0.33, ELBO=-764916.94, deltaELBO=88.105 (0.00083920%), Factors=10
+Iteration 367: time=0.30, Factors=10
+Iteration 368: time=0.29, Factors=10
+Iteration 369: time=0.29, Factors=10
+Iteration 370: time=0.30, Factors=10
+Iteration 371: time=0.33, ELBO=-764831.96, deltaELBO=84.982 (0.00080946%), Factors=10
+Iteration 372: time=0.29, Factors=10
+Iteration 373: time=0.29, Factors=10
+Iteration 374: time=0.29, Factors=10
+Iteration 375: time=0.29, Factors=10
+Iteration 376: time=0.32, ELBO=-764750.05, deltaELBO=81.914 (0.00078023%), Factors=10
+Iteration 377: time=0.28, Factors=10
+Iteration 378: time=0.28, Factors=10
+Iteration 379: time=0.28, Factors=10
+Iteration 380: time=0.28, Factors=10
+Iteration 381: time=0.32, ELBO=-764670.11, deltaELBO=79.941 (0.00076145%), Factors=10
+Iteration 382: time=0.28, Factors=10
+Iteration 383: time=0.28, Factors=10
+Iteration 384: time=0.28, Factors=10
+Iteration 385: time=0.28, Factors=10
+Iteration 386: time=0.31, ELBO=-764590.63, deltaELBO=79.476 (0.00075702%), Factors=10
+Iteration 387: time=0.28, Factors=10
+Iteration 388: time=0.27, Factors=10
+Iteration 389: time=0.27, Factors=10
+Iteration 390: time=0.27, Factors=10
+Iteration 391: time=0.31, ELBO=-764519.18, deltaELBO=71.448 (0.00068054%), Factors=10
+Iteration 392: time=0.27, Factors=10
+Iteration 393: time=0.27, Factors=10
+Iteration 394: time=0.27, Factors=10
+Iteration 395: time=0.27, Factors=10
+Iteration 396: time=0.31, ELBO=-764453.24, deltaELBO=65.948 (0.00062816%), Factors=10
+Iteration 397: time=0.27, Factors=10
+Iteration 398: time=0.27, Factors=10
+Iteration 399: time=0.27, Factors=10
+Iteration 400: time=0.27, Factors=10
+Iteration 401: time=0.30, ELBO=-764391.37, deltaELBO=61.865 (0.00058926%), Factors=10
+Iteration 402: time=0.27, Factors=10
+Iteration 403: time=0.26, Factors=10
+Iteration 404: time=0.26, Factors=10
+Iteration 405: time=0.27, Factors=10
+Iteration 406: time=0.30, ELBO=-764333.28, deltaELBO=58.094 (0.00055335%), Factors=10
+Iteration 407: time=0.27, Factors=10
+Iteration 408: time=0.26, Factors=10
+Iteration 409: time=0.26, Factors=10
+Iteration 410: time=0.26, Factors=10
+Iteration 411: time=0.29, ELBO=-764278.60, deltaELBO=54.680 (0.00052083%), Factors=10
+Iteration 412: time=0.26, Factors=10
+Iteration 413: time=0.26, Factors=10
+Iteration 414: time=0.26, Factors=10
+Iteration 415: time=0.26, Factors=10
+Iteration 416: time=0.30, ELBO=-764227.54, deltaELBO=51.059 (0.00048634%), Factors=10
+Iteration 417: time=0.26, Factors=10
+Iteration 418: time=0.26, Factors=10
+Iteration 419: time=0.26, Factors=10
+Iteration 420: time=0.26, Factors=10
+Iteration 421: time=0.29, ELBO=-764179.33, deltaELBO=48.203 (0.00045914%), Factors=10
+
+Converged!
+
+
+
+#######################
+## Training finished ##
+#######################
+
+
+Warning: Output file /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/models/DLPFC_10.rds already exists, it will be replaced
+Saving model in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/models/DLPFC_10.rds...
+2 factors were found to explain no variance and they were removed for downstream analysis. You can disable this option by setting load_model(..., remove_inactive_factors = FALSE)
+Warning message:
+In .quality_control(object, verbose = verbose) :
+  Factor(s) 1, 2, 3 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
+
+pdf 
+  2 
+─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-09-08
+ pandoc   NA
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package              * version    date (UTC) lib source
+ abind                  1.4-8      2024-09-12 [1] CRAN (R 4.5.0)
+ backports              1.5.0      2024-05-23 [1] CRAN (R 4.5.0)
+ basilisk               1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ basilisk.utils         1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ beachmat               2.24.0     2025-04-15 [1] Bioconduc~
+ Biobase              * 2.68.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0     2025-04-15 [1] Bioconduc~
+ BiocNeighbors          2.2.0      2025-04-15 [1] Bioconduc~
+ BiocParallel           1.42.1     2025-06-01 [1] Bioconduc~
+ BiocSingular           1.24.0     2025-04-15 [1] Bioconduc~
+ bluster                1.18.0     2025-04-15 [1] Bioconduc~
+ broom                  1.0.8      2025-03-28 [2] CRAN (R 4.5.0)
+ Cairo                  1.6-2      2023-11-28 [2] CRAN (R 4.5.0)
+ circlize             * 0.4.16     2024-02-20 [2] CRAN (R 4.5.0)
+ cli                    3.6.5      2025-04-23 [1] CRAN (R 4.5.0)
+ clue                   0.3-66     2024-11-13 [2] CRAN (R 4.5.0)
+ cluster                2.1.8.1    2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20     2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-1      2024-07-26 [1] CRAN (R 4.5.0)
+ ComplexHeatmap       * 2.24.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ corrplot               0.95       2024-10-14 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0      2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3      2024-06-20 [1] CRAN (R 4.5.0)
+ DelayedArray           0.34.1     2025-04-17 [1] Bioconduc~
+ dichromat              2.0-0.1    2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.37     2024-08-19 [1] CRAN (R 4.5.0)
+ dir.expiry             1.16.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4      2023-11-17 [1] CRAN (R 4.5.0)
+ dqrng                  0.4.1      2024-05-28 [1] CRAN (R 4.5.0)
+ edgeR                  4.6.2      2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ farver                 2.1.2      2024-05-13 [1] CRAN (R 4.5.0)
+ filelock               1.0.3      2023-12-11 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.5.0)
+ foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4      2025-05-09 [1] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14     2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ getopt               * 1.20.4     2023-10-01 [1] CRAN (R 4.5.0)
+ GetoptLong             1.0.5      2020-12-15 [2] CRAN (R 4.5.0)
+ GGally               * 2.2.1      2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2              * 3.5.2      2025-04-09 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.6      2024-09-07 [1] CRAN (R 4.5.0)
+ ggstats                0.9.0      2025-03-10 [2] CRAN (R 4.5.0)
+ GlobalOptions          0.1.2      2020-06-10 [2] CRAN (R 4.5.0)
+ glue                   1.8.0      2024-09-30 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6      2024-10-25 [1] CRAN (R 4.5.0)
+ h5mread                1.0.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ HDF5Array              1.36.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ here                 * 1.0.1      2020-12-13 [1] CRAN (R 4.5.0)
+ hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7      2023-08-15 [1] CRAN (R 4.5.0)
+ igraph                 2.1.4      2025-01-23 [1] CRAN (R 4.5.0)
+ IRanges              * 2.42.0     2025-04-15 [1] Bioconduc~
+ irlba                  2.3.5.1    2022-10-03 [1] CRAN (R 4.5.0)
+ iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0      2025-03-27 [1] CRAN (R 4.5.0)
+ lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.4      2023-11-07 [1] CRAN (R 4.5.0)
+ limma                  3.64.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ locfit                 1.5-9.12   2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.4      2024-12-08 [2] CRAN (R 4.5.0)
+ magick                 2.8.6      2025-03-23 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3      2022-03-30 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65     2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix               * 1.7-3      2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0     2025-04-15 [1] Bioconduc~
+ matrixStats          * 1.5.0      2025-01-07 [1] CRAN (R 4.5.0)
+ metapod                1.16.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ MOFA2                * 1.18.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ MOFAcellulaR         * 0.0.0.9000 2025-07-23 [1] Github (saezlab/MOFAcellulaR@8cb0785)
+ pheatmap               1.0.12     2019-01-04 [2] CRAN (R 4.5.0)
+ pillar                 1.11.0     2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3      2019-09-22 [1] CRAN (R 4.5.0)
+ plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-8      2022-11-29 [1] CRAN (R 4.5.0)
+ purrr                * 1.1.0      2025-07-10 [1] CRAN (R 4.5.0)
+ R6                     2.6.1      2025-02-15 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3      2022-04-03 [1] CRAN (R 4.5.0)
+ Rcpp                   1.1.0      2025-07-02 [1] CRAN (R 4.5.0)
+ readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.5.0)
+ reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.5.0)
+ reticulate             1.43.0     2025-07-21 [1] CRAN (R 4.5.0)
+ rhdf5                  2.52.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rhdf5filters           1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Rhdf5lib               1.30.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6      2025-04-11 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.0      2025-07-12 [1] CRAN (R 4.5.0)
+ rsvd                   1.0.5      2021-04-16 [1] CRAN (R 4.5.0)
+ Rtsne                  0.17       2023-12-07 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.1      2025-06-01 [1] Bioconduc~
+ S4Vectors            * 0.46.0     2025-04-15 [1] Bioconduc~
+ ScaledMatrix           1.16.0     2025-04-15 [1] Bioconduc~
+ scales                 1.4.0      2025-04-24 [1] CRAN (R 4.5.0)
+ scran                  1.36.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scuttle                1.18.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.0)
+ shape                  1.4.6.1    2024-02-23 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1     2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.1      2025-07-23 [1] Bioconduc~
+ SpatialExperiment    * 1.18.1     2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.0      2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7      2025-03-27 [1] CRAN (R 4.5.0)
+ stringr              * 1.5.1      2023-11-14 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ tibble               * 3.3.0      2025-06-08 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.1      2024-01-24 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1      2024-03-11 [1] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ uwot                 * 0.2.3      2025-02-24 [1] CRAN (R 4.5.0)
+ vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.5.0)
+ withr                  3.0.2      2024-10-28 [1] CRAN (R 4.5.0)
+ XVector                0.48.0     2025-04-15 [1] Bioconduc~
+
+ [1] /users/neagles/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+─ Python configuration ───────────────────────────────────────────────────────
+ python:         /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/bin/python
+ libpython:      /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/lib/libpython3.10.so
+ pythonhome:     /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env:/users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env
+ version:        3.10.5 | packaged by conda-forge | (main, Jun 14 2022, 07:06:46) [GCC 10.3.0]
+ numpy:          /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/lib/python3.10/site-packages/numpy
+ numpy_version:  1.23.1
+ 
+ NOTE: Python version was forced by use_python() function
+
+──────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Mon Sep  8 04:34:20 PM EDT 2025
