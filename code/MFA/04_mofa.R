@@ -5,6 +5,8 @@ library(MOFA2)
 library(here)
 library(tidyverse)
 library(GGally)
+library(circlize)
+library(viridisLite)
 library(getopt)
 
 # Import command-line parameters
@@ -128,7 +130,11 @@ p = plot_MOFA_hmap(
     metadata = samples_metadata(model),
     sample_id_column = "sample",
     sample_anns = c("age", "sex"),
-    assoc_list = assoc_list
+    assoc_list = assoc_list,
+    col_rows = list(
+        sex = c(M = "#5C80BC", F = "#D58BCC"),
+        age = colorRamp2(range(samples_metadata(model)$age), viridis(2))
+    )
 )
 pdf(
     plot_path,
