@@ -1,9 +1,9 @@
 **** Job starts ****
-Mon Sep  8 04:31:06 PM EDT 2025
+Tue Sep  9 09:52:43 AM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 22137011
-Job name: 04_mofa_dlpfc
+Job id: 22144648
+Job name: 04_mofa
 Node name: compute-093
 Task id: 10
 Loading conda_R/4.5
@@ -192,36 +192,454 @@ $dataset
 $num_factors
 [1] 3
 
-Repeated column names found in count matrix
-Repeated column names found in count matrix
-Error in `purrr::map()`:
-ℹ In index: 30.
-ℹ With name: HPC_Vascular.
-Caused by error:
-! The `.data` argument of `add_column()` must have unique names as of
-  tibble 3.0.0.
-ℹ Use `.name_repair = "minimal"`.
-Backtrace:
-     ▆
-  1. ├─MOFA2::create_mofa(...)
-  2. │ └─methods::is(data, "Seurat")
-  3. ├─MOFAcellulaR::pb_dat2MOFA(...)
-  4. │ ├─... %>% ...
-  5. │ └─purrr::map(...)
-  6. │   └─purrr:::map_("list", .x, .f, ..., .progress = .progress)
-  7. │     ├─purrr:::with_indexed_errors(...)
-  8. │     │ └─base::withCallingHandlers(...)
-  9. │     ├─purrr:::call_with_cleanup(...)
- 10. │     └─MOFAcellulaR (local) .f(.x[[i]], ...)
- 11. │       └─... %>% ...
- 12. ├─dplyr::mutate(., feature = paste0(.data$view, "_", .data$feature))
- 13. ├─tidyr::unnest(., cols = c(value))
- 14. ├─tibble::enframe(., name = "view")
- 15. ├─tidyr::pivot_longer(., -.data$feature, names_to = "sample", values_to = "value")
- 16. └─tibble::rownames_to_column(., "feature")
- 17.   └─tibble::add_column(df, `:=`(!!var, rownames(df)), .before = 1)
- 18.     └─lifecycle::deprecate_stop(...)
- 19.       └─lifecycle:::deprecate_stop0(msg)
- 20.         └─rlang::cnd_signal(...)
-There were 46 warnings (use warnings() to see them)
-Execution halted
+Creating MOFA object from a data.frame...
+There were 47 warnings (use warnings() to see them)
+Checking data options...
+Checking training options...
+Checking model options...
+Warning message:
+In prepare_mofa(object = mofa, data_options = data_opts, model_options = model_opts,  :
+  The total number of samples is very small for learning 3 factors.  
+    Try to reduce the number of factors to obtain meaningful results. It should not exceed ~2.
+Connecting to the mofapy2 package using basilisk. 
+    Set 'use_basilisk' to FALSE if you prefer to manually set the python binary using 'reticulate'.
+
+        #########################################################
+        ###           __  __  ____  ______                    ### 
+        ###          |  \/  |/ __ \|  ____/\    _             ### 
+        ###          | \  / | |  | | |__ /  \ _| |_           ### 
+        ###          | |\/| | |  | |  __/ /\ \_   _|          ###
+        ###          | |  | | |__| | | / ____ \|_|            ###
+        ###          |_|  |_|\____/|_|/_/    \_\              ###
+        ###                                                   ### 
+        ######################################################### 
+       
+ 
+        
+use_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...
+
+Successfully loaded view='DLPFC_Astro' group='single_group' with N=10 samples and D=4748 features...
+Successfully loaded view='DLPFC_EndoMural' group='single_group' with N=10 samples and D=4601 features...
+Successfully loaded view='DLPFC_Excit_ambig' group='single_group' with N=10 samples and D=3326 features...
+Successfully loaded view='DLPFC_Excit_L3' group='single_group' with N=10 samples and D=5866 features...
+Successfully loaded view='DLPFC_Excit_L3.4.5' group='single_group' with N=10 samples and D=3835 features...
+Successfully loaded view='DLPFC_Excit_L4' group='single_group' with N=10 samples and D=5907 features...
+Successfully loaded view='DLPFC_Excit_L5' group='single_group' with N=10 samples and D=5957 features...
+Successfully loaded view='DLPFC_Excit_L5.6' group='single_group' with N=10 samples and D=5813 features...
+Successfully loaded view='DLPFC_Excit_L6' group='single_group' with N=10 samples and D=5902 features...
+Successfully loaded view='DLPFC_Inhib' group='single_group' with N=10 samples and D=5927 features...
+Successfully loaded view='DLPFC_Micro' group='single_group' with N=10 samples and D=3218 features...
+Successfully loaded view='DLPFC_Oligo' group='single_group' with N=10 samples and D=5664 features...
+Successfully loaded view='DLPFC_OPC' group='single_group' with N=10 samples and D=4634 features...
+Successfully loaded view='DLPFC_Sp09D01' group='single_group' with N=10 samples and D=2029 features...
+Successfully loaded view='DLPFC_Sp09D02' group='single_group' with N=10 samples and D=4364 features...
+Successfully loaded view='DLPFC_Sp09D03' group='single_group' with N=10 samples and D=5876 features...
+Successfully loaded view='DLPFC_Sp09D04' group='single_group' with N=10 samples and D=6541 features...
+Successfully loaded view='DLPFC_Sp09D05' group='single_group' with N=10 samples and D=6092 features...
+Successfully loaded view='DLPFC_Sp09D06' group='single_group' with N=10 samples and D=4804 features...
+Successfully loaded view='DLPFC_Sp09D07' group='single_group' with N=10 samples and D=6559 features...
+Successfully loaded view='DLPFC_Sp09D08' group='single_group' with N=10 samples and D=6482 features...
+Successfully loaded view='DLPFC_Sp09D09' group='single_group' with N=10 samples and D=5492 features...
+Successfully loaded view='HPC_Astro' group='single_group' with N=10 samples and D=5701 features...
+Successfully loaded view='HPC_CA1' group='single_group' with N=10 samples and D=4708 features...
+Successfully loaded view='HPC_CA2.4' group='single_group' with N=10 samples and D=2960 features...
+Successfully loaded view='HPC_Choroid' group='single_group' with N=10 samples and D=4731 features...
+Successfully loaded view='HPC_CSF' group='single_group' with N=10 samples and D=4229 features...
+Successfully loaded view='HPC_ExcN' group='single_group' with N=10 samples and D=6595 features...
+Successfully loaded view='HPC_GABA' group='single_group' with N=10 samples and D=5521 features...
+Successfully loaded view='HPC_GCL' group='single_group' with N=10 samples and D=4481 features...
+Successfully loaded view='HPC_InhN' group='single_group' with N=10 samples and D=6156 features...
+Successfully loaded view='HPC_Micro.Macro.T' group='single_group' with N=10 samples and D=4642 features...
+Successfully loaded view='HPC_ML' group='single_group' with N=10 samples and D=2764 features...
+Successfully loaded view='HPC_Oligo' group='single_group' with N=10 samples and D=5547 features...
+Successfully loaded view='HPC_OPC' group='single_group' with N=10 samples and D=4228 features...
+Successfully loaded view='HPC_RHP' group='single_group' with N=10 samples and D=5056 features...
+Successfully loaded view='HPC_SL.SR' group='single_group' with N=10 samples and D=4966 features...
+Successfully loaded view='HPC_SLM.SGZ' group='single_group' with N=10 samples and D=5485 features...
+Successfully loaded view='HPC_sn_Vascular' group='single_group' with N=10 samples and D=5444 features...
+Successfully loaded view='HPC_SR.SLM' group='single_group' with N=10 samples and D=6136 features...
+Successfully loaded view='HPC_SUB' group='single_group' with N=10 samples and D=3414 features...
+Successfully loaded view='HPC_SUB.RHP' group='single_group' with N=10 samples and D=5258 features...
+Successfully loaded view='HPC_visium_Vascular' group='single_group' with N=10 samples and D=4607 features...
+Successfully loaded view='HPC_WM.1' group='single_group' with N=10 samples and D=4993 features...
+Successfully loaded view='HPC_WM.2' group='single_group' with N=10 samples and D=3063 features...
+Successfully loaded view='HPC_WM.3' group='single_group' with N=10 samples and D=956 features...
+
+
+Model options:
+- Automatic Relevance Determination prior on the factors: False
+- Automatic Relevance Determination prior on the weights: True
+- Spike-and-slab prior on the factors: False
+- Spike-and-slab prior on the weights: False
+Likelihoods:
+- View 0 (DLPFC_Astro): gaussian
+- View 1 (DLPFC_EndoMural): gaussian
+- View 2 (DLPFC_Excit_ambig): gaussian
+- View 3 (DLPFC_Excit_L3): gaussian
+- View 4 (DLPFC_Excit_L3.4.5): gaussian
+- View 5 (DLPFC_Excit_L4): gaussian
+- View 6 (DLPFC_Excit_L5): gaussian
+- View 7 (DLPFC_Excit_L5.6): gaussian
+- View 8 (DLPFC_Excit_L6): gaussian
+- View 9 (DLPFC_Inhib): gaussian
+- View 10 (DLPFC_Micro): gaussian
+- View 11 (DLPFC_Oligo): gaussian
+- View 12 (DLPFC_OPC): gaussian
+- View 13 (DLPFC_Sp09D01): gaussian
+- View 14 (DLPFC_Sp09D02): gaussian
+- View 15 (DLPFC_Sp09D03): gaussian
+- View 16 (DLPFC_Sp09D04): gaussian
+- View 17 (DLPFC_Sp09D05): gaussian
+- View 18 (DLPFC_Sp09D06): gaussian
+- View 19 (DLPFC_Sp09D07): gaussian
+- View 20 (DLPFC_Sp09D08): gaussian
+- View 21 (DLPFC_Sp09D09): gaussian
+- View 22 (HPC_Astro): gaussian
+- View 23 (HPC_CA1): gaussian
+- View 24 (HPC_CA2.4): gaussian
+- View 25 (HPC_Choroid): gaussian
+- View 26 (HPC_CSF): gaussian
+- View 27 (HPC_ExcN): gaussian
+- View 28 (HPC_GABA): gaussian
+- View 29 (HPC_GCL): gaussian
+- View 30 (HPC_InhN): gaussian
+- View 31 (HPC_Micro.Macro.T): gaussian
+- View 32 (HPC_ML): gaussian
+- View 33 (HPC_Oligo): gaussian
+- View 34 (HPC_OPC): gaussian
+- View 35 (HPC_RHP): gaussian
+- View 36 (HPC_SL.SR): gaussian
+- View 37 (HPC_SLM.SGZ): gaussian
+- View 38 (HPC_sn_Vascular): gaussian
+- View 39 (HPC_SR.SLM): gaussian
+- View 40 (HPC_SUB): gaussian
+- View 41 (HPC_SUB.RHP): gaussian
+- View 42 (HPC_visium_Vascular): gaussian
+- View 43 (HPC_WM.1): gaussian
+- View 44 (HPC_WM.2): gaussian
+- View 45 (HPC_WM.3): gaussian
+
+
+
+Warning: some group(s) have less than 15 samples, MOFA won't be able to learn meaningful factors for these group(s)...
+
+
+
+######################################
+## Training the model with seed 42 ##
+######################################
+
+
+ELBO before training: -8959595.31 
+
+Iteration 1: time=0.24, ELBO=-1979105.34, deltaELBO=6980489.972 (77.91077310%), Factors=3
+Iteration 2: time=0.19, Factors=3
+Iteration 3: time=0.19, Factors=3
+Iteration 4: time=0.19, Factors=3
+Iteration 5: time=0.19, Factors=3
+Iteration 6: time=0.24, ELBO=-1838669.81, deltaELBO=140435.528 (1.56743160%), Factors=3
+Iteration 7: time=0.19, Factors=3
+Iteration 8: time=0.19, Factors=3
+Iteration 9: time=0.19, Factors=3
+Iteration 10: time=0.19, Factors=3
+Iteration 11: time=0.24, ELBO=-1809387.17, deltaELBO=29282.639 (0.32682992%), Factors=3
+Iteration 12: time=0.19, Factors=3
+Iteration 13: time=0.19, Factors=3
+Iteration 14: time=0.19, Factors=3
+Iteration 15: time=0.19, Factors=3
+Iteration 16: time=0.24, ELBO=-1801174.86, deltaELBO=8212.308 (0.09165936%), Factors=3
+Iteration 17: time=0.19, Factors=3
+Iteration 18: time=0.19, Factors=3
+Iteration 19: time=0.19, Factors=3
+Iteration 20: time=0.19, Factors=3
+Iteration 21: time=0.24, ELBO=-1796862.70, deltaELBO=4312.160 (0.04812896%), Factors=3
+Iteration 22: time=0.19, Factors=3
+Iteration 23: time=0.19, Factors=3
+Iteration 24: time=0.19, Factors=3
+Iteration 25: time=0.19, Factors=3
+Iteration 26: time=0.24, ELBO=-1794343.97, deltaELBO=2518.734 (0.02811214%), Factors=3
+Iteration 27: time=0.19, Factors=3
+Iteration 28: time=0.19, Factors=3
+Iteration 29: time=0.19, Factors=3
+Iteration 30: time=0.19, Factors=3
+Iteration 31: time=0.24, ELBO=-1792811.99, deltaELBO=1531.981 (0.01709877%), Factors=3
+Iteration 32: time=0.19, Factors=3
+Iteration 33: time=0.19, Factors=3
+Iteration 34: time=0.19, Factors=3
+Iteration 35: time=0.19, Factors=3
+Iteration 36: time=0.24, ELBO=-1791808.17, deltaELBO=1003.814 (0.01120379%), Factors=3
+Iteration 37: time=0.19, Factors=3
+Iteration 38: time=0.19, Factors=3
+Iteration 39: time=0.19, Factors=3
+Iteration 40: time=0.19, Factors=3
+Iteration 41: time=0.24, ELBO=-1791091.80, deltaELBO=716.379 (0.00799566%), Factors=3
+Iteration 42: time=0.19, Factors=3
+Iteration 43: time=0.19, Factors=3
+Iteration 44: time=0.19, Factors=3
+Iteration 45: time=0.19, Factors=3
+Iteration 46: time=0.24, ELBO=-1790535.12, deltaELBO=556.678 (0.00621321%), Factors=3
+Iteration 47: time=0.19, Factors=3
+Iteration 48: time=0.19, Factors=3
+Iteration 49: time=0.19, Factors=3
+Iteration 50: time=0.19, Factors=3
+Iteration 51: time=0.24, ELBO=-1790079.84, deltaELBO=455.279 (0.00508147%), Factors=3
+Iteration 52: time=0.19, Factors=3
+Iteration 53: time=0.19, Factors=3
+Iteration 54: time=0.19, Factors=3
+Iteration 55: time=0.19, Factors=3
+Iteration 56: time=0.24, ELBO=-1789705.69, deltaELBO=374.144 (0.00417590%), Factors=3
+Iteration 57: time=0.19, Factors=3
+Iteration 58: time=0.19, Factors=3
+Iteration 59: time=0.19, Factors=3
+Iteration 60: time=0.20, Factors=3
+Iteration 61: time=0.24, ELBO=-1789401.95, deltaELBO=303.743 (0.00339014%), Factors=3
+Iteration 62: time=0.19, Factors=3
+Iteration 63: time=0.19, Factors=3
+Iteration 64: time=0.19, Factors=3
+Iteration 65: time=0.19, Factors=3
+Iteration 66: time=0.24, ELBO=-1789155.36, deltaELBO=246.595 (0.00275231%), Factors=3
+Iteration 67: time=0.19, Factors=3
+Iteration 68: time=0.21, Factors=3
+Iteration 69: time=0.20, Factors=3
+Iteration 70: time=0.19, Factors=3
+Iteration 71: time=0.24, ELBO=-1788953.11, deltaELBO=202.247 (0.00225733%), Factors=3
+Iteration 72: time=0.19, Factors=3
+Iteration 73: time=0.19, Factors=3
+Iteration 74: time=0.19, Factors=3
+Iteration 75: time=0.19, Factors=3
+Iteration 76: time=0.24, ELBO=-1788785.17, deltaELBO=167.937 (0.00187438%), Factors=3
+Iteration 77: time=0.20, Factors=3
+Iteration 78: time=0.19, Factors=3
+Iteration 79: time=0.19, Factors=3
+Iteration 80: time=0.19, Factors=3
+Iteration 81: time=0.24, ELBO=-1788643.50, deltaELBO=141.676 (0.00158128%), Factors=3
+Iteration 82: time=0.19, Factors=3
+Iteration 83: time=0.19, Factors=3
+Iteration 84: time=0.19, Factors=3
+Iteration 85: time=0.19, Factors=3
+Iteration 86: time=0.24, ELBO=-1788521.16, deltaELBO=122.341 (0.00136547%), Factors=3
+Iteration 87: time=0.19, Factors=3
+Iteration 88: time=0.19, Factors=3
+Iteration 89: time=0.19, Factors=3
+Iteration 90: time=0.19, Factors=3
+Iteration 91: time=0.24, ELBO=-1788411.96, deltaELBO=109.200 (0.00121880%), Factors=3
+Iteration 92: time=0.19, Factors=3
+Iteration 93: time=0.19, Factors=3
+Iteration 94: time=0.19, Factors=3
+Iteration 95: time=0.19, Factors=3
+Iteration 96: time=0.24, ELBO=-1788308.91, deltaELBO=103.045 (0.00115011%), Factors=3
+Iteration 97: time=0.19, Factors=3
+Iteration 98: time=0.19, Factors=3
+Iteration 99: time=0.19, Factors=3
+Iteration 100: time=0.19, Factors=3
+Iteration 101: time=0.24, ELBO=-1788203.82, deltaELBO=105.088 (0.00117292%), Factors=3
+Iteration 102: time=0.19, Factors=3
+Iteration 103: time=0.19, Factors=3
+Iteration 104: time=0.19, Factors=3
+Iteration 105: time=0.19, Factors=3
+Iteration 106: time=0.24, ELBO=-1788088.43, deltaELBO=115.390 (0.00128789%), Factors=3
+Iteration 107: time=0.19, Factors=3
+Iteration 108: time=0.19, Factors=3
+Iteration 109: time=0.19, Factors=3
+Iteration 110: time=0.19, Factors=3
+Iteration 111: time=0.24, ELBO=-1787963.19, deltaELBO=125.244 (0.00139787%), Factors=3
+Iteration 112: time=0.19, Factors=3
+Iteration 113: time=0.19, Factors=3
+Iteration 114: time=0.19, Factors=3
+Iteration 115: time=0.19, Factors=3
+Iteration 116: time=0.24, ELBO=-1787850.13, deltaELBO=113.054 (0.00126182%), Factors=3
+Iteration 117: time=0.19, Factors=3
+Iteration 118: time=0.19, Factors=3
+Iteration 119: time=0.19, Factors=3
+Iteration 120: time=0.19, Factors=3
+Iteration 121: time=0.24, ELBO=-1787767.29, deltaELBO=82.840 (0.00092460%), Factors=3
+Iteration 122: time=0.19, Factors=3
+Iteration 123: time=0.19, Factors=3
+Iteration 124: time=0.19, Factors=3
+Iteration 125: time=0.19, Factors=3
+Iteration 126: time=0.24, ELBO=-1787707.46, deltaELBO=59.830 (0.00066777%), Factors=3
+Iteration 127: time=0.19, Factors=3
+Iteration 128: time=0.19, Factors=3
+Iteration 129: time=0.19, Factors=3
+Iteration 130: time=0.19, Factors=3
+Iteration 131: time=0.24, ELBO=-1787660.48, deltaELBO=46.982 (0.00052438%), Factors=3
+Iteration 132: time=0.19, Factors=3
+Iteration 133: time=0.19, Factors=3
+Iteration 134: time=0.19, Factors=3
+Iteration 135: time=0.19, Factors=3
+Iteration 136: time=0.24, ELBO=-1787621.49, deltaELBO=38.992 (0.00043520%), Factors=3
+Iteration 137: time=0.19, Factors=3
+Iteration 138: time=0.19, Factors=3
+Iteration 139: time=0.19, Factors=3
+Iteration 140: time=0.19, Factors=3
+Iteration 141: time=0.24, ELBO=-1787588.28, deltaELBO=33.206 (0.00037062%), Factors=3
+
+Converged!
+
+
+
+#######################
+## Training finished ##
+#######################
+
+
+Saving model in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/models/combined_3.rds...
+Warning message:
+In .quality_control(object, verbose = verbose) :
+  Factor(s) 1, 2, 3 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
+
+pdf 
+  2 
+─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-09-09
+ pandoc   NA
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package              * version    date (UTC) lib source
+ abind                  1.4-8      2024-09-12 [1] CRAN (R 4.5.0)
+ backports              1.5.0      2024-05-23 [1] CRAN (R 4.5.0)
+ basilisk               1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ basilisk.utils         1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ beachmat               2.24.0     2025-04-15 [1] Bioconduc~
+ Biobase              * 2.68.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0     2025-04-15 [1] Bioconduc~
+ BiocNeighbors          2.2.0      2025-04-15 [1] Bioconduc~
+ BiocParallel           1.42.1     2025-06-01 [1] Bioconduc~
+ BiocSingular           1.24.0     2025-04-15 [1] Bioconduc~
+ bluster                1.18.0     2025-04-15 [1] Bioconduc~
+ broom                  1.0.8      2025-03-28 [2] CRAN (R 4.5.0)
+ Cairo                  1.6-2      2023-11-28 [2] CRAN (R 4.5.0)
+ circlize             * 0.4.16     2024-02-20 [2] CRAN (R 4.5.0)
+ cli                    3.6.5      2025-04-23 [1] CRAN (R 4.5.0)
+ clue                   0.3-66     2024-11-13 [2] CRAN (R 4.5.0)
+ cluster                2.1.8.1    2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20     2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-1      2024-07-26 [1] CRAN (R 4.5.0)
+ ComplexHeatmap       * 2.24.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ corrplot               0.95       2024-10-14 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0      2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3      2024-06-20 [1] CRAN (R 4.5.0)
+ DelayedArray           0.34.1     2025-04-17 [1] Bioconduc~
+ dichromat              2.0-0.1    2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.37     2024-08-19 [1] CRAN (R 4.5.0)
+ dir.expiry             1.16.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4      2023-11-17 [1] CRAN (R 4.5.0)
+ dqrng                  0.4.1      2024-05-28 [1] CRAN (R 4.5.0)
+ edgeR                  4.6.2      2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ farver                 2.1.2      2024-05-13 [1] CRAN (R 4.5.0)
+ filelock               1.0.3      2023-12-11 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.5.0)
+ foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4      2025-05-09 [1] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14     2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ getopt               * 1.20.4     2023-10-01 [1] CRAN (R 4.5.0)
+ GetoptLong             1.0.5      2020-12-15 [2] CRAN (R 4.5.0)
+ GGally               * 2.2.1      2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2              * 3.5.2      2025-04-09 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.6      2024-09-07 [1] CRAN (R 4.5.0)
+ ggstats                0.9.0      2025-03-10 [2] CRAN (R 4.5.0)
+ GlobalOptions          0.1.2      2020-06-10 [2] CRAN (R 4.5.0)
+ glue                   1.8.0      2024-09-30 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6      2024-10-25 [1] CRAN (R 4.5.0)
+ h5mread                1.0.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ HDF5Array              1.36.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ here                 * 1.0.1      2020-12-13 [1] CRAN (R 4.5.0)
+ hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7      2023-08-15 [1] CRAN (R 4.5.0)
+ igraph                 2.1.4      2025-01-23 [1] CRAN (R 4.5.0)
+ IRanges              * 2.42.0     2025-04-15 [1] Bioconduc~
+ irlba                  2.3.5.1    2022-10-03 [1] CRAN (R 4.5.0)
+ iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0      2025-03-27 [1] CRAN (R 4.5.0)
+ lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.4      2023-11-07 [1] CRAN (R 4.5.0)
+ limma                  3.64.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ locfit                 1.5-9.12   2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.4      2024-12-08 [2] CRAN (R 4.5.0)
+ magick                 2.8.6      2025-03-23 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3      2022-03-30 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65     2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix               * 1.7-3      2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0     2025-04-15 [1] Bioconduc~
+ matrixStats          * 1.5.0      2025-01-07 [1] CRAN (R 4.5.0)
+ metapod                1.16.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ MOFA2                * 1.18.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ MOFAcellulaR         * 0.0.0.9000 2025-07-23 [1] Github (saezlab/MOFAcellulaR@8cb0785)
+ pheatmap               1.0.12     2019-01-04 [2] CRAN (R 4.5.0)
+ pillar                 1.11.0     2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3      2019-09-22 [1] CRAN (R 4.5.0)
+ plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-8      2022-11-29 [1] CRAN (R 4.5.0)
+ purrr                * 1.1.0      2025-07-10 [1] CRAN (R 4.5.0)
+ R6                     2.6.1      2025-02-15 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3      2022-04-03 [1] CRAN (R 4.5.0)
+ Rcpp                   1.1.0      2025-07-02 [1] CRAN (R 4.5.0)
+ readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.5.0)
+ reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.5.0)
+ reticulate             1.43.0     2025-07-21 [1] CRAN (R 4.5.0)
+ rhdf5                  2.52.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rhdf5filters           1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Rhdf5lib               1.30.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6      2025-04-11 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.0      2025-07-12 [1] CRAN (R 4.5.0)
+ rsvd                   1.0.5      2021-04-16 [1] CRAN (R 4.5.0)
+ Rtsne                  0.17       2023-12-07 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.1      2025-06-01 [1] Bioconduc~
+ S4Vectors            * 0.46.0     2025-04-15 [1] Bioconduc~
+ ScaledMatrix           1.16.0     2025-04-15 [1] Bioconduc~
+ scales                 1.4.0      2025-04-24 [1] CRAN (R 4.5.0)
+ scran                  1.36.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scuttle                1.18.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.0)
+ shape                  1.4.6.1    2024-02-23 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1     2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.1      2025-07-23 [1] Bioconduc~
+ SpatialExperiment    * 1.18.1     2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.0      2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7      2025-03-27 [1] CRAN (R 4.5.0)
+ stringr              * 1.5.1      2023-11-14 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ tibble               * 3.3.0      2025-06-08 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.1      2024-01-24 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1      2024-03-11 [1] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ uwot                 * 0.2.3      2025-02-24 [1] CRAN (R 4.5.0)
+ vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.5.0)
+ withr                  3.0.2      2024-10-28 [1] CRAN (R 4.5.0)
+ XVector                0.48.0     2025-04-15 [1] Bioconduc~
+
+ [1] /users/neagles/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+─ Python configuration ───────────────────────────────────────────────────────
+ python:         /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/bin/python
+ libpython:      /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/lib/libpython3.10.so
+ pythonhome:     /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env:/users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env
+ version:        3.10.5 | packaged by conda-forge | (main, Jun 14 2022, 07:06:46) [GCC 10.3.0]
+ numpy:          /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/lib/python3.10/site-packages/numpy
+ numpy_version:  1.23.1
+ 
+ NOTE: Python version was forced by use_python() function
+
+──────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Tue Sep  9 09:55:15 AM EDT 2025
