@@ -25,9 +25,7 @@ message(Sys.time(), ' | Loading and prepping datasets')
 sce = get(load(in_sn_path))
 reducedDims(sce) = list()
 rownames(sce) = rowData(sce)$gene_id
-sce$broad.class = as.character(sce$broad.class)
-sce$broad.class[sce$broad.class == 'Vascular'] = 'sn_Vascular'
-sce$broad.class = factor(sce$broad.class)
+sce$broad.class = factor(paste0('sn_', as.character(sce$broad.class)))
 
 ################################################################################
 #   Prep Visium data
@@ -36,9 +34,7 @@ sce$broad.class = factor(sce$broad.class)
 spe = get(load(in_visium_path))
 spe = as(spe, "SingleCellExperiment") # throws cryptic error otherwise
 reducedDims(spe) = list()
-spe$domain = as.character(spe$domain)
-spe$domain[spe$domain == 'Vascular'] = 'visium_Vascular'
-spe$domain = factor(spe$domain)
+spe$domain = factor(paste0('visium_', as.character(spe$domain)))
 stopifnot(setequal(spe$brnum, sce$brnum))
 
 ################################################################################
