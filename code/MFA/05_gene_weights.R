@@ -31,7 +31,7 @@ gene_weights = get_geneweights(model = model, factor = specific_factor) |>
     left_join(
         rowData(sce) |>
             as.data.frame() |>
-            select(gene_id, gene_name),
+            dplyr::select(gene_id, gene_name),
         by = c("feature" = "gene_id")
     ) |>
     as_tibble()
@@ -52,7 +52,7 @@ top_gene_weights = gene_weights |>
 ## prep heatmap 
 top_gw_value_matrix = gene_weights |>
     filter(feature %in% top_gene_weights$feature) |>
-    select(gene_name, ctype, value) |>
+    dplyr::select(gene_name, ctype, value) |>
     pivot_wider(names_from = ctype, values_from = value) |>
     column_to_rownames("gene_name") |>
     as.matrix()
