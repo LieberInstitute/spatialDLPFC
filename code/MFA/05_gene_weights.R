@@ -5,11 +5,14 @@ library(MOFA2)
 library(here)
 library(tidyverse)
 library(ComplexHeatmap)
+library(clusterProfiler)
+library(org.Hs.eg.db)
 
 dataset = 'DLPFC'
 num_factors = 4
 specific_factor = 'Factor2'
 my_views = c('Excit_L4', 'Excit_L5', 'Excit_L5.6')
+fdr_cutoff = 0.1
 
 model_path = here(
     'processed-data', 'MFA', 'models',
@@ -18,10 +21,7 @@ model_path = here(
 sce_path = here(
     'processed-data', 'MFA', 'combined_rds', sprintf('%s.rds', dataset)
 )
-plot_path = here(
-    'plots', 'MFA',
-    sprintf('gene_weights_%s_n%d_%s.pdf', dataset, num_factors, specific_factor)
-)
+plot_dir = here('plots', 'MFA')
 
 model = load_model(model_path)
 
@@ -45,6 +45,10 @@ top_gene_weights = gene_weights |>
     arrange(desc(abs_value)) |>
     slice_head(n = 5)
 
+################################################################################
+#   Heatmap of top-weighted genes across all views
+################################################################################
+
 ## prep heatmap 
 top_gw_value_matrix = gene_weights |>
     filter(feature %in% top_gene_weights$feature) |>
@@ -66,7 +70,15 @@ pdf_width_select = (length(my_views) / 8) + 3
 pdf_height = length(row_order) / 5
 
 ## weights across all clusters
-pdf(plot_path, width = pdf_width_all, height = pdf_height)
+pdf(
+    file.path(
+        plot_dir,
+        sprintf(
+            'gene_weights_%s_n%d_%s.pdf', dataset, num_factors, specific_factor
+        )
+    ),
+    width = pdf_width_all, height = pdf_height
+)
 Heatmap(
     top_gw_value_matrix,
     name = "feature\nweights",
@@ -74,5 +86,44 @@ Heatmap(
     cluster_columns = FALSE
 )
 dev.off()
+
+################################################################################
+#   GO of top-weighted genes
+################################################################################
+
+gene_list = list()
+gene_list[['up']] = top_gene_weights |>
+    filter(value > 0) |>
+    pull(feature)
+gene_list[['down']] = top_gene_weights |>
+    filter(value < 0) |>
+    pull(feature)
+
+
+for (ont_type in c("BP", "MF", "CC")) {
+    go_obj = compareCluster(
+        gene_list, fun = "enrichGO", universe = rownames(sce),
+        OrgDb = org.Hs.eg.db, ont = "ALL", pAdjustMethod = "BH",
+        pvalueCutoff = 1, qvalueCutoff = 1, readable = TRUE, keyType = "ENSEMBL"
+    )
+
+    go_obj@compareClusterResult = go_obj@compareClusterResult |>
+        filter(p.adjust < fdr_cutoff, ONTOLOGY == ont_type)
+    
+    if(nrow(go_obj@compareClusterResult) > 0) {
+        pdf(
+            file.path(
+                plot_dir,
+                sprintf(
+                    'GO_%s_%s_n%d_%s.pdf',
+                    ont_type, dataset, num_factors, specific_factor
+                )
+            ),
+            height = 12
+        )
+        print(dotplot(go_obj, showCategory = 20))
+        dev.off()
+    }
+}
 
 session_info()
