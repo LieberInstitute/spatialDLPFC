@@ -8,11 +8,23 @@ library(ComplexHeatmap)
 library(clusterProfiler)
 library(org.Hs.eg.db)
 
-dataset = 'DLPFC'
-num_factors = 4
-specific_factor = 'Factor2'
-my_views = c('Excit_L4', 'Excit_L5', 'Excit_L5.6')
-fdr_cutoff = 0.1
+task_id = as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
+if (task_id == 1) {
+    dataset = 'DLPFC'
+    num_factors = 4
+    specific_factor = 'Factor2'
+    my_views = c('Excit_L4', 'Excit_L5', 'Excit_L5.6')
+    fdr_cutoff = 0.1
+} else {
+    dataset = 'combined'
+    num_factors = 6
+    specific_factor = 'Factor4'
+    my_views = c(
+        'DLPFC_Excit_ambig', 'DLPFC_Excit_L3.4.5', 'HPC_visium_SUB',
+        'HPC_visium_SUB.RHP'
+    )
+    fdr_cutoff = 0.05
+}
 
 model_path = here(
     'processed-data', 'MFA', 'models',
@@ -99,7 +111,6 @@ gene_list[['down']] = top_gene_weights |>
     filter(value < 0) |>
     pull(feature)
 
-
 for (ont_type in c("BP", "MF", "CC")) {
     go_obj = compareCluster(
         gene_list, fun = "enrichGO", universe = rownames(sce),
@@ -119,7 +130,9 @@ for (ont_type in c("BP", "MF", "CC")) {
                     ont_type, dataset, num_factors, specific_factor
                 )
             ),
-            height = 12
+            height = as.integer(
+                round(min(20, 2 + nrow(go_obj@compareClusterResult) * 0.7))
+            )
         )
         print(dotplot(go_obj, showCategory = 20))
         dev.off()

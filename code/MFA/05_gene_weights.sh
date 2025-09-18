@@ -4,8 +4,9 @@
 #SBATCH --job-name=05_gene_weights
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/MFA/logs/05_gene_weights.txt
-#SBATCH -e ../../processed-data/MFA/logs/05_gene_weights.txt
+#SBATCH -o ../../processed-data/MFA/logs/05_gene_weights_%a.txt
+#SBATCH -e ../../processed-data/MFA/logs/05_gene_weights_%a.txt
+#SBATCH --array=1-2%2
 
 set -e
 
