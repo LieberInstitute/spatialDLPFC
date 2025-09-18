@@ -32,12 +32,17 @@ out_path = here(
     'processed-data', 'MFA', 'models',
     sprintf('%s_%d.rds', opt$dataset, opt$num_factors)
 )
-plot_path = here(
+heatmap_path = here(
     'plots', 'MFA', 'heatmap',
     sprintf('%s_%d.pdf', opt$dataset, opt$num_factors)
 )
+factor_path = here(
+    'plots', 'MFA', 'factor_cor',
+    sprintf('%s_%d.pdf', opt$dataset, opt$num_factors)
+)
 
-dir.create(dirname(plot_path), recursive = TRUE, showWarnings = FALSE)
+dir.create(dirname(heatmap_path), recursive = TRUE, showWarnings = FALSE)
+dir.create(dirname(factor_path), showWarnings = FALSE)
 dir.create(dirname(out_path), showWarnings = FALSE)
 set.seed(1)
 
@@ -104,6 +109,11 @@ model = run_mofa(mofa, out_path, use_basilisk = TRUE)
 #    Exploratory plots
 ################################################################################
 
+#   Check correlation between factors (quality check)
+pdf(factor_path)
+plot_factor_cor(model)
+dev.off()
+
 #   Test association of various donor-level covariates with each factor
 assoc_list = list()
     assoc_list[['sex']] = get_associations(
@@ -137,7 +147,7 @@ p = plot_MOFA_hmap(
     )
 )
 pdf(
-    plot_path,
+    heatmap_path,
     width = as.integer(round(opt$num_factors / 3) + 5),
     height = as.integer(round(length(unique(sce$cluster)) / 4) + 4)
 )
