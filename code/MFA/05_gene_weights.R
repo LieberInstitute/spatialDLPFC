@@ -131,10 +131,10 @@ for (ont_type in c("BP", "MF", "CC")) {
                 )
             ),
             height = as.integer(
-                round(min(20, 2 + nrow(go_obj@compareClusterResult) * 0.7))
+                round(min(10, 2 + nrow(go_obj@compareClusterResult) * 0.7))
             )
         )
-        print(dotplot(go_obj, showCategory = 20))
+        print(dotplot(go_obj, showCategory = 10))
         dev.off()
     }
 }
