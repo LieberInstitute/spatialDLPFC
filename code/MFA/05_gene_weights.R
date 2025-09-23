@@ -34,7 +34,7 @@ if (task_id == 1) {
         'DLPFC_Sp09D06', 'DLPFC_Sp09D09', 'HPC_sn_Astro', 'HPC_visium_CA1',
         'HPC_visium_WM.1', 'HPC_visium_RHP'
     )
-    fdr_cutoff = 0.05
+    fdr_cutoff = 0.1
     genes_per_group = 3
 }
 
