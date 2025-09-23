@@ -15,7 +15,8 @@ if (task_id == 1) {
     specific_factor = 'Factor2'
     my_views = c('Excit_L4', 'Excit_L5', 'Excit_L5.6')
     fdr_cutoff = 0.1
-} else {
+    genes_per_group = 5
+} else if (task_id == 2) {
     dataset = 'combined'
     num_factors = 6
     specific_factor = 'Factor4'
@@ -24,6 +25,17 @@ if (task_id == 1) {
         'HPC_visium_SUB.RHP'
     )
     fdr_cutoff = 0.05
+    genes_per_group = 5
+} else {
+    dataset = 'combined'
+    num_factors = 6
+    specific_factor = 'Factor2'
+    my_views = c(
+        'DLPFC_Sp09D06', 'DLPFC_Sp09D09', 'HPC_sn_Astro', 'HPC_visium_CA1',
+        'HPC_visium_WM.1', 'HPC_visium_RHP'
+    )
+    fdr_cutoff = 0.05
+    genes_per_group = 3
 }
 
 model_path = here(
@@ -55,7 +67,8 @@ top_gene_weights = gene_weights |>
     mutate(abs_value = abs(value), weight_pos = value > 0) |>
     group_by(ctype, weight_pos) |>
     arrange(desc(abs_value)) |>
-    slice_head(n = 5)
+    slice_head(n = genes_per_group) |>
+    ungroup()
 
 ################################################################################
 #   Heatmap of top-weighted genes across all views
