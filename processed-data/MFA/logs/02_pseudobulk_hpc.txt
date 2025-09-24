@@ -1,10 +1,10 @@
 **** Job starts ****
-Tue Sep  9 10:28:30 AM EDT 2025
+Wed Sep 24 12:39:35 PM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 22144739
+Job id: 22728622
 Job name: 02_pseudobulk_hpc
-Node name: compute-168
+Node name: compute-175
 Task id: 
 Loading conda_R/4.5
 
@@ -140,22 +140,22 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-2025-09-09 10:28:43.401419 | Loading and prepping datasets
-2025-09-09 10:31:52.552991 | Pseudobulking Visium data
-2025-09-09 10:31:52.562719 make pseudobulk object
-2025-09-09 10:31:55.709287 dropping 7 pseudo-bulked samples that are below 'min_ncells'.
-2025-09-09 10:31:55.815679 drop lowly expressed genes
-2025-09-09 10:31:56.049568 normalize expression
-2025-09-09 10:32:00.387348 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/hpc_visium_pb.rds
-2025-09-09 10:35:55.979028 | Pseudobulking snRNA-seq data
-2025-09-09 10:35:56.052444 make pseudobulk object
-2025-09-09 10:36:03.578978 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2025-09-09 10:36:03.605807 drop lowly expressed genes
-2025-09-09 10:36:03.803585 normalize expression
-2025-09-09 10:36:05.201461 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/hpc_sn_pb.rds
+2025-09-24 12:39:49.896804 | Loading and prepping datasets
+2025-09-24 12:43:28.087262 | Pseudobulking Visium data
+2025-09-24 12:43:28.093698 make pseudobulk object
+2025-09-24 12:43:31.502461 dropping 7 pseudo-bulked samples that are below 'min_ncells'.
+2025-09-24 12:43:31.613187 drop lowly expressed genes
+2025-09-24 12:43:31.851966 normalize expression
+2025-09-24 12:43:36.274862 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/hpc_visium_pb.rds
+2025-09-24 12:47:32.534732 | Pseudobulking snRNA-seq data
+2025-09-24 12:47:32.618237 make pseudobulk object
+2025-09-24 12:47:43.447106 dropping 21 pseudo-bulked samples that are below 'min_ncells'.
+2025-09-24 12:47:43.502769 drop lowly expressed genes
+2025-09-24 12:47:43.832047 normalize expression
+2025-09-24 12:47:47.937753 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/hpc_sn_pb.rds
 Warning message:
-var_registration "broad.class" contains non-syntatic variables: sn_Micro/Macro/T
-converting to sn_Micro.Macro.T 
+var_registration "cell.type" contains non-syntatic variables: HPC_sn_Micro/Macro/T, HPC_sn_CA2-4, HPC_sn_L2/3, HPC_sn_ProS/Sub, HPC_sn_L6/6b, HPC_sn_HATA/AHi
+converting to HPC_sn_Micro.Macro.T, HPC_sn_CA2.4, HPC_sn_L2.3, HPC_sn_ProS.Sub, HPC_sn_L6.6b, HPC_sn_HATA.AHi 
 ─ Session info ───────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -166,7 +166,7 @@ converting to sn_Micro.Macro.T
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-09-09
+ date     2025-09-24
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -323,4 +323,4 @@ converting to sn_Micro.Macro.T
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Tue Sep  9 10:36:07 AM EDT 2025
+Wed Sep 24 12:47:52 PM EDT 2025
