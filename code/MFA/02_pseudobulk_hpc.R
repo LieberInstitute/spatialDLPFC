@@ -25,7 +25,7 @@ message(Sys.time(), ' | Loading and prepping datasets')
 sce = get(load(in_sn_path))
 reducedDims(sce) = list()
 rownames(sce) = rowData(sce)$gene_id
-sce$broad.class = factor(paste0('sn_', as.character(sce$broad.class)))
+sce$cell.type = factor(paste0('HPC_sn_', as.character(sce$cell.type)))
 
 ################################################################################
 #   Prep Visium data
@@ -34,7 +34,7 @@ sce$broad.class = factor(paste0('sn_', as.character(sce$broad.class)))
 spe = get(load(in_visium_path))
 spe = as(spe, "SingleCellExperiment") # throws cryptic error otherwise
 reducedDims(spe) = list()
-spe$domain = factor(paste0('visium_', as.character(spe$domain)))
+spe$domain = factor(paste0('HPC_visium_', as.character(spe$domain)))
 stopifnot(setequal(spe$brnum, sce$brnum))
 
 ################################################################################
@@ -54,7 +54,7 @@ spe_pb = registration_pseudobulk(
 message(Sys.time(), ' | Pseudobulking snRNA-seq data')
 sce_pb = registration_pseudobulk(
     sce,
-    var_registration = 'broad.class',
+    var_registration = 'cell.type',
     var_sample_id = 'brnum',
     pseudobulk_rds_file = pseudo_sn_path
 )

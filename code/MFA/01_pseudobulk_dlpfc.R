@@ -12,6 +12,10 @@ pseudo_sn_path = here(
 pseudo_visium_path = here(
     'processed-data', 'MFA', 'pseudobulk_rds', 'visium_pb.rds'
 )
+layer_anno = c(
+    'Sp09D01_L1', 'Sp09D02_L1', 'Sp09D03_L2', 'Sp09D04_L5', 'Sp09D05_L3',
+    'Sp09D06_WM', 'Sp09D07_L6', 'Sp09D08_L4', 'Sp09D09_WM'
+)
 
 dir.create(dirname(pseudo_sn_path), showWarnings = FALSE)
 
@@ -28,6 +32,8 @@ rownames(sce) = rowData(sce)$gene_id
 sce = sce[, sce$cellType_broad_hc != "Ambiguous"]
 stopifnot(!any(is.na(sce$cellType_layer)))
 
+sce$cellType_layer = paste('DLPFC_sn', sce$cellType_layer, sep = '_')
+
 #   For speed, bring counts into memory
 assays(sce)$counts = as(assays(sce)$counts, "dgCMatrix")
 
@@ -39,8 +45,10 @@ spe = fetch_data('spatialDLPFC_Visium')
 spe = as(spe, "SingleCellExperiment") # throws cryptic error otherwise
 stopifnot(setequal(spe$subject, sce$BrNum))
 
-#   Use same notation as paper
-spe$BayesSpace_harmony_09 = sprintf('Sp09D%02d', spe$BayesSpace_harmony_09)
+#   Annotate spatial domains
+spe$BayesSpace_harmony_09 = paste(
+    'DLPFC_visium', layer_anno[spe$BayesSpace_harmony_09], sep = '_'
+)
 
 ################################################################################
 #   Pseudobulk
