@@ -13,12 +13,11 @@ hpc_spe_path = here(
 hpc_sce_path = here(
     'processed-data', 'MFA', 'pseudobulk_rds', 'hpc_sn_pb.rds'
 )
-dlpfc_out_path = here('processed-data', 'MFA', 'combined_rds', 'DLPFC.rds')
 combined_out_path = here(
     'processed-data', 'MFA', 'combined_rds', 'combined.rds'
 )
 
-dir.create(dirname(dlpfc_out_path), showWarnings = FALSE)
+dir.create(dirname(combined_out_path), showWarnings = FALSE)
 
 ################################################################################
 #   Functions
@@ -81,7 +80,6 @@ dlpfc_mofa_list = combine_sce(
     cluster_var2 = 'BayesSpace_harmony_09',
     shared_cols = c('age', 'sex')
 )
-saveRDS(dlpfc_mofa_list, dlpfc_out_path)
 
 #   Combine HPC Visium and snRNA-seq objects
 hpc_spe = readRDS(hpc_spe_path)
@@ -91,14 +89,12 @@ hpc_mofa_list = combine_sce(
     sce2 = hpc_spe,
     donor_var1 = 'brnum',
     donor_var2 = 'brnum',
-    cluster_var1 = 'broad.class',
+    cluster_var1 = 'cell.type',
     cluster_var2 = 'domain',
     shared_cols = c()
 )
 
 #   Combine DLPFC and HPC
-dlpfc_mofa_list$sce$cluster = paste0("DLPFC_", dlpfc_mofa_list$sce$cluster)
-hpc_mofa_list$sce$cluster = paste0("HPC_", hpc_mofa_list$sce$cluster)
 stopifnot(setequal(dlpfc_mofa_list$sce$donor, hpc_mofa_list$sce$donor))
 combined_mofa_list = combine_sce(
     sce1 = dlpfc_mofa_list$sce,
@@ -108,9 +104,6 @@ combined_mofa_list = combine_sce(
     cluster_var1 = 'cluster',
     cluster_var2 = 'cluster',
     shared_cols = c()
-)
-colnames(combined_mofa_list$sce) = paste0(
-    combined_mofa_list$sce$donor, '_', combined_mofa_list$sce$cluster
 )
 combined_mofa_list$pd = dlpfc_mofa_list$pd
 saveRDS(combined_mofa_list, combined_out_path)
