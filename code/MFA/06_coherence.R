@@ -20,10 +20,13 @@ spec <- matrix(
 opt <- getopt(spec)
 
 sce_path = here('processed-data', 'MFA', 'combined_rds', 'combined.rds')
+out_dir = here('processed-data', 'MFA', 'temp_coherence')
 covariates = 'ncells'
 
 message("Using the following parameters:")
 print(opt)
+
+dir.create(out_dir, showWarnings = FALSE)
 
 sce = readRDS(sce_path)$sce
 sce = sce[, sce$cluster %in% c(opt$DLPFC_clus, opt$HPC_clus)]
@@ -63,7 +66,7 @@ if (opt$clean_expression) {
 
 #   Compute correlation of expression between regions for each donor
 co_df_list = list()
-for (donor in unique(sce$donor)) {
+for (donor in intersect(sce_dlpfc$donor, sce_hpc$donor)) {
     co_df_list[[donor]] = tibble(
         donor = donor,
         coherence = cor(
