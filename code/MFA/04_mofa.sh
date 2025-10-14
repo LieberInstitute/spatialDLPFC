@@ -6,7 +6,7 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
-#SBATCH --array=1-18%20
+#SBATCH --array=9-17%20
 
 ## Define loops and appropriately subset each variable for the array task ID
 all_dataset=(DLPFC combined)

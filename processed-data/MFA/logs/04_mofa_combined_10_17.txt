@@ -1,10 +1,10 @@
 **** Job starts ****
-Thu Sep 18 12:46:15 PM EDT 2025
+Tue Oct 14 10:44:22 AM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 22618644
+Job id: 23361043
 Job name: 04_mofa
-Node name: compute-176
+Node name: compute-175
 Task id: 17
 Loading conda_R/4.5
 
@@ -193,7 +193,7 @@ $num_factors
 [1] 10
 
 Creating MOFA object from a data.frame...
-There were 47 warnings (use warnings() to see them)
+There were 50 or more warnings (use warnings() to see the first 50)
 Checking data options...
 Checking training options...
 Checking model options...
@@ -219,51 +219,59 @@ Connecting to the mofapy2 package using basilisk.
         
 use_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...
 
-Successfully loaded view='DLPFC_Astro' group='single_group' with N=10 samples and D=4748 features...
-Successfully loaded view='DLPFC_EndoMural' group='single_group' with N=10 samples and D=4601 features...
-Successfully loaded view='DLPFC_Excit_ambig' group='single_group' with N=10 samples and D=3326 features...
-Successfully loaded view='DLPFC_Excit_L3' group='single_group' with N=10 samples and D=5866 features...
-Successfully loaded view='DLPFC_Excit_L3.4.5' group='single_group' with N=10 samples and D=3835 features...
-Successfully loaded view='DLPFC_Excit_L4' group='single_group' with N=10 samples and D=5907 features...
-Successfully loaded view='DLPFC_Excit_L5' group='single_group' with N=10 samples and D=5957 features...
-Successfully loaded view='DLPFC_Excit_L5.6' group='single_group' with N=10 samples and D=5813 features...
-Successfully loaded view='DLPFC_Excit_L6' group='single_group' with N=10 samples and D=5902 features...
-Successfully loaded view='DLPFC_Inhib' group='single_group' with N=10 samples and D=5927 features...
-Successfully loaded view='DLPFC_Micro' group='single_group' with N=10 samples and D=3218 features...
-Successfully loaded view='DLPFC_Oligo' group='single_group' with N=10 samples and D=5664 features...
-Successfully loaded view='DLPFC_OPC' group='single_group' with N=10 samples and D=4634 features...
-Successfully loaded view='DLPFC_Sp09D01' group='single_group' with N=10 samples and D=2029 features...
-Successfully loaded view='DLPFC_Sp09D02' group='single_group' with N=10 samples and D=4364 features...
-Successfully loaded view='DLPFC_Sp09D03' group='single_group' with N=10 samples and D=5876 features...
-Successfully loaded view='DLPFC_Sp09D04' group='single_group' with N=10 samples and D=6541 features...
-Successfully loaded view='DLPFC_Sp09D05' group='single_group' with N=10 samples and D=6092 features...
-Successfully loaded view='DLPFC_Sp09D06' group='single_group' with N=10 samples and D=4804 features...
-Successfully loaded view='DLPFC_Sp09D07' group='single_group' with N=10 samples and D=6559 features...
-Successfully loaded view='DLPFC_Sp09D08' group='single_group' with N=10 samples and D=6482 features...
-Successfully loaded view='DLPFC_Sp09D09' group='single_group' with N=10 samples and D=5492 features...
-Successfully loaded view='HPC_sn_Astro' group='single_group' with N=10 samples and D=5701 features...
-Successfully loaded view='HPC_sn_CSF' group='single_group' with N=10 samples and D=4229 features...
-Successfully loaded view='HPC_sn_ExcN' group='single_group' with N=10 samples and D=6595 features...
-Successfully loaded view='HPC_sn_InhN' group='single_group' with N=10 samples and D=6156 features...
+Successfully loaded view='DLPFC_sn_Astro' group='single_group' with N=10 samples and D=4748 features...
+Successfully loaded view='DLPFC_sn_EndoMural' group='single_group' with N=10 samples and D=4601 features...
+Successfully loaded view='DLPFC_sn_Excit_ambig' group='single_group' with N=10 samples and D=3328 features...
+Successfully loaded view='DLPFC_sn_Excit_L3' group='single_group' with N=10 samples and D=5993 features...
+Successfully loaded view='DLPFC_sn_Excit_L3.4.5' group='single_group' with N=10 samples and D=3837 features...
+Successfully loaded view='DLPFC_sn_Excit_L4' group='single_group' with N=10 samples and D=6052 features...
+Successfully loaded view='DLPFC_sn_Excit_L5' group='single_group' with N=10 samples and D=6068 features...
+Successfully loaded view='DLPFC_sn_Excit_L5.6' group='single_group' with N=10 samples and D=5915 features...
+Successfully loaded view='DLPFC_sn_Excit_L6' group='single_group' with N=10 samples and D=5998 features...
+Successfully loaded view='DLPFC_sn_Inhib' group='single_group' with N=10 samples and D=6159 features...
+Successfully loaded view='DLPFC_sn_Micro' group='single_group' with N=10 samples and D=3218 features...
+Successfully loaded view='DLPFC_sn_Oligo' group='single_group' with N=10 samples and D=5698 features...
+Successfully loaded view='DLPFC_sn_OPC' group='single_group' with N=10 samples and D=4634 features...
+Successfully loaded view='DLPFC_visium_Sp09D01_L1' group='single_group' with N=10 samples and D=2026 features...
+Successfully loaded view='DLPFC_visium_Sp09D02_L1' group='single_group' with N=10 samples and D=4389 features...
+Successfully loaded view='DLPFC_visium_Sp09D03_L2' group='single_group' with N=10 samples and D=6130 features...
+Successfully loaded view='DLPFC_visium_Sp09D04_L5' group='single_group' with N=10 samples and D=6886 features...
+Successfully loaded view='DLPFC_visium_Sp09D05_L3' group='single_group' with N=10 samples and D=6404 features...
+Successfully loaded view='DLPFC_visium_Sp09D06_WM' group='single_group' with N=10 samples and D=4843 features...
+Successfully loaded view='DLPFC_visium_Sp09D07_L6' group='single_group' with N=10 samples and D=6912 features...
+Successfully loaded view='DLPFC_visium_Sp09D08_L4' group='single_group' with N=10 samples and D=6799 features...
+Successfully loaded view='DLPFC_visium_Sp09D09_WM' group='single_group' with N=10 samples and D=5624 features...
+Successfully loaded view='HPC_sn_Astro' group='single_group' with N=10 samples and D=5704 features...
+Successfully loaded view='HPC_sn_CA1' group='single_group' with N=10 samples and D=5520 features...
+Successfully loaded view='HPC_sn_CA2.4' group='single_group' with N=10 samples and D=6312 features...
+Successfully loaded view='HPC_sn_Choroid' group='single_group' with N=10 samples and D=3317 features...
+Successfully loaded view='HPC_sn_Ependy' group='single_group' with N=10 samples and D=3990 features...
+Successfully loaded view='HPC_sn_GABA' group='single_group' with N=10 samples and D=6447 features...
+Successfully loaded view='HPC_sn_GC' group='single_group' with N=10 samples and D=6858 features...
+Successfully loaded view='HPC_sn_HATA.AHi' group='single_group' with N=10 samples and D=4919 features...
+Successfully loaded view='HPC_sn_L2.3' group='single_group' with N=10 samples and D=6615 features...
+Successfully loaded view='HPC_sn_L5' group='single_group' with N=10 samples and D=6214 features...
+Successfully loaded view='HPC_sn_L6.6b' group='single_group' with N=10 samples and D=6518 features...
 Successfully loaded view='HPC_sn_Micro.Macro.T' group='single_group' with N=10 samples and D=4642 features...
-Successfully loaded view='HPC_sn_Oligo' group='single_group' with N=10 samples and D=5547 features...
+Successfully loaded view='HPC_sn_Oligo' group='single_group' with N=10 samples and D=5516 features...
 Successfully loaded view='HPC_sn_OPC' group='single_group' with N=10 samples and D=4228 features...
-Successfully loaded view='HPC_sn_Vascular' group='single_group' with N=10 samples and D=5444 features...
-Successfully loaded view='HPC_visium_CA1' group='single_group' with N=10 samples and D=4708 features...
-Successfully loaded view='HPC_visium_CA2.4' group='single_group' with N=10 samples and D=2960 features...
-Successfully loaded view='HPC_visium_Choroid' group='single_group' with N=10 samples and D=4731 features...
-Successfully loaded view='HPC_visium_GABA' group='single_group' with N=10 samples and D=5521 features...
-Successfully loaded view='HPC_visium_GCL' group='single_group' with N=10 samples and D=4481 features...
-Successfully loaded view='HPC_visium_ML' group='single_group' with N=10 samples and D=2764 features...
-Successfully loaded view='HPC_visium_RHP' group='single_group' with N=10 samples and D=5056 features...
-Successfully loaded view='HPC_visium_SL.SR' group='single_group' with N=10 samples and D=4966 features...
-Successfully loaded view='HPC_visium_SLM.SGZ' group='single_group' with N=10 samples and D=5485 features...
-Successfully loaded view='HPC_visium_SR.SLM' group='single_group' with N=10 samples and D=6136 features...
-Successfully loaded view='HPC_visium_SUB' group='single_group' with N=10 samples and D=3414 features...
-Successfully loaded view='HPC_visium_SUB.RHP' group='single_group' with N=10 samples and D=5258 features...
-Successfully loaded view='HPC_visium_Vascular' group='single_group' with N=10 samples and D=4607 features...
-Successfully loaded view='HPC_visium_WM.1' group='single_group' with N=10 samples and D=4993 features...
-Successfully loaded view='HPC_visium_WM.2' group='single_group' with N=10 samples and D=3063 features...
+Successfully loaded view='HPC_sn_ProS.Sub' group='single_group' with N=10 samples and D=6300 features...
+Successfully loaded view='HPC_sn_Vascular' group='single_group' with N=10 samples and D=5448 features...
+Successfully loaded view='HPC_visium_CA1' group='single_group' with N=10 samples and D=4801 features...
+Successfully loaded view='HPC_visium_CA2.4' group='single_group' with N=10 samples and D=2959 features...
+Successfully loaded view='HPC_visium_Choroid' group='single_group' with N=10 samples and D=4760 features...
+Successfully loaded view='HPC_visium_GABA' group='single_group' with N=10 samples and D=5633 features...
+Successfully loaded view='HPC_visium_GCL' group='single_group' with N=10 samples and D=4536 features...
+Successfully loaded view='HPC_visium_ML' group='single_group' with N=10 samples and D=2793 features...
+Successfully loaded view='HPC_visium_RHP' group='single_group' with N=10 samples and D=5131 features...
+Successfully loaded view='HPC_visium_SL.SR' group='single_group' with N=10 samples and D=4980 features...
+Successfully loaded view='HPC_visium_SLM.SGZ' group='single_group' with N=10 samples and D=5534 features...
+Successfully loaded view='HPC_visium_SR.SLM' group='single_group' with N=10 samples and D=6321 features...
+Successfully loaded view='HPC_visium_SUB' group='single_group' with N=10 samples and D=3446 features...
+Successfully loaded view='HPC_visium_SUB.RHP' group='single_group' with N=10 samples and D=5371 features...
+Successfully loaded view='HPC_visium_Vascular' group='single_group' with N=10 samples and D=4631 features...
+Successfully loaded view='HPC_visium_WM.1' group='single_group' with N=10 samples and D=5039 features...
+Successfully loaded view='HPC_visium_WM.2' group='single_group' with N=10 samples and D=3064 features...
 Successfully loaded view='HPC_visium_WM.3' group='single_group' with N=10 samples and D=956 features...
 
 
@@ -273,52 +281,60 @@ Model options:
 - Spike-and-slab prior on the factors: False
 - Spike-and-slab prior on the weights: False
 Likelihoods:
-- View 0 (DLPFC_Astro): gaussian
-- View 1 (DLPFC_EndoMural): gaussian
-- View 2 (DLPFC_Excit_ambig): gaussian
-- View 3 (DLPFC_Excit_L3): gaussian
-- View 4 (DLPFC_Excit_L3.4.5): gaussian
-- View 5 (DLPFC_Excit_L4): gaussian
-- View 6 (DLPFC_Excit_L5): gaussian
-- View 7 (DLPFC_Excit_L5.6): gaussian
-- View 8 (DLPFC_Excit_L6): gaussian
-- View 9 (DLPFC_Inhib): gaussian
-- View 10 (DLPFC_Micro): gaussian
-- View 11 (DLPFC_Oligo): gaussian
-- View 12 (DLPFC_OPC): gaussian
-- View 13 (DLPFC_Sp09D01): gaussian
-- View 14 (DLPFC_Sp09D02): gaussian
-- View 15 (DLPFC_Sp09D03): gaussian
-- View 16 (DLPFC_Sp09D04): gaussian
-- View 17 (DLPFC_Sp09D05): gaussian
-- View 18 (DLPFC_Sp09D06): gaussian
-- View 19 (DLPFC_Sp09D07): gaussian
-- View 20 (DLPFC_Sp09D08): gaussian
-- View 21 (DLPFC_Sp09D09): gaussian
+- View 0 (DLPFC_sn_Astro): gaussian
+- View 1 (DLPFC_sn_EndoMural): gaussian
+- View 2 (DLPFC_sn_Excit_ambig): gaussian
+- View 3 (DLPFC_sn_Excit_L3): gaussian
+- View 4 (DLPFC_sn_Excit_L3.4.5): gaussian
+- View 5 (DLPFC_sn_Excit_L4): gaussian
+- View 6 (DLPFC_sn_Excit_L5): gaussian
+- View 7 (DLPFC_sn_Excit_L5.6): gaussian
+- View 8 (DLPFC_sn_Excit_L6): gaussian
+- View 9 (DLPFC_sn_Inhib): gaussian
+- View 10 (DLPFC_sn_Micro): gaussian
+- View 11 (DLPFC_sn_Oligo): gaussian
+- View 12 (DLPFC_sn_OPC): gaussian
+- View 13 (DLPFC_visium_Sp09D01_L1): gaussian
+- View 14 (DLPFC_visium_Sp09D02_L1): gaussian
+- View 15 (DLPFC_visium_Sp09D03_L2): gaussian
+- View 16 (DLPFC_visium_Sp09D04_L5): gaussian
+- View 17 (DLPFC_visium_Sp09D05_L3): gaussian
+- View 18 (DLPFC_visium_Sp09D06_WM): gaussian
+- View 19 (DLPFC_visium_Sp09D07_L6): gaussian
+- View 20 (DLPFC_visium_Sp09D08_L4): gaussian
+- View 21 (DLPFC_visium_Sp09D09_WM): gaussian
 - View 22 (HPC_sn_Astro): gaussian
-- View 23 (HPC_sn_CSF): gaussian
-- View 24 (HPC_sn_ExcN): gaussian
-- View 25 (HPC_sn_InhN): gaussian
-- View 26 (HPC_sn_Micro.Macro.T): gaussian
-- View 27 (HPC_sn_Oligo): gaussian
-- View 28 (HPC_sn_OPC): gaussian
-- View 29 (HPC_sn_Vascular): gaussian
-- View 30 (HPC_visium_CA1): gaussian
-- View 31 (HPC_visium_CA2.4): gaussian
-- View 32 (HPC_visium_Choroid): gaussian
-- View 33 (HPC_visium_GABA): gaussian
-- View 34 (HPC_visium_GCL): gaussian
-- View 35 (HPC_visium_ML): gaussian
-- View 36 (HPC_visium_RHP): gaussian
-- View 37 (HPC_visium_SL.SR): gaussian
-- View 38 (HPC_visium_SLM.SGZ): gaussian
-- View 39 (HPC_visium_SR.SLM): gaussian
-- View 40 (HPC_visium_SUB): gaussian
-- View 41 (HPC_visium_SUB.RHP): gaussian
-- View 42 (HPC_visium_Vascular): gaussian
-- View 43 (HPC_visium_WM.1): gaussian
-- View 44 (HPC_visium_WM.2): gaussian
-- View 45 (HPC_visium_WM.3): gaussian
+- View 23 (HPC_sn_CA1): gaussian
+- View 24 (HPC_sn_CA2.4): gaussian
+- View 25 (HPC_sn_Choroid): gaussian
+- View 26 (HPC_sn_Ependy): gaussian
+- View 27 (HPC_sn_GABA): gaussian
+- View 28 (HPC_sn_GC): gaussian
+- View 29 (HPC_sn_HATA.AHi): gaussian
+- View 30 (HPC_sn_L2.3): gaussian
+- View 31 (HPC_sn_L5): gaussian
+- View 32 (HPC_sn_L6.6b): gaussian
+- View 33 (HPC_sn_Micro.Macro.T): gaussian
+- View 34 (HPC_sn_Oligo): gaussian
+- View 35 (HPC_sn_OPC): gaussian
+- View 36 (HPC_sn_ProS.Sub): gaussian
+- View 37 (HPC_sn_Vascular): gaussian
+- View 38 (HPC_visium_CA1): gaussian
+- View 39 (HPC_visium_CA2.4): gaussian
+- View 40 (HPC_visium_Choroid): gaussian
+- View 41 (HPC_visium_GABA): gaussian
+- View 42 (HPC_visium_GCL): gaussian
+- View 43 (HPC_visium_ML): gaussian
+- View 44 (HPC_visium_RHP): gaussian
+- View 45 (HPC_visium_SL.SR): gaussian
+- View 46 (HPC_visium_SLM.SGZ): gaussian
+- View 47 (HPC_visium_SR.SLM): gaussian
+- View 48 (HPC_visium_SUB): gaussian
+- View 49 (HPC_visium_SUB.RHP): gaussian
+- View 50 (HPC_visium_Vascular): gaussian
+- View 51 (HPC_visium_WM.1): gaussian
+- View 52 (HPC_visium_WM.2): gaussian
+- View 53 (HPC_visium_WM.3): gaussian
 
 
 
@@ -331,314 +347,394 @@ Warning: some group(s) have less than 15 samples, MOFA won't be able to learn me
 ######################################
 
 
-ELBO before training: -20206216.86 
+ELBO before training: -24427175.49 
 
-Iteration 1: time=0.15, ELBO=-2003347.41, deltaELBO=18202869.455 (90.08548993%), Factors=10
-Iteration 2: time=0.14, Factors=10
-Iteration 3: time=0.13, Factors=10
-Iteration 4: time=0.13, Factors=10
-Iteration 5: time=0.14, Factors=10
-Iteration 6: time=0.16, ELBO=-1844718.41, deltaELBO=158628.997 (0.78505046%), Factors=10
-Iteration 7: time=0.14, Factors=10
-Iteration 8: time=0.14, Factors=10
-Iteration 9: time=0.14, Factors=10
-Iteration 10: time=0.13, Factors=10
-Iteration 11: time=0.16, ELBO=-1783290.67, deltaELBO=61427.742 (0.30400417%), Factors=10
-Iteration 12: time=0.14, Factors=10
-Iteration 13: time=0.14, Factors=10
-Iteration 14: time=0.14, Factors=10
-Iteration 15: time=0.14, Factors=10
-Iteration 16: time=0.16, ELBO=-1744275.35, deltaELBO=39015.312 (0.19308568%), Factors=10
-Iteration 17: time=0.14, Factors=10
-Iteration 18: time=0.14, Factors=10
-Iteration 19: time=0.14, Factors=10
-Iteration 20: time=0.14, Factors=10
-Iteration 21: time=0.16, ELBO=-1724889.05, deltaELBO=19386.309 (0.09594230%), Factors=10
-Iteration 22: time=0.14, Factors=10
-Iteration 23: time=0.14, Factors=10
-Iteration 24: time=0.13, Factors=10
-Iteration 25: time=0.14, Factors=10
-Iteration 26: time=0.16, ELBO=-1710227.16, deltaELBO=14661.884 (0.07256125%), Factors=10
-Iteration 27: time=0.14, Factors=10
-Iteration 28: time=0.14, Factors=10
-Iteration 29: time=0.14, Factors=10
-Iteration 30: time=0.14, Factors=10
-Iteration 31: time=0.16, ELBO=-1691625.95, deltaELBO=18601.207 (0.09205685%), Factors=10
-Iteration 32: time=0.14, Factors=10
-Iteration 33: time=0.14, Factors=10
-Iteration 34: time=0.14, Factors=10
-Iteration 35: time=0.13, Factors=10
-Iteration 36: time=0.16, ELBO=-1671345.34, deltaELBO=20280.616 (0.10036820%), Factors=10
-Iteration 37: time=0.14, Factors=10
-Iteration 38: time=0.14, Factors=10
-Iteration 39: time=0.14, Factors=10
-Iteration 40: time=0.14, Factors=10
-Iteration 41: time=0.16, ELBO=-1654581.14, deltaELBO=16764.198 (0.08296555%), Factors=10
-Iteration 42: time=0.14, Factors=10
-Iteration 43: time=0.14, Factors=10
-Iteration 44: time=0.14, Factors=10
-Iteration 45: time=0.14, Factors=10
-Iteration 46: time=0.17, ELBO=-1641928.71, deltaELBO=12652.427 (0.06261651%), Factors=10
-Iteration 47: time=0.15, Factors=10
-Iteration 48: time=0.14, Factors=10
-Iteration 49: time=0.14, Factors=10
-Iteration 50: time=0.14, Factors=10
-Iteration 51: time=0.16, ELBO=-1632240.45, deltaELBO=9688.262 (0.04794693%), Factors=10
-Iteration 52: time=0.14, Factors=10
-Iteration 53: time=0.14, Factors=10
-Iteration 54: time=0.14, Factors=10
-Iteration 55: time=0.14, Factors=10
-Iteration 56: time=0.17, ELBO=-1624511.07, deltaELBO=7729.383 (0.03825250%), Factors=10
-Iteration 57: time=0.14, Factors=10
-Iteration 58: time=0.14, Factors=10
-Iteration 59: time=0.14, Factors=10
-Iteration 60: time=0.14, Factors=10
-Iteration 61: time=0.16, ELBO=-1618200.72, deltaELBO=6310.346 (0.03122973%), Factors=10
-Iteration 62: time=0.14, Factors=10
-Iteration 63: time=0.14, Factors=10
-Iteration 64: time=0.14, Factors=10
-Iteration 65: time=0.14, Factors=10
-Iteration 66: time=0.17, ELBO=-1612970.34, deltaELBO=5230.384 (0.02588502%), Factors=10
-Iteration 67: time=0.14, Factors=10
-Iteration 68: time=0.14, Factors=10
-Iteration 69: time=0.14, Factors=10
-Iteration 70: time=0.14, Factors=10
-Iteration 71: time=0.16, ELBO=-1608570.98, deltaELBO=4399.363 (0.02177232%), Factors=10
-Iteration 72: time=0.14, Factors=10
-Iteration 73: time=0.14, Factors=10
-Iteration 74: time=0.14, Factors=10
-Iteration 75: time=0.14, Factors=10
-Iteration 76: time=0.16, ELBO=-1604828.12, deltaELBO=3742.861 (0.01852331%), Factors=10
-Iteration 77: time=0.14, Factors=10
-Iteration 78: time=0.14, Factors=10
-Iteration 79: time=0.14, Factors=10
-Iteration 80: time=0.14, Factors=10
-Iteration 81: time=0.17, ELBO=-1601619.52, deltaELBO=3208.591 (0.01587923%), Factors=10
-Iteration 82: time=0.14, Factors=10
-Iteration 83: time=0.14, Factors=10
-Iteration 84: time=0.14, Factors=10
-Iteration 85: time=0.14, Factors=10
-Iteration 86: time=0.17, ELBO=-1598853.41, deltaELBO=2766.114 (0.01368942%), Factors=10
-Iteration 87: time=0.14, Factors=10
-Iteration 88: time=0.14, Factors=10
-Iteration 89: time=0.14, Factors=10
-Iteration 90: time=0.13, Factors=10
-Iteration 91: time=0.16, ELBO=-1596457.23, deltaELBO=2396.181 (0.01185863%), Factors=10
-Iteration 92: time=0.14, Factors=10
-Iteration 93: time=0.14, Factors=10
-Iteration 94: time=0.13, Factors=10
-Iteration 95: time=0.13, Factors=10
-Iteration 96: time=0.15, ELBO=-1594380.53, deltaELBO=2076.699 (0.01027752%), Factors=10
-Iteration 97: time=0.13, Factors=10
-Iteration 98: time=0.13, Factors=10
-Iteration 99: time=0.13, Factors=10
-Iteration 100: time=0.13, Factors=10
-Iteration 101: time=0.16, ELBO=-1592574.24, deltaELBO=1806.290 (0.00893928%), Factors=10
-Iteration 102: time=0.13, Factors=10
-Iteration 103: time=0.13, Factors=10
-Iteration 104: time=0.14, Factors=10
-Iteration 105: time=0.14, Factors=10
-Iteration 106: time=0.16, ELBO=-1591000.31, deltaELBO=1573.933 (0.00778935%), Factors=10
-Iteration 107: time=0.13, Factors=10
-Iteration 108: time=0.14, Factors=10
-Iteration 109: time=0.14, Factors=10
-Iteration 110: time=0.13, Factors=10
-Iteration 111: time=0.16, ELBO=-1589624.61, deltaELBO=1375.696 (0.00680828%), Factors=10
-Iteration 112: time=0.14, Factors=10
-Iteration 113: time=0.13, Factors=10
-Iteration 114: time=0.14, Factors=10
-Iteration 115: time=0.13, Factors=10
-Iteration 116: time=0.16, ELBO=-1588418.37, deltaELBO=1206.238 (0.00596964%), Factors=10
-Iteration 117: time=0.13, Factors=10
-Iteration 118: time=0.13, Factors=10
-Iteration 119: time=0.13, Factors=10
-Iteration 120: time=0.14, Factors=10
-Iteration 121: time=0.16, ELBO=-1587358.70, deltaELBO=1059.672 (0.00524429%), Factors=10
-Iteration 122: time=0.13, Factors=10
-Iteration 123: time=0.13, Factors=10
-Iteration 124: time=0.13, Factors=10
-Iteration 125: time=0.13, Factors=10
-Iteration 126: time=0.15, ELBO=-1586426.71, deltaELBO=931.989 (0.00461239%), Factors=10
-Iteration 127: time=0.13, Factors=10
-Iteration 128: time=0.13, Factors=10
-Iteration 129: time=0.14, Factors=10
+Iteration 1: time=0.19, ELBO=-2397200.92, deltaELBO=22029974.571 (90.18633603%), Factors=10
+Iteration 2: time=0.16, Factors=10
+Iteration 3: time=0.16, Factors=10
+Iteration 4: time=0.16, Factors=10
+Iteration 5: time=0.16, Factors=10
+Iteration 6: time=0.19, ELBO=-2215551.59, deltaELBO=181649.333 (0.74363626%), Factors=10
+Iteration 7: time=0.16, Factors=10
+Iteration 8: time=0.17, Factors=10
+Iteration 9: time=0.16, Factors=10
+Iteration 10: time=0.17, Factors=10
+Iteration 11: time=0.19, ELBO=-2147333.37, deltaELBO=68218.219 (0.27927182%), Factors=10
+Iteration 12: time=0.17, Factors=10
+Iteration 13: time=0.17, Factors=10
+Iteration 14: time=0.17, Factors=10
+Iteration 15: time=0.17, Factors=10
+Iteration 16: time=0.19, ELBO=-2108412.28, deltaELBO=38921.088 (0.15933520%), Factors=10
+Iteration 17: time=0.17, Factors=10
+Iteration 18: time=0.17, Factors=10
+Iteration 19: time=0.17, Factors=10
+Iteration 20: time=0.17, Factors=10
+Iteration 21: time=0.20, ELBO=-2085978.88, deltaELBO=22433.398 (0.09183787%), Factors=10
+Iteration 22: time=0.17, Factors=10
+Iteration 23: time=0.16, Factors=10
+Iteration 24: time=0.17, Factors=10
+Iteration 25: time=0.17, Factors=10
+Iteration 26: time=0.19, ELBO=-2069738.63, deltaELBO=16240.252 (0.06648436%), Factors=10
+Iteration 27: time=0.16, Factors=10
+Iteration 28: time=0.17, Factors=10
+Iteration 29: time=0.16, Factors=10
+Iteration 30: time=0.17, Factors=10
+Iteration 31: time=0.19, ELBO=-2049121.12, deltaELBO=20617.505 (0.08440397%), Factors=10
+Iteration 32: time=0.17, Factors=10
+Iteration 33: time=0.17, Factors=10
+Iteration 34: time=0.17, Factors=10
+Iteration 35: time=0.16, Factors=10
+Iteration 36: time=0.19, ELBO=-2025018.69, deltaELBO=24102.430 (0.09867056%), Factors=10
+Iteration 37: time=0.17, Factors=10
+Iteration 38: time=0.17, Factors=10
+Iteration 39: time=0.17, Factors=10
+Iteration 40: time=0.16, Factors=10
+Iteration 41: time=0.18, ELBO=-2008496.50, deltaELBO=16522.197 (0.06763859%), Factors=10
+Iteration 42: time=0.16, Factors=10
+Iteration 43: time=0.16, Factors=10
+Iteration 44: time=0.16, Factors=10
+Iteration 45: time=0.16, Factors=10
+Iteration 46: time=0.19, ELBO=-1996208.03, deltaELBO=12288.465 (0.05030653%), Factors=10
+Iteration 47: time=0.17, Factors=10
+Iteration 48: time=0.16, Factors=10
+Iteration 49: time=0.16, Factors=10
+Iteration 50: time=0.16, Factors=10
+Iteration 51: time=0.19, ELBO=-1986436.14, deltaELBO=9771.887 (0.04000416%), Factors=10
+Iteration 52: time=0.17, Factors=10
+Iteration 53: time=0.16, Factors=10
+Iteration 54: time=0.16, Factors=10
+Iteration 55: time=0.16, Factors=10
+Iteration 56: time=0.19, ELBO=-1978570.70, deltaELBO=7865.440 (0.03219955%), Factors=10
+Iteration 57: time=0.16, Factors=10
+Iteration 58: time=0.16, Factors=10
+Iteration 59: time=0.16, Factors=10
+Iteration 60: time=0.16, Factors=10
+Iteration 61: time=0.19, ELBO=-1972390.49, deltaELBO=6180.212 (0.02530056%), Factors=10
+Iteration 62: time=0.16, Factors=10
+Iteration 63: time=0.16, Factors=10
+Iteration 64: time=0.16, Factors=10
+Iteration 65: time=0.16, Factors=10
+Iteration 66: time=0.18, ELBO=-1967198.21, deltaELBO=5192.285 (0.02125618%), Factors=10
+Iteration 67: time=0.16, Factors=10
+Iteration 68: time=0.16, Factors=10
+Iteration 69: time=0.16, Factors=10
+Iteration 70: time=0.16, Factors=10
+Iteration 71: time=0.18, ELBO=-1962644.25, deltaELBO=4553.956 (0.01864299%), Factors=10
+Iteration 72: time=0.16, Factors=10
+Iteration 73: time=0.16, Factors=10
+Iteration 74: time=0.17, Factors=10
+Iteration 75: time=0.16, Factors=10
+Iteration 76: time=0.19, ELBO=-1958561.27, deltaELBO=4082.985 (0.01671493%), Factors=10
+Iteration 77: time=0.16, Factors=10
+Iteration 78: time=0.16, Factors=10
+Iteration 79: time=0.16, Factors=10
+Iteration 80: time=0.16, Factors=10
+Iteration 81: time=0.19, ELBO=-1954808.06, deltaELBO=3753.210 (0.01536489%), Factors=10
+Iteration 82: time=0.16, Factors=10
+Iteration 83: time=0.16, Factors=10
+Iteration 84: time=0.16, Factors=10
+Iteration 85: time=0.17, Factors=10
+Iteration 86: time=0.17, ELBO=-1951305.37, deltaELBO=3502.684 (0.01433929%), Factors=10
+Iteration 87: time=0.15, Factors=10
+Iteration 88: time=0.16, Factors=10
+Iteration 89: time=0.16, Factors=10
+Iteration 90: time=0.16, Factors=10
+Iteration 91: time=0.18, ELBO=-1948027.03, deltaELBO=3278.346 (0.01342090%), Factors=10
+Iteration 92: time=0.16, Factors=10
+Iteration 93: time=0.16, Factors=10
+Iteration 94: time=0.16, Factors=10
+Iteration 95: time=0.16, Factors=10
+Iteration 96: time=0.18, ELBO=-1944967.28, deltaELBO=3059.747 (0.01252599%), Factors=10
+Iteration 97: time=0.16, Factors=10
+Iteration 98: time=0.16, Factors=10
+Iteration 99: time=0.16, Factors=10
+Iteration 100: time=0.16, Factors=10
+Iteration 101: time=0.18, ELBO=-1942143.59, deltaELBO=2823.689 (0.01155962%), Factors=10
+Iteration 102: time=0.15, Factors=10
+Iteration 103: time=0.15, Factors=10
+Iteration 104: time=0.15, Factors=10
+Iteration 105: time=0.15, Factors=10
+Iteration 106: time=0.17, ELBO=-1939584.54, deltaELBO=2559.050 (0.01047624%), Factors=10
+Iteration 107: time=0.15, Factors=10
+Iteration 108: time=0.15, Factors=10
+Iteration 109: time=0.15, Factors=10
+Iteration 110: time=0.15, Factors=10
+Iteration 111: time=0.18, ELBO=-1937288.16, deltaELBO=2296.378 (0.00940091%), Factors=10
+Iteration 112: time=0.15, Factors=10
+Iteration 113: time=0.15, Factors=10
+Iteration 114: time=0.15, Factors=10
+Iteration 115: time=0.15, Factors=10
+Iteration 116: time=0.17, ELBO=-1935223.05, deltaELBO=2065.117 (0.00845418%), Factors=10
+Iteration 117: time=0.15, Factors=10
+Iteration 118: time=0.15, Factors=10
+Iteration 119: time=0.16, Factors=10
+Iteration 120: time=0.15, Factors=10
+Iteration 121: time=0.18, ELBO=-1933353.52, deltaELBO=1869.528 (0.00765348%), Factors=10
+Iteration 122: time=0.16, Factors=10
+Iteration 123: time=0.16, Factors=10
+Iteration 124: time=0.16, Factors=10
+Iteration 125: time=0.16, Factors=10
+Iteration 126: time=0.18, ELBO=-1931653.18, deltaELBO=1700.338 (0.00696085%), Factors=10
+Iteration 127: time=0.15, Factors=10
+Iteration 128: time=0.15, Factors=10
+Iteration 129: time=0.15, Factors=10
 Iteration 130: time=0.14, Factors=10
-Iteration 131: time=0.15, ELBO=-1585603.83, deltaELBO=822.878 (0.00407240%), Factors=10
-Iteration 132: time=0.13, Factors=10
+Iteration 131: time=0.17, ELBO=-1930096.38, deltaELBO=1556.795 (0.00637321%), Factors=10
+Iteration 132: time=0.15, Factors=10
 Iteration 133: time=0.14, Factors=10
-Iteration 134: time=0.13, Factors=10
-Iteration 135: time=0.13, Factors=10
-Iteration 136: time=0.15, ELBO=-1584872.85, deltaELBO=730.981 (0.00361761%), Factors=10
-Iteration 137: time=0.13, Factors=10
-Iteration 138: time=0.13, Factors=10
-Iteration 139: time=0.13, Factors=10
-Iteration 140: time=0.13, Factors=10
-Iteration 141: time=0.15, ELBO=-1584219.53, deltaELBO=653.325 (0.00323329%), Factors=10
-Iteration 142: time=0.13, Factors=10
-Iteration 143: time=0.14, Factors=10
-Iteration 144: time=0.13, Factors=10
+Iteration 134: time=0.15, Factors=10
+Iteration 135: time=0.15, Factors=10
+Iteration 136: time=0.17, ELBO=-1928667.77, deltaELBO=1428.613 (0.00584846%), Factors=10
+Iteration 137: time=0.14, Factors=10
+Iteration 138: time=0.15, Factors=10
+Iteration 139: time=0.14, Factors=10
+Iteration 140: time=0.15, Factors=10
+Iteration 141: time=0.17, ELBO=-1927354.94, deltaELBO=1312.829 (0.00537446%), Factors=10
+Iteration 142: time=0.14, Factors=10
+Iteration 143: time=0.15, Factors=10
+Iteration 144: time=0.14, Factors=10
 Iteration 145: time=0.14, Factors=10
-Iteration 146: time=0.16, ELBO=-1583633.00, deltaELBO=586.529 (0.00290271%), Factors=10
-Iteration 147: time=0.14, Factors=10
-Iteration 148: time=0.13, Factors=10
-Iteration 149: time=0.14, Factors=10
-Iteration 150: time=0.14, Factors=10
-Iteration 151: time=0.16, ELBO=-1583104.55, deltaELBO=528.450 (0.00261528%), Factors=10
-Iteration 152: time=0.13, Factors=10
-Iteration 153: time=0.13, Factors=10
-Iteration 154: time=0.13, Factors=10
-Iteration 155: time=0.13, Factors=10
-Iteration 156: time=0.15, ELBO=-1582625.44, deltaELBO=479.110 (0.00237110%), Factors=10
-Iteration 157: time=0.13, Factors=10
-Iteration 158: time=0.13, Factors=10
-Iteration 159: time=0.13, Factors=10
-Iteration 160: time=0.13, Factors=10
-Iteration 161: time=0.15, ELBO=-1582189.07, deltaELBO=436.369 (0.00215958%), Factors=10
-Iteration 162: time=0.13, Factors=10
-Iteration 163: time=0.13, Factors=10
-Iteration 164: time=0.13, Factors=10
-Iteration 165: time=0.13, Factors=10
-Iteration 166: time=0.15, ELBO=-1581789.76, deltaELBO=399.313 (0.00197619%), Factors=10
-Iteration 167: time=0.12, Factors=10
-Iteration 168: time=0.13, Factors=10
-Iteration 169: time=0.13, Factors=10
-Iteration 170: time=0.13, Factors=10
-Iteration 171: time=0.14, ELBO=-1581425.17, deltaELBO=364.589 (0.00180434%), Factors=10
-Iteration 172: time=0.13, Factors=10
-Iteration 173: time=0.13, Factors=10
-Iteration 174: time=0.12, Factors=10
-Iteration 175: time=0.13, Factors=10
-Iteration 176: time=0.15, ELBO=-1581091.46, deltaELBO=333.713 (0.00165153%), Factors=10
-Iteration 177: time=0.13, Factors=10
-Iteration 178: time=0.13, Factors=10
-Iteration 179: time=0.13, Factors=10
-Iteration 180: time=0.13, Factors=10
-Iteration 181: time=0.14, ELBO=-1580785.06, deltaELBO=306.400 (0.00151637%), Factors=10
-Iteration 182: time=0.12, Factors=10
-Iteration 183: time=0.13, Factors=10
-Iteration 184: time=0.13, Factors=10
-Iteration 185: time=0.12, Factors=10
-Iteration 186: time=0.15, ELBO=-1580504.03, deltaELBO=281.021 (0.00139076%), Factors=10
-Iteration 187: time=0.13, Factors=10
-Iteration 188: time=0.13, Factors=10
-Iteration 189: time=0.12, Factors=10
-Iteration 190: time=0.13, Factors=10
-Iteration 191: time=0.15, ELBO=-1580245.42, deltaELBO=258.613 (0.00127987%), Factors=10
-Iteration 192: time=0.13, Factors=10
-Iteration 193: time=0.13, Factors=10
-Iteration 194: time=0.13, Factors=10
-Iteration 195: time=0.13, Factors=10
-Iteration 196: time=0.14, ELBO=-1580006.50, deltaELBO=238.921 (0.00118241%), Factors=10
-Iteration 197: time=0.13, Factors=10
-Iteration 198: time=0.13, Factors=10
-Iteration 199: time=0.12, Factors=10
-Iteration 200: time=0.13, Factors=10
-Iteration 201: time=0.14, ELBO=-1579785.52, deltaELBO=220.980 (0.00109362%), Factors=10
-Iteration 202: time=0.13, Factors=10
-Iteration 203: time=0.12, Factors=10
-Iteration 204: time=0.13, Factors=10
-Iteration 205: time=0.12, Factors=10
-Iteration 206: time=0.14, ELBO=-1579580.61, deltaELBO=204.908 (0.00101409%), Factors=10
-Iteration 207: time=0.12, Factors=10
-Iteration 208: time=0.13, Factors=10
-Iteration 209: time=0.12, Factors=10
-Iteration 210: time=0.13, Factors=10
-Iteration 211: time=0.15, ELBO=-1579392.25, deltaELBO=188.360 (0.00093219%), Factors=10
-Iteration 212: time=0.13, Factors=10
-Iteration 213: time=0.12, Factors=10
-Iteration 214: time=0.13, Factors=10
-Iteration 215: time=0.12, Factors=10
-Iteration 216: time=0.15, ELBO=-1579218.92, deltaELBO=173.330 (0.00085780%), Factors=10
-Iteration 217: time=0.13, Factors=10
-Iteration 218: time=0.13, Factors=10
-Iteration 219: time=0.12, Factors=10
-Iteration 220: time=0.13, Factors=10
-Iteration 221: time=0.14, ELBO=-1579057.71, deltaELBO=161.215 (0.00079785%), Factors=10
-Iteration 222: time=0.13, Factors=10
-Iteration 223: time=0.13, Factors=10
-Iteration 224: time=0.12, Factors=10
-Iteration 225: time=0.13, Factors=10
-Iteration 226: time=0.15, ELBO=-1578907.43, deltaELBO=150.278 (0.00074372%), Factors=10
-Iteration 227: time=0.12, Factors=10
-Iteration 228: time=0.12, Factors=10
-Iteration 229: time=0.13, Factors=10
-Iteration 230: time=0.12, Factors=10
-Iteration 231: time=0.14, ELBO=-1578766.40, deltaELBO=141.025 (0.00069793%), Factors=10
-Iteration 232: time=0.13, Factors=10
-Iteration 233: time=0.13, Factors=10
-Iteration 234: time=0.12, Factors=10
-Iteration 235: time=0.13, Factors=10
-Iteration 236: time=0.15, ELBO=-1578633.58, deltaELBO=132.829 (0.00065737%), Factors=10
-Iteration 237: time=0.13, Factors=10
-Iteration 238: time=0.13, Factors=10
-Iteration 239: time=0.13, Factors=10
-Iteration 240: time=0.12, Factors=10
-Iteration 241: time=0.15, ELBO=-1578506.72, deltaELBO=126.853 (0.00062779%), Factors=10
-Iteration 242: time=0.12, Factors=10
-Iteration 243: time=0.13, Factors=10
-Iteration 244: time=0.13, Factors=10
-Iteration 245: time=0.13, Factors=10
-Iteration 246: time=0.15, ELBO=-1578384.49, deltaELBO=122.232 (0.00060493%), Factors=10
-Iteration 247: time=0.13, Factors=10
-Iteration 248: time=0.12, Factors=10
-Iteration 249: time=0.12, Factors=10
-Iteration 250: time=0.12, Factors=10
-Iteration 251: time=0.14, ELBO=-1578263.78, deltaELBO=120.715 (0.00059742%), Factors=10
-Iteration 252: time=0.13, Factors=10
-Iteration 253: time=0.12, Factors=10
-Iteration 254: time=0.12, Factors=10
-Iteration 255: time=0.12, Factors=10
-Iteration 256: time=0.14, ELBO=-1578143.69, deltaELBO=120.090 (0.00059432%), Factors=10
-Iteration 257: time=0.12, Factors=10
-Iteration 258: time=0.13, Factors=10
-Iteration 259: time=0.12, Factors=10
-Iteration 260: time=0.12, Factors=10
-Iteration 261: time=0.15, ELBO=-1578018.73, deltaELBO=124.952 (0.00061839%), Factors=10
-Iteration 262: time=0.12, Factors=10
-Iteration 263: time=0.12, Factors=10
-Iteration 264: time=0.12, Factors=10
-Iteration 265: time=0.12, Factors=10
-Iteration 266: time=0.14, ELBO=-1577877.50, deltaELBO=141.232 (0.00069896%), Factors=10
-Iteration 267: time=0.12, Factors=10
-Iteration 268: time=0.12, Factors=10
-Iteration 269: time=0.12, Factors=10
-Iteration 270: time=0.13, Factors=10
-Iteration 271: time=0.15, ELBO=-1577698.81, deltaELBO=178.691 (0.00088434%), Factors=10
-Iteration 272: time=0.12, Factors=10
-Iteration 273: time=0.13, Factors=10
-Iteration 274: time=0.12, Factors=10
-Iteration 275: time=0.13, Factors=10
-Iteration 276: time=0.15, ELBO=-1577464.42, deltaELBO=234.389 (0.00115998%), Factors=10
-Iteration 277: time=0.12, Factors=10
-Iteration 278: time=0.13, Factors=10
-Iteration 279: time=0.12, Factors=10
-Iteration 280: time=0.13, Factors=10
-Iteration 281: time=0.14, ELBO=-1577212.03, deltaELBO=252.392 (0.00124908%), Factors=10
-Iteration 282: time=0.12, Factors=10
-Iteration 283: time=0.12, Factors=10
-Iteration 284: time=0.12, Factors=10
-Iteration 285: time=0.12, Factors=10
-Iteration 286: time=0.14, ELBO=-1577016.19, deltaELBO=195.835 (0.00096918%), Factors=10
-Iteration 287: time=0.12, Factors=10
-Iteration 288: time=0.13, Factors=10
-Iteration 289: time=0.12, Factors=10
-Iteration 290: time=0.12, Factors=10
-Iteration 291: time=0.14, ELBO=-1576877.40, deltaELBO=138.791 (0.00068688%), Factors=10
-Iteration 292: time=0.12, Factors=10
-Iteration 293: time=0.12, Factors=10
-Iteration 294: time=0.13, Factors=10
-Iteration 295: time=0.12, Factors=10
-Iteration 296: time=0.14, ELBO=-1576769.54, deltaELBO=107.863 (0.00053381%), Factors=10
-Iteration 297: time=0.12, Factors=10
-Iteration 298: time=0.12, Factors=10
-Iteration 299: time=0.12, Factors=10
-Iteration 300: time=0.12, Factors=10
-Iteration 301: time=0.14, ELBO=-1576679.02, deltaELBO=90.516 (0.00044796%), Factors=10
-Iteration 302: time=0.13, Factors=10
-Iteration 303: time=0.12, Factors=10
-Iteration 304: time=0.12, Factors=10
-Iteration 305: time=0.13, Factors=10
-Iteration 306: time=0.14, ELBO=-1576598.77, deltaELBO=80.254 (0.00039717%), Factors=10
+Iteration 146: time=0.17, ELBO=-1926143.44, deltaELBO=1211.499 (0.00495964%), Factors=10
+Iteration 147: time=0.15, Factors=10
+Iteration 148: time=0.14, Factors=10
+Iteration 149: time=0.15, Factors=10
+Iteration 150: time=0.15, Factors=10
+Iteration 151: time=0.17, ELBO=-1925020.51, deltaELBO=1122.938 (0.00459708%), Factors=10
+Iteration 152: time=0.15, Factors=10
+Iteration 153: time=0.14, Factors=10
+Iteration 154: time=0.15, Factors=10
+Iteration 155: time=0.15, Factors=10
+Iteration 156: time=0.17, ELBO=-1923977.44, deltaELBO=1043.061 (0.00427008%), Factors=10
+Iteration 157: time=0.15, Factors=10
+Iteration 158: time=0.15, Factors=10
+Iteration 159: time=0.15, Factors=10
+Iteration 160: time=0.14, Factors=10
+Iteration 161: time=0.17, ELBO=-1923004.53, deltaELBO=972.912 (0.00398291%), Factors=10
+Iteration 162: time=0.14, Factors=10
+Iteration 163: time=0.15, Factors=10
+Iteration 164: time=0.15, Factors=10
+Iteration 165: time=0.15, Factors=10
+Iteration 166: time=0.17, ELBO=-1922091.83, deltaELBO=912.704 (0.00373643%), Factors=10
+Iteration 167: time=0.15, Factors=10
+Iteration 168: time=0.15, Factors=10
+Iteration 169: time=0.14, Factors=10
+Iteration 170: time=0.15, Factors=10
+Iteration 171: time=0.17, ELBO=-1921235.06, deltaELBO=856.773 (0.00350746%), Factors=10
+Iteration 172: time=0.15, Factors=10
+Iteration 173: time=0.15, Factors=10
+Iteration 174: time=0.14, Factors=10
+Iteration 175: time=0.15, Factors=10
+Iteration 176: time=0.17, ELBO=-1920422.13, deltaELBO=812.931 (0.00332798%), Factors=10
+Iteration 177: time=0.15, Factors=10
+Iteration 178: time=0.15, Factors=10
+Iteration 179: time=0.14, Factors=10
+Iteration 180: time=0.15, Factors=10
+Iteration 181: time=0.17, ELBO=-1919642.64, deltaELBO=779.488 (0.00319107%), Factors=10
+Iteration 182: time=0.14, Factors=10
+Iteration 183: time=0.14, Factors=10
+Iteration 184: time=0.14, Factors=10
+Iteration 185: time=0.14, Factors=10
+Iteration 186: time=0.17, ELBO=-1918889.67, deltaELBO=752.963 (0.00308248%), Factors=10
+Iteration 187: time=0.14, Factors=10
+Iteration 188: time=0.14, Factors=10
+Iteration 189: time=0.14, Factors=10
+Iteration 190: time=0.15, Factors=10
+Iteration 191: time=0.17, ELBO=-1918157.22, deltaELBO=732.450 (0.00299850%), Factors=10
+Iteration 192: time=0.15, Factors=10
+Iteration 193: time=0.14, Factors=10
+Iteration 194: time=0.14, Factors=10
+Iteration 195: time=0.14, Factors=10
+Iteration 196: time=0.17, ELBO=-1917442.85, deltaELBO=714.374 (0.00292451%), Factors=10
+Iteration 197: time=0.14, Factors=10
+Iteration 198: time=0.14, Factors=10
+Iteration 199: time=0.14, Factors=10
+Iteration 200: time=0.14, Factors=10
+Iteration 201: time=0.17, ELBO=-1916738.98, deltaELBO=703.871 (0.00288151%), Factors=10
+Iteration 202: time=0.15, Factors=10
+Iteration 203: time=0.15, Factors=10
+Iteration 204: time=0.15, Factors=10
+Iteration 205: time=0.14, Factors=10
+Iteration 206: time=0.17, ELBO=-1916038.50, deltaELBO=700.477 (0.00286761%), Factors=10
+Iteration 207: time=0.14, Factors=10
+Iteration 208: time=0.14, Factors=10
+Iteration 209: time=0.14, Factors=10
+Iteration 210: time=0.14, Factors=10
+Iteration 211: time=0.17, ELBO=-1915341.42, deltaELBO=697.083 (0.00285372%), Factors=10
+Iteration 212: time=0.14, Factors=10
+Iteration 213: time=0.14, Factors=10
+Iteration 214: time=0.14, Factors=10
+Iteration 215: time=0.14, Factors=10
+Iteration 216: time=0.17, ELBO=-1914642.90, deltaELBO=698.524 (0.00285962%), Factors=10
+Iteration 217: time=0.14, Factors=10
+Iteration 218: time=0.14, Factors=10
+Iteration 219: time=0.14, Factors=10
+Iteration 220: time=0.14, Factors=10
+Iteration 221: time=0.17, ELBO=-1913937.49, deltaELBO=705.408 (0.00288780%), Factors=10
+Iteration 222: time=0.14, Factors=10
+Iteration 223: time=0.14, Factors=10
+Iteration 224: time=0.14, Factors=10
+Iteration 225: time=0.14, Factors=10
+Iteration 226: time=0.17, ELBO=-1913223.19, deltaELBO=714.297 (0.00292419%), Factors=10
+Iteration 227: time=0.15, Factors=10
+Iteration 228: time=0.15, Factors=10
+Iteration 229: time=0.15, Factors=10
+Iteration 230: time=0.15, Factors=10
+Iteration 231: time=0.17, ELBO=-1912502.44, deltaELBO=720.748 (0.00295060%), Factors=10
+Iteration 232: time=0.15, Factors=10
+Iteration 233: time=0.15, Factors=10
+Iteration 234: time=0.15, Factors=10
+Iteration 235: time=0.14, Factors=10
+Iteration 236: time=0.17, ELBO=-1911776.47, deltaELBO=725.975 (0.00297200%), Factors=10
+Iteration 237: time=0.15, Factors=10
+Iteration 238: time=0.14, Factors=10
+Iteration 239: time=0.15, Factors=10
+Iteration 240: time=0.15, Factors=10
+Iteration 241: time=0.17, ELBO=-1911049.52, deltaELBO=726.950 (0.00297599%), Factors=10
+Iteration 242: time=0.15, Factors=10
+Iteration 243: time=0.15, Factors=10
+Iteration 244: time=0.15, Factors=10
+Iteration 245: time=0.15, Factors=10
+Iteration 246: time=0.17, ELBO=-1910324.82, deltaELBO=724.701 (0.00296678%), Factors=10
+Iteration 247: time=0.15, Factors=10
+Iteration 248: time=0.15, Factors=10
+Iteration 249: time=0.14, Factors=10
+Iteration 250: time=0.14, Factors=10
+Iteration 251: time=0.17, ELBO=-1909610.58, deltaELBO=714.240 (0.00292395%), Factors=10
+Iteration 252: time=0.15, Factors=10
+Iteration 253: time=0.15, Factors=10
+Iteration 254: time=0.14, Factors=10
+Iteration 255: time=0.14, Factors=10
+Iteration 256: time=0.17, ELBO=-1908912.05, deltaELBO=698.524 (0.00285962%), Factors=10
+Iteration 257: time=0.14, Factors=10
+Iteration 258: time=0.14, Factors=10
+Iteration 259: time=0.14, Factors=10
+Iteration 260: time=0.15, Factors=10
+Iteration 261: time=0.17, ELBO=-1908242.82, deltaELBO=669.232 (0.00273970%), Factors=10
+Iteration 262: time=0.14, Factors=10
+Iteration 263: time=0.14, Factors=10
+Iteration 264: time=0.15, Factors=10
+Iteration 265: time=0.15, Factors=10
+Iteration 266: time=0.17, ELBO=-1907608.94, deltaELBO=633.886 (0.00259500%), Factors=10
+Iteration 267: time=0.15, Factors=10
+Iteration 268: time=0.15, Factors=10
+Iteration 269: time=0.15, Factors=10
+Iteration 270: time=0.15, Factors=10
+Iteration 271: time=0.17, ELBO=-1907018.05, deltaELBO=590.881 (0.00241895%), Factors=10
+Iteration 272: time=0.15, Factors=10
+Iteration 273: time=0.14, Factors=10
+Iteration 274: time=0.15, Factors=10
+Iteration 275: time=0.15, Factors=10
+Iteration 276: time=0.17, ELBO=-1906468.77, deltaELBO=549.287 (0.00224867%), Factors=10
+Iteration 277: time=0.14, Factors=10
+Iteration 278: time=0.15, Factors=10
+Iteration 279: time=0.15, Factors=10
+Iteration 280: time=0.15, Factors=10
+Iteration 281: time=0.17, ELBO=-1905970.94, deltaELBO=497.829 (0.00203801%), Factors=10
+Iteration 282: time=0.14, Factors=10
+Iteration 283: time=0.15, Factors=10
+Iteration 284: time=0.15, Factors=10
+Iteration 285: time=0.15, Factors=10
+Iteration 286: time=0.16, ELBO=-1905526.58, deltaELBO=444.355 (0.00181910%), Factors=10
+Iteration 287: time=0.15, Factors=10
+Iteration 288: time=0.15, Factors=10
+Iteration 289: time=0.15, Factors=10
+Iteration 290: time=0.15, Factors=10
+Iteration 291: time=0.17, ELBO=-1905129.25, deltaELBO=397.334 (0.00162661%), Factors=10
+Iteration 292: time=0.15, Factors=10
+Iteration 293: time=0.15, Factors=10
+Iteration 294: time=0.15, Factors=10
+Iteration 295: time=0.15, Factors=10
+Iteration 296: time=0.17, ELBO=-1904775.58, deltaELBO=353.668 (0.00144785%), Factors=10
+Iteration 297: time=0.15, Factors=10
+Iteration 298: time=0.15, Factors=10
+Iteration 299: time=0.14, Factors=10
+Iteration 300: time=0.14, Factors=10
+Iteration 301: time=0.17, ELBO=-1904457.14, deltaELBO=318.436 (0.00130362%), Factors=10
+Iteration 302: time=0.14, Factors=10
+Iteration 303: time=0.15, Factors=10
+Iteration 304: time=0.14, Factors=10
+Iteration 305: time=0.14, Factors=10
+Iteration 306: time=0.16, ELBO=-1904165.10, deltaELBO=292.047 (0.00119558%), Factors=10
+Iteration 307: time=0.14, Factors=10
+Iteration 308: time=0.14, Factors=10
+Iteration 309: time=0.14, Factors=10
+Iteration 310: time=0.14, Factors=10
+Iteration 311: time=0.16, ELBO=-1903897.71, deltaELBO=267.391 (0.00109464%), Factors=10
+Iteration 312: time=0.14, Factors=10
+Iteration 313: time=0.14, Factors=10
+Iteration 314: time=0.14, Factors=10
+Iteration 315: time=0.14, Factors=10
+Iteration 316: time=0.17, ELBO=-1903657.90, deltaELBO=239.811 (0.00098174%), Factors=10
+Iteration 317: time=0.14, Factors=10
+Iteration 318: time=0.14, Factors=10
+Iteration 319: time=0.14, Factors=10
+Iteration 320: time=0.14, Factors=10
+Iteration 321: time=0.17, ELBO=-1903440.55, deltaELBO=217.351 (0.00088979%), Factors=10
+Iteration 322: time=0.14, Factors=10
+Iteration 323: time=0.14, Factors=10
+Iteration 324: time=0.15, Factors=10
+Iteration 325: time=0.14, Factors=10
+Iteration 326: time=0.17, ELBO=-1903243.13, deltaELBO=197.411 (0.00080816%), Factors=10
+Iteration 327: time=0.14, Factors=10
+Iteration 328: time=0.14, Factors=10
+Iteration 329: time=0.14, Factors=10
+Iteration 330: time=0.14, Factors=10
+Iteration 331: time=0.16, ELBO=-1903063.00, deltaELBO=180.137 (0.00073744%), Factors=10
+Iteration 332: time=0.14, Factors=10
+Iteration 333: time=0.14, Factors=10
+Iteration 334: time=0.14, Factors=10
+Iteration 335: time=0.14, Factors=10
+Iteration 336: time=0.16, ELBO=-1902893.61, deltaELBO=169.390 (0.00069345%), Factors=10
+Iteration 337: time=0.14, Factors=10
+Iteration 338: time=0.14, Factors=10
+Iteration 339: time=0.14, Factors=10
+Iteration 340: time=0.14, Factors=10
+Iteration 341: time=0.16, ELBO=-1902728.14, deltaELBO=165.467 (0.00067739%), Factors=10
+Iteration 342: time=0.14, Factors=10
+Iteration 343: time=0.14, Factors=10
+Iteration 344: time=0.14, Factors=10
+Iteration 345: time=0.14, Factors=10
+Iteration 346: time=0.16, ELBO=-1902557.71, deltaELBO=170.432 (0.00069771%), Factors=10
+Iteration 347: time=0.13, Factors=10
+Iteration 348: time=0.13, Factors=10
+Iteration 349: time=0.14, Factors=10
+Iteration 350: time=0.14, Factors=10
+Iteration 351: time=0.16, ELBO=-1902367.14, deltaELBO=190.573 (0.00078017%), Factors=10
+Iteration 352: time=0.14, Factors=10
+Iteration 353: time=0.13, Factors=10
+Iteration 354: time=0.13, Factors=10
+Iteration 355: time=0.13, Factors=10
+Iteration 356: time=0.15, ELBO=-1902140.68, deltaELBO=226.459 (0.00092708%), Factors=10
+Iteration 357: time=0.13, Factors=10
+Iteration 358: time=0.13, Factors=10
+Iteration 359: time=0.14, Factors=10
+Iteration 360: time=0.14, Factors=10
+Iteration 361: time=0.15, ELBO=-1901876.58, deltaELBO=264.095 (0.00108115%), Factors=10
+Iteration 362: time=0.13, Factors=10
+Iteration 363: time=0.13, Factors=10
+Iteration 364: time=0.14, Factors=10
+Iteration 365: time=0.14, Factors=10
+Iteration 366: time=0.16, ELBO=-1901607.73, deltaELBO=268.850 (0.00110062%), Factors=10
+Iteration 367: time=0.14, Factors=10
+Iteration 368: time=0.13, Factors=10
+Iteration 369: time=0.13, Factors=10
+Iteration 370: time=0.13, Factors=10
+Iteration 371: time=0.15, ELBO=-1901394.30, deltaELBO=213.429 (0.00087374%), Factors=10
+Iteration 372: time=0.13, Factors=10
+Iteration 373: time=0.13, Factors=10
+Iteration 374: time=0.13, Factors=10
+Iteration 375: time=0.13, Factors=10
+Iteration 376: time=0.16, ELBO=-1901251.48, deltaELBO=142.828 (0.00058471%), Factors=10
+Iteration 377: time=0.13, Factors=10
+Iteration 378: time=0.13, Factors=10
+Iteration 379: time=0.13, Factors=10
+Iteration 380: time=0.13, Factors=10
+Iteration 381: time=0.15, ELBO=-1901152.31, deltaELBO=99.162 (0.00040595%), Factors=10
+Iteration 382: time=0.13, Factors=10
+Iteration 383: time=0.13, Factors=10
+Iteration 384: time=0.13, Factors=10
+Iteration 385: time=0.13, Factors=10
+Iteration 386: time=0.15, ELBO=-1901077.12, deltaELBO=75.195 (0.00030783%), Factors=10
 
 Converged!
 
@@ -654,7 +750,7 @@ Saving model in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/pro
 2 factors were found to explain no variance and they were removed for downstream analysis. You can disable this option by setting load_model(..., remove_inactive_factors = FALSE)
 Warning message:
 In .quality_control(object, verbose = verbose) :
-  Factor(s) 1, 2, 3, 4, 5, 6 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
+  Factor(s) 1, 2, 3, 4, 5, 6, 8 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
 
 null device 
           1 
@@ -670,7 +766,7 @@ pdf
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-09-18
+ date     2025-10-14
  pandoc   NA
  quarto   NA
 
@@ -813,4 +909,4 @@ pdf
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Thu Sep 18 12:47:50 PM EDT 2025
+Tue Oct 14 10:46:24 AM EDT 2025
