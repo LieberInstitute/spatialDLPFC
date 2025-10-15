@@ -138,7 +138,7 @@ pdf(
     width = as.integer(round(num_factors / 3) + 2),
     height = as.integer(round(num_views_per_type * 0.75) + 4)
 )
-ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 15), "mm"))
+ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 25), "mm"))
 dev.off()
 
 session_info()
