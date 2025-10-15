@@ -8,15 +8,9 @@ library(tidyverse)
 library(ComplexHeatmap)
 library(circlize)
 
-task_id = as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
-if (task_id == 1) {
-    specific_factor = 'Factor4'
-} else {
-    specific_factor = 'Factor2'
-}
-
 dataset = 'combined'
 num_factors = 6
+specific_factor = 'Factor3'
 num_views_per_type = 5
 
 model_path = here(
@@ -46,14 +40,7 @@ highlighted_views = factor_weights |>
         names_to = 'view',
         values_to = 'r2'
     ) |>
-    mutate(
-        view_type = case_when(
-            grepl('^HPC_sn_', view) ~ 'HPC_sn',
-            grepl('^HPC_visium', view) ~ 'HPC_visium',
-            grepl('^DLPFC_Sp09', view) ~ 'DLPFC_visium',
-            TRUE ~ 'DLPFC_sn'
-        )
-    ) |>
+    mutate(view_type = str_extract(view, '^(DLPFC|HPC)_(visium|sn)')) |>
     filter(factor_num == specific_factor) |>
     group_by(view_type) |>
     arrange(desc(r2)) |>

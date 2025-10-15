@@ -4,9 +4,8 @@
 #SBATCH --job-name=07_custom_heatmaps
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/MFA/logs/07_custom_heatmaps_%a.txt
-#SBATCH -e ../../processed-data/MFA/logs/07_custom_heatmaps_%a.txt
-#SBATCH --array=1-2%2
+#SBATCH -o ../../processed-data/MFA/logs/07_custom_heatmaps.txt
+#SBATCH -e ../../processed-data/MFA/logs/07_custom_heatmaps.txt
 
 set -e
 
