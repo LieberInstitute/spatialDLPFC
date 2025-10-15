@@ -1,10 +1,10 @@
 **** Job starts ****
-Wed Sep 24 11:44:32 AM EDT 2025
+Tue Oct 14 11:34:07 AM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 22724691
+Job id: 23361754
 Job name: 01_pseudobulk_dlpfc
-Node name: compute-175
+Node name: compute-093
 Task id: 
 Loading conda_R/4.5
 
@@ -140,21 +140,21 @@ The following object is masked from ‘package:rhdf5’:
     h5ls
 
 here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
-2025-09-24 11:44:47.641752 | Loading and prepping datasets
-2025-09-24 11:44:48.967749 loading file /users/neagles/.cache/R/BiocFileCache/671d75669d99a_sce_DLPFC_annotated.zip%3Fdl%3D1
-2025-09-24 11:46:43.440014 loading file /users/neagles/.cache/R/BiocFileCache/399c936579b77d_spe_filtered_final_with_clusters_and_deconvolution_results.rds%3Fdl%3D1
-2025-09-24 11:48:27.959171 | Pseudobulking Visium data
-2025-09-24 11:48:27.967272 make pseudobulk object
-2025-09-24 11:48:34.667358 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
-2025-09-24 11:48:34.6915 drop lowly expressed genes
-2025-09-24 11:48:34.922778 normalize expression
-2025-09-24 11:48:36.521481 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/visium_pb.rds
-2025-09-24 11:50:50.831048 | Pseudobulking snRNA-seq data
-2025-09-24 11:50:50.877316 make pseudobulk object
-2025-09-24 11:50:52.941157 dropping 13 pseudo-bulked samples that are below 'min_ncells'.
-2025-09-24 11:50:52.968705 drop lowly expressed genes
-2025-09-24 11:50:53.132576 normalize expression
-2025-09-24 11:50:55.180014 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/sn_fine_pb.rds
+2025-10-14 11:34:30.851366 | Loading and prepping datasets
+2025-10-14 11:34:32.478078 loading file /users/neagles/.cache/R/BiocFileCache/671d75669d99a_sce_DLPFC_annotated.zip%3Fdl%3D1
+2025-10-14 11:38:02.414962 loading file /users/neagles/.cache/R/BiocFileCache/399c936579b77d_spe_filtered_final_with_clusters_and_deconvolution_results.rds%3Fdl%3D1
+2025-10-14 11:41:24.888177 | Pseudobulking Visium data
+2025-10-14 11:41:24.901299 make pseudobulk object
+2025-10-14 11:41:41.094431 dropping 0 pseudo-bulked samples that are below 'min_ncells'.
+2025-10-14 11:41:41.14458 drop lowly expressed genes
+2025-10-14 11:41:41.64614 normalize expression
+2025-10-14 11:41:44.332932 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/visium_pb.rds
+2025-10-14 11:47:00.045484 | Pseudobulking snRNA-seq data
+2025-10-14 11:47:00.20146 make pseudobulk object
+2025-10-14 11:47:06.001343 dropping 12 pseudo-bulked samples that are below 'min_ncells'.
+2025-10-14 11:47:06.078997 drop lowly expressed genes
+2025-10-14 11:47:06.439324 normalize expression
+2025-10-14 11:47:10.774699 saving sce_pseudo to /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/pseudobulk_rds/sn_fine_pb.rds
 Warning message:
 var_registration "cellType_layer" contains non-syntatic variables: DLPFC_sn_Excit_L3/4/5, DLPFC_sn_Excit_L5/6, DLPFC_sn_Excit_L2/3
 converting to DLPFC_sn_Excit_L3.4.5, DLPFC_sn_Excit_L5.6, DLPFC_sn_Excit_L2.3 
@@ -168,7 +168,7 @@ converting to DLPFC_sn_Excit_L3.4.5, DLPFC_sn_Excit_L5.6, DLPFC_sn_Excit_L2.3
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-09-24
+ date     2025-10-14
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -328,4 +328,4 @@ converting to DLPFC_sn_Excit_L3.4.5, DLPFC_sn_Excit_L5.6, DLPFC_sn_Excit_L2.3
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Wed Sep 24 11:50:58 AM EDT 2025
+Tue Oct 14 11:47:17 AM EDT 2025

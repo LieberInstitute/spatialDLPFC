@@ -29,7 +29,11 @@ sce = loadHDF5SummarizedExperiment(file.path(tempdir(), "sce_DLPFC_annotated"))
 rownames(sce) = rowData(sce)$gene_id
 
 #   Drop ambiguous cells
-sce = sce[, sce$cellType_broad_hc != "Ambiguous"]
+sce = sce[
+    ,
+    (sce$cellType_broad_hc != "Ambiguous") &
+    (sce$cellType_layer != "Excit_ambig")
+]
 stopifnot(!any(is.na(sce$cellType_layer)))
 
 sce$cellType_layer = paste('DLPFC_sn', sce$cellType_layer, sep = '_')
