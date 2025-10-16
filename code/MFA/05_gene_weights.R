@@ -8,35 +8,13 @@ library(ComplexHeatmap)
 library(clusterProfiler)
 library(org.Hs.eg.db)
 
-task_id = as.integer(Sys.getenv('SLURM_ARRAY_TASK_ID'))
-if (task_id == 1) {
-    dataset = 'DLPFC'
-    num_factors = 4
-    specific_factor = 'Factor2'
-    my_views = c('Excit_L4', 'Excit_L5', 'Excit_L5.6')
-    fdr_cutoff = 0.1
-    genes_per_group = 5
-} else if (task_id == 2) {
-    dataset = 'combined'
-    num_factors = 6
-    specific_factor = 'Factor4'
-    my_views = c(
-        'DLPFC_Excit_ambig', 'DLPFC_Excit_L3.4.5', 'HPC_visium_SUB',
-        'HPC_visium_SUB.RHP'
-    )
-    fdr_cutoff = 0.05
-    genes_per_group = 5
-} else {
-    dataset = 'combined'
-    num_factors = 6
-    specific_factor = 'Factor2'
-    my_views = c(
-        'DLPFC_Sp09D06', 'DLPFC_Sp09D09', 'HPC_sn_Astro', 'HPC_visium_CA1',
-        'HPC_visium_WM.1', 'HPC_visium_RHP'
-    )
-    fdr_cutoff = 0.1
-    genes_per_group = 3
-}
+dataset = 'combined'
+num_factors = 6
+specific_factor = 'Factor3'
+fdr_cutoff = 0.05
+z_cutoff_views = 1.3 # somewhat arbitrary
+z_cutoff_genes = 1.96
+max_genes = 2
 
 model_path = here(
     'processed-data', 'MFA', 'models',
@@ -46,6 +24,20 @@ sce_path = here(
     'processed-data', 'MFA', 'combined_rds', sprintf('%s.rds', dataset)
 )
 plot_dir = here('plots', 'MFA')
+
+view_colors = c(
+    DLPFC_sn_EndoMural = '#0C7602',
+    DLPFC_sn_Micro = '#250A2F',
+    DLPFC_sn_Oligo = '#A6E3BC',
+    DLPFC_sn_Excit_L3 = '#032C5E',
+    DLPFC_sn_Excit_L3.4.5 = '#0077B6',
+    HPC_sn_CA1 = '#B8620C',
+    HPC_sn_CA2.4 = '#751602',
+    HPC_visium_CA2.4 = '#F8644E',
+    Multi = 'grey30'
+)
+
+dir.create(file.path(plot_dir, 'GO'), showWarnings = FALSE)
 
 model = load_model(model_path)
 
@@ -58,63 +50,178 @@ gene_weights = get_geneweights(model = model, factor = specific_factor) |>
             dplyr::select(gene_id, gene_name),
         by = c("feature" = "gene_id")
     ) |>
-    as_tibble()
-
-stopifnot(all(my_views %in% unique(gene_weights$ctype)))
-
-top_gene_weights = gene_weights |>
-    filter(ctype %in% my_views) |>
-    mutate(abs_value = abs(value), weight_pos = value > 0) |>
-    group_by(ctype, weight_pos) |>
-    arrange(desc(abs_value)) |>
-    slice_head(n = genes_per_group) |>
+    as_tibble() |>
+    #   Z-score across genes within each view
+    group_by(ctype) |>
+    mutate(value = (value - mean(value)) / sd(value)) |>
     ungroup()
 
+stopifnot(!any(is.na(gene_weights$gene_name)))
+
+#   Only a subset of views will be used to find signature genes and
+#   corresponding GO results, based on exceeding a z-score cutoff for R^2
+#   for the factor of interest
+view_r2 = model@cache$variance_explained$r2_per_factor$single_group[
+    specific_factor,
+]
+view_r2_z = (view_r2 - mean(view_r2)) / sd(view_r2)
+my_views = names(view_r2_z)[view_r2_z > z_cutoff_views]
+stopifnot(length(my_views) > 0)
+message(
+    sprintf(
+        'Only finding signature genes and GO results for views "%s"',
+        paste(my_views, collapse = '", "')
+    )
+)
+
+top_gene_weights = gene_weights |>
+    mutate(abs_value = abs(value)) |>
+    filter(ctype %in% my_views, abs_value > z_cutoff_genes)
+
+stopifnot(nrow(top_gene_weights) > 0)
+
+#   Only display up to max_genes per view and sign
+select_genes = top_gene_weights |>
+    group_by(ctype, sign(value)) |>
+    arrange(desc(abs_value)) |>
+    slice_head(n = max_genes) |>
+    pull(feature)
+
 ################################################################################
-#   Heatmap of top-weighted genes across all views
+#   Heatmap of top-weighted genes
 ################################################################################
+
+#   Annotation of rows-- each gene is labeled by the view it is a signature gene
+#   for and whether it has a positive weight
+view_table = top_gene_weights |>
+    filter(feature %in% select_genes) |>
+    group_by(gene_name) |> 
+    summarise(
+        n = n(),
+        positive_weight = Reduce('|', value > 0),
+        view = paste0(ctype, collapse = ", ")
+    ) |>
+    mutate(
+        view = factor(
+            ifelse(n > 1, "Multi", view), levels = c("Multi", my_views)
+        )
+    ) |>
+    dplyr::select(gene_name, positive_weight, view) |>
+    column_to_rownames("gene_name") |>
+    arrange(-positive_weight, view)
+
+view_table_row = rowAnnotation(
+    df = view_table,
+    col = list(
+        view = view_colors,
+        positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20")
+    )
+)
 
 ## prep heatmap 
 top_gw_value_matrix = gene_weights |>
-    filter(feature %in% top_gene_weights$feature) |>
+    filter(feature %in% select_genes) |>
     dplyr::select(gene_name, ctype, value) |>
     pivot_wider(names_from = ctype, values_from = value) |>
     column_to_rownames("gene_name") |>
     as.matrix()
 
-row_order = top_gene_weights |>
-    group_by(gene_name) |> 
-    summarise(max_value = max(value)) |>
-    arrange(desc(max_value)) |>
-    pull(gene_name)
-
-top_gw_value_matrix = top_gw_value_matrix[row_order,]
-
-pdf_width_all = (nrow(top_gw_value_matrix) / 8) + 3
-pdf_width_select = (length(my_views) / 8) + 3
-pdf_height = length(row_order) / 5
-
 ## weights across all clusters
 pdf(
-    file.path(
-        plot_dir,
-        sprintf(
-            'gene_weights_%s_n%d_%s.pdf', dataset, num_factors, specific_factor
-        )
-    ),
-    width = pdf_width_all, height = pdf_height
+    file.path(plot_dir, sprintf('gene_weights_all_%s.pdf', specific_factor)),
+    width = (ncol(top_gw_value_matrix) / 4) + 3, height = nrow(view_table) / 4
 )
 Heatmap(
-    top_gw_value_matrix,
-    name = "feature\nweights",
+    top_gw_value_matrix[rownames(view_table),],
+    name = "feature\nweights\n(Z-score)",
     cluster_rows = FALSE,
-    cluster_columns = FALSE
+    cluster_columns = FALSE,
+    right_annotation = view_table_row
+)
+dev.off()
+
+## weights for selected clusters only
+pdf(
+    file.path(plot_dir, sprintf('gene_weights_select_%s.pdf', specific_factor)),
+    width = (length(my_views) / 4) + 3, height = nrow(view_table) / 4
+)
+Heatmap(
+    top_gw_value_matrix[rownames(view_table), my_views],
+    name = "feature\nweights\n(Z-score)",
+    cluster_rows = FALSE,
+    cluster_columns = FALSE,
+    right_annotation = view_table_row
 )
 dev.off()
 
 ################################################################################
 #   GO of top-weighted genes
 ################################################################################
+
+do_go = function(gene_list, universe, plot_path) {
+    for (ont_type in c("BP", "MF", "CC")) {
+        go_obj = compareCluster(
+            gene_list, fun = "enrichGO", universe = universe,
+            OrgDb = org.Hs.eg.db, ont = "ALL", pAdjustMethod = "BH",
+            pvalueCutoff = 1, qvalueCutoff = 1, readable = TRUE,
+            keyType = "ENSEMBL"
+        )
+
+        if(!is.null(go_obj)) {
+            go_obj@compareClusterResult = go_obj@compareClusterResult |>
+                filter(p.adjust < fdr_cutoff, ONTOLOGY == ont_type)
+            
+            if(nrow(go_obj@compareClusterResult) > 0) {
+                pdf(
+                    sprintf(plot_path, ont_type),
+                    height = as.integer(
+                        min(11, nrow(go_obj@compareClusterResult) * 0.7)
+                    ),
+                )
+                print(dotplot(go_obj, showCategory = 15))
+                dev.off()
+            }
+        }
+    }
+}
+
+#-------------------------------------------------------------------------------
+#   One view at a time
+#-------------------------------------------------------------------------------
+
+for (this_view in my_views) {
+    gene_list = list()
+    gene_list[['up']] = top_gene_weights |>
+        filter(value > 0, ctype == this_view) |>
+        pull(feature)
+    gene_list[['down']] = top_gene_weights |>
+        filter(value < 0, ctype == this_view) |>
+        pull(feature)
+
+    message(
+        sprintf(
+            'For view "%s", using %d up and %d down signature genes',
+            this_view, length(gene_list[['up']]), length(gene_list[['down']])
+        )
+    )
+
+    #   Only consider genes measured in this view
+    universe = gene_weights |>
+        filter(ctype == this_view) |>
+        pull(feature)
+
+    do_go(
+        gene_list,
+        universe,
+        file.path(
+            plot_dir, 'GO', sprintf('%%s_%s_%s.pdf', specific_factor, this_view)
+        )
+    )
+}
+
+#-------------------------------------------------------------------------------
+#   Selected views pooled together
+#-------------------------------------------------------------------------------
 
 gene_list = list()
 gene_list[['up']] = top_gene_weights |>
@@ -124,32 +231,18 @@ gene_list[['down']] = top_gene_weights |>
     filter(value < 0) |>
     pull(feature)
 
-for (ont_type in c("BP", "MF", "CC")) {
-    go_obj = compareCluster(
-        gene_list, fun = "enrichGO", universe = rownames(sce),
-        OrgDb = org.Hs.eg.db, ont = "ALL", pAdjustMethod = "BH",
-        pvalueCutoff = 1, qvalueCutoff = 1, readable = TRUE, keyType = "ENSEMBL"
-    )
+#   Only consider genes measured in any of the selected views
+universe = gene_weights |>
+    filter(ctype %in% my_views) |>
+    pull(feature) |>
+    unique()
 
-    go_obj@compareClusterResult = go_obj@compareClusterResult |>
-        filter(p.adjust < fdr_cutoff, ONTOLOGY == ont_type)
-    
-    if(nrow(go_obj@compareClusterResult) > 0) {
-        pdf(
-            file.path(
-                plot_dir,
-                sprintf(
-                    'GO_%s_%s_n%d_%s.pdf',
-                    ont_type, dataset, num_factors, specific_factor
-                )
-            ),
-            height = as.integer(
-                round(min(10, 2 + nrow(go_obj@compareClusterResult) * 0.7))
-            )
-        )
-        print(dotplot(go_obj, showCategory = 10))
-        dev.off()
-    }
-}
+do_go(
+    gene_list,
+    universe,
+    file.path(
+        plot_dir, 'GO', sprintf('%%s_%s_together.pdf', specific_factor)
+    )
+)
 
 session_info()
