@@ -21,6 +21,10 @@ plot_path = here(
     'plots', 'MFA', 'heatmap',
     sprintf('custom_views_%s_n%d_%s.pdf', dataset, num_factors, specific_factor)
 )
+out_path = here(
+    'processed-data', 'MFA',
+    sprintf('variance_explained_%s_n%d.csv', dataset, num_factors)
+)
 
 ################################################################################
 #   R2 column annotation
@@ -28,6 +32,11 @@ plot_path = here(
 
 model = load_model(model_path)
 factor_weights = model@cache$variance_explained$r2_per_factor$single_group
+
+factor_weights |>
+    as.data.frame() |>
+    rownames_to_column('factor_num') |>
+    write_csv(out_path)
 
 #   For the specific factor of interest, show just the top few views per dataset
 #   (the 4 combos of DLPFC/HPC Visium/snRNA-seq) by R^2
