@@ -40,7 +40,7 @@ factor_weights |>
 
 #   For the specific factor of interest, show just the top few views per dataset
 #   (the 4 combos of DLPFC/HPC Visium/snRNA-seq) by R^2
-highlighted_views = factor_weights |>
+factor_weights_grouped = factor_weights |>
     as.data.frame() |>
     rownames_to_column('factor_num') |>
     as_tibble() |>
@@ -53,22 +53,39 @@ highlighted_views = factor_weights |>
     filter(factor_num == specific_factor) |>
     group_by(view_type) |>
     arrange(desc(r2)) |>
-    slice_head(n = num_views_per_type) |>
-    pull(view)
+    slice_head(n = num_views_per_type)
+stopifnot(all(factor_weights_grouped$view %in% colnames(factor_weights)))
 
-stopifnot(all(highlighted_views %in% colnames(factor_weights)))
-factor_weights = factor_weights[, highlighted_views]
+#   Create a separate color scale for each view type
+col_list = list()
+for (this_view in unique(factor_weights_grouped$view_type)) {
+    max_val = factor_weights_grouped |>
+        filter(view_type == this_view) |>
+        summarise(max_r2 = max(r2, na.rm = TRUE)) |>
+        pull(max_r2)
 
-col_fun_r2 = colorRamp2(
-    seq(0, min(100, max(factor_weights, na.rm = TRUE) + 5), length = 50),
-    hcl.colors(50, "Oranges", rev = TRUE)
-)
+    col_list[[paste0('R2_', this_view)]] = colorRamp2(
+        seq(0, min(100, max_val + 5), length = 50),
+        hcl.colors(50, "Oranges", rev = TRUE)
+    )
+}
 
 column_ha = HeatmapAnnotation(
-    "R2" = factor_weights,
+    R2_DLPFC_visium = factor_weights[
+        , str_detect(colnames(factor_weights), '^DLPFC_visium')
+    ],
+    R2_DLPFC_sn = factor_weights[
+        , str_detect(colnames(factor_weights), '^DLPFC_sn')
+    ],
+    R2_HPC_visium = factor_weights[
+        , str_detect(colnames(factor_weights), '^HPC_visium')
+    ],
+    R2_HPC_sn = factor_weights[
+        , str_detect(colnames(factor_weights), '^HPC_sn')
+    ],
     gap = unit(2.5, "mm"),
     border = TRUE,
-    col = list(R2 = col_fun_r2)
+    col = col_list
 )
 
 ################################################################################
@@ -102,9 +119,9 @@ scores_hmap = Heatmap(
 pdf(
     plot_path,
     width = as.integer(round(num_factors / 3) + 2),
-    height = as.integer(round(num_views_per_type * 0.75) + 4)
+    height = as.integer(round(num_views_per_type * 0.75) + 5)
 )
-ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 25), "mm"))
+ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 15), "mm"))
 dev.off()
 
 session_info()
