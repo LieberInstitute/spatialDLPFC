@@ -38,6 +38,83 @@ view_colors = c(
 )
 
 dir.create(file.path(plot_dir, 'GO'), showWarnings = FALSE)
+dir.create(file.path(plot_dir, 'gene_weights'), showWarnings = FALSE)
+
+################################################################################
+#   Functions
+################################################################################
+
+gene_weight_heatmap = function(
+        top_gene_weights, my_views, view_colors, select_genes, plot_dir,
+        plot_prefix
+    ) {
+    #   Annotation of rows-- each gene is labeled by the view it is a
+    #   signature gene for and whether it has a positive weight
+    view_table = top_gene_weights |>
+        filter(feature %in% select_genes) |>
+        group_by(gene_name) |> 
+        summarise(
+            n = n(),
+            positive_weight = Reduce('|', value > 0),
+            view = paste0(ctype, collapse = ", ")
+        ) |>
+        mutate(
+            view = factor(
+                ifelse(n > 1, "Multi", view), levels = c("Multi", my_views)
+            )
+        ) |>
+        dplyr::select(gene_name, positive_weight, view) |>
+        column_to_rownames("gene_name") |>
+        arrange(-positive_weight, view)
+
+    view_table_row = rowAnnotation(
+        df = view_table,
+        col = list(
+            view = view_colors,
+            positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20")
+        )
+    )
+
+    ## prep heatmap 
+    top_gw_value_matrix = gene_weights |>
+        filter(feature %in% select_genes) |>
+        dplyr::select(gene_name, ctype, value) |>
+        pivot_wider(names_from = ctype, values_from = value) |>
+        column_to_rownames("gene_name") |>
+        as.matrix()
+    
+    ## weights across all clusters
+    pdf(
+        file.path(plot_dir, sprintf('%s_all.pdf', plot_prefix)),
+        width = (ncol(top_gw_value_matrix) / 4) + 3, height = nrow(view_table) / 4
+    )
+    Heatmap(
+        top_gw_value_matrix[rownames(view_table),],
+        name = "feature\nweights\n(Z-score)",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        right_annotation = view_table_row
+    ) |> print()
+    dev.off()
+
+    ## weights for selected clusters only
+    pdf(
+        file.path(plot_dir, sprintf('%s_select.pdf', plot_prefix)),
+        width = (length(my_views) / 4) + 3, height = nrow(view_table) / 4
+    )
+    Heatmap(
+        top_gw_value_matrix[rownames(view_table), my_views],
+        name = "feature\nweights\n(Z-score)",
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        right_annotation = view_table_row
+    ) |> print()
+    dev.off()
+}
+
+################################################################################
+#   Heatmap of top-weighted genes
+################################################################################
 
 model = load_model(model_path)
 
@@ -87,72 +164,14 @@ select_genes = top_gene_weights |>
     slice_head(n = max_genes) |>
     pull(feature)
 
-################################################################################
-#   Heatmap of top-weighted genes
-################################################################################
-
-#   Annotation of rows-- each gene is labeled by the view it is a signature gene
-#   for and whether it has a positive weight
-view_table = top_gene_weights |>
-    filter(feature %in% select_genes) |>
-    group_by(gene_name) |> 
-    summarise(
-        n = n(),
-        positive_weight = Reduce('|', value > 0),
-        view = paste0(ctype, collapse = ", ")
-    ) |>
-    mutate(
-        view = factor(
-            ifelse(n > 1, "Multi", view), levels = c("Multi", my_views)
-        )
-    ) |>
-    dplyr::select(gene_name, positive_weight, view) |>
-    column_to_rownames("gene_name") |>
-    arrange(-positive_weight, view)
-
-view_table_row = rowAnnotation(
-    df = view_table,
-    col = list(
-        view = view_colors,
-        positive_weight = c(`TRUE` = "grey80", `FALSE` = "grey20")
-    )
+gene_weight_heatmap(
+    top_gene_weights = top_gene_weights,
+    my_views = my_views,
+    view_colors = view_colors,
+    select_genes = select_genes,
+    plot_dir = file.path(plot_dir, 'gene_weights'),
+    plot_prefix = specific_factor
 )
-
-## prep heatmap 
-top_gw_value_matrix = gene_weights |>
-    filter(feature %in% select_genes) |>
-    dplyr::select(gene_name, ctype, value) |>
-    pivot_wider(names_from = ctype, values_from = value) |>
-    column_to_rownames("gene_name") |>
-    as.matrix()
-
-## weights across all clusters
-pdf(
-    file.path(plot_dir, sprintf('gene_weights_all_%s.pdf', specific_factor)),
-    width = (ncol(top_gw_value_matrix) / 4) + 3, height = nrow(view_table) / 4
-)
-Heatmap(
-    top_gw_value_matrix[rownames(view_table),],
-    name = "feature\nweights\n(Z-score)",
-    cluster_rows = FALSE,
-    cluster_columns = FALSE,
-    right_annotation = view_table_row
-)
-dev.off()
-
-## weights for selected clusters only
-pdf(
-    file.path(plot_dir, sprintf('gene_weights_select_%s.pdf', specific_factor)),
-    width = (length(my_views) / 4) + 3, height = nrow(view_table) / 4
-)
-Heatmap(
-    top_gw_value_matrix[rownames(view_table), my_views],
-    name = "feature\nweights\n(Z-score)",
-    cluster_rows = FALSE,
-    cluster_columns = FALSE,
-    right_annotation = view_table_row
-)
-dev.off()
 
 ################################################################################
 #   GO of top-weighted genes
