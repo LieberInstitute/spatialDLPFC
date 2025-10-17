@@ -1,11 +1,11 @@
 **** Job starts ****
-Mon Sep 22 12:45:52 PM EDT 2025
+Thu Oct 16 01:50:05 PM EDT 2025
 **** JHPCE info ****
 User: neagles
-Job id: 22678560
+Job id: 23382613
 Job name: 05_gene_weights
 Node name: compute-177
-Task id: 1
+Task id: 3
 Loading conda_R/4.5
 
 Currently Loaded Modules:
@@ -184,10 +184,9 @@ clusterProfiler v4.16.0 Learn more at https://yulab-smu.top/contribution-knowled
 
 Please cite:
 
-T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-enrichment tool for interpreting omics data. The Innovation. 2021,
-2(3):100141
+S Xu, E Hu, Y Cai, Z Xie, X Luo, L Zhan, W Tang, Q Wang, B Liu, R Wang,
+W Xie, T Wu, L Xie, G Yu. Using clusterProfiler to characterize
+multiomics data. Nature Protocols. 2024, 19(11):3292-3320
 
 Attaching package: ‘clusterProfiler’
 
@@ -222,10 +221,27 @@ The following object is masked from ‘package:dplyr’:
 
 Warning message:
 In .quality_control(object, verbose = verbose) :
-  Factor(s) 1, 2, 3 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
+  Factor(s) 1, 2, 3, 4 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
 
+Only finding signature genes and GO results for views "DLPFC_sn_EndoMural", "DLPFC_sn_Excit_L3", "DLPFC_sn_Excit_L3.4.5", "DLPFC_sn_Micro", "DLPFC_sn_Oligo", "HPC_sn_CA1", "HPC_sn_CA2.4", "HPC_visium_CA2.4"
+The automatically generated colors map from the minus and plus 99^th of
+the absolute values in the matrix. There are outliers in the matrix
+whose patterns might be hidden by this color mapping. You can manually
+set the color to `col` argument.
+
+Use `suppressMessages()` to turn off this message.
 null device 
           1 
+null device 
+          1 
+For view "DLPFC_sn_EndoMural", using 105 up and 51 down signature genes
+For view "DLPFC_sn_Excit_L3", using 119 up and 118 down signature genes
+For view "DLPFC_sn_Excit_L3.4.5", using 54 up and 3 down signature genes
+For view "DLPFC_sn_Micro", using 93 up and 32 down signature genes
+For view "DLPFC_sn_Oligo", using 184 up and 13 down signature genes
+For view "HPC_sn_CA1", using 147 up and 105 down signature genes
+For view "HPC_sn_CA2.4", using 115 up and 146 down signature genes
+For view "HPC_visium_CA2.4", using 27 up and 71 down signature genes
 ─ Session info ───────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.5.0 Patched (2025-05-21 r88220)
@@ -236,7 +252,7 @@ null device
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       US/Eastern
- date     2025-09-22
+ date     2025-10-16
  pandoc   3.7.0.1 @ /jhpce/shared/community/core/conda_R/4.5/bin/pandoc
  quarto   NA
 
@@ -405,4 +421,4 @@ null device
 
 ──────────────────────────────────────────────────────────────────────────────
 **** Job ends ****
-Mon Sep 22 12:47:59 PM EDT 2025
+Thu Oct 16 02:13:28 PM EDT 2025
