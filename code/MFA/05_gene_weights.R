@@ -175,7 +175,7 @@ do_go = function(gene_list, universe, plot_path) {
                 pdf(
                     sprintf(plot_path, ont_type),
                     height = as.integer(
-                        min(11, nrow(go_obj@compareClusterResult) * 0.7)
+                        min(11, 2 + nrow(go_obj@compareClusterResult) * 0.7)
                     ),
                 )
                 print(dotplot(go_obj, showCategory = 15))
