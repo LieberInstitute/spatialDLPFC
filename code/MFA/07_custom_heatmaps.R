@@ -58,6 +58,7 @@ stopifnot(all(factor_weights_grouped$view %in% colnames(factor_weights)))
 
 #   Create a separate color scale for each view type
 col_list = list()
+weight_list = list()
 for (this_view in unique(factor_weights_grouped$view_type)) {
     max_val = factor_weights_grouped |>
         filter(view_type == this_view) |>
@@ -68,21 +69,23 @@ for (this_view in unique(factor_weights_grouped$view_type)) {
         seq(0, min(100, max_val + 5), length = 50),
         hcl.colors(50, "Oranges", rev = TRUE)
     )
+
+    #   Grab just the weights for this view type and remove the view-type prefix
+    weight_list[[this_view]] = factor_weights[
+        ,
+        (str_detect(colnames(factor_weights), paste0('^', this_view))) &
+        (colnames(factor_weights) %in% factor_weights_grouped$view)
+    ]
+    colnames(weight_list[[this_view]]) = str_replace(
+        colnames(weight_list[[this_view]]), paste0('^', this_view, '_'), ''
+    )
 }
 
 column_ha = HeatmapAnnotation(
-    R2_DLPFC_visium = factor_weights[
-        , str_detect(colnames(factor_weights), '^DLPFC_visium')
-    ],
-    R2_DLPFC_sn = factor_weights[
-        , str_detect(colnames(factor_weights), '^DLPFC_sn')
-    ],
-    R2_HPC_visium = factor_weights[
-        , str_detect(colnames(factor_weights), '^HPC_visium')
-    ],
-    R2_HPC_sn = factor_weights[
-        , str_detect(colnames(factor_weights), '^HPC_sn')
-    ],
+    R2_DLPFC_visium = weight_list[["DLPFC_visium"]],
+    R2_DLPFC_sn = weight_list[["DLPFC_sn"]],
+    R2_HPC_visium = weight_list[["HPC_visium"]],
+    R2_HPC_sn = weight_list[["HPC_sn"]],
     gap = unit(2.5, "mm"),
     border = TRUE,
     col = col_list
