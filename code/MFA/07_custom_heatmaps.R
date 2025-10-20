@@ -60,21 +60,12 @@ stopifnot(all(factor_weights_grouped$view %in% colnames(factor_weights)))
 col_list = list()
 weight_list = list()
 for (this_view in unique(factor_weights_grouped$view_type)) {
-    max_val = factor_weights_grouped |>
-        filter(view_type == this_view) |>
-        summarise(max_r2 = max(r2, na.rm = TRUE)) |>
-        pull(max_r2)
-
-    col_list[[paste0('R2_', this_view)]] = colorRamp2(
-        seq(0, min(100, max_val + 5), length = 50),
-        hcl.colors(50, "Oranges", rev = TRUE)
-    )
-
     #   Grab just the weights for this view type and remove the view-type prefix
     weight_list[[this_view]] = factor_weights[
-        ,
+        specific_factor,
         (str_detect(colnames(factor_weights), paste0('^', this_view))) &
-        (colnames(factor_weights) %in% factor_weights_grouped$view)
+        (colnames(factor_weights) %in% factor_weights_grouped$view),
+        drop = FALSE
     ]
     colnames(weight_list[[this_view]]) = str_replace(
         colnames(weight_list[[this_view]]), paste0('^', this_view, '_'), ''
@@ -82,8 +73,16 @@ for (this_view in unique(factor_weights_grouped$view_type)) {
 
     #   Now order by descending R^2
     weight_list[[this_view]] = weight_list[[this_view]][
-        , order(weight_list[[this_view]][specific_factor,], decreasing = TRUE)
+        ,
+        order(weight_list[[this_view]][specific_factor,], decreasing = TRUE),
+        drop = FALSE
     ]
+
+    max_val = max(weight_list[[this_view]], na.rm = TRUE)
+    col_list[[paste0('R2_', this_view)]] = colorRamp2(
+        seq(0, min(100, max_val), length = 50),
+        hcl.colors(50, "Oranges", rev = TRUE)
+    )
 }
 
 column_ha = HeatmapAnnotation(
@@ -100,7 +99,9 @@ column_ha = HeatmapAnnotation(
 #   Main heatmap body
 ################################################################################
 
-factor_matrix = get_factors(model, factors = "all")$single_group
+factor_matrix = get_factors(model, factors = "all")$single_group[
+    , specific_factor, drop = FALSE
+]
 
 max_fact = abs(max(factor_matrix))
 col_fun_fact = colorRamp2(
@@ -126,10 +127,10 @@ scores_hmap = Heatmap(
 
 pdf(
     plot_path,
-    width = as.integer(round(num_factors / 3) + 2),
+    width = 2.7,
     height = as.integer(round(num_views_per_type * 0.75) + 5)
 )
-ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 15), "mm"))
+ComplexHeatmap::draw(scores_hmap, padding = unit(c(2, 2, 2, 2), "mm"))
 dev.off()
 
 session_info()
