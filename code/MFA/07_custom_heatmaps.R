@@ -79,6 +79,11 @@ for (this_view in unique(factor_weights_grouped$view_type)) {
     colnames(weight_list[[this_view]]) = str_replace(
         colnames(weight_list[[this_view]]), paste0('^', this_view, '_'), ''
     )
+
+    #   Now order by descending R^2
+    weight_list[[this_view]] = weight_list[[this_view]][
+        , order(weight_list[[this_view]][specific_factor,], decreasing = TRUE)
+    ]
 }
 
 column_ha = HeatmapAnnotation(
