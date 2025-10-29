@@ -4,6 +4,7 @@ library(here)
 library(sessioninfo)
 
 in_visium_dir = '/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/code/06_deploy_app/spe_shiny'
+in_visium_path = '/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/processed-data/05_harmony_BayesSpace/04-preprocess_and_harmony/spe_harmony.rds'
 in_sn_path = '/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/processed-data/12_snRNA/sce_CellType_noresiduals.Rds'
 pseudo_sn_path = here(
     'processed-data', 'MFA', 'pseudobulk_rds', 'nac_sn_pb.rds'
@@ -30,6 +31,7 @@ sce$CellType.Final = factor(paste0('NAc_sn_', sce$CellType.Final))
 
 spe = loadHDF5SummarizedExperiment(in_visium_dir)
 spe = as(spe, "SingleCellExperiment") # throws cryptic error otherwise
+rownames(spe) = rowData(spe)$gene_id
 reducedDims(spe) = list()
 spe$spatial_domains = paste0(
     'NAc_visium_', gsub('[ /]', '_', spe$spatial_domains)
@@ -37,6 +39,14 @@ spe$spatial_domains = paste0(
 spe$spatial_domains[spe$spatial_domains == 'NAc_visium_Endothelial_Ependymal'] = 'NAc_visium_Endo_Ependymal'
 spe$spatial_domains = factor(spe$spatial_domains)
 stopifnot(setequal(spe$donor, sce$Brain_ID))
+
+#   counts assay was dropped for the shiny app; read it back in from a different
+#   object
+spe_raw = readRDS(in_visium_path)
+stopifnot(identical(rownames(spe), rownames(spe_raw)))
+stopifnot(all(colnames(spe) %in% colnames(spe_raw)))
+spe_raw = spe_raw[, colnames(spe)]
+assays(spe) = list(counts = assays(spe_raw)$counts)
 
 ################################################################################
 #   Pseudobulk
