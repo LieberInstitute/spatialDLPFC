@@ -1,0 +1,874 @@
+**** Job starts ****
+Wed Oct 29 03:10:58 PM EDT 2025
+**** JHPCE info ****
+User: neagles
+Job id: 23717669
+Job name: 05_mofa
+Node name: compute-178
+Task id: 16
+Loading conda_R/4.5
+
+Currently Loaded Modules:
+  1) JHPCE_ROCKY9_DEFAULT_ENV   3) conda/3-24.3.0
+  2) JHPCE_tools/3.0            4) conda_R/4.5
+
+ 
+
+Loading required package: SingleCellExperiment
+Loading required package: SummarizedExperiment
+Loading required package: MatrixGenerics
+Loading required package: matrixStats
+
+Attaching package: ‘MatrixGenerics’
+
+The following objects are masked from ‘package:matrixStats’:
+
+    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,
+    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,
+    colDiffs, colIQRDiffs, colIQRs, colLogSumExps, colMadDiffs,
+    colMads, colMaxs, colMeans2, colMedians, colMins, colOrderStats,
+    colProds, colQuantiles, colRanges, colRanks, colSdDiffs, colSds,
+    colSums2, colTabulates, colVarDiffs, colVars, colWeightedMads,
+    colWeightedMeans, colWeightedMedians, colWeightedSds,
+    colWeightedVars, rowAlls, rowAnyNAs, rowAnys, rowAvgsPerColSet,
+    rowCollapse, rowCounts, rowCummaxs, rowCummins, rowCumprods,
+    rowCumsums, rowDiffs, rowIQRDiffs, rowIQRs, rowLogSumExps,
+    rowMadDiffs, rowMads, rowMaxs, rowMeans2, rowMedians, rowMins,
+    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,
+    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,
+    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,
+    rowWeightedSds, rowWeightedVars
+
+Loading required package: GenomicRanges
+Loading required package: stats4
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff,
+    setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind,
+    colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
+    get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
+    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+    rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
+    unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: GenomeInfoDb
+Loading required package: Biobase
+Welcome to Bioconductor
+
+    Vignettes contain introductory material; view with
+    'browseVignettes()'. To cite Bioconductor, see
+    'citation("Biobase")', and for packages 'citation("pkgname")'.
+
+
+Attaching package: ‘Biobase’
+
+The following object is masked from ‘package:MatrixGenerics’:
+
+    rowMedians
+
+The following objects are masked from ‘package:matrixStats’:
+
+    anyMissing, rowMedians
+
+Loading required package: MOFA2
+
+Attaching package: ‘MOFA2’
+
+The following object is masked from ‘package:stats’:
+
+    predict
+
+Loading required package: ComplexHeatmap
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.24.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+Loading required package: circlize
+========================================
+circlize version 0.4.16
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================
+
+Loading required package: uwot
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following object is masked from ‘package:S4Vectors’:
+
+    expand
+
+Loading required package: ggplot2
+There were 23 warnings (use warnings() to see them)
+here() starts at /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ lubridate 1.9.4     ✔ tibble    3.3.0
+✔ purrr     1.1.0     ✔ tidyr     1.3.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ lubridate::%within%() masks IRanges::%within%()
+✖ dplyr::collapse()     masks IRanges::collapse()
+✖ dplyr::combine()      masks Biobase::combine(), BiocGenerics::combine()
+✖ dplyr::count()        masks matrixStats::count()
+✖ dplyr::desc()         masks IRanges::desc()
+✖ tidyr::expand()       masks Matrix::expand(), S4Vectors::expand()
+✖ dplyr::filter()       masks stats::filter()
+✖ dplyr::first()        masks S4Vectors::first()
+✖ dplyr::lag()          masks stats::lag()
+✖ tidyr::pack()         masks Matrix::pack()
+✖ ggplot2::Position()   masks BiocGenerics::Position(), base::Position()
+✖ purrr::reduce()       masks GenomicRanges::reduce(), IRanges::reduce()
+✖ dplyr::rename()       masks S4Vectors::rename()
+✖ lubridate::second()   masks S4Vectors::second()
+✖ lubridate::second<-() masks S4Vectors::second<-()
+✖ dplyr::slice()        masks IRanges::slice()
+✖ tidyr::unpack()       masks Matrix::unpack()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Registered S3 method overwritten by 'GGally':
+  method from   
+  +.gg   ggplot2
+Using the following parameters:
+$ARGS
+character(0)
+
+$dataset
+[1] "all"
+
+$num_factors
+[1] 9
+
+Creating MOFA object from a data.frame...
+There were 50 or more warnings (use warnings() to see the first 50)
+Checking data options...
+Checking training options...
+Checking model options...
+Warning message:
+In prepare_mofa(object = mofa, data_options = data_opts, model_options = model_opts,  :
+  The total number of samples is very small for learning 9 factors.  
+    Try to reduce the number of factors to obtain meaningful results. It should not exceed ~2.
+Connecting to the mofapy2 package using basilisk. 
+    Set 'use_basilisk' to FALSE if you prefer to manually set the python binary using 'reticulate'.
+
+        #########################################################
+        ###           __  __  ____  ______                    ### 
+        ###          |  \/  |/ __ \|  ____/\    _             ### 
+        ###          | \  / | |  | | |__ /  \ _| |_           ### 
+        ###          | |\/| | |  | |  __/ /\ \_   _|          ###
+        ###          | |  | | |__| | | / ____ \|_|            ###
+        ###          |_|  |_|\____/|_|/_/    \_\              ###
+        ###                                                   ### 
+        ######################################################### 
+       
+ 
+        
+use_float32 set to True: replacing float64 arrays by float32 arrays to speed up computations...
+
+Successfully loaded view='DLPFC_sn_Astro' group='single_group' with N=10 samples and D=4591 features...
+Successfully loaded view='DLPFC_sn_EndoMural' group='single_group' with N=10 samples and D=4363 features...
+Successfully loaded view='DLPFC_sn_Excit_L3' group='single_group' with N=10 samples and D=6023 features...
+Successfully loaded view='DLPFC_sn_Excit_L3.4.5' group='single_group' with N=10 samples and D=3809 features...
+Successfully loaded view='DLPFC_sn_Excit_L4' group='single_group' with N=10 samples and D=5646 features...
+Successfully loaded view='DLPFC_sn_Excit_L5' group='single_group' with N=10 samples and D=5872 features...
+Successfully loaded view='DLPFC_sn_Excit_L5.6' group='single_group' with N=10 samples and D=5621 features...
+Successfully loaded view='DLPFC_sn_Excit_L6' group='single_group' with N=10 samples and D=5895 features...
+Successfully loaded view='DLPFC_sn_Inhib' group='single_group' with N=10 samples and D=6130 features...
+Successfully loaded view='DLPFC_sn_Micro' group='single_group' with N=10 samples and D=3195 features...
+Successfully loaded view='DLPFC_sn_Oligo' group='single_group' with N=10 samples and D=5855 features...
+Successfully loaded view='DLPFC_sn_OPC' group='single_group' with N=10 samples and D=4311 features...
+Successfully loaded view='DLPFC_visium_Sp09D01_L1' group='single_group' with N=10 samples and D=2137 features...
+Successfully loaded view='DLPFC_visium_Sp09D02_L1' group='single_group' with N=10 samples and D=4462 features...
+Successfully loaded view='DLPFC_visium_Sp09D03_L2' group='single_group' with N=10 samples and D=6367 features...
+Successfully loaded view='DLPFC_visium_Sp09D04_L5' group='single_group' with N=10 samples and D=6709 features...
+Successfully loaded view='DLPFC_visium_Sp09D05_L3' group='single_group' with N=10 samples and D=6444 features...
+Successfully loaded view='DLPFC_visium_Sp09D06_WM' group='single_group' with N=10 samples and D=5051 features...
+Successfully loaded view='DLPFC_visium_Sp09D07_L6' group='single_group' with N=10 samples and D=6814 features...
+Successfully loaded view='DLPFC_visium_Sp09D08_L4' group='single_group' with N=10 samples and D=6511 features...
+Successfully loaded view='DLPFC_visium_Sp09D09_WM' group='single_group' with N=10 samples and D=5865 features...
+Successfully loaded view='HPC_sn_Astro' group='single_group' with N=10 samples and D=5381 features...
+Successfully loaded view='HPC_sn_CA1' group='single_group' with N=10 samples and D=5634 features...
+Successfully loaded view='HPC_sn_CA2.4' group='single_group' with N=10 samples and D=6589 features...
+Successfully loaded view='HPC_sn_Choroid' group='single_group' with N=10 samples and D=3342 features...
+Successfully loaded view='HPC_sn_Ependy' group='single_group' with N=10 samples and D=3731 features...
+Successfully loaded view='HPC_sn_GABA' group='single_group' with N=10 samples and D=6715 features...
+Successfully loaded view='HPC_sn_GC' group='single_group' with N=10 samples and D=6457 features...
+Successfully loaded view='HPC_sn_HATA.AHi' group='single_group' with N=10 samples and D=5130 features...
+Successfully loaded view='HPC_sn_L2.3' group='single_group' with N=10 samples and D=6773 features...
+Successfully loaded view='HPC_sn_L5' group='single_group' with N=10 samples and D=6430 features...
+Successfully loaded view='HPC_sn_L6.6b' group='single_group' with N=10 samples and D=6369 features...
+Successfully loaded view='HPC_sn_Micro.Macro.T' group='single_group' with N=10 samples and D=4485 features...
+Successfully loaded view='HPC_sn_Oligo' group='single_group' with N=10 samples and D=5554 features...
+Successfully loaded view='HPC_sn_OPC' group='single_group' with N=10 samples and D=4108 features...
+Successfully loaded view='HPC_sn_ProS.Sub' group='single_group' with N=10 samples and D=6503 features...
+Successfully loaded view='HPC_sn_Vascular' group='single_group' with N=10 samples and D=5418 features...
+Successfully loaded view='HPC_visium_CA1' group='single_group' with N=10 samples and D=4810 features...
+Successfully loaded view='HPC_visium_CA2.4' group='single_group' with N=10 samples and D=3031 features...
+Successfully loaded view='HPC_visium_Choroid' group='single_group' with N=10 samples and D=4558 features...
+Successfully loaded view='HPC_visium_GABA' group='single_group' with N=10 samples and D=5677 features...
+Successfully loaded view='HPC_visium_GCL' group='single_group' with N=10 samples and D=4501 features...
+Successfully loaded view='HPC_visium_ML' group='single_group' with N=10 samples and D=3033 features...
+Successfully loaded view='HPC_visium_RHP' group='single_group' with N=10 samples and D=5584 features...
+Successfully loaded view='HPC_visium_SL.SR' group='single_group' with N=10 samples and D=5096 features...
+Successfully loaded view='HPC_visium_SLM.SGZ' group='single_group' with N=10 samples and D=5541 features...
+Successfully loaded view='HPC_visium_SR.SLM' group='single_group' with N=10 samples and D=6342 features...
+Successfully loaded view='HPC_visium_SUB' group='single_group' with N=10 samples and D=3520 features...
+Successfully loaded view='HPC_visium_SUB.RHP' group='single_group' with N=10 samples and D=5139 features...
+Successfully loaded view='HPC_visium_Vascular' group='single_group' with N=10 samples and D=4719 features...
+Successfully loaded view='HPC_visium_WM.1' group='single_group' with N=10 samples and D=4966 features...
+Successfully loaded view='HPC_visium_WM.2' group='single_group' with N=10 samples and D=2879 features...
+Successfully loaded view='HPC_visium_WM.3' group='single_group' with N=10 samples and D=980 features...
+Successfully loaded view='NAc_sn_Astrocyte_A' group='single_group' with N=10 samples and D=6184 features...
+Successfully loaded view='NAc_sn_Astrocyte_B' group='single_group' with N=10 samples and D=3523 features...
+Successfully loaded view='NAc_sn_DRD1_MSN_A' group='single_group' with N=10 samples and D=6787 features...
+Successfully loaded view='NAc_sn_DRD1_MSN_B' group='single_group' with N=10 samples and D=6080 features...
+Successfully loaded view='NAc_sn_DRD1_MSN_C' group='single_group' with N=10 samples and D=5359 features...
+Successfully loaded view='NAc_sn_DRD1_MSN_D' group='single_group' with N=10 samples and D=4661 features...
+Successfully loaded view='NAc_sn_DRD2_MSN_A' group='single_group' with N=10 samples and D=6692 features...
+Successfully loaded view='NAc_sn_DRD2_MSN_B' group='single_group' with N=10 samples and D=5822 features...
+Successfully loaded view='NAc_sn_Endothelial' group='single_group' with N=10 samples and D=3197 features...
+Successfully loaded view='NAc_sn_Ependymal' group='single_group' with N=10 samples and D=4721 features...
+Successfully loaded view='NAc_sn_Excitatory' group='single_group' with N=10 samples and D=5868 features...
+Successfully loaded view='NAc_sn_Inh_A' group='single_group' with N=10 samples and D=5999 features...
+Successfully loaded view='NAc_sn_Inh_B' group='single_group' with N=10 samples and D=4143 features...
+Successfully loaded view='NAc_sn_Inh_C' group='single_group' with N=10 samples and D=5560 features...
+Successfully loaded view='NAc_sn_Inh_D' group='single_group' with N=10 samples and D=3910 features...
+Successfully loaded view='NAc_sn_Inh_E' group='single_group' with N=10 samples and D=4944 features...
+Successfully loaded view='NAc_sn_Inh_F' group='single_group' with N=10 samples and D=5409 features...
+Successfully loaded view='NAc_sn_Microglia' group='single_group' with N=10 samples and D=4710 features...
+Successfully loaded view='NAc_sn_Oligo' group='single_group' with N=10 samples and D=6306 features...
+Successfully loaded view='NAc_sn_OPC' group='single_group' with N=10 samples and D=5242 features...
+Successfully loaded view='NAc_visium_D1_islands' group='single_group' with N=10 samples and D=5074 features...
+Successfully loaded view='NAc_visium_Endo_Ependymal' group='single_group' with N=10 samples and D=6009 features...
+Successfully loaded view='NAc_visium_Excitatory' group='single_group' with N=10 samples and D=5486 features...
+Successfully loaded view='NAc_visium_Inhibitory' group='single_group' with N=10 samples and D=5933 features...
+Successfully loaded view='NAc_visium_MSN_1' group='single_group' with N=10 samples and D=6399 features...
+Successfully loaded view='NAc_visium_MSN_2' group='single_group' with N=10 samples and D=6425 features...
+Successfully loaded view='NAc_visium_MSN_3' group='single_group' with N=10 samples and D=6431 features...
+Successfully loaded view='NAc_visium_WM' group='single_group' with N=10 samples and D=5717 features...
+
+
+Model options:
+- Automatic Relevance Determination prior on the factors: False
+- Automatic Relevance Determination prior on the weights: True
+- Spike-and-slab prior on the factors: False
+- Spike-and-slab prior on the weights: False
+Likelihoods:
+- View 0 (DLPFC_sn_Astro): gaussian
+- View 1 (DLPFC_sn_EndoMural): gaussian
+- View 2 (DLPFC_sn_Excit_L3): gaussian
+- View 3 (DLPFC_sn_Excit_L3.4.5): gaussian
+- View 4 (DLPFC_sn_Excit_L4): gaussian
+- View 5 (DLPFC_sn_Excit_L5): gaussian
+- View 6 (DLPFC_sn_Excit_L5.6): gaussian
+- View 7 (DLPFC_sn_Excit_L6): gaussian
+- View 8 (DLPFC_sn_Inhib): gaussian
+- View 9 (DLPFC_sn_Micro): gaussian
+- View 10 (DLPFC_sn_Oligo): gaussian
+- View 11 (DLPFC_sn_OPC): gaussian
+- View 12 (DLPFC_visium_Sp09D01_L1): gaussian
+- View 13 (DLPFC_visium_Sp09D02_L1): gaussian
+- View 14 (DLPFC_visium_Sp09D03_L2): gaussian
+- View 15 (DLPFC_visium_Sp09D04_L5): gaussian
+- View 16 (DLPFC_visium_Sp09D05_L3): gaussian
+- View 17 (DLPFC_visium_Sp09D06_WM): gaussian
+- View 18 (DLPFC_visium_Sp09D07_L6): gaussian
+- View 19 (DLPFC_visium_Sp09D08_L4): gaussian
+- View 20 (DLPFC_visium_Sp09D09_WM): gaussian
+- View 21 (HPC_sn_Astro): gaussian
+- View 22 (HPC_sn_CA1): gaussian
+- View 23 (HPC_sn_CA2.4): gaussian
+- View 24 (HPC_sn_Choroid): gaussian
+- View 25 (HPC_sn_Ependy): gaussian
+- View 26 (HPC_sn_GABA): gaussian
+- View 27 (HPC_sn_GC): gaussian
+- View 28 (HPC_sn_HATA.AHi): gaussian
+- View 29 (HPC_sn_L2.3): gaussian
+- View 30 (HPC_sn_L5): gaussian
+- View 31 (HPC_sn_L6.6b): gaussian
+- View 32 (HPC_sn_Micro.Macro.T): gaussian
+- View 33 (HPC_sn_Oligo): gaussian
+- View 34 (HPC_sn_OPC): gaussian
+- View 35 (HPC_sn_ProS.Sub): gaussian
+- View 36 (HPC_sn_Vascular): gaussian
+- View 37 (HPC_visium_CA1): gaussian
+- View 38 (HPC_visium_CA2.4): gaussian
+- View 39 (HPC_visium_Choroid): gaussian
+- View 40 (HPC_visium_GABA): gaussian
+- View 41 (HPC_visium_GCL): gaussian
+- View 42 (HPC_visium_ML): gaussian
+- View 43 (HPC_visium_RHP): gaussian
+- View 44 (HPC_visium_SL.SR): gaussian
+- View 45 (HPC_visium_SLM.SGZ): gaussian
+- View 46 (HPC_visium_SR.SLM): gaussian
+- View 47 (HPC_visium_SUB): gaussian
+- View 48 (HPC_visium_SUB.RHP): gaussian
+- View 49 (HPC_visium_Vascular): gaussian
+- View 50 (HPC_visium_WM.1): gaussian
+- View 51 (HPC_visium_WM.2): gaussian
+- View 52 (HPC_visium_WM.3): gaussian
+- View 53 (NAc_sn_Astrocyte_A): gaussian
+- View 54 (NAc_sn_Astrocyte_B): gaussian
+- View 55 (NAc_sn_DRD1_MSN_A): gaussian
+- View 56 (NAc_sn_DRD1_MSN_B): gaussian
+- View 57 (NAc_sn_DRD1_MSN_C): gaussian
+- View 58 (NAc_sn_DRD1_MSN_D): gaussian
+- View 59 (NAc_sn_DRD2_MSN_A): gaussian
+- View 60 (NAc_sn_DRD2_MSN_B): gaussian
+- View 61 (NAc_sn_Endothelial): gaussian
+- View 62 (NAc_sn_Ependymal): gaussian
+- View 63 (NAc_sn_Excitatory): gaussian
+- View 64 (NAc_sn_Inh_A): gaussian
+- View 65 (NAc_sn_Inh_B): gaussian
+- View 66 (NAc_sn_Inh_C): gaussian
+- View 67 (NAc_sn_Inh_D): gaussian
+- View 68 (NAc_sn_Inh_E): gaussian
+- View 69 (NAc_sn_Inh_F): gaussian
+- View 70 (NAc_sn_Microglia): gaussian
+- View 71 (NAc_sn_Oligo): gaussian
+- View 72 (NAc_sn_OPC): gaussian
+- View 73 (NAc_visium_D1_islands): gaussian
+- View 74 (NAc_visium_Endo_Ependymal): gaussian
+- View 75 (NAc_visium_Excitatory): gaussian
+- View 76 (NAc_visium_Inhibitory): gaussian
+- View 77 (NAc_visium_MSN_1): gaussian
+- View 78 (NAc_visium_MSN_2): gaussian
+- View 79 (NAc_visium_MSN_3): gaussian
+- View 80 (NAc_visium_WM): gaussian
+
+
+
+Warning: some group(s) have less than 15 samples, MOFA won't be able to learn meaningful factors for these group(s)...
+
+
+
+######################################
+## Training the model with seed 42 ##
+######################################
+
+
+ELBO before training: -34292296.77 
+
+Iteration 1: time=0.24, ELBO=-3541035.87, deltaELBO=30751260.906 (89.67396121%), Factors=9
+Iteration 2: time=0.20, Factors=9
+Iteration 3: time=0.20, Factors=9
+Iteration 4: time=0.20, Factors=9
+Iteration 5: time=0.20, Factors=9
+Iteration 6: time=0.24, ELBO=-3303914.72, deltaELBO=237121.147 (0.69147059%), Factors=9
+Iteration 7: time=0.20, Factors=9
+Iteration 8: time=0.20, Factors=9
+Iteration 9: time=0.20, Factors=9
+Iteration 10: time=0.21, Factors=9
+Iteration 11: time=0.23, ELBO=-3167825.58, deltaELBO=136089.136 (0.39685046%), Factors=9
+Iteration 12: time=0.20, Factors=9
+Iteration 13: time=0.20, Factors=9
+Iteration 14: time=0.20, Factors=9
+Iteration 15: time=0.20, Factors=9
+Iteration 16: time=0.24, ELBO=-3100572.39, deltaELBO=67253.191 (0.19611749%), Factors=9
+Iteration 17: time=0.20, Factors=9
+Iteration 18: time=0.20, Factors=9
+Iteration 19: time=0.20, Factors=9
+Iteration 20: time=0.20, Factors=9
+Iteration 21: time=0.24, ELBO=-3058893.39, deltaELBO=41679.000 (0.12154042%), Factors=9
+Iteration 22: time=0.20, Factors=9
+Iteration 23: time=0.20, Factors=9
+Iteration 24: time=0.20, Factors=9
+Iteration 25: time=0.20, Factors=9
+Iteration 26: time=0.24, ELBO=-3029710.64, deltaELBO=29182.752 (0.08510002%), Factors=9
+Iteration 27: time=0.21, Factors=9
+Iteration 28: time=0.20, Factors=9
+Iteration 29: time=0.20, Factors=9
+Iteration 30: time=0.20, Factors=9
+Iteration 31: time=0.24, ELBO=-3007343.65, deltaELBO=22366.991 (0.06522454%), Factors=9
+Iteration 32: time=0.21, Factors=9
+Iteration 33: time=0.21, Factors=9
+Iteration 34: time=0.22, Factors=9
+Iteration 35: time=0.21, Factors=9
+Iteration 36: time=0.24, ELBO=-2990168.51, deltaELBO=17175.138 (0.05008454%), Factors=9
+Iteration 37: time=0.21, Factors=9
+Iteration 38: time=0.21, Factors=9
+Iteration 39: time=0.21, Factors=9
+Iteration 40: time=0.21, Factors=9
+Iteration 41: time=0.24, ELBO=-2977383.07, deltaELBO=12785.446 (0.03728373%), Factors=9
+Iteration 42: time=0.21, Factors=9
+Iteration 43: time=0.21, Factors=9
+Iteration 44: time=0.21, Factors=9
+Iteration 45: time=0.20, Factors=9
+Iteration 46: time=0.25, ELBO=-2965246.94, deltaELBO=12136.122 (0.03539023%), Factors=9
+Iteration 47: time=0.21, Factors=9
+Iteration 48: time=0.21, Factors=9
+Iteration 49: time=0.21, Factors=9
+Iteration 50: time=0.21, Factors=9
+Iteration 51: time=0.25, ELBO=-2950832.82, deltaELBO=14414.122 (0.04203312%), Factors=9
+Iteration 52: time=0.21, Factors=9
+Iteration 53: time=0.21, Factors=9
+Iteration 54: time=0.21, Factors=9
+Iteration 55: time=0.21, Factors=9
+Iteration 56: time=0.24, ELBO=-2933704.89, deltaELBO=17127.931 (0.04994688%), Factors=9
+Iteration 57: time=0.21, Factors=9
+Iteration 58: time=0.21, Factors=9
+Iteration 59: time=0.20, Factors=9
+Iteration 60: time=0.21, Factors=9
+Iteration 61: time=0.25, ELBO=-2919245.08, deltaELBO=14459.810 (0.04216635%), Factors=9
+Iteration 62: time=0.21, Factors=9
+Iteration 63: time=0.21, Factors=9
+Iteration 64: time=0.21, Factors=9
+Iteration 65: time=0.21, Factors=9
+Iteration 66: time=0.25, ELBO=-2909391.61, deltaELBO=9853.467 (0.02873376%), Factors=9
+Iteration 67: time=0.21, Factors=9
+Iteration 68: time=0.21, Factors=9
+Iteration 69: time=0.21, Factors=9
+Iteration 70: time=0.20, Factors=9
+Iteration 71: time=0.24, ELBO=-2902305.27, deltaELBO=7086.341 (0.02066453%), Factors=9
+Iteration 72: time=0.20, Factors=9
+Iteration 73: time=0.20, Factors=9
+Iteration 74: time=0.20, Factors=9
+Iteration 75: time=0.21, Factors=9
+Iteration 76: time=0.24, ELBO=-2896771.10, deltaELBO=5534.177 (0.01613825%), Factors=9
+Iteration 77: time=0.21, Factors=9
+Iteration 78: time=0.20, Factors=9
+Iteration 79: time=0.20, Factors=9
+Iteration 80: time=0.20, Factors=9
+Iteration 81: time=0.24, ELBO=-2892226.40, deltaELBO=4544.697 (0.01325282%), Factors=9
+Iteration 82: time=0.20, Factors=9
+Iteration 83: time=0.21, Factors=9
+Iteration 84: time=0.20, Factors=9
+Iteration 85: time=0.20, Factors=9
+Iteration 86: time=0.25, ELBO=-2888362.40, deltaELBO=3863.995 (0.01126782%), Factors=9
+Iteration 87: time=0.21, Factors=9
+Iteration 88: time=0.20, Factors=9
+Iteration 89: time=0.21, Factors=9
+Iteration 90: time=0.21, Factors=9
+Iteration 91: time=0.24, ELBO=-2884996.73, deltaELBO=3365.678 (0.00981468%), Factors=9
+Iteration 92: time=0.21, Factors=9
+Iteration 93: time=0.21, Factors=9
+Iteration 94: time=0.21, Factors=9
+Iteration 95: time=0.21, Factors=9
+Iteration 96: time=0.24, ELBO=-2882012.09, deltaELBO=2984.636 (0.00870352%), Factors=9
+Iteration 97: time=0.21, Factors=9
+Iteration 98: time=0.20, Factors=9
+Iteration 99: time=0.20, Factors=9
+Iteration 100: time=0.20, Factors=9
+Iteration 101: time=0.24, ELBO=-2879325.94, deltaELBO=2686.149 (0.00783310%), Factors=9
+Iteration 102: time=0.20, Factors=9
+Iteration 103: time=0.21, Factors=9
+Iteration 104: time=0.20, Factors=9
+Iteration 105: time=0.20, Factors=9
+Iteration 106: time=0.24, ELBO=-2876878.30, deltaELBO=2447.636 (0.00713757%), Factors=9
+Iteration 107: time=0.20, Factors=9
+Iteration 108: time=0.20, Factors=9
+Iteration 109: time=0.20, Factors=9
+Iteration 110: time=0.20, Factors=9
+Iteration 111: time=0.23, ELBO=-2874624.57, deltaELBO=2253.730 (0.00657212%), Factors=9
+Iteration 112: time=0.20, Factors=9
+Iteration 113: time=0.20, Factors=9
+Iteration 114: time=0.20, Factors=9
+Iteration 115: time=0.20, Factors=9
+Iteration 116: time=0.23, ELBO=-2872534.01, deltaELBO=2090.560 (0.00609630%), Factors=9
+Iteration 117: time=0.20, Factors=9
+Iteration 118: time=0.20, Factors=9
+Iteration 119: time=0.20, Factors=9
+Iteration 120: time=0.20, Factors=9
+Iteration 121: time=0.23, ELBO=-2870583.87, deltaELBO=1950.144 (0.00568683%), Factors=9
+Iteration 122: time=0.20, Factors=9
+Iteration 123: time=0.20, Factors=9
+Iteration 124: time=0.20, Factors=9
+Iteration 125: time=0.20, Factors=9
+Iteration 126: time=0.24, ELBO=-2868758.86, deltaELBO=1825.013 (0.00532193%), Factors=9
+Iteration 127: time=0.20, Factors=9
+Iteration 128: time=0.20, Factors=9
+Iteration 129: time=0.20, Factors=9
+Iteration 130: time=0.20, Factors=9
+Iteration 131: time=0.23, ELBO=-2867048.78, deltaELBO=1710.081 (0.00498678%), Factors=9
+Iteration 132: time=0.20, Factors=9
+Iteration 133: time=0.20, Factors=9
+Iteration 134: time=0.20, Factors=9
+Iteration 135: time=0.20, Factors=9
+Iteration 136: time=0.23, ELBO=-2865447.74, deltaELBO=1601.032 (0.00466878%), Factors=9
+Iteration 137: time=0.20, Factors=9
+Iteration 138: time=0.20, Factors=9
+Iteration 139: time=0.21, Factors=9
+Iteration 140: time=0.21, Factors=9
+Iteration 141: time=0.24, ELBO=-2863950.18, deltaELBO=1497.564 (0.00436706%), Factors=9
+Iteration 142: time=0.20, Factors=9
+Iteration 143: time=0.20, Factors=9
+Iteration 144: time=0.20, Factors=9
+Iteration 145: time=0.20, Factors=9
+Iteration 146: time=0.23, ELBO=-2862552.28, deltaELBO=1397.895 (0.00407641%), Factors=9
+Iteration 147: time=0.20, Factors=9
+Iteration 148: time=0.20, Factors=9
+Iteration 149: time=0.20, Factors=9
+Iteration 150: time=0.20, Factors=9
+Iteration 151: time=0.23, ELBO=-2861253.27, deltaELBO=1299.016 (0.00378807%), Factors=9
+Iteration 152: time=0.20, Factors=9
+Iteration 153: time=0.20, Factors=9
+Iteration 154: time=0.20, Factors=9
+Iteration 155: time=0.20, Factors=9
+Iteration 156: time=0.23, ELBO=-2860048.62, deltaELBO=1204.644 (0.00351287%), Factors=9
+Iteration 157: time=0.20, Factors=9
+Iteration 158: time=0.20, Factors=9
+Iteration 159: time=0.20, Factors=9
+Iteration 160: time=0.20, Factors=9
+Iteration 161: time=0.23, ELBO=-2858934.83, deltaELBO=1113.791 (0.00324793%), Factors=9
+Iteration 162: time=0.20, Factors=9
+Iteration 163: time=0.20, Factors=9
+Iteration 164: time=0.20, Factors=9
+Iteration 165: time=0.20, Factors=9
+Iteration 166: time=0.23, ELBO=-2857907.56, deltaELBO=1027.270 (0.00299563%), Factors=9
+Iteration 167: time=0.20, Factors=9
+Iteration 168: time=0.20, Factors=9
+Iteration 169: time=0.20, Factors=9
+Iteration 170: time=0.20, Factors=9
+Iteration 171: time=0.23, ELBO=-2856961.46, deltaELBO=946.103 (0.00275894%), Factors=9
+Iteration 172: time=0.20, Factors=9
+Iteration 173: time=0.20, Factors=9
+Iteration 174: time=0.20, Factors=9
+Iteration 175: time=0.20, Factors=9
+Iteration 176: time=0.23, ELBO=-2856094.08, deltaELBO=867.378 (0.00252937%), Factors=9
+Iteration 177: time=0.20, Factors=9
+Iteration 178: time=0.20, Factors=9
+Iteration 179: time=0.20, Factors=9
+Iteration 180: time=0.20, Factors=9
+Iteration 181: time=0.23, ELBO=-2855300.74, deltaELBO=793.345 (0.00231348%), Factors=9
+Iteration 182: time=0.20, Factors=9
+Iteration 183: time=0.20, Factors=9
+Iteration 184: time=0.20, Factors=9
+Iteration 185: time=0.19, Factors=9
+Iteration 186: time=0.23, ELBO=-2854574.36, deltaELBO=726.372 (0.00211818%), Factors=9
+Iteration 187: time=0.20, Factors=9
+Iteration 188: time=0.20, Factors=9
+Iteration 189: time=0.20, Factors=9
+Iteration 190: time=0.20, Factors=9
+Iteration 191: time=0.23, ELBO=-2853907.70, deltaELBO=666.666 (0.00194407%), Factors=9
+Iteration 192: time=0.20, Factors=9
+Iteration 193: time=0.20, Factors=9
+Iteration 194: time=0.20, Factors=9
+Iteration 195: time=0.20, Factors=9
+Iteration 196: time=0.23, ELBO=-2853295.88, deltaELBO=611.815 (0.00178412%), Factors=9
+Iteration 197: time=0.20, Factors=9
+Iteration 198: time=0.20, Factors=9
+Iteration 199: time=0.20, Factors=9
+Iteration 200: time=0.20, Factors=9
+Iteration 201: time=0.23, ELBO=-2852735.27, deltaELBO=560.617 (0.00163482%), Factors=9
+Iteration 202: time=0.20, Factors=9
+Iteration 203: time=0.20, Factors=9
+Iteration 204: time=0.20, Factors=9
+Iteration 205: time=0.20, Factors=9
+Iteration 206: time=0.23, ELBO=-2852217.67, deltaELBO=517.598 (0.00150937%), Factors=9
+Iteration 207: time=0.20, Factors=9
+Iteration 208: time=0.20, Factors=9
+Iteration 209: time=0.20, Factors=9
+Iteration 210: time=0.20, Factors=9
+Iteration 211: time=0.23, ELBO=-2851737.38, deltaELBO=480.285 (0.00140056%), Factors=9
+Iteration 212: time=0.20, Factors=9
+Iteration 213: time=0.20, Factors=9
+Iteration 214: time=0.20, Factors=9
+Iteration 215: time=0.20, Factors=9
+Iteration 216: time=0.23, ELBO=-2851293.21, deltaELBO=444.171 (0.00129525%), Factors=9
+Iteration 217: time=0.20, Factors=9
+Iteration 218: time=0.19, Factors=9
+Iteration 219: time=0.20, Factors=9
+Iteration 220: time=0.20, Factors=9
+Iteration 221: time=0.23, ELBO=-2850884.66, deltaELBO=408.551 (0.00119138%), Factors=9
+Iteration 222: time=0.20, Factors=9
+Iteration 223: time=0.20, Factors=9
+Iteration 224: time=0.20, Factors=9
+Iteration 225: time=0.20, Factors=9
+Iteration 226: time=0.23, ELBO=-2850513.29, deltaELBO=371.367 (0.00108295%), Factors=9
+Iteration 227: time=0.20, Factors=9
+Iteration 228: time=0.20, Factors=9
+Iteration 229: time=0.20, Factors=9
+Iteration 230: time=0.20, Factors=9
+Iteration 231: time=0.23, ELBO=-2850173.19, deltaELBO=340.102 (0.00099177%), Factors=9
+Iteration 232: time=0.20, Factors=9
+Iteration 233: time=0.20, Factors=9
+Iteration 234: time=0.20, Factors=9
+Iteration 235: time=0.19, Factors=9
+Iteration 236: time=0.23, ELBO=-2849860.13, deltaELBO=313.066 (0.00091293%), Factors=9
+Iteration 237: time=0.19, Factors=9
+Iteration 238: time=0.19, Factors=9
+Iteration 239: time=0.19, Factors=9
+Iteration 240: time=0.19, Factors=9
+Iteration 241: time=0.23, ELBO=-2849570.92, deltaELBO=289.207 (0.00084336%), Factors=9
+Iteration 242: time=0.19, Factors=9
+Iteration 243: time=0.19, Factors=9
+Iteration 244: time=0.19, Factors=9
+Iteration 245: time=0.19, Factors=9
+Iteration 246: time=0.23, ELBO=-2849301.17, deltaELBO=269.750 (0.00078662%), Factors=9
+Iteration 247: time=0.19, Factors=9
+Iteration 248: time=0.19, Factors=9
+Iteration 249: time=0.19, Factors=9
+Iteration 250: time=0.19, Factors=9
+Iteration 251: time=0.22, ELBO=-2849047.37, deltaELBO=253.797 (0.00074010%), Factors=9
+Iteration 252: time=0.19, Factors=9
+Iteration 253: time=0.19, Factors=9
+Iteration 254: time=0.20, Factors=9
+Iteration 255: time=0.19, Factors=9
+Iteration 256: time=0.23, ELBO=-2848803.54, deltaELBO=243.835 (0.00071105%), Factors=9
+Iteration 257: time=0.19, Factors=9
+Iteration 258: time=0.19, Factors=9
+Iteration 259: time=0.19, Factors=9
+Iteration 260: time=0.20, Factors=9
+Iteration 261: time=0.23, ELBO=-2848574.66, deltaELBO=228.878 (0.00066743%), Factors=9
+Iteration 262: time=0.20, Factors=9
+Iteration 263: time=0.20, Factors=9
+Iteration 264: time=0.20, Factors=9
+Iteration 265: time=0.20, Factors=9
+Iteration 266: time=0.23, ELBO=-2848358.53, deltaELBO=216.124 (0.00063024%), Factors=9
+Iteration 267: time=0.20, Factors=9
+Iteration 268: time=0.20, Factors=9
+Iteration 269: time=0.20, Factors=9
+Iteration 270: time=0.20, Factors=9
+Iteration 271: time=0.23, ELBO=-2848152.56, deltaELBO=205.970 (0.00060063%), Factors=9
+Iteration 272: time=0.20, Factors=9
+Iteration 273: time=0.19, Factors=9
+Iteration 274: time=0.19, Factors=9
+Iteration 275: time=0.19, Factors=9
+Iteration 276: time=0.22, ELBO=-2847955.45, deltaELBO=197.111 (0.00057480%), Factors=9
+Iteration 277: time=0.19, Factors=9
+Iteration 278: time=0.19, Factors=9
+Iteration 279: time=0.19, Factors=9
+Iteration 280: time=0.19, Factors=9
+Iteration 281: time=0.23, ELBO=-2847768.68, deltaELBO=186.773 (0.00054465%), Factors=9
+Iteration 282: time=0.19, Factors=9
+Iteration 283: time=0.19, Factors=9
+Iteration 284: time=0.19, Factors=9
+Iteration 285: time=0.19, Factors=9
+Iteration 286: time=0.23, ELBO=-2847590.87, deltaELBO=177.814 (0.00051853%), Factors=9
+Iteration 287: time=0.19, Factors=9
+Iteration 288: time=0.20, Factors=9
+Iteration 289: time=0.19, Factors=9
+Iteration 290: time=0.19, Factors=9
+Iteration 291: time=0.22, ELBO=-2847422.83, deltaELBO=168.039 (0.00049002%), Factors=9
+Iteration 292: time=0.19, Factors=9
+Iteration 293: time=0.19, Factors=9
+Iteration 294: time=0.19, Factors=9
+Iteration 295: time=0.19, Factors=9
+Iteration 296: time=0.22, ELBO=-2847264.90, deltaELBO=157.932 (0.00046055%), Factors=9
+
+Converged!
+
+
+
+#######################
+## Training finished ##
+#######################
+
+
+Saving model in /dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC/processed-data/MFA/models/all_9.rds...
+1 factors were found to explain no variance and they were removed for downstream analysis. You can disable this option by setting load_model(..., remove_inactive_factors = FALSE)
+Warning message:
+In .quality_control(object, verbose = verbose) :
+  Factor(s) 1, 2, 3, 4, 5, 7 are strongly correlated with the total number of expressed features for at least one of your omics. Such factors appear when there are differences in the total 'levels' between your samples, *sometimes* because of poor normalisation in the preprocessing steps.
+
+null device 
+          1 
+pdf 
+  2 
+─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 Patched (2025-05-21 r88220)
+ os       Rocky Linux 9.4 (Blue Onyx)
+ system   x86_64, linux-gnu
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       US/Eastern
+ date     2025-10-29
+ pandoc   NA
+ quarto   NA
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package              * version    date (UTC) lib source
+ abind                  1.4-8      2024-09-12 [1] CRAN (R 4.5.0)
+ backports              1.5.0      2024-05-23 [1] CRAN (R 4.5.0)
+ basilisk               1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ basilisk.utils         1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ beachmat               2.24.0     2025-04-15 [1] Bioconduc~
+ Biobase              * 2.68.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ BiocGenerics         * 0.54.0     2025-04-15 [1] Bioconduc~
+ BiocNeighbors          2.2.0      2025-04-15 [1] Bioconduc~
+ BiocParallel           1.42.1     2025-06-01 [1] Bioconduc~
+ BiocSingular           1.24.0     2025-04-15 [1] Bioconduc~
+ bluster                1.18.0     2025-04-15 [1] Bioconduc~
+ broom                  1.0.8      2025-03-28 [2] CRAN (R 4.5.0)
+ Cairo                  1.6-2      2023-11-28 [2] CRAN (R 4.5.0)
+ circlize             * 0.4.16     2024-02-20 [2] CRAN (R 4.5.0)
+ cli                    3.6.5      2025-04-23 [1] CRAN (R 4.5.0)
+ clue                   0.3-66     2024-11-13 [2] CRAN (R 4.5.0)
+ cluster                2.1.8.1    2025-03-12 [3] CRAN (R 4.5.0)
+ codetools              0.2-20     2024-03-31 [3] CRAN (R 4.5.0)
+ colorspace             2.1-1      2024-07-26 [1] CRAN (R 4.5.0)
+ ComplexHeatmap       * 2.24.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ corrplot               0.95       2024-10-14 [2] CRAN (R 4.5.0)
+ cowplot                1.2.0      2025-07-07 [1] CRAN (R 4.5.0)
+ crayon                 1.5.3      2024-06-20 [1] CRAN (R 4.5.0)
+ DelayedArray           0.34.1     2025-04-17 [1] Bioconduc~
+ dichromat              2.0-0.1    2022-05-02 [2] CRAN (R 4.5.0)
+ digest                 0.6.37     2024-08-19 [1] CRAN (R 4.5.0)
+ dir.expiry             1.16.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ doParallel             1.0.17     2022-02-07 [2] CRAN (R 4.5.0)
+ dplyr                * 1.1.4      2023-11-17 [1] CRAN (R 4.5.0)
+ dqrng                  0.4.1      2024-05-28 [1] CRAN (R 4.5.0)
+ edgeR                  4.6.2      2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ farver                 2.1.2      2024-05-13 [1] CRAN (R 4.5.0)
+ filelock               1.0.3      2023-12-11 [2] CRAN (R 4.5.0)
+ forcats              * 1.0.0      2023-01-29 [2] CRAN (R 4.5.0)
+ foreach                1.5.2      2022-02-02 [2] CRAN (R 4.5.0)
+ generics             * 0.1.4      2025-05-09 [1] CRAN (R 4.5.0)
+ GenomeInfoDb         * 1.44.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData       1.2.14     2025-05-21 [2] Bioconductor
+ GenomicRanges        * 1.60.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ getopt               * 1.20.4     2023-10-01 [1] CRAN (R 4.5.0)
+ GetoptLong             1.0.5      2020-12-15 [2] CRAN (R 4.5.0)
+ GGally               * 2.2.1      2024-02-14 [2] CRAN (R 4.5.0)
+ ggplot2              * 3.5.2      2025-04-09 [1] CRAN (R 4.5.0)
+ ggrepel                0.9.6      2024-09-07 [1] CRAN (R 4.5.0)
+ ggstats                0.9.0      2025-03-10 [2] CRAN (R 4.5.0)
+ GlobalOptions          0.1.2      2020-06-10 [2] CRAN (R 4.5.0)
+ glue                   1.8.0      2024-09-30 [1] CRAN (R 4.5.0)
+ gtable                 0.3.6      2024-10-25 [1] CRAN (R 4.5.0)
+ h5mread                1.0.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ HDF5Array              1.36.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ here                 * 1.0.1      2020-12-13 [1] CRAN (R 4.5.0)
+ hms                    1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+ httr                   1.4.7      2023-08-15 [1] CRAN (R 4.5.0)
+ igraph                 2.1.4      2025-01-23 [1] CRAN (R 4.5.0)
+ IRanges              * 2.42.0     2025-04-15 [1] Bioconduc~
+ irlba                  2.3.5.1    2022-10-03 [1] CRAN (R 4.5.0)
+ iterators              1.0.14     2022-02-05 [2] CRAN (R 4.5.0)
+ jsonlite               2.0.0      2025-03-27 [1] CRAN (R 4.5.0)
+ lattice                0.22-7     2025-04-02 [3] CRAN (R 4.5.0)
+ lifecycle              1.0.4      2023-11-07 [1] CRAN (R 4.5.0)
+ limma                  3.64.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ locfit                 1.5-9.12   2025-03-05 [2] CRAN (R 4.5.0)
+ lubridate            * 1.9.4      2024-12-08 [2] CRAN (R 4.5.0)
+ magick                 2.8.6      2025-03-23 [2] CRAN (R 4.5.0)
+ magrittr               2.0.3      2022-03-30 [1] CRAN (R 4.5.0)
+ MASS                   7.3-65     2025-02-28 [3] CRAN (R 4.5.0)
+ Matrix               * 1.7-3      2025-03-11 [3] CRAN (R 4.5.0)
+ MatrixGenerics       * 1.20.0     2025-04-15 [1] Bioconduc~
+ matrixStats          * 1.5.0      2025-01-07 [1] CRAN (R 4.5.0)
+ metapod                1.16.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ MOFA2                * 1.18.0     2025-04-15 [1] Bioconductor 3.21 (R 4.5.0)
+ MOFAcellulaR         * 0.0.0.9000 2025-07-23 [1] Github (saezlab/MOFAcellulaR@8cb0785)
+ pheatmap               1.0.12     2019-01-04 [2] CRAN (R 4.5.0)
+ pillar                 1.11.0     2025-07-04 [1] CRAN (R 4.5.0)
+ pkgconfig              2.0.3      2019-09-22 [1] CRAN (R 4.5.0)
+ plyr                   1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
+ png                    0.1-8      2022-11-29 [1] CRAN (R 4.5.0)
+ purrr                * 1.1.0      2025-07-10 [1] CRAN (R 4.5.0)
+ R6                     2.6.1      2025-02-15 [1] CRAN (R 4.5.0)
+ RColorBrewer           1.1-3      2022-04-03 [1] CRAN (R 4.5.0)
+ Rcpp                   1.1.0      2025-07-02 [1] CRAN (R 4.5.0)
+ readr                * 2.1.5      2024-01-10 [2] CRAN (R 4.5.0)
+ reshape2               1.4.4      2020-04-09 [2] CRAN (R 4.5.0)
+ reticulate             1.43.0     2025-07-21 [1] CRAN (R 4.5.0)
+ rhdf5                  2.52.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rhdf5filters           1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ Rhdf5lib               1.30.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ rjson                  0.2.23     2024-09-16 [2] CRAN (R 4.5.0)
+ rlang                  1.1.6      2025-04-11 [1] CRAN (R 4.5.0)
+ rprojroot              2.1.0      2025-07-12 [1] CRAN (R 4.5.0)
+ rsvd                   1.0.5      2021-04-16 [1] CRAN (R 4.5.0)
+ Rtsne                  0.17       2023-12-07 [2] CRAN (R 4.5.0)
+ S4Arrays               1.8.1      2025-06-01 [1] Bioconduc~
+ S4Vectors            * 0.46.0     2025-04-15 [1] Bioconduc~
+ ScaledMatrix           1.16.0     2025-04-15 [1] Bioconduc~
+ scales                 1.4.0      2025-04-24 [1] CRAN (R 4.5.0)
+ scran                  1.36.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ scuttle                1.18.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sessioninfo          * 1.2.3      2025-02-05 [2] CRAN (R 4.5.0)
+ shape                  1.4.6.1    2024-02-23 [2] CRAN (R 4.5.0)
+ SingleCellExperiment * 1.30.1     2025-05-07 [2] Bioconductor 3.21 (R 4.5.0)
+ SparseArray            1.8.1      2025-07-23 [1] Bioconduc~
+ SpatialExperiment    * 1.18.1     2025-05-11 [2] Bioconductor 3.21 (R 4.5.0)
+ statmod                1.5.0      2023-01-06 [2] CRAN (R 4.5.0)
+ stringi                1.8.7      2025-03-27 [1] CRAN (R 4.5.0)
+ stringr              * 1.5.1      2023-11-14 [1] CRAN (R 4.5.0)
+ SummarizedExperiment * 1.38.1     2025-04-30 [2] Bioconductor 3.21 (R 4.5.0)
+ tibble               * 3.3.0      2025-06-08 [1] CRAN (R 4.5.0)
+ tidyr                * 1.3.1      2024-01-24 [1] CRAN (R 4.5.0)
+ tidyselect             1.2.1      2024-03-11 [1] CRAN (R 4.5.0)
+ tidyverse            * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
+ timechange             0.3.0      2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb                   0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils             1.4.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ uwot                 * 0.2.3      2025-02-24 [1] CRAN (R 4.5.0)
+ vctrs                  0.6.5      2023-12-01 [1] CRAN (R 4.5.0)
+ viridisLite          * 0.4.2      2023-05-02 [1] CRAN (R 4.5.0)
+ withr                  3.0.2      2024-10-28 [1] CRAN (R 4.5.0)
+ XVector                0.48.0     2025-04-15 [1] Bioconduc~
+
+ [1] /users/neagles/R/4.5
+ [2] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/site-library
+ [3] /jhpce/shared/community/core/conda_R/4.5/R/lib64/R/library
+ * ── Packages attached to the search path.
+
+─ Python configuration ───────────────────────────────────────────────────────
+ python:         /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/bin/python
+ libpython:      /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/lib/libpython3.10.so
+ pythonhome:     /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env:/users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env
+ version:        3.10.5 | packaged by conda-forge | (main, Jun 14 2022, 07:06:46) [GCC 10.3.0]
+ numpy:          /users/neagles/.cache/R/basilisk/1.20.0/MOFA2/1.18.0/mofa_env/lib/python3.10/site-packages/numpy
+ numpy_version:  1.23.1
+ 
+ NOTE: Python version was forced by use_python() function
+
+──────────────────────────────────────────────────────────────────────────────
+**** Job ends ****
+Wed Oct 29 03:13:22 PM EDT 2025

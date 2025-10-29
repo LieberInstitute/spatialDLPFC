@@ -6,10 +6,10 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
 #SBATCH -e /dev/null
-#SBATCH --array=9-17%20
+#SBATCH --array=1-18%20
 
 ## Define loops and appropriately subset each variable for the array task ID
-all_dataset=(DLPFC combined)
+all_dataset=(combined all)
 dataset=${all_dataset[$(( $SLURM_ARRAY_TASK_ID / 9 % 2 ))]}
 
 all_num_factors=(2 3 4 5 6 7 8 9 10)
