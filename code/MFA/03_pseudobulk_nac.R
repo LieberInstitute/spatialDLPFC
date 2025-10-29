@@ -4,7 +4,7 @@ library(here)
 library(sessioninfo)
 
 in_visium_dir = '/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/code/06_deploy_app/spe_shiny'
-in_visium_path = '/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/processed-data/05_harmony_BayesSpace/04-preprocess_and_harmony/spe_harmony.rds'
+in_visium_dir2 = '/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/processed-data/05_harmony_BayesSpace/03-filter_normalize_spe/spe_filtered_hdf5'
 in_sn_path = '/dcs04/lieber/marmaypag/spatialNac_LIBD4125/spatial_NAc/processed-data/12_snRNA/sce_CellType_noresiduals.Rds'
 pseudo_sn_path = here(
     'processed-data', 'MFA', 'pseudobulk_rds', 'nac_sn_pb.rds'
@@ -42,11 +42,11 @@ stopifnot(setequal(spe$donor, sce$Brain_ID))
 
 #   counts assay was dropped for the shiny app; read it back in from a different
 #   object
-spe_raw = readRDS(in_visium_path)
+spe_raw = loadHDF5SummarizedExperiment(in_visium_dir2)
 stopifnot(identical(rownames(spe), rownames(spe_raw)))
 stopifnot(all(colnames(spe) %in% colnames(spe_raw)))
 spe_raw = spe_raw[, colnames(spe)]
-assays(spe) = list(counts = assays(spe_raw)$counts)
+assays(spe) = list(counts = as(assays(spe_raw)$counts, "dgCMatrix"))
 
 ################################################################################
 #   Pseudobulk
