@@ -13,8 +13,17 @@ hpc_spe_path = here(
 hpc_sce_path = here(
     'processed-data', 'MFA', 'pseudobulk_rds', 'hpc_sn_pb.rds'
 )
+nac_spe_path = here(
+    'processed-data', 'MFA', 'pseudobulk_rds', 'nac_visium_pb.rds'
+)
+nac_sce_path = here(
+    'processed-data', 'MFA', 'pseudobulk_rds', 'nac_sn_pb.rds'
+)
 combined_out_path = here(
     'processed-data', 'MFA', 'combined_rds', 'combined.rds'
+)
+all_out_path = here(
+    'processed-data', 'MFA', 'combined_rds', 'all.rds'
 )
 
 dir.create(dirname(combined_out_path), showWarnings = FALSE)
@@ -94,6 +103,17 @@ hpc_mofa_list = combine_sce(
     shared_cols = c()
 )
 
+#   Combine NAc Visium and snRNA-seq objects
+nac_mofa_list = combine_sce(
+    sce1 = readRDS(nac_sce_path),
+    sce2 = readRDS(nac_spe_path),
+    donor_var1 = 'Brain_ID',
+    donor_var2 = 'donor',
+    cluster_var1 = 'CellType.Final',
+    cluster_var2 = 'spatial_domains',
+    shared_cols = c()
+)
+
 #   Combine DLPFC and HPC
 stopifnot(setequal(dlpfc_mofa_list$sce$donor, hpc_mofa_list$sce$donor))
 combined_mofa_list = combine_sce(
@@ -107,5 +127,19 @@ combined_mofa_list = combine_sce(
 )
 combined_mofa_list$pd = dlpfc_mofa_list$pd
 saveRDS(combined_mofa_list, combined_out_path)
+
+#   Combine DLPFC, HPC, and NAc
+stopifnot(setequal(combined_mofa_list$sce$donor, nac_mofa_list$sce$donor))
+all_mofa_list = combine_sce(
+    sce1 = combined_mofa_list$sce,
+    sce2 = nac_mofa_list$sce,
+    donor_var1 = 'donor',
+    donor_var2 = 'donor',
+    cluster_var1 = 'cluster',
+    cluster_var2 = 'cluster',
+    shared_cols = c()
+)
+all_mofa_list$pd = combined_mofa_list$pd
+saveRDS(all_mofa_list, all_out_path)
 
 session_info()

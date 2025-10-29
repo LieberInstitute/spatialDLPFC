@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p katun
 #SBATCH --mem=10G
-#SBATCH --job-name=04_prep_dlpfc_hpc
+#SBATCH --job-name=04_prep
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/MFA/logs/04_prep_dlpfc_hpc.txt
-#SBATCH -e ../../processed-data/MFA/logs/04_prep_dlpfc_hpc.txt
+#SBATCH -o ../../processed-data/MFA/logs/04_prep.txt
+#SBATCH -e ../../processed-data/MFA/logs/04_prep.txt
 
 set -e
 
@@ -25,7 +25,7 @@ module load conda_R/4.5
 ## List current modules for reproducibility
 module list
 
-Rscript 04_prep_dlpfc_hpc.R
+Rscript 04_prep.R
 
 echo "**** Job ends ****"
 date
