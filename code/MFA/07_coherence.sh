@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p katun
 #SBATCH --mem=20G
-#SBATCH --job-name=06_coherence
+#SBATCH --job-name=07_coherence
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
@@ -22,7 +22,7 @@ all_clean_expression=(FALSE TRUE)
 clean_expression=${all_clean_expression[$(( $SLURM_ARRAY_TASK_ID / 1 % 2 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=../../processed-data/MFA/logs/06_coherence_${DLPFC_clus}_${HPC_clus}_${filter_by_region}_${clean_expression}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=../../processed-data/MFA/logs/07_coherence_${DLPFC_clus}_${HPC_clus}_${filter_by_region}_${clean_expression}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -44,7 +44,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 06_coherence.R --DLPFC_clus ${DLPFC_clus} --HPC_clus ${HPC_clus} --filter_by_region ${filter_by_region} --clean_expression ${clean_expression}
+Rscript 07_coherence.R --DLPFC_clus ${DLPFC_clus} --HPC_clus ${HPC_clus} --filter_by_region ${filter_by_region} --clean_expression ${clean_expression}
 
 echo "**** Job ends ****"
 date

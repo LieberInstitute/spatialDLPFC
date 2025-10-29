@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -p katun
 #SBATCH --mem=10G
-#SBATCH --job-name=04_mofa
+#SBATCH --job-name=05_mofa
 #SBATCH -c 1
 #SBATCH -t 1-00:00:00
 #SBATCH -o /dev/null
@@ -16,7 +16,7 @@ all_num_factors=(2 3 4 5 6 7 8 9 10)
 num_factors=${all_num_factors[$(( $SLURM_ARRAY_TASK_ID / 1 % 9 ))]}
 
 ## Explicitly pipe script output to a log
-log_path=../../processed-data/MFA/logs/04_mofa_${dataset}_${num_factors}_${SLURM_ARRAY_TASK_ID}.txt
+log_path=../../processed-data/MFA/logs/05_mofa_${dataset}_${num_factors}_${SLURM_ARRAY_TASK_ID}.txt
 
 {
 set -e
@@ -38,7 +38,7 @@ module load conda_R/4.5
 module list
 
 ## Edit with your job command
-Rscript 04_mofa.R --dataset ${dataset} --num_factors ${num_factors}
+Rscript 05_mofa.R --dataset ${dataset} --num_factors ${num_factors}
 
 echo "**** Job ends ****"
 date

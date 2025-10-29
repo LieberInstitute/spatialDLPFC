@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p katun
 #SBATCH --mem=10G
-#SBATCH --job-name=05_gene_weights
+#SBATCH --job-name=06_gene_weights
 #SBATCH -c 1
 #SBATCH -t 1-0:00:00
-#SBATCH -o ../../processed-data/MFA/logs/05_gene_weights.txt
-#SBATCH -e ../../processed-data/MFA/logs/05_gene_weights.txt
+#SBATCH -o ../../processed-data/MFA/logs/06_gene_weights.txt
+#SBATCH -e ../../processed-data/MFA/logs/06_gene_weights.txt
 
 set -e
 
@@ -25,7 +25,7 @@ module load conda_R/4.5
 ## List current modules for reproducibility
 module list
 
-Rscript 05_gene_weights.R
+Rscript 06_gene_weights.R
 
 echo "**** Job ends ****"
 date
