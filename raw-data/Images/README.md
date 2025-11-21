@@ -10,4 +10,4 @@ VisiumIF: contains immunofluorescent images from n=4 samples and individual unmi
 
 ## Matching image names to sample IDs
 
-Image names use various conventions. To understand which sample each image belongs to, see [this table](../../processed-data/synapse_upload/04-nda/image_mapping.csv) (slide and capture area for all images, including IF) or [this table](../../code/spaceranger/spaceranger_parameters.txt) (more info, only for non-IF images).
+Image names use various conventions. To understand which sample each image belongs to, see [this table](../../processed-data/synapse_upload/04-nda/image_mapping.csv) (slide and capture area for all images, including IF) or [this table](../../code/spaceranger/spaceranger_parameters.txt) (more info, only for non-IF images). The former table describes how the original image paths were renamed for upload to [NDA](https://nda.nih.gov/study.html?id=2619).
