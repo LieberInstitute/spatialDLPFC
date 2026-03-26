@@ -328,13 +328,7 @@ The source data described in this manuscript are available from the [National In
 
 You can also access all the raw data through [Globus](http://research.libd.org/globus/) (`jhpce#spatialDLPFC` and `jhpce#DLPFC_snRNAseq`). This includes all the input FASTQ files as well as the outputs from tools such as [`SpaceRanger`](https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/what-is-space-ranger) or [`CellRanger`](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger). The files are _mostly_ organized following the [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project) project structure.
 
-
-## Internal
-
-* JHPCE locations:
-  - `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC`
-  - `/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq`
-* Slack channel: [`libd_dlpfc_spatial`](https://jhu-genomics.slack.com/archives/C01EA7VDJNT).
+## Repository organization
 
 ### Files: [`spatialDLPFC`](https://github.com/LieberInstitute/spatialDLPFC)
 
@@ -367,7 +361,3 @@ This GitHub repository is organized along the [_R/Bioconductor-powered Team Data
   * `sample_info`: spreadsheet with information about samples (sample ID, sample name)
 
 This GitHub repository is organized along the [_R/Bioconductor-powered Team Data Science_ group guidelines](https://lcolladotor.github.io/bioc_team_ds/organizing-your-work.html#.Yaf9fPHMIdk). It aims to follow the [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project) structure.
-
-### Other related files
-
-- Reference transcriptome from 10x Genomics: `/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A/`

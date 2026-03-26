@@ -462,13 +462,7 @@ The files are *mostly* organized following the
 [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project)
 project structure.
 
-## Internal
-
-- JHPCE locations:
-  - `/dcs04/lieber/lcolladotor/spatialDLPFC_LIBD4035/spatialDLPFC`
-  - `/dcs04/lieber/lcolladotor/deconvolution_LIBD4030/DLPFC_snRNAseq`
-- Slack channel:
-  [`libd_dlpfc_spatial`](https://jhu-genomics.slack.com/archives/C01EA7VDJNT).
+## Repository organization
 
 ### Files: [`spatialDLPFC`](https://github.com/LieberInstitute/spatialDLPFC)
 
@@ -526,8 +520,3 @@ guidelines](https://lcolladotor.github.io/bioc_team_ds/organizing-your-work.html
 It aims to follow the
 [LieberInstitute/template_project](https://github.com/LieberInstitute/template_project)
 structure.
-
-### Other related files
-
-- Reference transcriptome from 10x Genomics:
-  `/dcs04/lieber/lcolladotor/annotationFiles_LIBD001/10x/refdata-gex-GRCh38-2020-A/`
