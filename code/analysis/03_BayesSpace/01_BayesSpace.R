@@ -21,6 +21,12 @@ clusterPlot(spe, "subject", color = NA) + # make sure no overlap between samples
     labs(fill = "Subject", title = "Offset check")
 dev.off()
 
+## Note that the spatial coordinates were previously offset
+## at https://github.com/LieberInstitute/spatialDLPFC/blob/d2ccd7820f6d9ab886888e1c8615f05340d51005/code/analysis/01_build_spe/01_build_spe.R#L651-L661
+## Otherwise the results from spatialCluster() would be incorrect.
+## See http://edward130603.github.io/BayesSpace/articles/joint_clustering.html#clustering-1
+## for more details.
+
 ### BayesSpace on Batch Corrected
 spe <- spatialCluster(spe, use.dimred = "HARMONY", q = k, nrep = 10000)
 
