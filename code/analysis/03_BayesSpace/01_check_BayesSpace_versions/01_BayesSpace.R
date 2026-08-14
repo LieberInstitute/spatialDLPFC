@@ -14,7 +14,10 @@ set.seed(030122)
 ## different versions of BayesSpace
 spe$array_row <- spe$row
 spe$array_col <- spe$col
+spe$pxl_col_in_fullres <- spatialCoords(spe)[, "pxl_col_in_fullres"]
+spe$pxl_row_in_fullres <- spatialCoords(spe)[, "pxl_row_in_fullres"]
 
+## Check visually that there's no overlap between the samples
 pdf(file = here::here("plots", "03_BayesSpace", paste0("BayesSpace_version_", packageVersion("BayesSpace"), "_offset_check.pdf")))
 clusterPlot(spe, "subject", color = NA) + # make sure no overlap between samples
     labs(fill = "Subject", title = "Offset check")
