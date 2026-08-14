@@ -2,16 +2,23 @@ library("here")
 library("sessioninfo")
 library("SpatialExperiment")
 library("spatialLIBD")
+library("ggplot2")
 library("BayesSpace")
 
 load(file = here::here("processed-data", "rdata", "spe", "01_build_spe", "spe_filtered_final.Rdata"), verbose = TRUE)
 
 set.seed(030122)
 
-# pdf(file = here::here("plots", "03_BayesSpace", "BayesSpace_offset_check.pdf"))
-# clusterPlot(spe, "subject", color = NA) + # make sure no overlap between samples
-#     labs(fill = "Subject", title = "Offset check")
-# dev.off()
+
+## Set the array coords in a way that it'll work with 
+## different versions of BayesSpace
+spe$array_row <- spe$row
+spe$array_col <- spe$col
+
+pdf(file = here::here("plots", "03_BayesSpace", paste0("BayesSpace_version_", packageVersion("BayesSpace"), "_offset_check.pdf")))
+clusterPlot(spe, "subject", color = NA) + # make sure no overlap between samples
+    labs(fill = "Subject", title = "Offset check")
+dev.off()
 
 ### BayesSpace on Batch Corrected
 spe <- spatialCluster(spe, use.dimred = "HARMONY", q = 9, nrep = 10000)
